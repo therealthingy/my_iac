@@ -1,8 +1,0 @@
----
-- name: Install global scripts
-  copy:
-    src: "10-show_system_info"
-    dest: "/etc/profile.d/10-show_system_info"
-    owner: "root"
-    group: "root"
-    mode: 0644

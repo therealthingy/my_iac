@@ -1,6 +1,7 @@
 user_name:              "s1m0ne"
 user_uid:               "1000"
 user_gid:               "1000"
+user_ssh_key:           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM5dqwIhqa1g3lQAIs1iEyniwfeFtqtyT8IhzwsjpPDl ggs-imac"
 
 
 # -- Docker related --

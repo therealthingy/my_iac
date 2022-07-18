@@ -1,4 +1,10 @@
 ---
+- name: Add ssh key for {{ user_name }}
+  authorized_key:
+    user: {{ user_name }}
+    key: {{ user_ssh_key }}
+
+
 - name: Disable password login via SSH
   lineinfile:
     dest: /etc/ssh/sshd_config
