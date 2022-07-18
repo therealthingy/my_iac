@@ -8,6 +8,7 @@
         - server
         - homeserver
         - rpi
+        - vmware
 
 - hosts: workstations
   become: true
@@ -65,3 +66,10 @@
     - role: rpi
       tags:
         - rpi
+
+- hosts: vmware_vms
+  become: true
+  roles:
+    - role: vmware
+      tags:
+        - vmware
