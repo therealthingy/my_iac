@@ -1,6 +1,5 @@
 ---
-- name: Install Docker (Raspbian)
-  when: ansible_facts['distribution'] == 'Debian'
+- name: Add Docker apt repos
   block:
   - name: Add Docker GPG apt Key
     apt_key:
@@ -24,8 +23,7 @@
 
 
 
-- name: Update apt and install docker-ce
-  when: ansible_facts['os_family'] == 'Debian'
+- name: Install Docker
   apt:
     update_cache: true
     name:
@@ -35,12 +33,12 @@
       - docker-registry
     state: present
 
-- name: Ensure group docker exists
+- name: Docker Post Setup - Groups
   group:
     name: docker
     state: present
 
-- name: Add user "{{ username }}" to group docker
+- name: Docker Post Setup - Add user to docker group
   user:
     name: '{{ username }}'
     groups:
@@ -48,12 +46,12 @@
     append: yes
 
 
-- name: Install Docker Module for Python
+- name: Docker Post Setup - Install Docker Module for Python
   pip:
     name: docker
 
 
-- name: Make sure Docker is running and enabled
+- name: Docker Post Setup - Make sure Docker is running and enabled
   service:
     name: docker
     state: started
