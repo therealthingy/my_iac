@@ -1,0 +1,67 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - role: base
+      tags:
+        - base
+        - server
+        - homeserver
+        - rpi
+
+- hosts: workstations
+  become: true
+  roles:
+    - role: workstation
+      tags:
+        - base
+        - workstation
+
+- hosts: servers
+  become: true
+  roles:
+    - role: server
+      tags:
+        - server
+        - homeserver
+        - rpi
+    - role: docker
+      tags:
+        - docker
+        - server
+        - homeserver
+        - rpi
+
+- hosts: homeservers
+  roles:
+    - role: homeserver/containers/bitwarden
+      tags:
+        - homeserver
+        - rpi
+        - bitwarden
+    - role: homeserver/containers/filebrowser
+      tags:
+        - homeserver
+        - rpi
+        - filebrowser
+    - role: homeserver/containers/portainer
+      tags:
+        - homeserver
+        - portainer
+    - role: homeserver/containers/traefik
+      tags:
+        - homeserver
+        - rpi
+        - traefik
+    - role: homeserver/containers/watchtower
+      tags:
+        - homeserver
+        - rpi
+        - watchtower
+
+- hosts: rpis
+  become: true
+  roles:
+    - role: rpi
+      tags:
+        - rpi

@@ -8,7 +8,7 @@
     line: "AcceptEnv LANG LC_*"
     validate: '/usr/sbin/sshd -T -f %s'
 
-- name: Restart ssh dasemon
+- name: Restart ssh daemon
   service:
     name: sshd
     state: restarted

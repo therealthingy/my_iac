@@ -1,0 +1,22 @@
+---
+- name: Install conky
+  apt:
+    name:
+      - conky
+    state: present
+
+- name: Copy config file
+  copy:
+    src: 'conky-config'
+    dest: '/home/{{ user_name }}/.conkyrc'
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
+    mode: 0644
+
+- name: Create autostart entry
+  copy:
+    src: 'conky-autostart-entry'
+    dest: '/home/{{ user_name }}/.config/autostart/conky.desktop'
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
+    mode: 0644

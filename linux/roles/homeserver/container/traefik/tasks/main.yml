@@ -6,6 +6,7 @@
     owner: "root"
     group: "root"
     mode: 0644
+  become: true
 
 - name: Copy treafik config
   copy:
@@ -14,6 +15,7 @@
     owner: '{{ user_name }}'
     group: '{{ user_name }}'
     mode: 0644
+  become: true
 
 - name: Make sure the {{ container_name }} container is created and running
   docker_container:
