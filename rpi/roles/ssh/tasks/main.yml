@@ -6,7 +6,7 @@
     dest: /etc/ssh/sshd_config
     regexp: '^AcceptEnv LANG LC_\*$'
     line: "AcceptEnv LANG LC_*"
-  validate: '/usr/sbin/sshd -T -f %s'
+    validate: '/usr/sbin/sshd -T -f %s'
 
 - name: Restart ssh dasemon
   service:
