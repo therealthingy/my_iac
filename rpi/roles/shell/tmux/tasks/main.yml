@@ -7,8 +7,8 @@
 
 - name: Copy config file
   copy:
-    src: "tmux.conf"
-    dest: '{{ ansible_env.HOME }}/.tmux.conf'
+    src: 'tmux.conf'
+    dest: '/home/{{ username }}/.tmux.conf'
     owner: '{{ username }}'
     group: '{{ username }}'
     mode: 0644

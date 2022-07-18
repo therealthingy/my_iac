@@ -2,8 +2,8 @@
 - name: Disable password login via SSH
   lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: '{{ item[regex] }}'
-    line: '{{ item[line] }}'
+    regexp: '{{ item.regex }}'
+    line: '{{ item.line }}'
   with_items:
     - { regex: "^#?PasswordAuthentication", line: "PasswordAuthentication no" }
     - { regex: "^#?ChallengeResponseAuthentication", line: "ChallengeResponseAuthentication no" }
