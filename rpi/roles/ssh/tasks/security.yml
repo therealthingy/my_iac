@@ -1,0 +1,17 @@
+---
+- name: Disable password login via SSH
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '{{ item[regex] }}'
+    line: '{{ item[line] }}'
+  with_items:
+    - { regex: "^#?PasswordAuthentication", line: "PasswordAuthentication no" }
+    - { regex: "^#?ChallengeResponseAuthentication", line: "ChallengeResponseAuthentication no" }
+  validate: '/usr/sbin/sshd -T -f %s'
+
+- name: Change ssh port
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#?Port"
+    line: "Port 2233"
+  validate: '/usr/sbin/sshd -T -f %s'

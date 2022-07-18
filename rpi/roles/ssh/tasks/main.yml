@@ -1,0 +1,8 @@
+---
+- include_tasks: security.yml
+
+- name: Allow client to pass locale environment variables
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^AcceptEnv LANG LC_\*$'
+    line: "AcceptEnv LANG LC_*"
