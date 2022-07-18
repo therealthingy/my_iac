@@ -1,0 +1,126 @@
+---
+- name: Enable other packages
+  repace:
+    path: /etc/apt/sources.list
+    regexp: '^# deb-src'
+    replace: 'deb-src'
+
+- name: Update and upgrade apt packages
+  apt:
+    update_cache: yes
+    upgrade: yes
+
+
+
+- name: Install file general purpose tools
+  apt:
+    name:
+      - tree
+      - rename
+      - fdupes
+      - dos2unix
+    state: present
+
+- name: Install file backup tools
+  apt:
+    name:
+      - rclone
+    state: present
+
+- name: Install file archiving tools
+  apt:
+    name:
+      - pigz
+      - pbzip2
+      - pxz
+      - zip
+      - unzip
+    state: present
+
+- name: Install monitoring tools
+  apt:
+    name:
+      - neofetch
+      - htop
+      - pstree
+      - iotop
+      - sysstat
+      - smartmontools
+      - hdparm
+      - usbutils
+    state: present
+
+- name: Install networking tools
+  apt:
+    name:
+      - nmap
+      - speedtest-cli
+      - net-tools
+      - wget
+    state: present
+
+- name: Install administration tools
+  apt:
+    name:
+      - mosh
+      #- unattended-upgrades
+    state: present
+
+- name: Install privacy tools
+  apt:
+    name:
+      - ccrypt
+      - cryptsetup
+      - zerofree
+    state: present
+
+- name: Install privacy tool 'luks sparse file helper'
+  copy:
+    src: "luks-sparse_helper"
+    dest: "/usr/local/bin/luks-sparse_helper"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  when: "'ccrypt' in ansible_facts.packages"
+
+- name: Install shell related tools
+  apt:
+    name:
+      - moreutils
+      - watch
+      - pv
+      - uuid
+    state: present
+
+- name: Install dev tools
+  apt:
+    name:
+      - git
+      - git-lfs
+    state: present
+
+- name: Init git LFS for current user
+  command: git lfs install
+  become: false
+
+
+- name: Install runtimes
+  apt:
+    name:
+      - python3
+    state: present
+
+
+
+# ?????????????????????????
+- name: Switch to pip3
+  alternatives:
+    name: pip
+    link: /usr/bin/pip
+    path: /usr/bin/pip3
+
+- name: Switch to python3
+  alternatives:
+    name: python
+    link: /usr/bin/python
+    path: /usr/bin/python3

@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+
+# --- Logo ---
+clear
+printf "\n"
+neofetch -L
+printf "\n"
+
+
+
+# --- System stats ---
+printf "\n======================================================\n"
+printf "Local systime: %s \n" "$(date)"
+
+uptime --pretty |awk '{printf "Uptime: %s\n", substr($0, 4)}'
+
+top -bn1 | grep load | awk '{printf "CPU Load: %.2f, ", $(NF-2)}'
+awk '{printf("temperature: %.1f°C\n",$1/1e3)}' /sys/class/thermal/thermal_zone0/temp
+
+free -m | awk 'NR==2{printf "Memory Usage: %s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2 }'
+
+df -h | awk '$NF=="/"{printf "Disk Usage: %d/%dGB (%s)\n", $3,$2,$5}'
+
+printf "Current user: %s@%s \n" "$(id -un)" "$(hostname)"        # .(domainname)
+printf "======================================================\n\n"

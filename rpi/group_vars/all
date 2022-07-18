@@ -1,1 +1,9 @@
-username: "s1m0ne"
+username:   "s1m0ne"
+
+
+# -- Docker related --
+domainname: "rpi.lan"
+timezone:   "Europe/Berlin"
+
+
+# TODO: MAIL W/ ANSIBLE VAULT
