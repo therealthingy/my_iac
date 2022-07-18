@@ -95,6 +95,7 @@
 - name: Install dev tools
   apt:
     name:
+      - neovim
       - git
       - git-lfs
     state: present

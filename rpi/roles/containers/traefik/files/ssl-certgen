@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+
+# NOTE: THERE'S ALSO `/usr/lib/ssl/misc/CA.pl`, which basically does the same stuff
+
+
+# --------------------- ADAPT 2 OWN NEEDS ---------------------
+# --  DISTINGUISHED NAME OF CERTs  --
+DIST_NAME_C="DE"
+DIST_NAME_ST="BW"
+DIST_NAME_L="Urbach"
+DIST_NAME_O="garyGeeIOT"
+DIST_NAME_EMAIL="therealthingy95@gmail.com"
+DIST_CA_CN="${DIST_NAME_O} CA"
+DIST_CERT_CN="*.rpi.lan"
+
+
+# --  SEE `openssl ecparam -list_curves`  --
+ELLIPTIC_CURVE=prime256v1
+# --------------------- ADAPT 2 OWN NEEDS ---------------------
+
+
+
+CLI_ARG_CA="ca"
+CLI_ARG_CERT="cert"
+case $1 in
+
+  $CLI_ARG_CA)
+    # (0.) Build filenames & check whether they already exist (to prevent overwritting)
+    file_ca_sk="${DIST_NAME_O}_$(date +%C%y)_ROOT_CA.key"
+    file_ca_pk="${file_ca_sk%.*}.pem"
+    if [ -f "$file_ca_sk" ]; then
+        echo "Root cert exists already, aborting ..."  >&2
+        exit 1
+    fi
+
+    # (1.) Generate CA sk (encrypted)
+    echo "(I ) Generating CA sk \"$file_ca_sk\""
+    openssl ecparam -name $ELLIPTIC_CURVE -genkey  | openssl ec -aes256 -out $file_ca_sk
+
+    # (2.) Generate CA pk
+    echo "(II) Generating CA pk \"$file_ca_pk\""
+    tmpcfg=$(mktemp)                         # TEMP WORKAROUND (since openssl requires this cfg file  ??)
+cat <<EOF > $tmpcfg
+[req]
+distinguished_name     = req_distinguished_name
+prompt                 = no
+
+[req_distinguished_name]
+C                      = $DIST_NAME_C
+ST                     = $DIST_NAME_ST
+L                      = $DIST_NAME_L
+O                      = $DIST_NAME_O
+emailAddress           = $DIST_NAME_EMAIL
+CN                     = $DIST_CA_CN
+
+[v3_ca]
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always,issuer:always
+basicConstraints       = CA:true
+EOF
+    openssl req \
+      -utf8 \
+      -x509 \
+      -new \
+      -nodes \
+      -config $tmpcfg -extensions v3_ca \
+      -key $file_ca_sk -out $file_ca_pk \
+      -days 1825 \
+      -sha512
+
+    # (3.) Finished -> CLEANUP
+    echo -e "Generated CA root cert successfully:"
+    echo -e "\t\e[1m${file_ca_pk}\e[0m: Public CA root cert  --->  \e[1mInstall this cert on your devices\e[0m"
+    echo -e "\t\e[1m${file_ca_sk}\e[0m: Private CA root key  --->  \e[1mUse this file to sign your certs \e[1;97;41m!!! DO NOT LOOSE/GIVE AWAY THIS FILE !!!\e[0m"
+
+    rm $tmpcfg
+    ;;
+
+
+  $CLI_ARG_CERT)
+    # (0.) Validate CLI args, check root cert files + build filenames
+    if [ -z "$2" ]; then
+        echo "Usage: $0 $1 root-cert"  >&2
+        exit 1
+    fi
+
+    root_ca_sk="${2%.*}.key"
+    root_ca_pk="${2%.*}.pem"
+    if [ ! -f "$root_ca_sk" ] && [ ! -f "$root_ca_pk" ]; then
+        echo "Invalid root cert"  >&2
+        exit 1
+    fi
+
+    file_cert_sk="${DIST_NAME_O}_$(date +%C%y)_CERT.key"
+    file_cert_cr="${file_cert_sk%.*}.csr"
+    file_cert_pk="${file_cert_sk%.*}.pem"
+
+    # (1.) Create cert sk
+    echo "(I  ) Generating cert sk \"$file_cert_sk\""
+    openssl ecparam -name $ELLIPTIC_CURVE -genkey -out $file_cert_sk
+
+    # (2.) Create csr
+    echo "(II ) Generating Certificate Signing Request (CSR)  (which could be sent to CA, in this care we're the CA, which will perform the request)"
+    tmpcfg=$(mktemp)                         # TEMP WORKAROUND (since openssl requires this cfg file  ??)
+cat <<EOF > $tmpcfg
+[req]
+distinguished_name     = req_distinguished_name
+prompt                 = no
+
+[req_distinguished_name]
+C                      = $DIST_NAME_C
+ST                     = $DIST_NAME_ST
+L                      = $DIST_NAME_L
+O                      = $DIST_NAME_O
+emailAddress           = $DIST_NAME_EMAIL
+CN                     = $DIST_CERT_CN
+
+[v3_req]
+keyUsage               = critical,digitalSignature,keyAgreement
+extendedKeyUsage       = serverAuth
+subjectAltName         = @alt_names
+[alt_names]
+DNS.1                  = $DIST_CERT_CN
+EOF
+
+    openssl req \
+      -utf8 \
+      -config $tmpcfg \
+      -new \
+      -nodes \
+      -key $file_cert_sk -out $file_cert_cr
+
+    # (3.) Create cert pk
+    echo "(III) Generating cert pk \"$file_cert_pk\""
+    openssl x509 -req \
+      -utf8 \
+      -CA $root_ca_pk -CAkey $root_ca_sk -CAcreateserial \
+      -extfile $tmpcfg -extensions v3_req \
+      -in $file_cert_cr -out $file_cert_pk \
+      -days 365 \
+      -sha512
+
+    # (4.) Finished -> CLEANUP
+    rm $tmpcfg $file_cert_cr
+    ;;
+
+
+  *)
+    echo "Usage: $0 $CLI_ARG_CA | $CLI_ARG_CERT"  >&2
+    exit 1
+    ;;
+esac

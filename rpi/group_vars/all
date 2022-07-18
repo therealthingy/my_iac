@@ -2,6 +2,7 @@ username:   "s1m0ne"
 
 
 # -- Docker related --
+docker_dir: /var/docker/containers
 domainname: "rpi.lan"
 timezone:   "Europe/Berlin"
 
