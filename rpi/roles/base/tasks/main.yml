@@ -74,6 +74,15 @@
       - zerofree
     state: present
 
+- name: Install privacy tool 'luks sparse file helper'
+  copy:
+    src: "luks-sparse_helper"
+    dest: "/usr/local/bin/luks-sparse_helper"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  when: "'ccrypt' in ansible_facts.packages"
+
 - name: Install shell related tools
   apt:
     name:
