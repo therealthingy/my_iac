@@ -7,8 +7,30 @@
       - zsh-autosuggestions
     state: present
 
+- name: Install oh-my-zsh
+  shell:
+    cmd: "curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
 
+- name: Copy zsh config files
+  copy:
+    src: '{{ item.src }}'
+    dest: '/home/{{ user_name }}/.config/zsh/{{ item.dest_file }}'
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
+    mode: 0644
+  with_items:
+    - { src: 'zshenv', dest_file: '.zshenv' }
+    - { src: 'zshfunc', dest_file: '.zshfunc' }
+    - { src: 'zsh_theme_p10k', dest_file: '.p10k.zsh' }
+    - { src: 'zshrc', dest_file: '.zshrc' }
 
+- name: Set zsh config dir
+  file:
+    src: '/home/{{ user_name }}/.config/zsh/.zshenv'
+    dest: '/home/{{ user_name }}/.zshenv'
+    state: link
 
-
-
+- name: Change shell
+  user:
+    name: {{ user_name }}
+    shell: /bin/zsh
