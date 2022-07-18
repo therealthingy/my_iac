@@ -1,0 +1,25 @@
+- hosts: all
+  become: true
+
+  roles:
+    - role: base
+      tags:
+        - base
+    - role: shell/zsh
+      tags:
+        - shell
+        - zsh
+    - role: shell/tmux
+      tags:
+        - shell
+        - tmux
+    - role: ssh
+      tags:
+        - ssh
+    - role: docker
+      tags:
+        - docker
+    - role: containers
+      tags:
+        - docker
+        - containers

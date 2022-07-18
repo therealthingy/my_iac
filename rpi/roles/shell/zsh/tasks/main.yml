@@ -1,0 +1,11 @@
+---
+- name: Install zsh and plugins
+  apt:
+    name:
+      - zsh
+      - zsh-syntax-highlighting
+      - zsh-autosuggestions
+    state: present
+
+
+

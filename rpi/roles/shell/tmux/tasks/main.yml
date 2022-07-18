@@ -1,0 +1,14 @@
+---
+- name: Install tmux
+  apt:
+    name:
+      - tmux
+    state: present
+
+- name: Copy config file
+  copy:
+    src: "tmux.conf"
+    dest: '{{ ansible_env.HOME }}/.tmux.conf'
+    owner: '{{ username }}'
+    group: '{{ username }}'
+    mode: 0644
