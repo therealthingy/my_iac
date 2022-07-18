@@ -1,3 +1,2 @@
 ---
----
-- include_tasks: usbboot.yml
+- include_tasks: usb_boot.yml
