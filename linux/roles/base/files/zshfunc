@@ -1,0 +1,194 @@
+#!/usr/bin/env zsh
+
+# =================================================================================================================
+# ================================== Function/Alias defintions (on ALL machines) ==================================
+# =================================================================================================================
+
+
+
+# =========================== Global shell functions ===========================
+####
+#
+# Substitute for 'history -c' (which is available in bash)
+#
+history-clear() {
+  local HISTSIZE=0
+  : > $HISTFILE
+
+  unset HISTSIZE
+}
+
+
+####
+# Checks and adds path to PATH variable if path exists (warns otherwise that path doesn't exist)
+#
+# @param 1: Path to be added to PATH var
+# @param 2: Defines whether new path should be preprended or appended (by using 'after')
+#
+path-add() {
+  newelement=${1%/}
+
+  if [ ! -d "$1" ]; then
+    echo -e "\e[1;31;49mPath '$1' can't be added to path b/c it doesn't exist!\e[0m\n"
+  fi
+
+  if ! echo $PATH | grep -E -q "(^|:)$newelement($|:)"; then
+    if [ "$2" = "after" ]; then
+        PATH="$PATH:$newelement"
+    else
+        PATH="$newelement:$PATH"
+    fi
+  fi
+}
+
+####
+# Removes path from PATH variable
+#
+# @param 1: Path to be removed from PATH var
+#
+path-rm() {
+    PATH="$(echo $PATH | sed -e "s;\(^\|:\)${1%/}\(:\|\$\);\1\2;g" -e 's;^:\|:$;;g' -e 's;::;:;g')"
+}
+
+
+####
+# Checks and exports alias(es) if command exists (warns otherwise that command doesn't exist)
+#
+# @param 1 (required_command): The command which is used by alias (will be checked for presence)
+# @param 2...n (alias): Will be validated and exported, if valid...
+#
+alias-add() {
+  readonly required_command=${1:?"The 'required_command' must be specified."}
+  : ${2:?"At least 1 alias must be specified."}
+
+  shift
+
+  if ! command -v ${required_command} > /dev/null; then
+    echo -e "\e[1;31;49mThe required '${required_command}' command doesn't exist, not exporting alias(es)...\e[0m\n"
+    return
+  fi
+
+
+  for alias in "$@"; do
+    if [[ "$alias" =~ ^.+=.+$ ]]; then
+      alias "$alias"
+    else
+      echo -e "\e[1;31;49mThe alias '$alias' seems to be invalid, not exporting...\e[0m\n"
+    fi
+  done
+}
+
+
+
+# =========================== Aliases  (which SHOULD be in '.zshenv') ===========================
+# Only 1st word of command is checked for aliases by shell, any following aren't checked
+#  -> E.g. in 'sudo ll', only the first word ('sudo') is checked for alias, 'll' isn't checked
+#  => Can be fixed by telling shell to check next word after the alias (i.e 'sudo') by adding a space to the end of the alias value
+alias sudo='sudo '
+
+# alias update_zsh="source ~/.zshrc"
+
+alias ls='ls -G'
+alias l='ls -lah --color=auto'
+alias ll='ls -lh --color=auto'
+
+alias stat='stat -x'
+
+alias dusage='du -h -d1'
+
+# alias delete_ds="find . -type f -name '.DS_Store' -delete"
+
+alias inet-pg="echo 'Pinging Google' && ping google.com"
+alias inet-public_ip="curl http://ipecho.net/plain; echo"
+
+
+# --- RPi specific ---
+alias temp='vcgencmd measure_temp'
+
+
+# --- Installed tools  ---
+# - Replace existing commands -
+alias-add pigz gzip='pigz' gunzip='unpigz'
+alias-add pbzip2 bzip2='pbzip2' # bunzip2='pbunzip2' bzcat='pbzcat'
+alias-add pxz xz='pxz'
+
+
+
+# --- GNU/Linux specific ---
+alias journal-clear='sudo journalctl --vacuum-time=2d' # --vacuum-size=500M
+
+# - apt-get aliases
+alias agi='sudo apt-get install' #packages
+alias agu='sudo apt-get update'
+alias ags='sudo apt-cache search' #string-in-package-name-or-descr
+alias agsh='sudo apt-cache show' #string
+alias agr='sudo apt-get remove' #packages
+alias agd='sudo apt-get dist-upgrade'
+alias agc='sudo apt-get clean'
+alias agac='sudo apt-get autoclean'
+
+# additional
+alias agud='agu && agd'
+
+
+
+
+# =========================== Actual functions ===========================
+# - Misc.
+diff-strings () {
+  diff <(echo "$1" ) <(echo "$2")   # Compares 2 strings (uses process substitution)
+}
+
+
+if command -v ssh-keygen > /dev/null; then
+
+  ssh-key_generate () {
+    readonly GLOBAL_SSH_KEYS_PATH="$HOME/.ssh"
+    readonly SSH_CONFIG_FILE="$GLOBAL_SSH_KEYS_PATH/config"
+
+    local ssh_comment=''
+    local ssh_filename=''
+    local ssh_username=''
+    local ssh_host=''
+
+
+    local add_identity_file='y'
+    local export_file_path=/dev/null
+
+    read "add_identity_file?Store keys in $SSH_CONFIG_FILE and add entry in config [Y/n]? "
+    vared -p 'Enter filename for ssh-key pair: ' -c ssh_filename
+
+
+    if [ "$add_identity_file" = "n" ]; then
+        export_file_path=$(pwd)/$ssh_filename
+    else
+        export_file_path=$GLOBAL_SSH_KEYS_PATH/$ssh_filename
+
+        # Create files / folder anyway + set permissions
+        mkdir $GLOBAL_SSH_KEYS_PATH 2> /dev/null
+        chmod 700 $GLOBAL_SSH_KEYS_PATH
+        touch $SSH_CONFIG_FILE $GLOBAL_SSH_KEYS_PATH/authorized_keys $GLOBAL_SSH_KEYS_PATH/known_hosts
+        chmod 644 $SSH_CONFIG_FILE $GLOBAL_SSH_KEYS_PATH/authorized_keys $GLOBAL_SSH_KEYS_PATH/known_hosts
+    fi
+
+
+    vared -p 'Enter comment for ssh-key pair: ' -c ssh_comment
+    ssh-keygen -t ed25519 -C $ssh_comment -f $export_file_path
+
+    if [ "$add_identity_file" != "n" ]; then
+        chmod 600 $export_file_path
+      chmod 644 $export_file_path.pub
+
+        vared -p 'Enter username for config file: ' -c ssh_username
+        vared -p 'Enter host for config file: ' -c ssh_host
+
+        printf "\n\nHost $ssh_host\n  User $ssh_username\n  IdentityFile $GLOBAL_SSH_KEYS_PATH/$ssh_filename" >> $SSH_CONFIG_FILE
+        echo "Added entry for ssh-key pair in config."
+    fi
+
+
+    pbcopy < $export_file_path.pub
+    echo "Copied public key in clipboard."
+  }
+
+fi
