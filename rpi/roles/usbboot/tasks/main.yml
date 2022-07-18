@@ -1,0 +1,16 @@
+---
+- name: Copy udev rule (which enables TRIM support)
+  copy:
+    src: "10-trim_umap.rules"
+    dest: "/etc/udev/rules.d/10-trim_umap.rules"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  become: yes
+
+- name: Enable fstrimmer service
+  service:
+    name: fstrim.timer
+    enabled: yes
+    state: started
+  become: yes
