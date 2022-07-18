@@ -1,0 +1,26 @@
+# --- Default TLS certificate
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /config/treafik.pem
+        keyFile: /config/traefik.key
+
+
+# --- HTTP middlewares
+http:
+  middlewares:
+    # - Security headers
+    securityHeaders:
+      headers:
+        frameDeny: true
+        stsSeconds: 15552000
+        stsIncludeSubdomains: true
+        stsPreload: true
+
+# - BasicAuth
+#    globalAuth:
+#      basicAuth:
+#       realm: rpi.lan
+#       usersFile: /config/.htpasswd
+#       removeHeader: true

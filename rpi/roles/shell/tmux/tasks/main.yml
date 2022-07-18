@@ -8,7 +8,7 @@
 - name: Copy config file
   copy:
     src: 'tmux.conf'
-    dest: '/home/{{ username }}/.tmux.conf'
-    owner: '{{ username }}'
-    group: '{{ username }}'
+    dest: '/home/{{ user_name }}/.tmux.conf'
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
     mode: 0644

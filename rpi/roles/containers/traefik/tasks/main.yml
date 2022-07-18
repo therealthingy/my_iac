@@ -1,8 +1,72 @@
 ---
-- name: Create traefik network
-  docker_network:
-    name: traefik
-    driver: bridge
+- name: Install cert-gen script
+  copy:
+    src: "ssl-certgen"
+    dest: "/usr/bin/ssl-certgen"
+    owner: "root"
+    group: "root"
+    mode: 0644
 
+- name: Copy treafik config
+  copy:
+    src: "dynamic-conf.yml"
+    dest: '{{ container_dir_config }}/dynamic-conf.yml'
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
+    mode: 0644
 
+- name: Make sure the {{ container_name }} container is created and running
+  docker_container:
+    name: '{{ container_name }}'
+    image: traefik:latest
+    restart_policy: always
+    hostname: '{{ container_name }}'
 
+    user: '{{ user_uid }}:{{ user_gid }}'
+    # Required for binding to a privliged port (ports which are lower than 1024)
+    sysctls:
+      - net.ipv4.ip_unprivileged_port_start=0
+
+    domainname: '{{ domainname }}'
+
+    networks:
+      - '{{ docker_default_network }}'
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+    command:
+      - "--log.level=WARN"
+      - "--global.sendanonymoususage=false"
+      - "--api.dashboard=false"
+      - "--api.insecure=true"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      - "--entrypoints.websecure.http.middlewares=securityHeaders@file"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.docker.network=traefik"
+      - "--providers.file.directory=/config/"
+      - "--providers.file.watch=true"
+      # Disalbes ping healthcheck (entryPoint treafik on port 8080) ???
+#      - "--ping=false"
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # config (must contain certs + dynamic-conf.yml !!)
+      - '{{ container_dir_config }}/:/config/'
+
+    env:
+      - TZ: '{{ timezone }}'
+
+    # REFERENCE: https://docs.traefik.io/configuration/backends/docker/#on-containers
+    labels:
+      - com.centurylinklabs.watchtower.enable:                          true
+      - traefik.enable:                                                 true
+      - traefik.http.services.traefik_service.loadbalancer.server.port: 8080
+      - traefik.http.routers.traefik_router.rule:                       Host(`{{ container_url }}`)

@@ -1,0 +1,30 @@
+---
+- name: Copy filebrowser config
+  copy:
+    src: "settings.json"
+    dest: '{{ container_dir_config }}/settings.json'
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
+    mode: 0644
+
+- name: Make sure the {{ container_name }} container is created and running
+  docker_container:
+    name: '{{ container_name }}'
+    image: filebrowser/filebrowser:latest
+    #restart_policy: unless-stopped          # (Since the sparse file has to be mounted manually ...)
+
+    user: '{{ user_uid }}:{{ user_gid }}'
+
+    networks:
+      - '{{ docker_default_network }}'
+
+    volumes:
+      - '{{ container_dir_config }}/settings.json:/.filebrowser.json'
+      - '{{ container_dir_data }}/:/var/filebrowser-data/'
+      - '{{ container_share_dir }}/:/srv/'
+
+    labels:
+      - com.centurylinklabs.watchtower.enable:                          true
+      - docker-volume-backup.stop-during-backup:                        true
+      - traefik.enable:                                                 true
+      - traefik.http.routers.fileserver_router.rule:                    Host(`{{ container_url }}`)

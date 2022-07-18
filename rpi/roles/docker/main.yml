@@ -40,7 +40,7 @@
 
 - name: Docker Post Setup - Add user to docker group
   user:
-    name: '{{ username }}'
+    name: '{{ user_name }}'
     groups:
       - docker
     append: yes
@@ -56,3 +56,11 @@
     name: docker
     state: started
     enabled: yes
+
+
+
+# TODO: Should be depenendcy of container tasks  (see https://stackoverflow.com/questions/29258759/how-to-specify-ansible-pretasks-for-a-role)
+- name: Create network for future containers
+  docker_network:
+    name: '{{ docker_default_network }}'
+    driver: bridge

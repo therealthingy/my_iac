@@ -1,0 +1,3 @@
+---
+container_name:          watchtower
+container_cron_schedule: '0 4 * * * SUN'

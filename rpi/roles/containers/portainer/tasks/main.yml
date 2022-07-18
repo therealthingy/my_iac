@@ -1,0 +1,24 @@
+---
+- name: Make sure the {{ container_name }} container is created and running
+  docker_container:
+    name: '{{ container_name }}'
+    image: portainer/portainer-ce
+    restart_policy: always
+
+    #user: '{{ user_uid }}:{{ user_gid }}'
+
+    networks:
+      - '{{ docker_default_network }}'
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+      - '{{ container_dir_data }}/:/data/'
+
+    # REFERENCE: https://docs.traefik.io/configuration/backends/docker/#on-containers
+    labels:
+      - com.centurylinklabs.watchtower.enable:                              true
+      #- docker-volume-backup.stop-during-backup:                            true
+      - traefik.enable:                                                     true
+      - traefik.http.routers.portainer_router.rule:                         Host(`{{ container_url }}`)
+      - traefik.http.services.portainer_service.loadbalancer.server.port:   9000

@@ -1,0 +1,38 @@
+---
+- name: Make sure the {{ container_name }} container is created and running
+  docker_container:
+    name: '{{ container_name }}'
+    image: containrrr/watchtower:armhf-latest
+    restart_policy: always
+
+    hostname: '{{ container_name }}'
+
+    user: '{{ user_uid }}:{{ user_gid }}'
+    # Required for binding to a privliged port (ports which are lower than 1024)
+
+    networks:
+      - '{{ docker_default_network }}'
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/{{ user_name }}/.docker/config.json:/config.json
+
+    env:
+      - TZ:                      '{{ timezone }}'
+      - WATCHTOWER_CLEANUP:      true
+      # - WATCHTOWER_SCHEDULE="0 4 * * * SUN"
+      # Filter by enable label
+      - WATCHTOWER_LABEL_ENABLE: true
+
+      #- WATCHTOWER_NOTIFICATIONS=email
+      # - Emailing
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER=${NOTIFICATIONS_MAIL_SERVER_HOST}
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT=${NOTIFICATIONS_MAIL_SERVER_PORT}
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER=${NOTIFICATIONS_MAIL_SERVER_USERNAME}
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD=${NOTIFICATIONS_MAIL_SERVER_PASSWORD}
+      #- WATCHTOWER_NOTIFICATION_EMAIL_FROM=${NOTIFICATIONS_MAIL_SERVER_USERNAME}
+      #- WATCHTOWER_NOTIFICATION_EMAIL_TO=${SYSTEM_ADMIN_MAIL}
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG=RPi maintenance -
+
+    # command: --run-once
+    command: --schedule "{{ container_cron_schedule }}"
