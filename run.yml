@@ -5,21 +5,30 @@
     - role: base
       tags:
         - base
-    - role: shell/zsh
-      tags:
-        - shell
-        - zsh
-    - role: shell/tmux
-      tags:
-        - shell
-        - tmux
     - role: ssh
       tags:
         - ssh
     - role: docker
       tags:
         - docker
-    - role: containers
-      tags:
-        - docker
         - containers
+    - role: containers/bitwarden
+      tags:
+        - containers
+        - bitwarden
+    - role: containers/filebrowser
+      tags:
+        - containers
+        - filebrowser
+    - role: containers/portainer
+      tags:
+        - containers
+        - portainer
+    - role: containers/traefik
+      tags:
+        - containers
+        - traefik
+    - role: containers/watchtower
+      tags:
+        - containers
+        - watchtower

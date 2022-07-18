@@ -105,23 +105,4 @@
   become: false
 
 
-- name: Install runtimes
-  apt:
-    name:
-      - python3
-    state: present
 
-
-
-# ?????????????????????????
-- name: Switch to pip3
-  alternatives:
-    name: pip
-    link: /usr/bin/pip
-    path: /usr/bin/pip3
-
-- name: Switch to python3
-  alternatives:
-    name: python
-    link: /usr/bin/python
-    path: /usr/bin/python3
