@@ -1,5 +1,10 @@
 # Playbook for GNU/Linux machines
 
+## Prereq.
+```bash
+ansible-galaxy collection install community.docker
+```
+
 ## Commands
 * Validate playbook: `ansible-playbook run.yml --syntax-check`
 

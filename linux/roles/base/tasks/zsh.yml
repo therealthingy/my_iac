@@ -1,19 +1,12 @@
 ---
-- name: Install zsh and plugins
+- name: Install zsh
   apt:
     name:
       - zsh
-      - zsh-syntax-highlighting
-      - zsh-autosuggestions
     state: present
 
-
-
-- name: Install oh-my-zsh
-  shell:
-    cmd: "curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
-
 - name: Create zsh config dir
+  become: false
   file:
     path: '/home/{{ user_name }}/.config/zsh/'
     state: directory
@@ -21,7 +14,38 @@
     group: '{{ user_name }}'
     mode: 0755
 
+- name: Install oh-my-zsh
+  become: false
+  git:
+    repo: https://github.com/ohmyzsh/ohmyzsh.git
+    dest: '/home/{{ user_name }}/.oh-my-zsh/'
+    clone: yes
+    depth: 1
+    update: yes
+
+- name: Install oh-my-zsh plugins
+  become: false
+  git:
+    repo: 'https://github.com/zsh-users/{{ item }}'
+    dest: '/home/{{ user_name }}/.oh-my-zsh/custom/plugins/{{ item }}/'
+    clone: yes
+    depth: 1
+    update: yes
+  with_items:
+    - 'zsh-syntax-highlighting'
+    - 'zsh-autosuggestions'
+
+- name: Install oh-my-zsh theme
+  become: false
+  git:
+    repo: 'https://github.com/romkatv/powerlevel10k.git'
+    dest: '/home/{{ user_name }}/.oh-my-zsh/custom/themes/powerlevel10k/'
+    clone: yes
+    depth: 1
+    update: yes
+
 - name: Copy zsh config files
+  become: false
   copy:
     src: '{{ item.src }}'
     dest: '/home/{{ user_name }}/.config/zsh/{{ item.dest_file }}'
@@ -35,6 +59,7 @@
     - { src: 'zshrc', dest_file: '.zshrc' }
 
 - name: Set zsh config dir
+  become: false
   file:
     src: '/home/{{ user_name }}/.config/zsh/.zshenv'
     dest: '/home/{{ user_name }}/.zshenv'
