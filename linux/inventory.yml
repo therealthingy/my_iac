@@ -1,5 +1,5 @@
 ---
-# !!  NOTE: Must match Hosts in `~/.ssh/config`  !!
+# !!  KEEP IN MIND: Must match Hosts in `~/.ssh/config` (auth details will be taken from this file)  !!
 all:
   children:
 #    docker:
