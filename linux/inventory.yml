@@ -1,0 +1,12 @@
+---
+all:
+  children:
+    servers:
+      hosts:
+        rpi:
+    webservers:
+      hosts:
+        rpi:
+    rpis:
+      hosts:
+        rpi:

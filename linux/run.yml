@@ -5,49 +5,42 @@
     - role: base
       tags:
         - base
-        - workstation
-        - server
-        - homeserver
-        - rpi
-        - vmware
 
-- hosts: all #rpis
+- hosts: rpis
   become: true
   roles:
     - role: rpi
       tags:
         - rpi
 
-- hosts: all #vmware_vms
+- hosts: vmware_vms
   become: true
   roles:
     - role: vmware
       tags:
         - vmware
 
-- hosts: all #workstations
+- hosts: workstations
   become: true
   roles:
     - role: workstation
       tags:
         - workstation
 
-- hosts: all #servers
+- hosts: servers
   become: true
   roles:
     - role: server
       tags:
         - server
         - homeserver
-        - rpi
     - role: docker
       tags:
         - docker
         - server
         - homeserver
-        - rpi
 
-- hosts: all #homeservers
+- hosts: homeservers
   roles:
     - role: homeserver/containers/bitwarden
       tags:
