@@ -1,9 +1,35 @@
-sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.DiskArbitration.diskarbitrationd.plist DADisableEjectNotification -bool YES && sudo pkill diskarbitrationd
+# TODO
+## OS setup
+* SYSTEM:
+  * **Disable usb drive not properly ejected warning**:
+    `sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.DiskArbitration.diskarbitrationd.plist DADisableEjectNotification -bool YES && sudo pkill diskarbitrationd`
+  * **Add message to lock-screen**
+    `sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText “ENTER HERE”`
+   * **Disable chime**:
+     `defaults write com.apple.PowerChime ChimeOnNoHardware -bool true;killall PowerChime`
+* USER:
+  * **Print-Dialog always expanded**
+    `defaults write -g PMPrintingExpandedStateForPrint -bool TRUE`
+  * **Change scroll direction**
+    `defaults write -g com.apple.swipescrolldirection -bool FALSE`
+  * **Show full file path in Finder**
+    `defaults write com.apple.finder _FXShowPosixPathInTitle -bool YES; killall Finder`
+  * **Disable ń popup after long pressing n, ...**
+    `defaults write -g ApplePressAndHoldEnabled -bool FALSE`
+  * **Change Screenshot format**
+    `defaults write com.apple.screencapture type JPG` (JPG, PNG, TIFF, PDF)
+  * **Disable shadow for window Screenshots** (via `Command + Shift + 4` &rarr; `Space`):
+    `defaults write com.apple.screencapture disable-shadow -bool TRUE; killall SystemUIServer`
+  * **Make apps hidden in Dock**
+    `defaults write com.apple.Dock showhidden -bool TRUE; killall Dock`
+  * **Eliminate Dock reveal delay**
+    * No animation: `defaults write com.apple.dock autohide-time-modifier -int 0;killall Dock`
+    * Super-fast animation: `defaults write com.apple.dock autohide-time-modifier -float 0.12;killall Dock`
+    * Revert to default: `defaults delete com.apple.dock autohide-time-modifier;killall Dock`
 
-## Misc.
-### System `default`s
- `defaults write com.apple.PowerChime ChimeOnNoHardware -bool true;killall PowerChime`
 
+## Apps
+* Install *Xcode Command Line Tools*: `xcode-select --install`
 
 ### Blackhole: Record Sysaudio
 #### How it works
@@ -29,21 +55,25 @@ sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.DiskArbit
   * Cmd + Shift + 5 (in Screen capture utilty): *Options* &rarr; *bh + internal mic*
 
 
----
-## Linux VMs
-### [Using Apple Mac Keyboard with Ubuntu](https://www.unixfu.ch/using-apple-mac-keyboard-with-ubuntu/)
-* Ubuntu Linux sets the keyboard parameters in the file `/etc/default/keyboard`.
-* You can set the content manually in /etc/default/keyboard:
-  ```
-  XKBMODEL="macintosh"
-  XKBLAYOUT="ch"
-  XKBVARIANT="de_mac"
-  XKBOPTIONS="lv3:alt_switch"
 
-  BACKSPACE="guess"
-  ```
-* or you can go through the installation process: Run
-  ```
-  sudo apt-get install keyboard-configuration
-  sudo dpkg-reconfigure keyboard-configuration
-  ```
+
+
+---
+## Misc.
+### Linux VMs
+* [Using Apple Mac Keyboard with Ubuntu](https://www.unixfu.ch/using-apple-mac-keyboard-with-ubuntu/):
+  * Ubuntu Linux sets the keyboard parameters in the file `/etc/default/keyboard`.
+  * You can set the content manually in /etc/default/keyboard:
+    ```
+    XKBMODEL="macintosh"
+    XKBLAYOUT="ch"
+    XKBVARIANT="de_mac"
+    XKBOPTIONS="lv3:alt_switch"
+
+    BACKSPACE="guess"
+    ```
+  * or you can go through the installation process: Run
+    ```
+    sudo apt-get install keyboard-configuration
+    sudo dpkg-reconfigure keyboard-configuration
+    ```
