@@ -12,6 +12,8 @@
     line: "PermitRootLogin no"
     state: present
     validate: '/usr/sbin/sshd -T -f %s'
+  notify:
+    - restart ssh daemon
 
 - name: Enable SSH public key authentication
   lineinfile:
@@ -20,6 +22,8 @@
     line: "PubkeyAuthentication yes"
     state: present
     validate: '/usr/sbin/sshd -T -f %s'
+  notify:
+    - restart ssh daemon
 
 - name: Disable SSH password login
   lineinfile:
@@ -30,6 +34,8 @@
   with_items:
     - { regex: "^#?PasswordAuthentication", line: "PasswordAuthentication no" }
     - { regex: "^#?ChallengeResponseAuthentication", line: "ChallengeResponseAuthentication no" }
+  notify:
+    - restart ssh daemon
 
 - name: Change SSH port
   lineinfile:
@@ -37,3 +43,5 @@
     regexp: "^#?Port"
     line: "Port 2233"
     validate: '/usr/sbin/sshd -T -f %s'
+  notify:
+    - restart ssh daemon
