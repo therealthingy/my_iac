@@ -7,18 +7,10 @@
       - fuse
     state: present
 
-- name: Create mount directory for vmware shares
-  file:
-    path: /mnt/hgfs
-    state: directory
-    owner: '{{ user_name }}'
-    group:  '{{ user_name }}'
-    mode: 0777
-
 - name: Mount vmware shares on boot
   mount:
-    name: vmhgfs-fuse
-    src: /mnt/hgfs
-    fstype: fuse.vmhgfs-fuse
+    path: '{{ mount_dir }}'
+    src: 'vmhgfs-fuse'
+    fstype: fuse
     opts: "defaults,allow_other"
-    state: present
+    state: mounted
