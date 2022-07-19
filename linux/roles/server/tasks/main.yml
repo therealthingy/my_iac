@@ -1,15 +1,5 @@
 ---
-- include_tasks: ssh-security.yml
-
-- name: Allow client to pass locale environment variables
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: '^#?AcceptEnv LANG LC_\*$'
-    line: "AcceptEnv LANG LC_*"
-    validate: '/usr/sbin/sshd -T -f %s'
-  notify:
-    - restart ssh daemon
-
+- include_tasks: ssh.yml
 
 - name: Install login system stats script
   copy:

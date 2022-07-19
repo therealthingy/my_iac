@@ -45,3 +45,13 @@
     validate: '/usr/sbin/sshd -T -f %s'
   notify:
     - restart ssh daemon
+
+
+- name: Allow client to pass locale environment variables
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^#?AcceptEnv LANG LC_\*$'
+    line: "AcceptEnv LANG LC_*"
+    validate: '/usr/sbin/sshd -T -f %s'
+  notify:
+    - restart ssh daemon
