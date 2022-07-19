@@ -1,4 +1,7 @@
 # TODO
+## References (Ex.s)
+* https://github.com/geerlingguy/mac-dev-playbook
+
 ## OS setup
 * SYSTEM:
   * **Disable usb drive not properly ejected warning**:
