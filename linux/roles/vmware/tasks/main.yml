@@ -3,7 +3,6 @@
   apt:
     name:
       - open-vm-tools
-      - open-vm-tools-desktop
       - fuse
     state: present
 
