@@ -11,6 +11,14 @@
   shell:
     cmd: "curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
 
+- name: Create zsh config dir
+  file:
+    path: '/home/{{ user_name }}/.config/zsh/'
+    state: directory
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
+    mode: 0755
+
 - name: Copy zsh config files
   copy:
     src: '{{ item.src }}'

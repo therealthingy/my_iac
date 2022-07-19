@@ -13,6 +13,14 @@
     group: '{{ user_name }}'
     mode: 0644
 
+- name: Create autostart dir
+  file:
+    path: '/home/{{ user_name }}/.config/autostart/'
+    state: directory
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
+    mode: 0755
+
 - name: Create autostart entry
   copy:
     src: 'conky-autostart-entry'
