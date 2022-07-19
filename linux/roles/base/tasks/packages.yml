@@ -92,7 +92,7 @@
   apt:
     name:
       - moreutils
-      - watch
+      - procps      # watch command
       - pv
       - uuid
     state: present
@@ -105,9 +105,6 @@
       - git-lfs
     state: present
 
-- name: Init git LFS for current user
-  command: git lfs install
-  become: false
-
-
-
+#- name: Init git LFS for current user        # NOT  IDEMPOTENT ???
+#  command: git lfs install
+#  become: false
