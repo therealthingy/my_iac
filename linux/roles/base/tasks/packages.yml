@@ -1,9 +1,9 @@
 ---
-- name: Enable other packages
-  repace:
+- name: 'Enable other packages  (TODO: ONLY FOR RASPBIAN)'
+  replace:
     path: /etc/apt/sources.list
-    regexp: '^# deb-src'
-    replace: 'deb-src'
+    regexp: '^# deb http://raspbian'
+    replace: 'deb http://raspbian'
 
 - name: Update and upgrade apt packages
   apt:
@@ -42,7 +42,7 @@
     name:
       - neofetch
       - htop
-      - pstree
+      - psmisc
       - iotop
       - sysstat
       - smartmontools
@@ -57,13 +57,14 @@
       - speedtest-cli
       - net-tools
       - wget
+      - curl
     state: present
 
 - name: Install administration tools
   apt:
     name:
       - mosh
-      #- unattended-upgrades
+#      - unattended-upgrades
     state: present
 
 - name: Install privacy tools
@@ -73,6 +74,10 @@
       - cryptsetup
       - zerofree
     state: present
+
+- name: Check luks is installed
+  package_facts:
+    manager: "auto"
 
 - name: Install privacy tool 'luks sparse file helper'
   copy:
