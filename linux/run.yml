@@ -5,9 +5,24 @@
     - role: base
       tags:
         - base
+        - workstation
         - server
         - homeserver
         - rpi
+        - vmware
+
+- hosts: rpis
+  become: true
+  roles:
+    - role: rpi
+      tags:
+        - rpi
+
+- hosts: vmware_vms
+  become: true
+  roles:
+    - role: vmware
+      tags:
         - vmware
 
 - hosts: workstations
@@ -15,7 +30,6 @@
   roles:
     - role: workstation
       tags:
-        - base
         - workstation
 
 - hosts: servers
@@ -59,17 +73,3 @@
         - homeserver
         - rpi
         - watchtower
-
-- hosts: rpis
-  become: true
-  roles:
-    - role: rpi
-      tags:
-        - rpi
-
-- hosts: vmware_vms
-  become: true
-  roles:
-    - role: vmware
-      tags:
-        - vmware
