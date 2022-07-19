@@ -1,12 +1,30 @@
 ---
+# !!  NOTE: Must match Hosts in `~/.ssh/config`  !!
 all:
   children:
+#    docker:
+#      hosts:
+#        rpi:
+#        linux-dev-vm.local:
+
+    workstations:
+      hosts:
+        linux-dev-vm.local:
+
     servers:
       hosts:
-        rpi:
-    webservers:
+#        rpi:
+        linux-dev-vm.local:
+
+#    homeservers:
+#      hosts:
+#        rpi:
+
+
+#    rpis:
+#      hosts:
+#        rpi:
+
+    vmware_vms:
       hosts:
-        rpi:
-    rpis:
-      hosts:
-        rpi:
+        linux-dev-vm.local:

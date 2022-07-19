@@ -6,20 +6,6 @@
       tags:
         - base
 
-- hosts: rpis
-  become: true
-  roles:
-    - role: rpi
-      tags:
-        - rpi
-
-- hosts: vmware_vms
-  become: true
-  roles:
-    - role: vmware
-      tags:
-        - vmware
-
 - hosts: workstations
   become: true
   roles:
@@ -34,23 +20,20 @@
       tags:
         - server
         - homeserver
+
     - role: docker
       tags:
         - docker
-        - server
-        - homeserver
 
 - hosts: homeservers
   roles:
     - role: homeserver/containers/bitwarden
       tags:
         - homeserver
-        - rpi
         - bitwarden
     - role: homeserver/containers/filebrowser
       tags:
         - homeserver
-        - rpi
         - filebrowser
     - role: homeserver/containers/portainer
       tags:
@@ -59,10 +42,23 @@
     - role: homeserver/containers/traefik
       tags:
         - homeserver
-        - rpi
         - traefik
     - role: homeserver/containers/watchtower
       tags:
         - homeserver
-        - rpi
         - watchtower
+
+
+- hosts: rpis
+  become: true
+  roles:
+    - role: rpi
+      tags:
+        - rpi
+
+- hosts: vmware_vms
+  become: true
+  roles:
+    - role: vmware
+      tags:
+        - vmware
