@@ -85,7 +85,7 @@
     dest: "/usr/local/bin/luks-sparse_helper"
     owner: "root"
     group: "root"
-    mode: 0644
+    mode: 0755
   when: "'ccrypt' in ansible_facts.packages"
 
 - name: Install shell related tools

@@ -17,4 +17,4 @@
     dest: "/etc/profile.d/10-show_system_info"
     owner: "root"
     group: "root"
-    mode: 0644
+    mode: 0755
