@@ -11,28 +11,28 @@
         - rpi
         - vmware
 
-- hosts: rpis
+- hosts: all #rpis
   become: true
   roles:
     - role: rpi
       tags:
         - rpi
 
-- hosts: vmware_vms
+- hosts: all #vmware_vms
   become: true
   roles:
     - role: vmware
       tags:
         - vmware
 
-- hosts: workstations
+- hosts: all #workstations
   become: true
   roles:
     - role: workstation
       tags:
         - workstation
 
-- hosts: servers
+- hosts: all #servers
   become: true
   roles:
     - role: server
@@ -47,7 +47,7 @@
         - homeserver
         - rpi
 
-- hosts: homeservers
+- hosts: all #homeservers
   roles:
     - role: homeserver/containers/bitwarden
       tags:
