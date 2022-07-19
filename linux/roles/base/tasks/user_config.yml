@@ -1,8 +1,8 @@
 ---
 - name: Enable passwordless sudo for {{ user_name }}
-  template:
-    src: passwordless_sudo.j2
-    dest: /etc/sudoers.d/010_{{ user_name }}-nopasswd
+  copy:
+    content: '{{ user_name }} ALL=(ALL) NOPASSWD: ALL'
+    dest: '/etc/sudoers.d/010_{{ user_name }}-nopasswd'
     owner: root
     group: root
     mode: 0440
