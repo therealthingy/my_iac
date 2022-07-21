@@ -5,7 +5,7 @@ user_gid:               "1000"
 
 
 # -- Docker related --
-docker_dir:             /var/docker/containers
+docker_container_data_dir: /home/{{ user_name }}/homeserver_data/containers
 domainname:             "rpi.lan"
 timezone:               "Europe/Berlin"
 docker_default_network: "reverse_proxy"

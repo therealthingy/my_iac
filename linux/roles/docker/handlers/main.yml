@@ -4,6 +4,8 @@
     name: docker
     state: restarted
 
+
+
 - name: restart networking daemon
   service:
     name: networking

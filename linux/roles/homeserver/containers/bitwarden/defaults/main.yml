@@ -1,4 +1,4 @@
 ---
 container_name:       bitwarden
 container_url:        '{{ container_name }}.{{ domainname }}'
-container_dir_data:   '{{ docker_dir }}/{{ container_name }}/data/'
+container_dir_data:   '{{ docker_container_data_dir }}/{{ container_name }}/'

@@ -15,24 +15,24 @@
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/{{ user_name }}/.docker/config.json:/config.json
+      #- /home/{{ user_name }}/.docker/config.json:/config.json
 
     env:
       - TZ:                      '{{ timezone }}'
       - WATCHTOWER_CLEANUP:      true
-      # - WATCHTOWER_SCHEDULE="0 4 * * * SUN"
+      # - WATCHTOWER_SCHEDULE: '{{ container_cron_schedule }}'
       # Filter by enable label
       - WATCHTOWER_LABEL_ENABLE: true
 
       #- WATCHTOWER_NOTIFICATIONS=email
       # - Emailing
-      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER=${NOTIFICATIONS_MAIL_SERVER_HOST}
-      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT=${NOTIFICATIONS_MAIL_SERVER_PORT}
-      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER=${NOTIFICATIONS_MAIL_SERVER_USERNAME}
-      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD=${NOTIFICATIONS_MAIL_SERVER_PASSWORD}
-      #- WATCHTOWER_NOTIFICATION_EMAIL_FROM=${NOTIFICATIONS_MAIL_SERVER_USERNAME}
-      #- WATCHTOWER_NOTIFICATION_EMAIL_TO=${SYSTEM_ADMIN_MAIL}
-      #- WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG=RPi maintenance -
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER:          '{{ notifications_mail_server_host }}'
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT:     '{{ notifications_mail_server_port }}'
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER:     '{{ notifications_mail_server_username }}'
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD: '{{ notifications_mail_server_password }}'
+      #- WATCHTOWER_NOTIFICATION_EMAIL_FROM:            '{{ notifications_mail_server_username }}'
+      #- WATCHTOWER_NOTIFICATION_EMAIL_TO:              '{{ system_admin_mail }}'
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG:      'RPi maintenance -'
 
     # command: --run-once
     command: --schedule "{{ container_cron_schedule }}"

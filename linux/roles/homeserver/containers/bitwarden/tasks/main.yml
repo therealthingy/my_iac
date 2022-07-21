@@ -27,15 +27,15 @@
       - DOMAIN:            'https://{{ container_url }}'
 
       # --- Emailing
-      # - SMTP_HOST=${NOTIFICATIONS_MAIL_SERVER_HOST}
-      # - SMTP_FROM=${NOTIFICATIONS_MAIL_SERVER_USERNAME}
-      # - SMTP_FROM_NAME=Bitwarden_RS
-      # - SMTP_PORT=${NOTIFICATIONS_MAIL_SERVER_PORT}
-      # - SMTP_SECURITY=starttls
-      # - SMTP_USERNAME=${NOTIFICATIONS_MAIL_SERVER_USERNAME}
-      # - SMTP_PASSWORD=${NOTIFICATIONS_MAIL_SERVER_PASSWORD}
-      # - SMTP_AUTH_MECHANISM="Plain"
-      # - SMTP_TIMEOUT=15
+      # - SMTP_HOST:           '{{ notifications_mail_server_host }}'
+      # - SMTP_FROM:           '{{ notifications_mail_server_username }}'
+      # - SMTP_FROM_NAME:      'Bitwarden_RS'
+      # - SMTP_PORT:           '{{ notifications_mail_server_port }}'
+      # - SMTP_SECURITY:       starttls
+      # - SMTP_USERNAME:       '{{ notifications_mail_server_username }}'
+      # - SMTP_PASSWORD:       '{{ notifications_mail_server_password }}'
+      # - SMTP_AUTH_MECHANISM: "Plain"
+      # - SMTP_TIMEOUT:        15
 
     # REFERENCE: https://docs.traefik.io/configuration/backends/docker/#on-containers
     labels:
