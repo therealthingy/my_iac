@@ -2,10 +2,10 @@
 # !!  KEEP IN MIND: Must match Hosts in `~/.ssh/config` (auth details will be taken from this file)  !!
 all:
   children:
-#    docker:
-#      hosts:
+    docker:
+      hosts:
 #        rpi:
-#        linux-dev-vm.local:
+        linux-dev-vm.local:
 
     workstations:
       hosts:

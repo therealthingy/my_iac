@@ -55,20 +55,12 @@
     state: present
     executable: pip3
 
-- name: Ensure {{ ansible_user }} user is added to the docker group.
+- name: Ensure {{ user_name }} user is added to the docker group.
   ansible.builtin.user:
-    name: "{{ ansible_user }}"
+    name: '{{ user_name }}'
     groups: docker
     append: true
 
 # reset_connection doesn't support conditionals.
 - name: Reset connection so docker group is picked up.
   meta: reset_connection
-
-
-
-# TODO: Should be dependency of container tasks  (see https://stackoverflow.com/questions/29258759/how-to-specify-ansible-pretasks-for-a-role)
-- name: Create network for future containers
-  docker_network:
-    name: '{{ docker_default_network }}'
-    driver: bridge

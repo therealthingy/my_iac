@@ -1,0 +1,19 @@
+---
+- name: Copy ipv6 config file
+  copy:
+    src: "daemon.json"
+    dest: "/etc/docker/daemon.json"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  notify:
+    - restart docker daemon
+
+# Command: `docker network create --subnet="2001:db8:1::/64" --gateway="2001:db8:1::1" --ipv6 my-net1`
+- name: Create a network w/ IPv6 IPAM config
+  community.docker.docker_network:
+    name: '{{ docker_default_network }}'
+    enable_ipv6: yes
+    ipam_config:
+      - subnet: 2001:db8:1::/64
+      - gateway: 2001:db8:1::1
