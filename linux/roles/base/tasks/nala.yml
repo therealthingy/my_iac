@@ -1,14 +1,15 @@
-- name: nala - Add repo
-  apt_repository:
-    repo: deb [arch=amd64,arm64,armhf] http://deb.volian.org/volian/ scar main
-    state: present
-    filename: 'volian-archive-scar-unstable.list'
-
+---
 - name: nala - Add Apt signing key
   ansible.builtin.apt_key:
     url: https://deb.volian.org/volian/scar.key
     state: present
     keyring: /etc/apt/trusted.gpg.d/volian-archive-scar-unstable.gpg
+
+- name: nala - Add repo
+  apt_repository:
+    repo: deb [arch=amd64,arm64,armhf] http://deb.volian.org/volian/ scar main
+    state: present
+    filename: 'volian-archive-scar-unstable.list'
 
 - name: nala - Update apt cache and install it
   apt:
