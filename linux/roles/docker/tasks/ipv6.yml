@@ -9,11 +9,33 @@
   notify:
     - restart docker daemon
 
-# Command: `docker network create --subnet="2001:db8:1::/64" --gateway="2001:db8:1::1" --ipv6 my-net1`
+# Command: `docker network create --subnet="2001:db8:1::/64" --ipv6 traefik`
 - name: Create a network w/ IPv6 IPAM config
   community.docker.docker_network:
     name: '{{ docker_default_network }}'
     enable_ipv6: yes
     ipam_config:
       - subnet: 2001:db8:1::/64
-      - gateway: 2001:db8:1::1
+
+
+# `ip6tables -t nat -A POSTROUTING -s 2001:db8:1::/64 ! -o docker0 -j MASQUERADE`
+# Fix routing (since we use internally private IPv6 addresses which are NOT routable)
+- name: Routing for bridge network
+  ansible.builtin.iptables:
+    comment: IPv6 routing for docker's bridge network
+    ip_version: ipv6
+    table: nat
+    action: append
+    chain: POSTROUTING
+    source: 2001:db8:abc1::/64 !
+    out_interface: docker0
+    state: present
+
+
+
+# VALIDATION: docker run --network=traefik --rm -t busybox ping6 -c 4 google.com
+# `sudo ip6tables    ! -o docker0 -j MASQUERADE`
+# `ip6tables -t nat -A POSTROUTING -s 2001:db8:1::/64 ! -o docker0 -j MASQUERADE`
+# sudo apt install iptables-persistent
+# sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"
+

@@ -1,3 +1,3 @@
 ---
 - include_tasks: install.yml
-
+- include_tasks: ipv6.yml
