@@ -30,8 +30,9 @@
   become: false
   #notify: Restart pi-hole
 
-- name: Ensure container is running
-  community.docker.docker_compose:
-    project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'
-    build: false
-  become: false
+#       NOTE: Makes no sense since to be served volume has to be mounted
+#- name: Ensure container is running
+#  community.docker.docker_compose:
+#    project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'
+#    build: false
+#  become: false
