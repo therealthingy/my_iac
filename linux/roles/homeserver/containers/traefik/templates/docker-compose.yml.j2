@@ -11,7 +11,7 @@ services:
     container_name: {{ container_name }}
     hostname: {{ container_name }}
 
-    user: "{{ user_uid }}:{{ user_gid }}"
+    user: {{ user_uid }}:{{ user_gid }}
     # Required for binding to a privliged port (ports which are lower than 1024)
     sysctls:
       - net.ipv4.ip_unprivileged_port_start=0
@@ -58,7 +58,7 @@ services:
       - {{ docker_container_data_basedir }}/{{ container_name }}/:/config/certs
 
     environment:
-       - TZ='{{ timezone }}'
+       - TZ={{ timezone }}
 
     # REFERENCE: https://docs.traefik.io/configuration/backends/docker/#on-containers
     labels:

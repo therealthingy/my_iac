@@ -10,7 +10,7 @@ services:
     container_name: portainer
     restart: always
 
-    # user: "{{ user_uid }}:{{ user_gid }}"
+    # user: {{ user_uid }}:{{ user_gid }}
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

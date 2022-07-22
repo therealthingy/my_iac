@@ -14,7 +14,7 @@ services:
     restart: always
 
     # $$$  ??? NOT SUPPORTED DUE TO S6 OVERLAY ???  $$$
-    # user: "{{ user_uid }}:{{ user_gid }}"
+    # user: {{ user_uid }}:{{ user_gid }}
 
     ports:
       - '0.0.0.0:53:53/tcp'
@@ -25,7 +25,7 @@ services:
       # - '0.0.0.0:8053:80/tcp'
 
     environment:
-      TZ: '{{ timezone }}'
+      TZ: {{ timezone }}
       # DNS1: "8.8.8.8"
       # DNS2: "8.8.4.4"
       WEBPASSWORD: {{ pihole_web_pw }}

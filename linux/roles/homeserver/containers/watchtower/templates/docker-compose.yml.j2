@@ -12,7 +12,7 @@ services:
 
     restart: always
 
-    user: "{{ user_uid }}:{{ user_gid }}"
+    user: {{ user_uid }}:{{ user_gid }}
 
 
     volumes:
@@ -24,7 +24,7 @@ services:
       - {{ docker_default_network }}
 
     environment:
-      - TZ='{{ timezone }}'
+      - TZ={{ timezone }}
       - WATCHTOWER_CLEANUP=true
       # - WATCHTOWER_SCHEDULE="0 4 * * * SUN"
       # Filter by enable label

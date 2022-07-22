@@ -6,12 +6,11 @@ networks:
 
 services:
   {{ container_name }}:
-    # $$$ Todo: Tag aarch64 $$$
     image: vaultwarden/server:latest
     container_name: {{ container_name }}
     restart: always
 
-    user: "{{ user_uid }}:{{ user_gid }}"
+    user: {{ user_uid }}:{{ user_gid }}
     # $$$ Required for binding to TCP/UDP sockets below 1024 (aka 'privileged ports') -> cap_add doesn't seem to work -> use sysctl instead... $$$
     # cap_add:
     #   - NET_BIND_SERVICE
@@ -19,7 +18,7 @@ services:
       - net.ipv4.ip_unprivileged_port_start=0
 
     environment:
-      - 'TZ={{ timezone }}'
+      - TZ={{ timezone }}
 
       # --- General
       - DATA_FOLDER=/data
@@ -27,7 +26,7 @@ services:
       - WEBSOCKET_ENABLED=true
       - SIGNUPS_ALLOWED=true
       - SIGNUPS_VERIFY=false
-      - DOMAIN='https://{{ container_name }}.{{ domainname }}'
+      - DOMAIN=https://{{ container_name }}.{{ domainname }}
 
       # --- Emailing
       #- SMTP_HOST=${NOTIFICATIONS_MAIL_SERVER_HOST}

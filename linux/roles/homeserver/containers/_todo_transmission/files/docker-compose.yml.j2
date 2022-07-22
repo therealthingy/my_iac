@@ -44,7 +44,7 @@ services:
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
-      - TZ=${TZ}
+      - TZ={{ timezone }}
 
       - CREATE_TUN_DEVICE=true
 
