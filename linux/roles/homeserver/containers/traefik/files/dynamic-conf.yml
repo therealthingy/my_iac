@@ -3,8 +3,8 @@ tls:
   stores:
     default:
       defaultCertificate:
-        certFile: /config/treafik.pem
-        keyFile: /config/traefik.key
+        certFile: /config/certs/traefik.pem
+        keyFile: /config/certs/traefik.key
 
 
 # --- HTTP middlewares

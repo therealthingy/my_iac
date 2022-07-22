@@ -51,6 +51,9 @@
 
 - hosts: homeservers
   roles:
+    - role: homeserver/base
+      tags:
+        - homeserver
     - role: homeserver/containers/bitwarden
       tags:
         - homeserver

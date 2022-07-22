@@ -1,5 +1,13 @@
 # Playbook for GNU/Linux machines
 
+
+## TODOs
+- package `pxz` & `nala`
+- restart container after changing docker-compose file
+- Revise task dependency workaround
+
+
+
 ## Prereq.
 ```bash
 ansible-galaxy collection install community.docker
