@@ -16,9 +16,10 @@ all:
 #        rpi:
         linux-dev-vm.local:
 
-#    homeservers:
-#      hosts:
+    homeservers:
+      hosts:
 #        rpi:
+        linux-dev-vm.local:
 
 
 #    rpis:

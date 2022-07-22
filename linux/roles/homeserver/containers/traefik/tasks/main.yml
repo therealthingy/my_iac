@@ -25,7 +25,7 @@
 
 - name: Copy config file
   copy:
-    src: 'settings.json'
+    src: 'dynamic-conf.yml'
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/dynamic-conf.yml'
     owner: '{{ user_name }}'
     group: '{{ user_name }}'
