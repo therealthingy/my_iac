@@ -19,7 +19,7 @@
 
 
 # Fix routing (since we use internally private IPv6 addresses which are NOT routable)
-# VALIDATION: `docker run --network=traefik --rm -t busybox ping6 -c 4 google.com`
+# VALIDATION: `docker run --network=reverse_proxy --rm -t busybox ping6 -c 4 google.com`
 # $$$$$$$$$$$$$$    WORKAROUND since ansible iptables doesn't seem 2 support masquerade ??!!    $$$$$$$$$$$$$$
 # `ip6tables -t nat -A POSTROUTING -s 2001:db8:1::/64 ! -o docker0 -j MASQUERADE`
 #- name: Routing for bridge network
