@@ -10,7 +10,7 @@ services:
     container_name: {{ container_name }}
     restart: always
 
-    user: {{ user_uid }}:{{ user_gid }}
+    user: {{ user_uid }}:{{ docker_gid }}
     # $$$ Required for binding to TCP/UDP sockets below 1024 (aka 'privileged ports') -> cap_add doesn't seem to work -> use sysctl instead... $$$
     # cap_add:
     #   - NET_BIND_SERVICE

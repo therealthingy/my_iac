@@ -1,0 +1,28 @@
+---
+- name: Get uid
+  become: false
+  run_once: true
+  shell: id -u
+  register: uid
+
+- name: Get gid of docker group
+  become: false
+  run_once: true
+  shell: >
+            getent group |
+            grep docker |
+            awk -F: '{printf "%d", $3}'
+  register: docker_gid
+
+# ALTERNATIVE 4 username: `id -u -n`
+- name: Set variables
+  run_once: true
+  become: false
+  set_fact:
+    user_name={{ ansible_user_id }}
+    user_uid={{ uid.stdout }}
+    docker_gid={{ docker_gid.stdout }}
+
+
+#-  ansible.builtin.debug:
+#    msg: user_name={{ user_name }}, user_uid={{ user_uid }}, docker_gid={{ docker_gid }}

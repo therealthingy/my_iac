@@ -14,7 +14,7 @@ services:
     restart: always
 
     # $$$  ??? NOT SUPPORTED DUE TO S6 OVERLAY ???  $$$
-    # user: {{ user_uid }}:{{ user_gid }}
+    # user: {{ user_uid }}:{{ docker_gid }}
 
     ports:
       - '0.0.0.0:53:53/tcp'

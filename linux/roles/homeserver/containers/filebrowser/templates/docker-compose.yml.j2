@@ -9,7 +9,7 @@ services:
     image: filebrowser/filebrowser:latest
     container_name: {{ container_name }}
     #restart: unless-stopped          # (Since the sparse file has to be mounted manually ...)
-    user: {{ user_uid }}:{{ user_gid }}
+    user: {{ user_uid }}:{{ docker_gid }}
     volumes:
       - ./settings.json:/.filebrowser.json
       - {{ docker_container_data_basedir }}/{{ container_name }}/:/var/filebrowser-data
