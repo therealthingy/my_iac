@@ -2,9 +2,11 @@
 
 
 ## TODOs
+- tranmsission container
 - package `pxz` & `nala`
 - restart container after changing docker-compose file
-- Revise task dependency workaround
+- Revise task dependency workaround (which sets the user vars)
+- FUTURE WORK 4 dyndns: Disable privacy extensions (i.e., derive global ipv6 address for eth0 iface from mac address, thus making sure fritzbox ipv6 permitted access works  (see also https://www.heise.de/ct/artikel/IPv6-DynDNS-klemmt-4785681.html))
 
 
 
