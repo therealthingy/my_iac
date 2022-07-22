@@ -1,8 +1,27 @@
 ---
+# $$$$$$$$$$$$$$$$$$$$$    TODO: REVISE STUPID WORKAROUND    -- should be dependency or pretask for EVERY OTHER TASK (which requires the user variables)    $$$$$$$$$$$$$$$$$$$$$
 - hosts: all
   become: false
   roles:
     - role: gather_host_facts
+      tags:
+        - base
+        - workstation
+        - server
+        - homeserver
+        - docker
+        - bitwarden
+        - filebrowser
+        - pihole
+        - portainer
+        - rpi-pwm
+        - traefik
+        - volact
+        - watchtower
+        - rpi
+        - vmware_vm
+
+
 
 - hosts: all
   become: true
@@ -48,10 +67,10 @@
       tags:
         - homeserver
         - portainer
-#    - role: homeserver/containers/rpi-pwm
-#      tags:
-#        - homeserver
-#        - rpi-pwm
+    - role: homeserver/containers/rpi-pwm
+      tags:
+        - homeserver
+        - rpi-pwm
     - role: homeserver/containers/traefik
       tags:
         - homeserver

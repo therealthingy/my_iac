@@ -13,9 +13,9 @@ ansible-galaxy collection install community.docker
   * (2.) Add `HostNamne <hostname>`
   * (3.) `ssh-copy-id -i ~/.ssh/<identity-file>.pub <user>@<ip>`
   * (4.) LATER (after initial ansible run): Add `Port 2233`
-* Exec 4 specific client: **`ansible-playbook -e "user_name=<name>" --ask-become-pass --ask-vault-pass run.yml`**
+* Exec 4 specific client: **`ansible-playbook --ask-become-pass --ask-vault-pass run.yml`**
   * Flags:
-    * **`-e "user_name=user"`: Overwrite vars**
+    * **`-e "<key>=<value>"`: Overwrite vars**
     * `--tags "<tag>,"`: Target only tagged tasks
     * `--limit "host1,host2,host3,host4"`: Only specified hosts
     * `-i "xxx.xxx.xxx.xxx,"`: Inventory
