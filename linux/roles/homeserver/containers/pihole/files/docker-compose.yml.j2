@@ -1,0 +1,64 @@
+version: "3.7"
+
+networks:
+  {{ docker_default_network }}:
+    external: true
+
+# More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+services:
+  {{ container_name }}:
+    hostname: {{ container_name }}
+    container_name: {{ container_name }}
+    domainname: {{ domainname }}
+    image: pihole/pihole:2022.07.1
+    restart: always
+
+    # $$$  ??? NOT SUPPORTED DUE TO S6 OVERLAY ???  $$$
+    # user: "{{ user_uid }}:{{ user_gid }}"
+
+    ports:
+      - '0.0.0.0:53:53/tcp'
+      - '0.0.0.0:53:53/udp'
+      # 67 = DHCP -> could be uncommented ???
+      - '0.0.0.0:67:67/udp'
+      # Backdoor for Admin-interface (bypassing traefik)
+      # - '0.0.0.0:8053:80/tcp'
+
+    environment:
+      TZ: '{{ timezone }}'
+      # DNS1: "8.8.8.8"
+      # DNS2: "8.8.4.4"
+      WEBPASSWORD: {{ pihole_web_pw }}
+      IPv6: "true"
+
+      PROXY_LOCATION: {{ container_name }}
+      VIRTUAL_HOST: {{ container_name }}.{{ domainname }}
+      VIRTUAL_PORT: 80
+
+    # Volumes store your data between container upgrades
+    volumes:
+       - {{ docker_container_data_basedir }}/{{ container_name }}/hole/:/etc/pihole/
+       - {{ docker_container_data_basedir }}/{{ container_name }}/dns/:/etc/dnsmasq.d/
+
+    networks:
+      - {{ docker_default_network }}
+
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      #- 127.0.0.1
+
+    # Recommended but not required (DHCP needs NET_ADMIN)
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    cap_add:
+      - NET_ADMIN
+
+
+    labels:
+     # Watchtower
+      - com.centurylinklabs.watchtower.enable=false
+
+     # Traefik
+      - traefik.enable=true
+      - traefik.http.services.{{ container_name }}_service.loadbalancer.server.port=80
+      - traefik.http.routers.{{ container_name }}_router.rule=Host(`{{ container_name }}.{{ domainname }}`)

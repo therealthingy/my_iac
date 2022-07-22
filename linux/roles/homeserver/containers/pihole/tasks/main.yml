@@ -1,17 +1,14 @@
 ---
-- name: Install cert-gen script
-  copy:
-    src: 'ssl-certgen'
-    dest: '/usr/bin/ssl-certgen'
-    owner: 'root'
-    group: 'root'
-    mode: 0644
-  become: true
-
-
-- name: Ensure data dir exists
+- name: Ensure data dir 1 exists
   ansible.builtin.file:
-    path: '{{ docker_container_data_basedir }}/{{ container_name }}'
+    path: '{{ docker_container_data_basedir }}/{{ container_name }}/hole'
+    state: directory
+    mode: 0755
+  become: false
+
+- name: Ensure data dir 2 exists
+  ansible.builtin.file:
+    path: '{{ docker_container_data_basedir }}/{{ container_name }}/dns'
     state: directory
     mode: 0755
   become: false
@@ -21,15 +18,6 @@
     path: '{{ docker_container_config_basedir }}/{{ container_name }}'
     state: directory
     mode: 0755
-  become: false
-
-- name: Copy config file
-  copy:
-    src: 'settings.json'
-    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/dynamic-conf.yml'
-    owner: '{{ user_name }}'
-    group: '{{ user_name }}'
-    mode: 0644
   become: false
 
 - name: Copy docker-compose file

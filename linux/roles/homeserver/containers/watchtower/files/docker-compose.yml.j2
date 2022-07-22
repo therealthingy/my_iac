@@ -1,0 +1,45 @@
+version: "3.7"
+
+networks:
+  {{ docker_default_network }}:
+    external: true
+
+services:
+  {{ container_name }}:
+    image: containrrr/watchtower:armhf-latest
+    hostname: {{ container_name }}
+    container_name: {{ container_name }}
+
+    restart: always
+
+    user: "{{ user_uid }}:{{ user_gid }}"
+
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Docker login
+      #- ${HOME}/.docker/config.json:/config.json
+
+    networks:
+      - {{ docker_default_network }}
+
+    environment:
+      - TZ='{{ timezone }}'
+      - WATCHTOWER_CLEANUP=true
+      # - WATCHTOWER_SCHEDULE="0 4 * * * SUN"
+      # Filter by enable label
+      - WATCHTOWER_LABEL_ENABLE=true
+
+      #- WATCHTOWER_NOTIFICATIONS=email
+
+      # - Emailing
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER=${NOTIFICATIONS_MAIL_SERVER_HOST}
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT=${NOTIFICATIONS_MAIL_SERVER_PORT}
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER=${NOTIFICATIONS_MAIL_SERVER_USERNAME}
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD=${NOTIFICATIONS_MAIL_SERVER_PASSWORD}
+      #- WATCHTOWER_NOTIFICATION_EMAIL_FROM=${NOTIFICATIONS_MAIL_SERVER_USERNAME}
+      #- WATCHTOWER_NOTIFICATION_EMAIL_TO=${SYSTEM_ADMIN_MAIL}
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG=RPi maintenance -
+
+    # command: --run-once
+    command: --schedule "0 4 * * * SUN"

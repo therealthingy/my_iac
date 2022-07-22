@@ -1,7 +1,3 @@
 ---
-container_name:       filebrowser
-container_url:        'files.{{ domainname }}'
-container_dir_config: '{{ docker_dir }}/{{ container_name }}/config/'
-container_dir_data:   '{{ docker_dir }}/{{ container_name }}/data/'
-
+container_name: filebrowser
 container_share_dir:  '/mnt/storage'

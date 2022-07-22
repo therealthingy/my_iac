@@ -1,24 +1,28 @@
 ---
-- name: Make sure the {{ container_name }} container is created and running
-  docker_container:
-    name: '{{ container_name }}'
-    image: portainer/portainer-ce
-    restart_policy: always
+- name: Ensure data dir exists
+  ansible.builtin.file:
+    path: '{{ docker_container_data_basedir }}/{{ container_name }}'
+    state: directory
+    mode: 0755
+  become: false
 
-    #user: '{{ user_uid }}:{{ user_gid }}'
+- name: Create config dir
+  ansible.builtin.file:
+    path: '{{ docker_container_config_basedir }}/{{ container_name }}'
+    state: directory
+    mode: 0755
+  become: false
 
-    networks:
-      - '{{ docker_default_network }}'
+- name: Copy docker-compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
+    mode: '0640'
+  become: false
+  #notify: Restart pi-hole
 
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/localtime:/etc/localtime:ro
-      - '{{ container_dir_data }}/:/data/'
-
-    # REFERENCE: https://docs.traefik.io/configuration/backends/docker/#on-containers
-    labels:
-      - com.centurylinklabs.watchtower.enable:                              true
-      #- docker-volume-backup.stop-during-backup:                            true
-      - traefik.enable:                                                     true
-      - traefik.http.routers.portainer_router.rule:                         Host(`{{ container_url }}`)
-      - traefik.http.services.portainer_service.loadbalancer.server.port:   9000
+- name: Ensure container is running
+  community.docker.docker_compose:
+    project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'
+    build: false
+  become: false

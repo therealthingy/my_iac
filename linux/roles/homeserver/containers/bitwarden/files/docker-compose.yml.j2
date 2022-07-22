@@ -1,0 +1,61 @@
+version: '3.7'
+
+networks:
+  {{ docker_default_network }}:
+    external: true
+
+services:
+  {{ container_name }}:
+    # $$$ Todo: Tag aarch64 $$$
+    image: vaultwarden/server:latest
+    container_name: {{ container_name }}
+    restart: always
+
+    user: "{{ user_uid }}:{{ user_gid }}"
+    # $$$ Required for binding to TCP/UDP sockets below 1024 (aka 'privileged ports') -> cap_add doesn't seem to work -> use sysctl instead... $$$
+    # cap_add:
+    #   - NET_BIND_SERVICE
+    sysctls:
+      - net.ipv4.ip_unprivileged_port_start=0
+
+    environment:
+      - 'TZ={{ timezone }}'
+
+      # --- General
+      - DATA_FOLDER=/data
+      - DATABASE_URL=/data/db.sqlite3
+      - WEBSOCKET_ENABLED=true
+      - SIGNUPS_ALLOWED=true
+      - SIGNUPS_VERIFY=false
+      - DOMAIN='https://{{ container_name }}.{{ domainname }}'
+
+      # --- Emailing
+      #- SMTP_HOST=${NOTIFICATIONS_MAIL_SERVER_HOST}
+      #- SMTP_FROM=${NOTIFICATIONS_MAIL_SERVER_USERNAME}
+      #- SMTP_FROM_NAME=Bitwarden_RS
+      #- SMTP_PORT=${NOTIFICATIONS_MAIL_SERVER_PORT}
+      #- SMTP_SECURITY=starttls
+      #- SMTP_USERNAME=${NOTIFICATIONS_MAIL_SERVER_USERNAME}
+      #- SMTP_PASSWORD=${NOTIFICATIONS_MAIL_SERVER_PASSWORD}
+      # - SMTP_AUTH_MECHANISM="Plain"
+      # - SMTP_TIMEOUT=15
+
+    volumes:
+      - '{{ docker_container_data_basedir }}/{{ container_name }}/:/data'
+
+    networks:
+      - {{ docker_default_network }}
+
+    labels:
+     # Watchtower
+      - com.centurylinklabs.watchtower.enable=true
+
+     # Traefik
+      - traefik.enable=true
+      - traefik.docker.network={{ docker_default_network }}
+      - traefik.http.routers.bitwarden-ui-http.rule=Host(`{{ container_name }}.{{ domainname }}`)
+      - traefik.http.routers.bitwarden-ui-http.service=bitwarden-ui
+      - traefik.http.services.bitwarden-ui.loadbalancer.server.port=80
+      - traefik.http.routers.bitwarden-websocket-http.rule=Host(`{{ container_name }}.{{ domainname }}`) && Path(`/notifications/hub`)
+      - traefik.http.routers.bitwarden-websocket-http.service=bitwarden-websocket
+      - traefik.http.services.bitwarden-websocket.loadbalancer.server.port=3012

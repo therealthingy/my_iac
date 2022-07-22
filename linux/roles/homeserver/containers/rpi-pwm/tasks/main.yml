@@ -1,0 +1,15 @@
+---
+- name: Clone repo
+  become: false
+  git:
+    repo: https://github.com/therealthingy/rpi-pwm.git
+    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/'
+    clone: yes
+    depth: 1
+    update: yes
+
+- name: Ensure container is running
+  community.docker.docker_compose:
+    project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'
+    build: true
+  become: false

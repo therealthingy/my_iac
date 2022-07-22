@@ -1,0 +1,75 @@
+version: "3.7"
+
+networks:
+  {{ docker_default_network }}:
+    external: true
+
+services:
+  {{ container_name }}:
+    image: traefik:latest
+    restart: always
+    container_name: {{ container_name }}
+    hostname: {{ container_name }}
+
+    user: "{{ user_uid }}:{{ user_gid }}"
+    # Required for binding to a privliged port (ports which are lower than 1024)
+    sysctls:
+      - net.ipv4.ip_unprivileged_port_start=0
+
+    domainname: {{ domainname }}
+
+    networks:
+      - {{ docker_default_network }}
+
+    # dns:
+    #   - 192.168.178.2
+    #   - 192.168.178.1
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+    command:
+      - "--log.level=WARN"
+      - "--global.sendanonymoususage=false"
+      - "--api.dashboard=false"
+      - "--api.insecure=true"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      # ,globalAuth@file
+      - "--entrypoints.websecure.http.middlewares=securityHeaders@file"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.docker.network={{ docker_default_network }}"
+      - "--providers.file.directory=/config/"
+      - "--providers.file.watch=true"
+      # Disalbes ping healthcheck (entryPoint treafik on port 8080) ???
+#      - "--ping=false"
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+      # config
+      - ./dynamic-conf.yml:/config/dynamic-conf.yml
+      - {{ docker_container_data_basedir }}/{{ container_name }}/:/config/certs
+
+    environment:
+       - TZ='{{ timezone }}'
+
+    # REFERENCE: https://docs.traefik.io/configuration/backends/docker/#on-containers
+    labels:
+     # Watchtower
+      - com.centurylinklabs.watchtower.enable=true
+
+     # Traefik
+      - "traefik.enable=true"
+
+      # > Service (called by router -> resolves to actual service)
+      - "traefik.http.services.{{ container_name }}_service.loadbalancer.server.port=8080"
+
+      # > Routers
+      - "traefik.http.routers.{{ container_name }}_router.rule=Host(`{{ container_name }}.{{ domainname }}`)"

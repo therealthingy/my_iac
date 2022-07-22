@@ -1,0 +1,25 @@
+version: "3.7"
+
+networks:
+  {{ docker_default_network }}:
+    external: true
+
+services:
+  {{ container_name }}:
+    image: filebrowser/filebrowser:latest
+    container_name: {{ container_name }}
+    #restart: unless-stopped          # (Since the sparse file has to be mounted manually ...)
+    user: "{{ user_uid }}:{{ user_gid }}"
+    volumes:
+      - ./settings.json:/.filebrowser.json
+      - {{ docker_container_data_basedir }}/{{ container_name }}/:/var/filebrowser-data
+      - {{ container_share_dir }}/:/srv/
+    networks:
+      - {{ docker_default_network }}
+    labels:
+     # Watchtower
+      - com.centurylinklabs.watchtower.enable=true
+
+     # Traefik
+      - traefik.enable=true
+      - traefik.http.routers.{{ container_name }}_router.rule=Host(`files.{{ domainname }}`)
