@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  # >> Reference: https://hub.docker.com/r/dperson/samba <<
+  # >>  Reference: https://hub.docker.com/r/dperson/samba  <<
   {{ container_name }}:
     container_name: {{ container_name }}
     restart: "no"
@@ -19,9 +19,8 @@ services:
       - 445:445
 
     volumes:
-      - "${SHARE_DIRPATH}/public:/mnt/share/public"
-      - "${SHARE_DIRPATH}/private:/mnt/share/private"
-      - "${TRANSMISSION_DOWNLOADS_DIRPATH}:/mnt/share/private/downloads/torrents"
+      - {{ path_shared_share }}:/mnt/share/shared"
+      - {{ path_own_share }}:/mnt/share/private"
 
     # -- Directories: -s "<name;/path>[;browse;readonly;guest;users;admins;writelist;comment]" --
     # -n -> Start the 'nmbd' daemon to advertise the shares
@@ -29,14 +28,12 @@ services:
     command: >
       -r
       -w "{{ domainname }}"
-      -u "${OWN_USER};${OWN_PW}"
-      -u "${DEFAULT_USER};${DEFAULT_PW}"
-      -s shared;/mnt/share/public;yes;no;no;all;none;;comment1
+      -u "{{ own_user_name }};{{ own_user_pw }}"
+      -u "{{ shared_user_name }};{{ shared_user_pw }}"
+      -s shared;/mnt/share/shared;yes;no;no;all;none;;comment1
       -s private;/mnt/share/private;yes;no;no;gary;none;;comment1
 
     environment:
-      - "USERID={{ user_uid }}"
-      - "GROUPID={{ docker_gid }}"
       - "TZ=${TZ}"
       # Allow following symlinks
       #- "WIDELINKS=True"

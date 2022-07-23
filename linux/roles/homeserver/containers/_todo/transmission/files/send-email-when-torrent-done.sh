@@ -2,8 +2,6 @@
 
 NOTIFICATION_MAIL_FROM_ADDR=${NOTIFICATION_MAIL_SERVER_USERNAME}
 
-
-
 # Create mail msg
 TMP_MAILFILE=`mktemp -t transmission.XXXXXXXXXX`
 

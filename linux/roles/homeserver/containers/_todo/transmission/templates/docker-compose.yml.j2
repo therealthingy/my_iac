@@ -7,17 +7,17 @@ networks:
 services:
   {{ container_name }}:
     image: haugene/transmission-openvpn:latest
-    restart: "no"
+    restart: no
     container_name: {{ container_name }}
+
+    #user: {{ user_uid }}:{{ docker_gid }}
 
     cap_add:
       - NET_ADMIN
 
-    # ports:
-    #   - "8888:8888"
-    # dns:
-    #   - 8.8.8.8
-    #   - 8.8.4.4
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
 
     networks:
       - {{ docker_default_network }}
@@ -27,52 +27,38 @@ services:
 
     volumes:
       - /etc/localtime:/etc/localtime:ro
-
-      - ${BASE_DIR}/etc/vpn-profiles/${VPN_CONFIG_FILE}:/etc/openvpn/custom/default.ovpn
-      - ${BASE_DIR}/${PUBLIC_DIR}/:/data
-
-      # - ./scripts/transmission/hooks:/etc/scripts/hooks/
-
-      - /${BASE_DIR}/var/.torrents:/config/torrents
-      # - /${BASE_DIR}/var/transmission.log:/config/transmission.log
-      # - /${BASE_DIR}/var/stats.json:/config/stats.json
+      - {{ vpn_file }}:/etc/openvpn/custom/default.ovpn
+      - {{ storage_path }}/:/data
+      #- ./scripts/transmission/hooks:/etc/scripts/hooks/
 
 
-#    logging:
-#      driver: none
+    #logging:
+    #  driver: none
 
+    # See: https://hub.docker.com/r/haugene/transmission-openvpn/dockerfile
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
       - TZ={{ timezone }}
 
       - CREATE_TUN_DEVICE=true
 
       - OPENVPN_PROVIDER=CUSTOM
-      - OPENVPN_USERNAME=XXX
-      - OPENVPN_PASSWORD=XXX
+      #- OPENVPN_USERNAME=XXX
+      #- OPENVPN_PASSWORD=XXX
       - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
 
-      - LOCAL_NETWORK=${LOCAL_NETWORK}
+      - LOCAL_NETWORK={{ local_network }}
 
       - TRANSMISSION_WEB_UI=kettu
 
-      - TRANSMISSION_RPC_HOST_WHITELIST_ENABLED=${TRANSMISSION_RPC_HOST_WHITELIST_ENABLED}
-      - TRANSMISSION_RPC_HOST_WHITELIST=${TRANSMISSION_RPC_HOST_WHITELIST}
-
       - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true
-      - TRANSMISSION_RPC_USERNAME=${RPC_USERNAME}
-      - TRANSMISSION_RPC_PASSWORD=${RPC_PASSWORD}
+      - TRANSMISSION_RPC_USERNAME={{ web_username }}
+      - TRANSMISSION_RPC_PASSWORD={{ web_password }}
 
-      - TRANSMISSION_UMASK=2
-      - TRANSMISSION_HOME=./config
-
-      - TRANSMISSION_RATIO_LIMIT=1.00
       - TRANSMISSION_RATIO_LIMIT_ENABLED=true
-      #- TRANSMISSION_BLOCKLIST_ENABLED=${BLOCKLIST_ENABLED}
-      #- TRANSMISSION_BLOCKLIST_URL=${BLOCKLIST_URL}
-      #- TRANSMISSION_DOWNLOAD_QUEUE_SIZE=${MAX_PARALLEL_DOWNLOADS}
-      # - TRANSMISSION_ENCRYPTION=1 #prefer encrypted connections
+      - TRANSMISSION_RATIO_LIMIT=1
+      - TRANSMISSION_BLOCKLIST_ENABLED=true
+      - TRANSMISSION_BLOCKLIST_URL={{ peers_blocklist }}
+      - TRANSMISSION_DOWNLOAD_QUEUE_SIZE={{ max_parallel_downloads }}
       - TRANSMISSION_SCRAPE_PAUSED_TORRENTS_ENABLED=false
 
       # Emailing
@@ -92,4 +78,4 @@ services:
      # Traefik
       - traefik.enable=true
       - traefik.http.services.{{ container_name }}_service.loadbalancer.server.port=9091
-      - traefik.http.routers.{{ container_name }}_router.rule=Host(`{{ container_name }}.${DOMAINNAME}`)
+      - traefik.http.routers.{{ container_name }}_router.rule=Host(`{{ container_name }}.{{ domainname }}`)
