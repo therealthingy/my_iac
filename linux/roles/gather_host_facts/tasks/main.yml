@@ -1,12 +1,19 @@
 ---
-- name: Get uid
+- name: Get uid of current user
   changed_when: false
   become: false
   run_once: true
   shell: id -u
   register: uid
 
-- name: Get gid of docker group
+- name: Get gid of current user
+  changed_when: false
+  become: false
+  run_once: true
+  shell: id -g
+  register: gid
+
+- name: Get gid of the docker group
   changed_when: false
   become: false
   run_once: true
@@ -23,6 +30,7 @@
   set_fact:
     user_name={{ ansible_user_id }}
     user_uid={{ uid.stdout }}
+    user_gid={{ gid.stdout }}
     docker_gid={{ docker_gid.stdout }}
 
 
