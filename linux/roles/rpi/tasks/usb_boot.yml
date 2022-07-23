@@ -3,8 +3,8 @@
   copy:
     src: "10-trim_umap.rules"
     dest: "/etc/udev/rules.d/10-trim_umap.rules"
-    owner: "root"
-    group: "root"
+    owner: root
+    group: root
     mode: 0644
 
 - name: Enable fstrimmer service

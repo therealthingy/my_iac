@@ -3,8 +3,8 @@
   copy:
     src: "daemon.json"
     dest: "/etc/docker/daemon.json"
-    owner: "root"
-    group: "root"
+    owner: root
+    group: root
     mode: 0644
   notify:
     - restart docker daemon
@@ -43,10 +43,10 @@
 
 - name: Copy iptable config tables
   copy:
-    src: 'rules.v6'
-    dest: '/etc/iptables/rules.v6'
-    owner: 'root'
-    group: 'root'
+    src: rules.v6
+    dest: /etc/iptables/rules.v6
+    owner: root
+    group: root
     mode: 0644
   notify:
     - restart networking daemon

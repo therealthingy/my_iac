@@ -5,6 +5,6 @@
   copy:
     src: "10-show_system_info"
     dest: "/etc/zsh/zprofile"
-    owner: "root"
-    group: "root"
+    owner: root
+    group: root
     mode: 0644

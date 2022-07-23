@@ -9,6 +9,7 @@
   apt:
     update_cache: yes
     upgrade: yes
+    autoremove: yes
 
 
 
@@ -19,11 +20,6 @@
       - rename
       - fdupes
       - dos2unix
-    state: present
-
-- name: Install file backup tools
-  apt:
-    name:
       - rclone
     state: present
 
@@ -64,7 +60,6 @@
   apt:
     name:
       - mosh
-#      - unattended-upgrades
     state: present
 
 - name: Install privacy tools
@@ -83,8 +78,8 @@
   copy:
     src: "luks-sparse_helper"
     dest: "/usr/local/bin/luks-sparse_helper"
-    owner: "root"
-    group: "root"
+    owner: root
+    group: root
     mode: 0755
   when: "'ccrypt' in ansible_facts.packages"
 
