@@ -6,7 +6,6 @@
     state: present
 
 - include_tasks: user_config.yml
-- include_tasks: unattended.yml
 
 - include_tasks: python.yml
 - include_tasks: packages.yml
