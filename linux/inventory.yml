@@ -4,28 +4,28 @@ all:
   children:
     docker:
       hosts:
-#        rpi:
-        linux-dev-vm.local:
+        rpi.lan:
+#        linux-dev-vm.local:
 
-    workstations:
-      hosts:
-        linux-dev-vm.local:
+#    workstations:
+#      hosts:
+#        linux-dev-vm.local:
 
     servers:
       hosts:
-#        rpi:
-        linux-dev-vm.local:
+        rpi.lan:
+#        linux-dev-vm.local:
 
     homeservers:
       hosts:
-#        rpi:
-        linux-dev-vm.local:
+        rpi.lan:
+#        linux-dev-vm.local:
 
 
-#    rpis:
-#      hosts:
-#        rpi:
-
-    vmware_vms:
+    rpis:
       hosts:
-        linux-dev-vm.local:
+        rpi.lan:
+
+#    vmware_vms:
+#      hosts:
+#        linux-dev-vm.local:
