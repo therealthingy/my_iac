@@ -2,7 +2,7 @@
 
 
 ## TODOs
-- pihole non root user
+- Fix locale issue //  mosh  https://github.com/mobile-shell/mosh/issues/793
 - tranmsission container
 - bring back samba
 - package `pxz` & `nala`

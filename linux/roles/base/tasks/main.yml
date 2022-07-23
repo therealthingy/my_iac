@@ -1,5 +1,6 @@
 ---
 - name: Generate the locale
+  become: true
   locale_gen:
     name: "{{ locale }}"
     state: present
