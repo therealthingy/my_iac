@@ -34,7 +34,7 @@ services:
       -s private;/mnt/share/private;yes;no;no;gary;none;;comment1
 
     environment:
-      - "TZ=${TZ}"
+      - TZ={{ timezone }}
       # Allow following symlinks
       #- "WIDELINKS=True"
 
