@@ -1,4 +1,10 @@
 ---
+- name: 'Delete default pi user passwordless file  (TODO: ONLY FOR RASPBIAN)'
+  file:
+    state: absent
+    path: /etc/sudoers.d/010_pi-nopasswd
+
+
 - name: Enable passwordless sudo for {{ user_name }}
   copy:
     content: '{{ user_name }} ALL=(ALL) NOPASSWD: ALL'
