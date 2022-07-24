@@ -7,7 +7,7 @@ networks:
 services:
   {{ container_name }}:
     image: haugene/transmission-openvpn:latest
-    restart: no
+    restart: "no"
     container_name: {{ container_name }}
 
     #user: {{ user_uid }}:{{ docker_gid }}

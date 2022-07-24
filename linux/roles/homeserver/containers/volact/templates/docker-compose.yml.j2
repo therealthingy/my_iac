@@ -1,9 +1,9 @@
 version: '3.7'
 
 services:
-  # docker run -d -u {{ user_uid }} -p {{ container_port }}:{{ container_port }} --restart=on-failure:5 --name {{ container_name }} {{ image }}
+  # docker run -d -u {{ user_uid }} -p {{ container_port }}:{{ container_port }} --restart=on-failure:5 --name {{ container_name }} {{ container_image }}
   {{ container_name }}:
-    image: {{ image }}
+    image: {{ container_image }}
 
     container_name: {{ container_name }}
     restart: always
