@@ -3,8 +3,8 @@
 
 ## TODOs
 - Fix locale issue //  mosh  https://github.com/mobile-shell/mosh/issues/793
-- tranmsission container
-- bring back samba
+- FIX tranmsission container
+- TEST samba
 - package `pxz` & `nala`
 - restart container after changing docker-compose file
 - Revise task dependency workaround (which sets the user vars)
