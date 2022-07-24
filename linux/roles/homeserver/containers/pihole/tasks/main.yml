@@ -1,17 +1,13 @@
 ---
-- name: Ensure data dir 1 exists
+- name: Ensure data dir exists
   ansible.builtin.file:
-    path: '{{ docker_container_data_basedir }}/{{ container_name }}/hole'
+    path: '{{ docker_container_data_basedir }}/{{ container_name }}/{{ item }}'
     state: directory
     mode: 0755
-  become: false
-
-- name: Ensure data dir 2 exists
-  ansible.builtin.file:
-    path: '{{ docker_container_data_basedir }}/{{ container_name }}/dns'
-    state: directory
-    mode: 0755
-  become: false
+  become: true             # REQUIRED since container runs as root
+  with_items:
+    - hole
+    - dns
 
 - name: Create config dir
   ansible.builtin.file:

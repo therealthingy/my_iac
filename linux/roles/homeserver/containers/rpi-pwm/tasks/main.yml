@@ -1,4 +1,9 @@
 ---
+- name: Check whether rpi-pwm image exists already
+  docker_image_info:
+    name: rpi-pwm
+  register: result
+
 - name: Clone repo
   become: false
   git:
@@ -7,6 +12,7 @@
     clone: yes
     depth: 1
     update: yes
+  when: result.images == ""
 
 - name: Ensure container is running
   community.docker.docker_compose:

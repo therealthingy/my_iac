@@ -14,8 +14,4 @@
   become: false
   #notify: Restart pi-hole
 
-- name: Ensure container is running
-  community.docker.docker_compose:
-    project_src: "{{ docker_container_data_basedir }}/{{ container_name }}/"
-    build: false
-  become: false
+#       NOTE: Makes no sense since to start since the volume has to be mounted

@@ -30,7 +30,7 @@
   become: false
   #notify: Restart pi-hole
 
-#       NOTE: Makes no sense since to be served volume has to be mounted
+#       NOTE: Makes no sense since to start since the volume has to be mounted
 #- name: Ensure container is running
 #  community.docker.docker_compose:
 #    project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'

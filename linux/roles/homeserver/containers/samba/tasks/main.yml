@@ -1,0 +1,17 @@
+---
+- name: Create config dir
+  ansible.builtin.file:
+    path: '{{ docker_container_config_basedir }}/{{ container_name }}'
+    state: directory
+    mode: 0755
+  become: false
+
+- name: Copy docker-compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
+    mode: '0640'
+  become: false
+  #notify: Restart pi-hole
+
+#       NOTE: Makes no sense since to start since the volume has to be mounted

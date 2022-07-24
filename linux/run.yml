@@ -15,7 +15,9 @@
         - pihole
         - portainer
         - rpi-pwm
+        - samba
         - traefik
+        - transmission
         - volact
         - watchtower
         - rpi
@@ -74,10 +76,18 @@
       tags:
         - homeserver
         - rpi-pwm
+    - role: homeserver/containers/samba
+      tags:
+        - homeserver
+        - samba
     - role: homeserver/containers/traefik
       tags:
         - homeserver
         - traefik
+    - role: homeserver/containers/transmission
+      tags:
+        - homeserver
+        - transmission
     - role: homeserver/containers/volact
       tags:
         - homeserver
