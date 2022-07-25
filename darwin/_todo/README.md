@@ -10,6 +10,7 @@
     `sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText “ENTER HERE”`
    * **Disable chime**:
      `defaults write com.apple.PowerChime ChimeOnNoHardware -bool true;killall PowerChime`
+  * `sudo systemsetup -setremotelogin on`
 * USER:
   * **Print-Dialog always expanded**
     `defaults write -g PMPrintingExpandedStateForPrint -bool TRUE`
