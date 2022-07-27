@@ -28,9 +28,15 @@
     name:
       - pigz
       - pbzip2
-      - pxz
+#      - pxz
       - zip
       - unzip
+    state: present
+
+- name: Install backup tools
+  apt:
+    name:
+      - borgbackup
     state: present
 
 - name: Install monitoring tools
