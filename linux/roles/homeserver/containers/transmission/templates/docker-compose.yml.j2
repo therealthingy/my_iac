@@ -10,8 +10,6 @@ services:
     restart: "no"
     container_name: {{ container_name }}
 
-    #user: {{ user_uid }}:{{ docker_gid }}
-
     cap_add:
       - NET_ADMIN
 
@@ -37,6 +35,9 @@ services:
 
     # --  See: https://hub.docker.com/r/haugene/transmission-openvpn/dockerfile  --
     environment:
+      - PUID={{ user_uid }}
+      - PGID={{ docker_gid }}
+
       - TZ={{ timezone }}
 
       - CREATE_TUN_DEVICE=true
