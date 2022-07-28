@@ -65,7 +65,7 @@ case $1 in
 
 
   attach)
-    validate_cli_args $1 $2 $3 $4 $5 $6 $7 $8 $9             # INTERESTINGLY $0 gets passed, the rest are args passed 2 fct.
+    validate_cli_args $@             # INTERESTINGLY $0 is always available, and $@ refers to all CLI args starting w/ $1
 
     sparse_file_path=$2
     derive_args_from_filename $sparse_file_path
@@ -96,11 +96,11 @@ case $1 in
 
 
   detach)
-    validate_cli_args $1 $2 $3 $4 $5 $6 $7 $8 $9
+    validate_cli_args $@
 
     sparse_file_path=$2
     derive_args_from_filename $sparse_file_path
-  
+
     if ! mountpoint -q $mountpoint; then
         echo "Nothing mounted under \"$mountpoint\", aborting ..."  >&2
         exit 1
@@ -108,14 +108,14 @@ case $1 in
 
     echo "(I  ) Unmounting fs  @ \"$mountpoint\""
     sudo umount $mountpoint
-    
+
     echo "(II ) \"Closing\" device w/ name \"$luks_mapper_name\""
     sudo cryptsetup close $luks_mapper_name
 
     get_loopback_device_from_filename $sparse_file_path
     echo "(III) Detaching sparse file \"$lb_dev\""
     sudo losetup --detach $lb_dev
-    ;; 
+    ;;
 
 
   *)                                                         # Default case
