@@ -13,6 +13,9 @@ services:
     cap_add:
       - NET_ADMIN
 
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+
     dns:
       - 1.1.1.1
       - 1.0.0.1
