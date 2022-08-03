@@ -30,6 +30,7 @@ services:
     volumes:
       - "{{ path_shared_share }}:/mnt/share/shared"
       - "{{ path_own_share }}:/mnt/share/private"
+      - "{{ transmission_downloads_dir }}:/mnt/share/private/torrents"
 
     # -- Directories: -s "<name;/path>[;browse;readonly;guest;users;admins;writelist;comment]" --
     # -n -> Start the 'nmbd' daemon to advertise the shares

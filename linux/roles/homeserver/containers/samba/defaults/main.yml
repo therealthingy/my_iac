@@ -6,6 +6,7 @@ follow_symlinks: False
 
 path_own_share: /mnt/storage/share/private
 path_shared_share: /mnt/storage/share/public
+transmission_downloads_dir: /mnt/storage/transmission/var/downloads/completed
 
 own_user_name: gtg
 own_user_pw: !vault |
