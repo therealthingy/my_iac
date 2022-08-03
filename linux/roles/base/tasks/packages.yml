@@ -58,6 +58,7 @@
     name:
       - nmap
       - speedtest-cli
+      - iperf
       - net-tools
       - wget
       - curl
