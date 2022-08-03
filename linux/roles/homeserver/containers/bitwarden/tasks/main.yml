@@ -19,7 +19,6 @@
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
     mode: '0640'
   become: false
-  #notify: Restart pi-hole
 
 - name: Ensure container is running
   community.docker.docker_compose:

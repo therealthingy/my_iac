@@ -2,9 +2,9 @@
 
 
 ## TODOs
-- restart container after changing docker-compose file
+- traefik + filebrowser  restart container if config file has changed  ( https://raymii.org/s/tutorials/Ansible_-_Only-do-something-if-another-action-changed.html )
 
-- TEST samba
+
 - packages `pxz` & `nala`
 - ( FUTURE WORK 4 dyndns: Disable privacy extensions (i.e., derive global ipv6 address for eth0 iface from mac address, thus making sure fritzbox ipv6 permitted access works  (see also https://www.heise.de/ct/artikel/IPv6-DynDNS-klemmt-4785681.html)) )
 

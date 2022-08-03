@@ -1,26 +1,32 @@
 version: '3.7'
 
+networks:
+  default:
+
 services:
   # >>  Reference: https://hub.docker.com/r/dperson/samba  <<
   {{ container_name }}:
+    image: dperson/samba:latest
     container_name: {{ container_name }}
     restart: "no"
-    image: dperson/samba:latest
-    network_mode: host
     hostname: {{ domainname }}
-
 
     # $$$  DOESN'T WORK  $$$
     #user: {{ user_uid }}:{{ docker_gid }}
 
+    #network_mode: host
+    networks:
+      - default
     ports:
+      - "137:137/udp"
+      - "138:138/udp"
       # 'nmbd' daemon to advertise the shares
-      #- 139:139
-      - 445:445
+      - "139:139/tcp"
+      - "445:445/tcp"
 
     volumes:
-      - {{ path_shared_share }}:/mnt/share/shared"
-      - {{ path_own_share }}:/mnt/share/private"
+      - "{{ path_shared_share }}:/mnt/share/shared"
+      - "{{ path_own_share }}:/mnt/share/private"
 
     # -- Directories: -s "<name;/path>[;browse;readonly;guest;users;admins;writelist;comment]" --
     # -n -> Start the 'nmbd' daemon to advertise the shares
@@ -31,9 +37,11 @@ services:
       -u "{{ own_user_name }};{{ own_user_pw }}"
       -u "{{ shared_user_name }};{{ shared_user_pw }}"
       -s shared;/mnt/share/shared;yes;no;no;all;none;;comment1
-      -s private;/mnt/share/private;yes;no;no;gary;none;;comment1
+      -s private;/mnt/share/private;yes;no;no;{{ own_user_name }};none;;comment1
 
     environment:
+      - USERID={{ user_uid }}
+      - GROUPID={{ user_gid }}
       - TZ={{ timezone }}
       # Allow following symlinks
       #- "WIDELINKS=True"
