@@ -52,7 +52,7 @@ services:
 
       - LOCAL_NETWORK={{ local_network }}
 
-      - TRANSMISSION_WEB_UI=kettu
+      - TRANSMISSION_WEB_UI={{ web_interface }}
 
       - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true
       - TRANSMISSION_RPC_USERNAME={{ web_username }}
@@ -77,7 +77,7 @@ services:
 
     labels:
      # Watchtower
-      - com.centurylinklabs.watchtower.enable=false
+      - com.centurylinklabs.watchtower.enable={{ enable_watchtower }}
 
      # Traefik
       - traefik.enable=true

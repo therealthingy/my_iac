@@ -4,6 +4,9 @@ local_network: 192.168.0.0/16
 peers_blocklist: https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz
 max_parallel_downloads: 10
 
+#          OG: kettu
+web_interface: combustion
+
 vpn_file: /mnt/storage/transmission/etc/vpn-profiles/AirVPN_Switzerland_UDP-443.ovpn
 storage_path: /mnt/storage/transmission/var/downloads
 
@@ -15,3 +18,5 @@ web_password: !vault |
           61336439653164313365623630323038363837303463376665353463353435373964383962326166
           3963363062653538620a313363353531353531356637346233393132643931643833623034333866
           3965
+
+enable_watchtower: "true"
