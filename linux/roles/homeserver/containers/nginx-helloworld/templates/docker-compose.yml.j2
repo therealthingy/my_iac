@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  {{ container_name }}:
+    image: nginxdemos/hello:latest
+    container_name: {{ container_name }}
+    restart: "no"
+
+    #user: {{ user_uid }}:{{ docker_gid }}
+    # $$$ Required for binding to TCP/UDP sockets below 1024 (aka 'privileged ports') -> cap_add doesn't seem to work -> use sysctl instead... $$$
+    #sysctls:
+    #  - net.ipv4.ip_unprivileged_port_start=0
+
+    ports:
+      - '{{ host_port }}:80'
+
+    labels:
+     # Watchtower
+      - com.centurylinklabs.watchtower.enable=false
+
+     # Traefik
+      - traefik.enable=false

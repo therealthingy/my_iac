@@ -1,0 +1,3 @@
+---
+container_name: nginx-helloworld
+host_port: 8080

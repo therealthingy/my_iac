@@ -38,6 +38,10 @@
       tags:
         - homeserver
         - filebrowser
+    - role: homeserver/containers/nginx-helloworld
+      tags:
+        - homeserver
+        - testing
     - role: homeserver/containers/pihole
       tags:
         - homeserver
