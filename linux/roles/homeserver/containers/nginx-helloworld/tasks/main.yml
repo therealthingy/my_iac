@@ -13,10 +13,9 @@
     mode: '0640'
   become: false
   #notify: Restart pi-hole
-  #register: docker_compose_file
 
-- name: Ensure container is running
-  community.docker.docker_compose:
-    project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'
-    build: false
-  become: false
+#- name: Ensure container is running
+#  community.docker.docker_compose:
+#    project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'
+#    build: false
+#  become: false
