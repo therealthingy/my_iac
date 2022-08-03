@@ -43,11 +43,11 @@ services:
       -s private;/mnt/share/private;yes;no;no;{{ own_user_name }};none;;comment1
 
     environment:
+      - TZ={{ timezone }}
       - USERID={{ user_uid }}
       - GROUPID={{ user_gid }}
-      - TZ={{ timezone }}
       # Allow following symlinks
-      #- "WIDELINKS=True"
+      - WIDELINKS={{ follow_symlinks }}
 
 
     labels:

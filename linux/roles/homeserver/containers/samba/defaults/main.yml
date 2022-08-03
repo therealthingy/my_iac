@@ -1,5 +1,9 @@
 ---
 container_name: samba
+
+# INSECURE !! Allows attackers to create symlink to every directory on server's fs
+follow_symlinks: False
+
 path_own_share: /mnt/storage/share/private
 path_shared_share: /mnt/storage/share/public
 
