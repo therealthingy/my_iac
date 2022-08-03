@@ -21,6 +21,7 @@
       - fdupes
       - dos2unix
       - rclone
+      - lsof
     state: present
 
 - name: Install file archiving tools
