@@ -18,10 +18,13 @@ services:
     networks:
       - default
     ports:
+      # netbios-ns – 137/tcp # NETBIOS Name Service
       - "137:137/udp"
+      # netbios-dgm – 138/tcp # NETBIOS Datagram Service
       - "138:138/udp"
-      # 'nmbd' daemon to advertise the shares
+      # netbios-ssn – 139/tcp # NETBIOS session service
       - "139:139/tcp"
+      # microsoft-ds – 445/tcp # if you are using Active Directory
       - "445:445/tcp"
 
     volumes:
