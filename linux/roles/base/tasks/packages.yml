@@ -8,6 +8,7 @@
 - name: Update and upgrade apt packages
   apt:
     update_cache: yes
+    cache_valid_time: 3600
     upgrade: yes
     autoremove: yes
 
@@ -78,7 +79,7 @@
       - zerofree
     state: present
 
-- name: Check luks is installed
+- name: Check whether luks is installed
   package_facts:
     manager: "auto"
 

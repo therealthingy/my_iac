@@ -26,8 +26,8 @@ services:
     #   - 192.168.178.1
 
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
 
     command:
       - "--log.level=WARN"
@@ -62,14 +62,8 @@ services:
 
     # REFERENCE: https://docs.traefik.io/configuration/backends/docker/#on-containers
     labels:
-     # Watchtower
       - com.centurylinklabs.watchtower.enable=true
 
-     # Traefik
-      - "traefik.enable=true"
-
-      # > Service (called by router -> resolves to actual service)
-      - "traefik.http.services.{{ container_name }}_service.loadbalancer.server.port=8080"
-
-      # > Routers
-      - "traefik.http.routers.{{ container_name }}_router.rule=Host(`{{ container_name }}.{{ domainname }}`)"
+      - traefik.enable=true
+      - traefik.http.services.{{ container_name }}_service.loadbalancer.server.port=8080
+      - traefik.http.routers.{{ container_name }}_router.rule=Host(`{{ container_name }}.{{ domainname }}`)

@@ -1,4 +1,5 @@
 ---
 dependencies:
+  - role: gather_host_facts
   # Required for rpi-fan-pwm
   - role: docker

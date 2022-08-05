@@ -2,44 +2,46 @@
 - name: Get username of current user
   changed_when: false
   become: false
-  run_once: true
   shell: whoami
-  register: username
+  register: result_username
+  when: gathered_host_facts is not defined
 
 - name: Get uid of current user
   changed_when: false
   become: false
-  run_once: true
   shell: id -u
-  register: uid
+  register: result_uid
+  when: gathered_host_facts is not defined
 
 - name: Get gid of current user
   changed_when: false
   become: false
-  run_once: true
   shell: id -g
-  register: gid
+  register: result_gid
+  when: gathered_host_facts is not defined
 
 - name: Get gid of the docker group
   changed_when: false
   become: false
-  run_once: true
   shell: >
             getent group |
             grep docker |
             awk -F: '{printf "%d", $3}'
-  register: docker_gid
+  register: result_docker_gid
+  when: gathered_host_facts is not defined
+
 
 # ALTERNATIVE 4 username: `id -u -n`
-- name: Set variables
-  run_once: true
+- name: Set variables (as facts)
   become: false
   set_fact:
                  #ansible_user_id
-    user_name={{ username.stdout }}
-    user_uid={{ uid.stdout }}
-    user_gid={{ gid.stdout }}
-    docker_gid={{ docker_gid.stdout }}
+    user_name={{ result_username.stdout }}
+    user_uid={{ result_uid.stdout }}
+    user_gid={{ result_gid.stdout }}
+    docker_gid={{ result_docker_gid.stdout }}
+    gathered_host_facts=true
+  when: gathered_host_facts is not defined
 
 
 #-  ansible.builtin.debug:

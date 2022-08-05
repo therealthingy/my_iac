@@ -6,6 +6,23 @@
       tags:
         - base
 
+
+# --  "HW specific" stuf  --
+- hosts: rpis
+  become: true
+  roles:
+    - role: rpi
+      tags:
+        - rpi
+
+- hosts: vmware_vms
+  become: true
+  roles:
+    - role: vmware
+      tags:
+        - vmware
+
+
 - hosts: workstations
   become: true
   roles:
@@ -20,7 +37,6 @@
       tags:
         - server
         - homeserver
-
     - role: docker
       tags:
         - docker
@@ -46,10 +62,6 @@
       tags:
         - homeserver
         - portainer
-    - role: homeserver/containers/rpi-pwm
-      tags:
-        - homeserver
-        - rpi-pwm
 #    - role: homeserver/containers/filebrowser
 #      tags:
 #        - homeserver
@@ -74,18 +86,3 @@
       tags:
         - homeserver
         - watchtower
-
-
-- hosts: rpis
-  become: true
-  roles:
-    - role: rpi
-      tags:
-        - rpi
-
-- hosts: vmware_vms
-  become: true
-  roles:
-    - role: vmware
-      tags:
-        - vmware

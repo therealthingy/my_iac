@@ -1,9 +1,5 @@
 ---
-- name: Check whether rpi-pwm image exists already
-  docker_image_info:
-    name: rpi-pwm
-  register: result
-
+# !!  IMPORTANT: We cannot simply check for the image and skipt this step since we need the compose file  !!
 - name: Clone repo
   become: false
   git:
@@ -12,7 +8,10 @@
     clone: yes
     depth: 1
     update: yes
-  when: result.images == ""
+  register: repo_clone
+  failed_when:
+    - repo_clone.failed
+    - not 'Local modifications exist in the destination' in repo_clone.msg
 
 - name: Ensure container is running
   community.docker.docker_compose:

@@ -40,7 +40,7 @@ services:
       # - SMTP_TIMEOUT=15
 
     volumes:
-      - '{{ docker_container_data_basedir }}/{{ container_name }}/:/data'
+      - {{ docker_container_data_basedir }}/{{ container_name }}/:/data
 
     networks:
       - {{ docker_default_network }}
