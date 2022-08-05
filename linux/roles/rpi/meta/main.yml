@@ -1,0 +1,4 @@
+---
+dependencies:
+  # Required for rpi-fan-pwm
+  - role: docker

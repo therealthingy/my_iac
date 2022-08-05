@@ -28,7 +28,7 @@ services:
       - "445:445/tcp"
 
     volumes:
-      - "{{ path_shared_share }}:/mnt/share/shared"
+      - "{{ path_shared_share }}:/mnt/share/public"
       - "{{ path_own_share }}:/mnt/share/private"
       - "{{ transmission_downloads_dir }}:/mnt/share/private/torrents"
 
@@ -40,8 +40,8 @@ services:
       -w "{{ domainname }}"
       -u "{{ own_user_name }};{{ own_user_pw }}"
       -u "{{ shared_user_name }};{{ shared_user_pw }}"
-      -s shared;/mnt/share/shared;yes;no;no;all;none;;comment1
-      -s private;/mnt/share/private;yes;no;no;{{ own_user_name }};none;;comment1
+      -s shared;/mnt/share/public;yes;no;no;all;none;;comment1
+      -s private;/mnt/share/private;no;no;no;{{ own_user_name }};none;;comment1
 
     environment:
       - TZ={{ timezone }}
@@ -50,7 +50,6 @@ services:
       # Allow following symlinks
       - WIDELINKS={{ follow_symlinks }}
 
-
     labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-      - "traefik.enable=false"
+      - com.centurylinklabs.watchtower.enable=true
+      - traefik.enable=false
