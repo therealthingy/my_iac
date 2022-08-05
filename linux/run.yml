@@ -34,10 +34,6 @@
       tags:
         - homeserver
         - bitwarden
-    - role: homeserver/containers/filebrowser
-      tags:
-        - homeserver
-        - filebrowser
     - role: homeserver/containers/nginx-helloworld
       tags:
         - homeserver
@@ -54,6 +50,10 @@
       tags:
         - homeserver
         - rpi-pwm
+#    - role: homeserver/containers/filebrowser
+#      tags:
+#        - homeserver
+#        - filebrowser
     - role: homeserver/containers/samba
       tags:
         - homeserver
