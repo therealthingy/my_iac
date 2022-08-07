@@ -3,9 +3,3 @@
   service:
     name: sshd
     state: restarted
-
-- name: restart and enable new ipv6 addr service
-  service:
-    name: "{{ ipv6_systemd_service_name }}"
-    state: restarted
-    enabled: true

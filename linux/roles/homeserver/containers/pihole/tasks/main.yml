@@ -1,4 +1,7 @@
 ---
+- include_tasks: local-static-ipv6-addr.yml
+
+
 - name: Ensure data dir exists
   ansible.builtin.file:
     path: '{{ docker_container_data_basedir }}/{{ container_name }}/{{ item }}'
