@@ -2,6 +2,14 @@
 
 
 ## TODOs
+- pihole FIXES:
+   - Uncomment lower permissions (uid & gid) in compose file
+   - Fix issue
+     > dig google.com @fd00::40b3:8c93:9122:52c7
+     ;; reply from unexpected source: fd00::8656:3dd3:f10e:116d#53, expected fd00::40b3:8c93:9122:52c7#53
+    - by either configuring statically + disabling dhcpd (denyinterfaces; https://forums.raspberrypi.com/viewtopic.php?t=178387)
+    - iptables ??
+
 - traefik + filebrowser  restart container if config file has changed  ( https://raymii.org/s/tutorials/Ansible_-_Only-do-something-if-another-action-changed.html )
 
 
