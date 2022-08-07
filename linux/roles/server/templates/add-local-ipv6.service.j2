@@ -1,0 +1,11 @@
+[Unit]
+Description=thlu:{{ ipv6_systemd_service_name }}      Add a local static IPv6 (ULA) to Network-Interface
+After=basic.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/usr/sbin/ip addr add {{ ipv6_ula_addr }} dev {{ ipv6_ula_iface }}
+
+[Install]
+WantedBy=multi-user.target

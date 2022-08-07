@@ -1,0 +1,4 @@
+---
+ipv6_ula_iface: eth0
+ipv6_ula_addr: fd00::40b3:8c93:9122:52c7/64
+ipv6_systemd_service_name: add-local-ipv6.service
