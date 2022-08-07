@@ -14,19 +14,19 @@ services:
     restart: always
 
     ports:
-      - 0.0.0.0:53:53/tcp
-      - 0.0.0.0:53:53/udp
+      - 53:53/tcp
+      - 53:53/udp
       # 67 = DHCP -> could be uncommented ???
-      - 0.0.0.0:67:67/udp
+      - 67:67/udp
       # Backdoor for Admin-interface (bypassing traefik)
-      # - 0.0.0.0:8053:80/tcp
+      # 8053:80/tcp
 
     # See: https://github.com/pi-hole/docker-pi-hole#environment-variables
     environment:
-      PIHOLE_UID: {{ user_uid }}
-      WEB_UID: {{ user_gid }}
-      PIHOLE_GID: {{ user_uid }}
-      WEB_GID: {{ user_gid }}
+      #PIHOLE_UID: {{ user_uid }}
+      #WEB_UID: {{ user_gid }}
+      #PIHOLE_GID: {{ user_uid }}
+      #WEB_GID: {{ user_gid }}
 
       TZ: {{ timezone }}
       # DNS1: "8.8.8.8"
