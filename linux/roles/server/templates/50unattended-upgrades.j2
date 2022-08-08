@@ -5,11 +5,7 @@ Unattended-Upgrade::Automatic-Reboot-Time "{{ autoupdate_reboot_time }}";
 Unattended-Upgrade::InstallOnShutdown "false";
 
 Unattended-Upgrade::Origins-Pattern {
-//        "origin=Debian,codename=${distro_codename}-updates";
-        "origin=Debian,codename=${distro_codename},label=Debian";
-        "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
-        "origin=Raspbian,codename=${distro_codename},label=Raspbian";
-        "origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
+        {{ autoupdate_allowed_origins | indent(width=8) }}
 };
 
 Unattended-Upgrade::MailOnlyOnError "true";
