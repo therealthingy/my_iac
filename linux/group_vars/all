@@ -1,4 +1,5 @@
 locale: en_US.UTF-8
+
 # --  Unattended upgrades  --
 # Set the time at which the system should reboot after installing updates (24H format)
 autoupdate_reboot_time: 04:00

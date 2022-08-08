@@ -3,9 +3,13 @@ Unattended-Upgrade::Remove-Unused-Dependencies "true";
 Unattended-Upgrade::Automatic-Reboot "true";
 Unattended-Upgrade::Automatic-Reboot-Time "{{ autoupdate_reboot_time }}";
 Unattended-Upgrade::InstallOnShutdown "false";
-
-Unattended-Upgrade::Origins-Pattern {
-        {{ autoupdate_allowed_origins | indent(width=8) }}
-};
-
 Unattended-Upgrade::MailOnlyOnError "true";
+
+// See `apt-cache policy` for origins
+Unattended-Upgrade::Origins-Pattern {
+        {{ autoupdate_allowed_origins | indent(width=8) }}};
+
+Unattended-Upgrade::Allowed-Origins {
+{% if docker_command_result.rc == 0 %}
+        "Docker:${distro_codename}";
+{% endif %}};
