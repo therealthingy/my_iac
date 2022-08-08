@@ -7,7 +7,7 @@
     path: '{{ docker_container_data_basedir }}/{{ container_name }}/{{ item }}'
     state: directory
     mode: 0755
-  become: true             # REQUIRED since container runs as root
+  #become: true             # REQUIRED since container runs as root
   with_items:
     - hole
     - dns

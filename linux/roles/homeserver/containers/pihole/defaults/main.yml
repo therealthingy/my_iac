@@ -10,6 +10,8 @@ pihole_web_pw: !vault |
           6235326661666339350a643934653038663166383236373831633666323161633635636365653936
           6661
 
+pihole_dns_server_1: 1.1.1.1
+pihole_dns_server_2: 8.8.8.8
 
 ipv6_ula_iface: eth0
 ipv6_ula_addr: fd00::40b3:8c93:9122:52c7/64

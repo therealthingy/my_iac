@@ -23,14 +23,13 @@ services:
 
     # See: https://github.com/pi-hole/docker-pi-hole#environment-variables
     environment:
-      #PIHOLE_UID: {{ user_uid }}
-      #WEB_UID: {{ user_gid }}
-      #PIHOLE_GID: {{ user_uid }}
-      #WEB_GID: {{ user_gid }}
+      PIHOLE_UID: {{ user_uid }}
+      WEB_UID: {{ user_gid }}
+      PIHOLE_GID: {{ user_uid }}
+      WEB_GID: {{ user_gid }}
 
       TZ: {{ timezone }}
-      # DNS1: "8.8.8.8"
-      # DNS2: "8.8.4.4"
+      PIHOLE_DNS_: {{ pihole_dns_server_1 }};{{ pihole_dns_server_2 }}
       WEBPASSWORD: {{ pihole_web_pw }}
 
       IPv6: "true"
@@ -48,8 +47,8 @@ services:
       - {{ docker_default_network }}
 
     dns:
-      - 1.1.1.1
-      - 8.8.8.8
+      - {{ pihole_dns_server_1 }}
+      - {{ pihole_dns_server_2 }}
       #- 127.0.0.1
 
     # Recommended but not required (DHCP needs NET_ADMIN)
@@ -59,10 +58,7 @@ services:
 
 
     labels:
-     # Watchtower
       - com.centurylinklabs.watchtower.enable=false
-
-     # Traefik
       - traefik.enable=true
       - traefik.http.services.{{ container_name }}_service.loadbalancer.server.port=80
       - traefik.http.routers.{{ container_name }}_router.rule=Host(`{{ container_name }}.{{ domainname }}`)
