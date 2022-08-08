@@ -1,5 +1,15 @@
 Unattended-Upgrade::MinimalSteps "true";
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
 Unattended-Upgrade::Automatic-Reboot "true";
 Unattended-Upgrade::Automatic-Reboot-Time "{{ autoupdate_reboot_time }}";
+Unattended-Upgrade::InstallOnShutdown "false";
+
+Unattended-Upgrade::Origins-Pattern {
+//        "origin=Debian,codename=${distro_codename}-updates";
+        "origin=Debian,codename=${distro_codename},label=Debian";
+        "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+        "origin=Raspbian,codename=${distro_codename},label=Raspbian";
+        "origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
+};
+
 Unattended-Upgrade::MailOnlyOnError "true";
-Unattended-Upgrade::Remove-Unused-Dependencies "true";

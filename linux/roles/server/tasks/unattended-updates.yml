@@ -10,6 +10,7 @@
     path: /etc/apt/apt.conf.d/20auto-upgrades
     state: absent
 
+# NOTE: To debug, use `sudo unattended-upgrade --debug --dry-run`
 - name: Copy unattended-upgrades configuration files in place
   template:
     src: "{{ item }}.j2"
