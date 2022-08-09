@@ -3,12 +3,6 @@ locale: en_US.UTF-8
 # --  Unattended upgrades  --
 # Set the time at which the system should reboot after installing updates (24H format)
 autoupdate_reboot_time: 04:00
-autoupdate_allowed_origins: |
-  //"origin=Debian,codename=${distro_codename}-updates";
-  "origin=Debian,codename=${distro_codename},label=Debian";
-  "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
-  "origin=Raspbian,codename=${distro_codename},label=Raspbian";
-  "origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
 
 
 # -- Docker related --

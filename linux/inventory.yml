@@ -25,6 +25,13 @@ all:
     rpis:
       hosts:
         rpi.lan:
+      vars:
+        autoupdate_allowed_origins: |
+          //"origin=Debian,codename=${distro_codename}-updates";
+          "origin=Debian,codename=${distro_codename},label=Debian";
+          "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+          "origin=Raspbian,codename=${distro_codename},label=Raspbian";
+          "origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
 
 #    vmware_vms:
 #      hosts:
