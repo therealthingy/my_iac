@@ -36,7 +36,7 @@ ansible-galaxy collection install community.docker
 * Exec 4 specific client: **`ansible-playbook --ask-vault-pass run.yml`**
   * Flags:
     * **`-e "<key>=<value>"`: Overwrite vars**
-    * `--ask-become-pass`  (not required due to passwordless sudo)
+    * **`--ask-become-pass`**  (required for first setup, not required afterwards due to passwordless sudo)
     * `--tags "<tag>,"`: Target only tagged tasks
     * `--limit "host1,host2,host3,host4"`: Only specified hosts
     * `-i "xxx.xxx.xxx.xxx,"`: Inventory

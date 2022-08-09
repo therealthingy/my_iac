@@ -16,6 +16,7 @@
       - dos2unix
       - rclone
       - lsof
+      - neovim
     state: present
 
 - name: Install file archiving tools
@@ -61,6 +62,7 @@
 - name: Install administration tools
   apt:
     name:
+      - ssh
       - mosh
     state: present
 
@@ -93,18 +95,6 @@
       - pv
       - uuid
     state: present
-
-- name: Install dev tools
-  apt:
-    name:
-      - neovim
-      - git
-      - git-lfs
-    state: present
-
-#- name: Init git LFS for current user        # NOT  IDEMPOTENT ???
-#  command: git lfs install
-#  become: false
 
 
 - include_tasks: package-python.yml

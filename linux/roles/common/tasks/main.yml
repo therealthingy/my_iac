@@ -7,4 +7,6 @@
 
 - include_tasks: user_config.yml
 
+- include_tasks: ssh.yml
+
 - include_tasks: packages.yml
