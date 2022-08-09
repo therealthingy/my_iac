@@ -32,7 +32,7 @@
         - workstation
 
 
-- hosts: servers
+- hosts: servers, homeservers
   become: true
   roles:
     - role: server/base
@@ -45,7 +45,7 @@
 
 - hosts: homeservers
   vars:
-    docker_container_data_basedir:   /home/{{ user_name }}/homeserver_data/container_data
+    docker_container_data_basedir: /home/{{ user_name }}/homeserver_data/container_data
     docker_container_config_basedir: /home/{{ user_name }}/homeserver_config/container_config
   roles:
     - role: server/homeserver/base
