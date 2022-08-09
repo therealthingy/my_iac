@@ -10,7 +10,7 @@ all:
     servers:
       hosts:
 
-    homeservers:
+    home_servers:
       hosts:
         rpi.lan:
       vars:

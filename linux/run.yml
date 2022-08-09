@@ -32,62 +32,62 @@
         - workstation
 
 
-- hosts: servers, homeservers
+- hosts: servers, home_servers
   become: true
   roles:
     - role: server/base
       tags:
         - server
-        - homeserver
+        - home_server
     - role: docker
       tags:
         - docker
 
-- hosts: homeservers
+- hosts: home_servers
   vars:
     docker_container_data_basedir: /home/{{ user_name }}/homeserver_data/container_data
     docker_container_config_basedir: /home/{{ user_name }}/homeserver_config/container_config
   roles:
-    - role: server/homeserver/base
+    - role: server/home_server/base
       tags:
-        - homeserver
-    - role: server/homeserver/containers/bitwarden
+        - home_server
+    - role: server/home_server/containers/bitwarden
       tags:
-        - homeserver
+        - home_server
         - bitwarden
-    - role: server/homeserver/containers/nginx-helloworld
+    - role: server/home_server/containers/nginx-helloworld
       tags:
-        - homeserver
+        - home_server
         - testing
-    - role: server/homeserver/containers/pihole
+    - role: server/home_server/containers/pihole
       tags:
-        - homeserver
+        - home_server
         - pihole
-    - role: server/homeserver/containers/portainer
+    - role: server/home_server/containers/portainer
       tags:
-        - homeserver
+        - home_server
         - portainer
-#    - role: server/homeserver/containers/filebrowser
+#    - role: server/home_server/containers/filebrowser
 #      tags:
-#        - homeserver
+#        - home_server
 #        - filebrowser
-    - role: server/homeserver/containers/samba
+    - role: server/home_server/containers/samba
       tags:
-        - homeserver
+        - home_server
         - samba
-    - role: server/homeserver/containers/traefik
+    - role: server/home_server/containers/traefik
       tags:
-        - homeserver
+        - home_server
         - traefik
-    - role: server/homeserver/containers/transmission
+    - role: server/home_server/containers/transmission
       tags:
-        - homeserver
+        - home_server
         - transmission
-    - role: server/homeserver/containers/volact
+    - role: server/home_server/containers/volact
       tags:
-        - homeserver
+        - home_server
         - volact
-    - role: server/homeserver/containers/watchtower
+    - role: server/home_server/containers/watchtower
       tags:
-        - homeserver
+        - home_server
         - watchtower
