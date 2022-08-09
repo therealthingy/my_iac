@@ -1,10 +1,4 @@
 ---
-- name: 'Enable other packages  (TODO: ONLY FOR RASPBIAN)'
-  replace:
-    path: /etc/apt/sources.list
-    regexp: '^# deb http://raspbian'
-    replace: 'deb http://raspbian'
-
 - name: Update and upgrade apt packages
   apt:
     update_cache: yes
