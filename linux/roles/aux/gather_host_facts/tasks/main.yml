@@ -1,4 +1,5 @@
 ---
+# --  Get user data  --
 - name: Get username of current user
   changed_when: false
   become: false
@@ -31,6 +32,16 @@
   when: gathered_host_facts is not defined
 
 
+# --  Get system info  --
+- name: Get DEB architecture
+  changed_when: false
+  shell: dpkg --print-architecture
+  register: result_deb_architecture
+  when: gathered_host_facts is not defined
+
+
+
+# --  Set host facts  --
 # ALTERNATIVE 4 username: `id -u -n`
 - name: Set variables (as facts)
   become: false
@@ -40,9 +51,11 @@
     user_uid={{ result_uid.stdout }}
     user_gid={{ result_gid.stdout }}
     docker_gid={{ result_docker_gid.stdout }}
+    deb_architecture={{ result_deb_architecture.stdout }}
     gathered_host_facts=true
   when: gathered_host_facts is not defined
 
 
 #-  ansible.builtin.debug:
-#    msg: user_name={{ user_name }}, user_uid={{ user_uid }}, docker_gid={{ docker_gid }}
+#    msg: user_name={{ user_name }}, user_uid={{ user_uid }}, docker_gid={{ docker_gid }}, deb_architecture={{ deb_architecture }}
+

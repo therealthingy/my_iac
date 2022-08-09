@@ -7,6 +7,7 @@
       - python3-pip
     state: present
 
+
 - name: Switch to python3
   alternatives:
     name: python

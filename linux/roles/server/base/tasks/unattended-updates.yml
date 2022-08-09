@@ -17,7 +17,7 @@
   failed_when: false
   changed_when: false
   check_mode: false
-  register: docker_command_result
+  register: result_docker_command
 
 # NOTE: To debug, use `sudo unattended-upgrade --debug --dry-run`
 #       Log file: `cat /var/log/unattended-upgrades/unattended-upgrades.log`

@@ -7,7 +7,6 @@
     autoremove: yes
 
 
-
 - name: Install file general purpose tools
   apt:
     name:
@@ -106,3 +105,10 @@
 #- name: Init git LFS for current user        # NOT  IDEMPOTENT ???
 #  command: git lfs install
 #  become: false
+
+
+- include_tasks: package-python.yml
+
+- include_tasks: package-tmux.yml
+
+- include_tasks: package-zsh.yml
