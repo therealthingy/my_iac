@@ -1,0 +1,7 @@
+
+---
+- name: Install internet stuff
+  apt:
+    name:
+      - wireshark
+    state: present

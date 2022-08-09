@@ -1,0 +1,3 @@
+---
+- name: grub makeconfig
+  ansible.builtin.shell: update-grub

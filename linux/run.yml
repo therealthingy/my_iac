@@ -24,12 +24,31 @@
 
 
 # --  "System specific"  --
-- hosts: workstations
+- hosts: workstations, office_workstations, dev_workstations
   become: true
   roles:
     - role: workstation/base
       tags:
         - workstation
+
+- hosts: office_workstations
+  become: true
+  roles:
+    - role: workstation/office_workstation
+      tags:
+        - workstation
+        - office_workstation
+
+- hosts: dev_workstations
+  become: true
+  roles:
+    - role: workstation/dev_workstation
+      tags:
+        - workstation
+        - dev_workstation
+    - role: docker
+      tags:
+        - docker
 
 
 - hosts: servers, home_servers

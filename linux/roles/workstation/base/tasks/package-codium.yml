@@ -1,0 +1,21 @@
+---
+- name: VSCodium - Add apt signing key
+  become: true
+  ansible.builtin.apt_key:
+    url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+    keyring: /usr/share/keyrings/vscodium-archive-keyring.gpg
+    state: present
+
+- name: VSCodium - Add repo
+  become: true
+  ansible.builtin.apt_repository:
+    repo: 'deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main'
+    filename: vscodium.list
+    state: present
+
+- name: VSCodium - Update apt cache and install it
+  become: true
+  ansible.builtin.apt:
+    update_cache: yes
+    name: codium
+    state: present

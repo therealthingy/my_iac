@@ -8,15 +8,3 @@
     mode: 0644
 
 - include_tasks: unattended-updates.yml
-
-
-- name: Install git
-  apt:
-    name:
-      - git
-      - git-lfs
-    state: present
-
-#- name: Init git LFS for current user        # TODO: NOT  IDEMPOTENT ???
-#  command: git lfs install
-#  become: false

@@ -1,0 +1,8 @@
+---
+- name: Install Office stuff
+  apt:
+    name:
+      - libreoffice
+      - texlive-full
+      - texmaker
+    state: present

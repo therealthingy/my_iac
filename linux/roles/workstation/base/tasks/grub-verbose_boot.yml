@@ -1,0 +1,17 @@
+---
+- name: 'Check if grub is used  (TODO: revise)'
+  ansible.builtin.command: which update-grub
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  register: result_grub_command
+
+- name: Enable grub verbose boot
+  lineinfile:
+    dest: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=\".*\"$'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT=""'
+    state: present
+  notify:
+    - grub makeconfig
+  when: result_grub_command.rc == 1

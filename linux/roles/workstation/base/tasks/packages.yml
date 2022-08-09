@@ -1,0 +1,26 @@
+---
+- name: Update and upgrade apt packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    upgrade: yes
+    autoremove: yes
+
+
+- name: Install CLI tools
+  apt:
+    name:
+      - trash-cli
+    state: present
+
+- name: Install media tools
+  apt:
+    name:
+      - celluloid
+      - vlc
+    state: present
+
+- include_tasks: package-brave.yml
+- include_tasks: package-codium.yml
+- include_tasks: package-conky.yml
+- include_tasks: package-nala.yml
