@@ -27,7 +27,7 @@
 - hosts: workstations
   become: true
   roles:
-    - role: workstation
+    - role: workstation/base
       tags:
         - workstation
 
