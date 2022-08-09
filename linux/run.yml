@@ -2,9 +2,9 @@
 - hosts: all
   become: true
   roles:
-    - role: base
+    - role: common
       tags:
-        - base
+        - common
 
 
 # --  "HW specific" stuf  --
@@ -23,6 +23,7 @@
         - vmware
 
 
+# --  "System specific"  --
 - hosts: workstations
   become: true
   roles:
@@ -33,7 +34,7 @@
 - hosts: servers
   become: true
   roles:
-    - role: server
+    - role: server/base
       tags:
         - server
         - homeserver
@@ -43,46 +44,46 @@
 
 - hosts: homeservers
   roles:
-    - role: homeserver/base
+    - role: server/homeserver/base
       tags:
         - homeserver
-    - role: homeserver/containers/bitwarden
+    - role: server/homeserver/containers/bitwarden
       tags:
         - homeserver
         - bitwarden
-    - role: homeserver/containers/nginx-helloworld
+    - role: server/homeserver/containers/nginx-helloworld
       tags:
         - homeserver
         - testing
-    - role: homeserver/containers/pihole
+    - role: server/homeserver/containers/pihole
       tags:
         - homeserver
         - pihole
-    - role: homeserver/containers/portainer
+    - role: server/homeserver/containers/portainer
       tags:
         - homeserver
         - portainer
-#    - role: homeserver/containers/filebrowser
+#    - role: server/homeserver/containers/filebrowser
 #      tags:
 #        - homeserver
 #        - filebrowser
-    - role: homeserver/containers/samba
+    - role: server/homeserver/containers/samba
       tags:
         - homeserver
         - samba
-    - role: homeserver/containers/traefik
+    - role: server/homeserver/containers/traefik
       tags:
         - homeserver
         - traefik
-    - role: homeserver/containers/transmission
+    - role: server/homeserver/containers/transmission
       tags:
         - homeserver
         - transmission
-    - role: homeserver/containers/volact
+    - role: server/homeserver/containers/volact
       tags:
         - homeserver
         - volact
-    - role: homeserver/containers/watchtower
+    - role: server/homeserver/containers/watchtower
       tags:
         - homeserver
         - watchtower

@@ -3,6 +3,7 @@
 
 ## TODOs
 - pihole FIXES:
+   - idempotent data dir
    - Fix issue
      > dig google.com @fd00::40b3:8c93:9122:52c7
      ;; reply from unexpected source: fd00::8656:3dd3:f10e:116d#53, expected fd00::40b3:8c93:9122:52c7#53
