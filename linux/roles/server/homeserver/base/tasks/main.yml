@@ -1,5 +1,5 @@
 ---
-- name: Set hostname
+- name: Set domainname as hostname
   become: true
   ansible.builtin.hostname:
     name: '{{ domainname }}'

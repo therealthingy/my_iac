@@ -7,7 +7,7 @@
         - common
 
 
-# --  "HW specific" stuf  --
+# --  "HW specific"  --
 - hosts: rpis
   become: true
   roles:
@@ -30,6 +30,7 @@
     - role: workstation/base
       tags:
         - workstation
+
 
 - hosts: servers
   become: true

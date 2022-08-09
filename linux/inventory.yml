@@ -2,9 +2,9 @@
 # !!  KEEP IN MIND: Must match Hosts in `~/.ssh/config` (auth details will be taken from this file)  !!
 all:
   children:
-
-#    workstations:
-#      hosts:
+    # --  "System specific"  --
+    workstations:
+      hosts:
 #        linux-dev-vm.local:
 
     servers:
@@ -15,6 +15,8 @@ all:
       hosts:
         rpi.lan:
 
+
+    # --  "HW specific"  --
     rpis:
       hosts:
         rpi.lan:
@@ -26,6 +28,6 @@ all:
           "origin=Raspbian,codename=${distro_codename},label=Raspbian";
           "origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
 
-#    vmware_vms:
-#      hosts:
+    vmware_vms:
+      hosts:
 #        linux-dev-vm.local:
