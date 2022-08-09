@@ -2,6 +2,8 @@
 
 
 ## TODOs
+- Each container role should have role docker als dependency
+
 - pihole FIXES:
    - idempotent data dir
    - Fix issue

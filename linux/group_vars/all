@@ -1,13 +1,6 @@
+
 # --  Global  --
 locale: en_US.UTF-8
-
-
-# -- Docker related --
-docker_container_data_basedir:   /home/{{ user_name }}/homeserver_data/container_data
-docker_container_config_basedir: /home/{{ user_name }}/homeserver_config/container_config
-domainname:                      "rpi.lan"
-timezone:                        "Europe/Berlin"
-docker_default_network:          "reverse_proxy"
 
 
 # TODO: MAIL W/ ANSIBLE VAULT

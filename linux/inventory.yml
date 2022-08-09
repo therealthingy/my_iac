@@ -14,12 +14,6 @@ all:
     homeservers:
       hosts:
         rpi.lan:
-
-
-    # --  "HW specific"  --
-    rpis:
-      hosts:
-        rpi.lan:
       vars:
         autoupdate_allowed_origins: |
           //"origin=Debian,codename=${distro_codename}-updates";
@@ -27,6 +21,15 @@ all:
           "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
           "origin=Raspbian,codename=${distro_codename},label=Raspbian";
           "origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
+        domainname: rpi.lan
+        timezone: Europe/Berlin
+        docker_default_network: reverse_proxy
+
+
+    # --  "HW specific"  --
+    rpis:
+      hosts:
+        rpi.lan:
 
     vmware_vms:
       hosts:

@@ -4,7 +4,7 @@
   become: false
   git:
     repo: https://github.com/therealthingy/rpi-pwm.git
-    dest: '{{ docker_container_config_basedir }}/{{ rpi_fan_pwm_container_name }}/'
+    dest: '{{ rpi_fan_pwm_container_dir }}'
     clone: yes
     depth: 1
     update: yes
@@ -15,6 +15,6 @@
 
 - name: Ensure container is running
   community.docker.docker_compose:
-    project_src: '{{ docker_container_config_basedir }}/{{ rpi_fan_pwm_container_name }}/'
+    project_src: '{{ rpi_fan_pwm_container_dir }}'
     build: true
   become: false

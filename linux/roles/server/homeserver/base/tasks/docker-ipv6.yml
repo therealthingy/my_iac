@@ -1,8 +1,8 @@
 ---
 - name: Copy docker daemon IPv6 config file
   copy:
-    src: "daemon.json"
-    dest: "/etc/docker/daemon.json"
+    src: daemon.json
+    dest: /etc/docker/daemon.json
     owner: root
     group: root
     mode: 0644
