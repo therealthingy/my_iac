@@ -1,2 +1,2 @@
-# - FIDECO M.2 NVME SATA SSD Gehäuse  (JMicron Technology Corp.)
+# - FIDECO M.2 NVME SATA SSD Gehaeuse  (JMicron Technology Corp.)
 ACTION=="add|change", ATTRS{idVendor}=="152d", ATTRS{idProduct}=="0562", SUBSYSTEM=="scsi_disk", ATTR{provisioning_mode}="unmap"

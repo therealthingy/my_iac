@@ -1,5 +1,6 @@
 ---
-- name: Copy udev rule (which enables TRIM support)
+# Enables TRIM support via UASP
+- name: Copy udev rule
   copy:
     src: "10-trim_umap.rules"
     dest: "/etc/udev/rules.d/10-trim_umap.rules"
