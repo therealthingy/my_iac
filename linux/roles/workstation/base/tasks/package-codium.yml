@@ -6,7 +6,7 @@
     keyring: /usr/share/keyrings/vscodium-archive-keyring.gpg
     state: present
 
-- name: VSCodium - Add repo
+- name: VSCodium - Add apt repo
   become: true
   ansible.builtin.apt_repository:
     repo: 'deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main'

@@ -6,7 +6,7 @@
     keyring: /etc/apt/trusted.gpg.d/volian-archive-scar-unstable.gpg
     state: present
 
-- name: nala - Add repo
+- name: nala - Add apt repo
   become: true
   apt_repository:
     repo: deb [arch=amd64,arm64,armhf] http://deb.volian.org/volian/ scar main
