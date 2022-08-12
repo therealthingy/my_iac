@@ -8,18 +8,17 @@
       - gnome-mahjongg
       - gnome-mines
       - gnome-sudoku
-      - thunderbird
-      - transmission
-      - libreoffice*
-      - rhythmbox
-      - mpv
       - gnome-calendar
-      - gnome-todo
-      - totem
-      - totem-plugins
+      - '*gnome-todo*'
+      - thunderbird*
+      - transmission*
+      - libreoffice*
+      - '*rhythmbox*'
+#      - mpv
+      - '*totem*'
       - simple-scan
-      - cheese
-      - shotwell
+      - '*cheese*'
+      - 'shotwell*'
     state: absent
     purge: true
     clean: true
