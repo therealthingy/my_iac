@@ -1,3 +1,9 @@
 ---
 - include_tasks: usb-boot.yml
 - include_tasks: rpi-fan-pwm.yml
+
+- name: 'Delete default pi user passwordless file  (TODO: Check whether newer versions still use user "pi")'
+  become: true
+  ansible.builtin.file:
+    state: absent
+    path: /etc/sudoers.d/010_pi-nopasswd
