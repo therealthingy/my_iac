@@ -54,11 +54,11 @@
   ansible.builtin.apt:
     name:
       - nmap
-      - speedtest-cli
-      - iperf
       - net-tools
       - wget
       - curl
+      - iperf
+      - speedtest-cli
     state: present
 
 - name: Install administration tools

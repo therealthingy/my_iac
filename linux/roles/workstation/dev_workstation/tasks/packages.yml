@@ -1,0 +1,37 @@
+---
+- name: Install networking tools
+  ansible.builtin.apt:
+    name:
+      - netcat
+      - wireshark
+    state: present
+
+
+- name: Install systems programming tools/libs
+  ansible.builtin.apt:
+    name:
+      # Compiler / build tools
+      - build-essential
+      - manpages-dev
+      - cmake
+      - cmake-curses-gui
+      # Debuggers / Tools
+      - binutils
+      - gdb
+      - valgrind
+      # Libs
+      - libomp-dev
+    state: present
+
+
+- name: Install Python packages
+  ansible.builtin.pip:
+    name:
+      - pdm
+# TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
+
+- name: Install Python scientific packages
+      - jupyterlab
+      - numpy
+      - scipy
+      - matplotlib
