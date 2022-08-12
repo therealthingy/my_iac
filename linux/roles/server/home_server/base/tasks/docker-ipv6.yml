@@ -1,6 +1,6 @@
 ---
 - name: Copy docker daemon IPv6 config file
-  copy:
+  ansible.builtin.copy:
     src: daemon.json
     dest: /etc/docker/daemon.json
     owner: root
@@ -35,14 +35,14 @@
 # `ip6tables -t nat -A POSTROUTING -s 2001:db8:1::/64 ! -o docker0 -j MASQUERADE`
 # sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"
 - name: Install iptables
-  apt:
+  ansible.builtin.apt:
     name:
       - iptables
       - iptables-persistent
     state: present
 
 - name: Copy iptable config tables
-  copy:
+  ansible.builtin.copy:
     src: rules.v6
     dest: /etc/iptables/rules.v6
     owner: root

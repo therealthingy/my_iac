@@ -7,7 +7,7 @@
   register: result_grub_command
 
 - name: Enable grub verbose boot
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/default/grub
     regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=\".*\"$'
     line: 'GRUB_CMDLINE_LINUX_DEFAULT=""'

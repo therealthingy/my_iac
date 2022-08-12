@@ -1,7 +1,7 @@
 ---
 # Enables TRIM support via UASP
 - name: Copy udev rule
-  copy:
+  ansible.builtin.copy:
     src: "10-trim_umap.rules"
     dest: "/etc/udev/rules.d/10-trim_umap.rules"
     owner: root
@@ -9,7 +9,7 @@
     mode: 0644
 
 - name: Enable fstrimmer service
-  service:
+  ansible.builtin.service:
     name: fstrim.timer
     enabled: true
     state: started

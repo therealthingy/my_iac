@@ -1,6 +1,6 @@
 ---
 - name: Update and upgrade apt packages
-  apt:
+  ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
     upgrade: true
@@ -8,13 +8,13 @@
 
 
 - name: Install CLI tools
-  apt:
+  ansible.builtin.apt:
     name:
       - trash-cli
     state: present
 
 - name: Install media tools
-  apt:
+  ansible.builtin.apt:
     name:
       - celluloid
       - vlc

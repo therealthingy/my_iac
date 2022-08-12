@@ -9,9 +9,23 @@
 
 - name: Firefox - Add apt repo
   become: true
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: ppa:mozillateam/ppa
     state: present
   when: ansible_facts.os_family == "Ubuntu"
 
-#echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+#UNATTENDED UPGRADES: echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+
+#echo '
+#Package: *
+#Pin: release o=LP-PPA-mozillateam
+#Pin-Priority: 1001
+#' | sudo tee /etc/apt/preferences.d/mozilla-firefox
+
+
+- name: Firefox - Install
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    name: firefox
+    state: present

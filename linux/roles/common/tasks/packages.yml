@@ -1,6 +1,6 @@
 ---
 - name: Update and upgrade apt packages
-  apt:
+  ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
     upgrade: dist
@@ -8,7 +8,7 @@
 
 
 - name: Install file general purpose tools
-  apt:
+  ansible.builtin.apt:
     name:
       - tree
       - rename
@@ -20,7 +20,7 @@
     state: present
 
 - name: Install file archiving tools
-  apt:
+  ansible.builtin.apt:
     name:
       - pigz
       - pbzip2
@@ -30,13 +30,13 @@
     state: present
 
 - name: Install backup tools
-  apt:
+  ansible.builtin.apt:
     name:
       - borgbackup
     state: present
 
 - name: Install monitoring tools
-  apt:
+  ansible.builtin.apt:
     name:
       - neofetch
       - htop
@@ -49,7 +49,7 @@
     state: present
 
 - name: Install networking tools
-  apt:
+  ansible.builtin.apt:
     name:
       - nmap
       - speedtest-cli
@@ -60,14 +60,14 @@
     state: present
 
 - name: Install administration tools
-  apt:
+  ansible.builtin.apt:
     name:
       - ssh
       - mosh
     state: present
 
 - name: Install privacy tools
-  apt:
+  ansible.builtin.apt:
     name:
       - ccrypt
       - cryptsetup
@@ -75,11 +75,11 @@
     state: present
 
 - name: Check whether luks is installed
-  package_facts:
+  ansible.builtin.package_facts:
     manager: "auto"
 
 - name: Install privacy tool 'luks sparse file helper'
-  copy:
+  ansible.builtin.copy:
     src: "luks-sparse_helper"
     dest: "/usr/local/bin/luks-sparse_helper"
     owner: root
@@ -88,7 +88,7 @@
   when: "'ccrypt' in ansible_facts.packages"
 
 - name: Install shell related tools
-  apt:
+  ansible.builtin.apt:
     name:
       - moreutils
       - procps      # watch command
@@ -103,14 +103,14 @@
 
 # (!!  ALSO REQUIRED FOR ZSH  !!)
 - name: Install git
-  apt:
+  ansible.builtin.apt:
     name:
       - git
       - git-lfs
     state: present
 
 #- name: Init git LFS for current user        # TODO: NOT  IDEMPOTENT ???
-#  command: git lfs install
+#  ansible.builtin.command: git lfs install
 #  become: false
 
 - include_tasks: package-zsh.yml

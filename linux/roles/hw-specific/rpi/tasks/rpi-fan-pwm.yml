@@ -2,7 +2,7 @@
 # !!  IMPORTANT: We cannot simply check for the image and skipt this step since we need the compose file  !!
 - name: Clone repo
   become: false
-  git:
+  ansible.builtin.git:
     repo: https://github.com/therealthingy/rpi-pwm.git
     dest: '{{ rpi_fan_pwm_container_dir }}'
     clone: true

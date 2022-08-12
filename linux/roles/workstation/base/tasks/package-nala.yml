@@ -8,14 +8,14 @@
 
 - name: nala - Add apt repo
   become: true
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb [arch=amd64,arm64,armhf] http://deb.volian.org/volian/ scar main
     filename: 'volian-archive-scar-unstable.list'
     state: present
 
 - name: nala - Update apt cache and install it
   become: true
-  apt:
+  ansible.builtin.apt:
     update_cache: true
     name: nala
     state: present

@@ -1,6 +1,6 @@
 ---
 - name: Install cert-gen script
-  copy:
+  ansible.builtin.copy:
     src: 'ssl-certgen'
     dest: '/usr/bin/ssl-certgen'
     owner: 'root'
@@ -24,7 +24,7 @@
   become: false
 
 - name: Copy config file
-  copy:
+  ansible.builtin.copy:
     src: 'dynamic-conf.yml'
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/dynamic-conf.yml'
     owner: '{{ user_name }}'

@@ -1,13 +1,13 @@
 ---
 - name: Install zsh
-  apt:
+  ansible.builtin.apt:
     name:
       - zsh
     state: present
 
 - name: Create zsh config dir
   become: false
-  file:
+  ansible.builtin.file:
     path: '/home/{{ user_name }}/.config/zsh/'
     state: directory
     owner: '{{ user_name }}'
@@ -16,7 +16,7 @@
 
 - name: Install oh-my-zsh
   become: false
-  git:
+  ansible.builtin.git:
     repo: https://github.com/ohmyzsh/ohmyzsh.git
     dest: '/home/{{ user_name }}/.oh-my-zsh/'
     clone: true
@@ -25,7 +25,7 @@
 
 - name: Install oh-my-zsh plugins
   become: false
-  git:
+  ansible.builtin.git:
     repo: 'https://github.com/zsh-users/{{ item }}'
     dest: '/home/{{ user_name }}/.oh-my-zsh/custom/plugins/{{ item }}/'
     clone: true
@@ -37,7 +37,7 @@
 
 - name: Install oh-my-zsh theme
   become: false
-  git:
+  ansible.builtin.git:
     repo: 'https://github.com/romkatv/powerlevel10k.git'
     dest: '/home/{{ user_name }}/.oh-my-zsh/custom/themes/powerlevel10k/'
     clone: true
@@ -46,7 +46,7 @@
 
 - name: Copy zsh config files
   become: false
-  copy:
+  ansible.builtin.copy:
     src: '{{ item.src }}'
     dest: '/home/{{ user_name }}/.config/zsh/{{ item.dest_file }}'
     owner: '{{ user_name }}'
@@ -60,12 +60,12 @@
 
 - name: Set zsh config dir
   become: false
-  file:
+  ansible.builtin.file:
     src: '/home/{{ user_name }}/.config/zsh/.zshenv'
     dest: '/home/{{ user_name }}/.zshenv'
     state: link
 
 - name: Change shell
-  user:
+  ansible.builtin.user:
     name: '{{ user_name }}'
     shell: /bin/zsh

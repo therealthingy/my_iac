@@ -3,28 +3,28 @@
 - name: Get username of current user
   changed_when: false
   become: false
-  shell: whoami
+  ansible.builtin.shell: whoami
   register: result_username
   when: gathered_host_facts is not defined
 
 - name: Get uid of current user
   changed_when: false
   become: false
-  shell: id -u
+  ansible.builtin.shell: id -u
   register: result_uid
   when: gathered_host_facts is not defined
 
 - name: Get gid of current user
   changed_when: false
   become: false
-  shell: id -g
+  ansible.builtin.shell: id -g
   register: result_gid
   when: gathered_host_facts is not defined
 
 - name: Get gid of the docker group
   changed_when: false
   become: false
-  shell: >
+  ansible.builtin.shell: >
             getent group |
             grep docker |
             awk -F: '{printf "%d", $3}'
@@ -35,7 +35,7 @@
 # --  Get system info  --
 - name: Get DEB architecture
   changed_when: false
-  shell: dpkg --print-architecture
+  ansible.builtin.shell: dpkg --print-architecture
   register: result_deb_architecture
   when: gathered_host_facts is not defined
 
@@ -45,7 +45,7 @@
 # ALTERNATIVE 4 username: `id -u -n`
 - name: Set variables (as facts)
   become: false
-  set_fact:
+  ansible.builtin.set_fact:
                  #ansible_user_id
     user_name={{ result_username.stdout }}
     user_uid={{ result_uid.stdout }}

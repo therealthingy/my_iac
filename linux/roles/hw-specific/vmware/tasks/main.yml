@@ -1,13 +1,13 @@
 ---
 - name: Install open-vm-tools
-  apt:
+  ansible.builtin.apt:
     name:
       - open-vm-tools
       - fuse
     state: present
 
 - name: Mount vmware shares on boot
-  mount:
+  ansible.posix.mount:
     path: '{{ mount_dir }}'
     src: 'vmhgfs-fuse'
     fstype: fuse

@@ -1,7 +1,7 @@
 
 ---
 - name: Install internet stuff
-  apt:
+  ansible.builtin.apt:
     name:
       - wireshark
     state: present

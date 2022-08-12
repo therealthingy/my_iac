@@ -1,6 +1,6 @@
 ---
 - name: Install Office stuff
-  apt:
+  ansible.builtin.apt:
     name:
       - libreoffice
       - texlive-full

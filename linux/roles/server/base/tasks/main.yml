@@ -1,6 +1,6 @@
 ---
 - name: Install login system stats script
-  copy:
+  ansible.builtin.copy:
     src: "10-show_system_info"
     dest: "/etc/zsh/zprofile"
     owner: root
