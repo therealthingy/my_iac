@@ -11,5 +11,5 @@
 - name: Enable fstrimmer service
   service:
     name: fstrim.timer
-    enabled: yes
+    enabled: true
     state: started

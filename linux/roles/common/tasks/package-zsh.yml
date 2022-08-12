@@ -19,18 +19,18 @@
   git:
     repo: https://github.com/ohmyzsh/ohmyzsh.git
     dest: '/home/{{ user_name }}/.oh-my-zsh/'
-    clone: yes
+    clone: true
     depth: 1
-    update: yes
+    update: true
 
 - name: Install oh-my-zsh plugins
   become: false
   git:
     repo: 'https://github.com/zsh-users/{{ item }}'
     dest: '/home/{{ user_name }}/.oh-my-zsh/custom/plugins/{{ item }}/'
-    clone: yes
+    clone: true
     depth: 1
-    update: yes
+    update: true
   with_items:
     - 'zsh-syntax-highlighting'
     - 'zsh-autosuggestions'
@@ -40,9 +40,9 @@
   git:
     repo: 'https://github.com/romkatv/powerlevel10k.git'
     dest: '/home/{{ user_name }}/.oh-my-zsh/custom/themes/powerlevel10k/'
-    clone: yes
+    clone: true
     depth: 1
-    update: yes
+    update: true
 
 - name: Copy zsh config files
   become: false

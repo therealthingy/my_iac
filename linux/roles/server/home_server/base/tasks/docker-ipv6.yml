@@ -13,7 +13,7 @@
 - name: Create a network w/ IPv6 IPAM config
   community.docker.docker_network:
     name: '{{ docker_default_network }}'
-    enable_ipv6: yes
+    enable_ipv6: true
     ipam_config:
       - subnet: 2001:db8:1::/64
 

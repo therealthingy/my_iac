@@ -16,6 +16,6 @@
 - name: nala - Update apt cache and install it
   become: true
   apt:
-    update_cache: yes
+    update_cache: true
     name: nala
     state: present

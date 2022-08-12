@@ -16,6 +16,6 @@
 - name: VSCodium - Update apt cache and install it
   become: true
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
     name: codium
     state: present

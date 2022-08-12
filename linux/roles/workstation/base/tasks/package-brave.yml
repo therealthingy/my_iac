@@ -17,6 +17,6 @@
 - name: Brave - Update apt cache and install it
   become: true
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
     name: brave-browser
     state: present

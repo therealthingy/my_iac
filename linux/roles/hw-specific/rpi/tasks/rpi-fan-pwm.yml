@@ -5,9 +5,9 @@
   git:
     repo: https://github.com/therealthingy/rpi-pwm.git
     dest: '{{ rpi_fan_pwm_container_dir }}'
-    clone: yes
+    clone: true
     depth: 1
-    update: yes
+    update: true
   register: repo_clone
   failed_when:
     - repo_clone.failed
