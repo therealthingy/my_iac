@@ -97,10 +97,6 @@
     state: present
 
 
-- include_tasks: package-python.yml
-
-- include_tasks: package-tmux.yml
-
 # (!!  ALSO REQUIRED FOR ZSH  !!)
 - name: Install git
   ansible.builtin.apt:
@@ -113,4 +109,8 @@
 #  ansible.builtin.command: git lfs install
 #  become: false
 
-- include_tasks: package-zsh.yml
+
+- include_tasks:
+  - package-python.yml
+  - package-tmux.yml
+  - package-zsh.yml

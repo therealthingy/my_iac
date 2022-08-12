@@ -1,8 +1,9 @@
 ---
-- include_tasks: grub-verbose_boot.yml
-
 - name: Install internet stuff
   ansible.builtin.apt:
     name:
       - wireshark
     state: present
+
+
+- include_tasks: grub-verbose_boot.yml

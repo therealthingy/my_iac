@@ -1,4 +1,5 @@
 ---
+# apt -- show installed packages: `apt list --installed`
 - name: Update and upgrade apt packages
   ansible.builtin.apt:
     update_cache: true
@@ -20,7 +21,13 @@
       - vlc
     state: present
 
-- include_tasks: package-brave.yml
-- include_tasks: package-codium.yml
-- include_tasks: package-conky.yml
-- include_tasks: package-nala.yml
+- include_tasks:
+  - package-brave.yml
+  - package-codium.yml
+  - package-conky.yml
+  - package-nala.yml
+
+
+
+
+#  aisleriot when: ansible_facts.os_family == "Ubuntu"
