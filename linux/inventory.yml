@@ -10,10 +10,6 @@ all:
       hosts:
 #        linux-dev-vm.local:
 
-    office_workstations:
-      hosts:
-#        linux-dev-vm.local:
-
 
     servers:
       hosts:

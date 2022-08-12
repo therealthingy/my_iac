@@ -31,14 +31,6 @@
       tags:
         - workstation
 
-- hosts: office_workstations
-  become: true
-  roles:
-    - role: workstation/office_workstation
-      tags:
-        - workstation
-        - office_workstation
-
 - hosts: dev_workstations
   become: true
   roles:

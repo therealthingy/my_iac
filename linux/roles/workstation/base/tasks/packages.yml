@@ -1,12 +1,35 @@
 ---
 # apt -- show installed packages: `apt list --installed`
+# ---------------------------------------------------------
+- name: Remove unncessary game packages
+  ansible.builtin.apt:
+    name:
+      - aisleriot
+      - gnome-mahjongg
+      - gnome-mines
+      - gnome-sudoku
+    state: absent
+    autoremove: true
+    purge: true
+  when: ansible_facts.distribution == "Ubuntu"
+
+# TODO:  Cleanup Ubuntu distro
+- name: Uninstall stuff which may be useful
+  ansible.builtin.apt:
+    name:
+      - libreoffice
+    state: present
+  when: ansible_facts.distribution == "Ubuntu"
+# ---------------------------------------------------------
+
+
 - name: Update and upgrade apt packages
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
-    upgrade: true
+    upgrade: dist
     autoremove: true
-
+    allow_downgrade: yes
 
 - name: Install CLI tools
   ansible.builtin.apt:
@@ -21,6 +44,13 @@
       - vlc
     state: present
 
+- name: Install LaTex
+  ansible.builtin.apt:
+    name:
+      - texlive-full
+      - texmaker
+    state: present
+
 - include_tasks: '{{ item }}'
   loop:
     - package-brave.yml
@@ -28,15 +58,3 @@
     - package-codium.yml
     - package-conky.yml
     - package-nala.yml
-
-
-# ---------------------------------------------------------
-- name: Remove unncessary game packages
-  ansible.builtin.apt:
-    name:
-      - aisleriot
-      - gnome-mahjongg
-      - gnome-mines
-      - gnome-sudoku
-    state: absent
-  when: ansible_facts.distribution == "Ubuntu"

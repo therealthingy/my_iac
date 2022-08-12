@@ -1,8 +1,0 @@
----
-- name: Install Office stuff
-  ansible.builtin.apt:
-    name:
-      - libreoffice
-      - texlive-full
-      - texmaker
-    state: present
