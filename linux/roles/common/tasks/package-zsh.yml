@@ -27,14 +27,16 @@
 - name: Install oh-my-zsh plugins
   become: false
   ansible.builtin.git:
-    repo: 'https://github.com/zsh-users/{{ item }}'
-    dest: '/home/{{ user_name }}/.oh-my-zsh/custom/plugins/{{ item }}/'
+    repo: 'https://github.com/zsh-users/{{ plugin }}'
+    dest: '/home/{{ user_name }}/.oh-my-zsh/custom/plugins/{{ plugin }}/'
     clone: true
     depth: 1
     update: true
   with_items:
     - 'zsh-syntax-highlighting'
     - 'zsh-autosuggestions'
+  loop_control:
+    loop_var: plugin
 
 - name: Install oh-my-zsh theme
   become: false
@@ -49,8 +51,8 @@
 - name: Copy zsh config files
   become: false
   ansible.builtin.copy:
-    src: '{{ item.src }}'
-    dest: '/home/{{ user_name }}/.config/zsh/{{ item.dest_file }}'
+    src: '{{ config_file.src }}'
+    dest: '/home/{{ user_name }}/.config/zsh/{{ config_file.dest_file }}'
     owner: '{{ user_name }}'
     group: '{{ user_name }}'
     mode: 0644
@@ -59,6 +61,8 @@
     - { src: 'zsh/zshfunc', dest_file: '.zshfunc' }
     - { src: 'zsh/p10k', dest_file: '.p10k.zsh' }
     - { src: 'zsh/zshrc', dest_file: '.zshrc' }
+  loop_control:
+    loop_var: config_file
 
 - name: Set zsh config dir
   become: false

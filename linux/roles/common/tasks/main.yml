@@ -5,8 +5,10 @@
     name: '{{ locale }}'
     state: present
 
-- include_tasks: '{{ item }}'
+- include_tasks: '{{ included_task }}'
   loop:
     - config-user.yml
     - config-ssh.yml
     - packages.yml
+  loop_control:
+    loop_var: included_task
