@@ -5,6 +5,7 @@
     name: '{{ locale }}'
     state: present
 
+
 - include_tasks: '{{ included_task }}'
   loop:
     - config-user.yml

@@ -34,8 +34,6 @@
   become: true
   ansible.builtin.apt:
     update_cache: true
-    autoremove: true
-    allow_downgrade: true
   when: ansible_facts.distribution == "Ubuntu" and result_firefox_repo.changed
 
 

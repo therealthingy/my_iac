@@ -4,7 +4,9 @@
     update_cache: true
     cache_valid_time: 3600
     upgrade: dist
+    clean: true
     autoremove: true
+    allow_downgrade: true
 
 
 - name: Install file general purpose tools

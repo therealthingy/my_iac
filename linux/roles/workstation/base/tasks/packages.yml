@@ -8,8 +8,9 @@
       - gnome-mahjongg
       - gnome-mines
       - gnome-sudoku
-      - libreoffice*
       - thunderbird
+      - transmission
+      - libreoffice*
       - rhythmbox
       - mpv
       - gnome-calendar
@@ -34,7 +35,6 @@
     upgrade: dist
     clean: true
     autoremove: true
-#    allow_downgrade: true
 
 - name: Install CLI tools
   ansible.builtin.apt:
