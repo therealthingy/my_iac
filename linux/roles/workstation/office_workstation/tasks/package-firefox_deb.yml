@@ -23,7 +23,7 @@
 #' | sudo tee /etc/apt/preferences.d/mozilla-firefox
 
 
-- name: Firefox - Install
+- name: Firefox -  - Update apt cache and install it
   become: true
   ansible.builtin.apt:
     update_cache: true

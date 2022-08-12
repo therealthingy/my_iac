@@ -5,6 +5,7 @@
       - zsh
     state: present
 
+
 - name: Create zsh config dir
   become: false
   ansible.builtin.file:
@@ -44,6 +45,7 @@
     depth: 1
     update: true
 
+
 - name: Copy zsh config files
   become: false
   ansible.builtin.copy:
@@ -53,10 +55,10 @@
     group: '{{ user_name }}'
     mode: 0644
   with_items:
-    - { src: 'zshenv', dest_file: '.zshenv' }
-    - { src: 'zshfunc', dest_file: '.zshfunc' }
-    - { src: 'zsh_theme_p10k', dest_file: '.p10k.zsh' }
-    - { src: 'zshrc', dest_file: '.zshrc' }
+    - { src: 'zsh/zshenv', dest_file: '.zshenv' }
+    - { src: 'zsh/zshfunc', dest_file: '.zshfunc' }
+    - { src: 'zsh/p10k', dest_file: '.p10k.zsh' }
+    - { src: 'zsh/zshrc', dest_file: '.zshrc' }
 
 - name: Set zsh config dir
   become: false
@@ -64,6 +66,7 @@
     src: '/home/{{ user_name }}/.config/zsh/.zshenv'
     dest: '/home/{{ user_name }}/.zshenv'
     state: link
+
 
 - name: Change shell
   ansible.builtin.user:
