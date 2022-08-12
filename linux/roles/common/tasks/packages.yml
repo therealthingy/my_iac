@@ -76,12 +76,12 @@
 
 - name: Check whether luks is installed
   ansible.builtin.package_facts:
-    manager: "auto"
+    manager: 'auto'
 
 - name: Install privacy tool 'luks sparse file helper'
   ansible.builtin.copy:
-    src: "luks-sparse_helper"
-    dest: "/usr/local/bin/luks-sparse_helper"
+    src: luks-sparse_helper
+    dest: /usr/local/bin/luks-sparse_helper
     owner: root
     group: root
     mode: 0755

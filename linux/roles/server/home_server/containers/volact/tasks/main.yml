@@ -10,7 +10,7 @@
   ansible.builtin.template:
     src: docker-compose.yml.j2
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
-    mode: '0640'
+    mode: 0640
   become: false
 
 - name: Ensure container is running

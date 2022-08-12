@@ -2,7 +2,7 @@
 - name: Generate the locale
   become: true
   community.general.locale_gen:
-    name: "{{ locale }}"
+    name: '{{ locale }}'
     state: present
 
 - include_tasks: user_config.yml

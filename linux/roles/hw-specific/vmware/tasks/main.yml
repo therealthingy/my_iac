@@ -11,5 +11,5 @@
     path: '{{ mount_dir }}'
     src: 'vmhgfs-fuse'
     fstype: fuse
-    opts: "defaults,allow_other"
+    opts: 'defaults,allow_other'
     state: mounted

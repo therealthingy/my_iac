@@ -7,10 +7,10 @@
     path: '{{ docker_container_data_basedir }}/{{ container_name }}/{{ item }}'
     state: directory
     mode: 0755
-  #become: true             # REQUIRED since container runs as root
   with_items:
     - hole
     - dns
+#  become: true             # REQUIRED since container runs as root
 
 - name: Create config dir
   ansible.builtin.file:
@@ -23,7 +23,7 @@
   ansible.builtin.template:
     src: docker-compose.yml.j2
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
-    mode: '0640'
+    mode: 0640
   become: false
 
 - name: Ensure container is running

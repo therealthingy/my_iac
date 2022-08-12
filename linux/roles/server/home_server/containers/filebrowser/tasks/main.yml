@@ -15,7 +15,7 @@
 
 - name: Copy config file
   ansible.builtin.copy:
-    src: 'settings.json'
+    src: settings.json
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/settings.json'
     owner: '{{ user_name }}'
     group: '{{ user_name }}'
@@ -26,6 +26,6 @@
   ansible.builtin.template:
     src: docker-compose.yml.j2
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
-    mode: '0640'
-  become: false
+    mode: 0640
   #notify: Restart pi-hole
+  become: false
