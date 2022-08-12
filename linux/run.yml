@@ -86,14 +86,17 @@
       tags:
         - home_server
         - portainer
-#    - role: server/home_server/containers/filebrowser
-#      tags:
-#        - home_server
-#        - filebrowser
+
+# KEEP IN MIND: Only run samba - OR - filebrowser (otherwise weird behvaior when using simultaneously)
+    - role: server/home_server/containers/filebrowser
+      tags:
+        - home_server
+        - filebrowser
     - role: server/home_server/containers/samba
       tags:
         - home_server
         - samba
+
     - role: server/home_server/containers/traefik
       tags:
         - home_server

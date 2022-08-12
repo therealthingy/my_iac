@@ -13,7 +13,7 @@ services:
     volumes:
       - ./settings.json:/.filebrowser.json
       - {{ docker_container_data_basedir }}/{{ container_name }}/:/var/filebrowser-data
-      - {{ container_share_dir }}/:/srv/
+      - {{ filebrowser_container_share_dir }}/:/srv/
     networks:
       - {{ docker_default_network }}
     labels:

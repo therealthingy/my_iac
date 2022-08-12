@@ -41,3 +41,7 @@
   ansible.builtin.apt:
     name: firefox
     state: present
+
+
+
+# TODO: firefox config

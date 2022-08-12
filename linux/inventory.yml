@@ -40,6 +40,7 @@ all:
                     65383261643938353634333933636639666532303965306135626465633034353661346266356137
                     6235326661666339350a643934653038663166383236373831633666323161633635636365653936
                     6661
+          transmission_local_network: 192.168.0.0/16
           transmission_web_username: choel
           transmission_web_password: !vault |
                     $ANSIBLE_VAULT;1.1;AES256
@@ -50,6 +51,7 @@ all:
                     3965
           transmission_vpn_file: /mnt/storage/transmission/etc/vpn-profiles/AirVPN_Switzerland_UDP-443.ovpn
           transmission_storage_path: /mnt/storage/transmission/var/downloads
+          filebrowser_container_share_dir: /mnt/storage
           samba_path_own_share: /mnt/storage/share/private
           samba_path_shared_share: /mnt/storage/share/public
           samba_transmission_downloads_dir: /mnt/storage/transmission/var/downloads/completed

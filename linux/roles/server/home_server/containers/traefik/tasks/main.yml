@@ -1,10 +1,10 @@
 ---
 - name: Install cert-gen script
   ansible.builtin.copy:
-    src: 'ssl-certgen'
-    dest: '/usr/bin/ssl-certgen'
-    owner: 'root'
-    group: 'root'
+    src: bin/ssl-certgen
+    dest: /usr/bin/ssl-certgen
+    owner: root
+    group: root
     mode: 0644
   become: true
 
@@ -37,8 +37,8 @@
     src: docker-compose.yml.j2
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
     mode: 0640
-  become: false
   #notify: Restart pi-hole
+  become: false
 
 - name: Ensure container is running
   community.docker.docker_compose:

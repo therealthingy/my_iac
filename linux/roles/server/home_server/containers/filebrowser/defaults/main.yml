@@ -1,3 +1,2 @@
 ---
 container_name: filebrowser
-container_share_dir: '/mnt/storage'

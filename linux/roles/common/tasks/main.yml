@@ -5,8 +5,8 @@
     name: '{{ locale }}'
     state: present
 
-- include_tasks: user_config.yml
+- include_tasks: config-user.yml
 
-- include_tasks: ssh.yml
+- include_tasks: config-ssh.yml
 
 - include_tasks: packages.yml

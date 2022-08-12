@@ -1,6 +1,5 @@
 ---
 container_name: transmission
-local_network: 192.168.0.0/16
 peers_blocklist: https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz
 max_parallel_downloads: 10
 
