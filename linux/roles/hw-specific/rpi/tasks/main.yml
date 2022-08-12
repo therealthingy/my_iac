@@ -5,6 +5,7 @@
     state: absent
     path: /etc/sudoers.d/010_pi-nopasswd
 
-- include_tasks:
-  - usb-boot.yml
-  - rpi-fan-pwm.yml
+- include_tasks: '{{ item }}'
+  loop:
+    - usb-boot.yml
+    - rpi-fan-pwm.yml

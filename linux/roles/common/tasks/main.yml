@@ -5,7 +5,8 @@
     name: '{{ locale }}'
     state: present
 
-- include_tasks:
-  - config-user.yml
-  - config-ssh.yml
-  - packages.yml
+- include_tasks: '{{ item }}'
+  loop:
+    - config-user.yml
+    - config-ssh.yml
+    - packages.yml

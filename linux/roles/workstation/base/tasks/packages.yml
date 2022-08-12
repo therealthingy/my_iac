@@ -21,13 +21,22 @@
       - vlc
     state: present
 
-- include_tasks:
-  - package-brave.yml
-  - package-codium.yml
-  - package-conky.yml
-  - package-nala.yml
+- include_tasks: '{{ item }}'
+  loop:
+    - package-brave.yml
+    - package-firefox.yml
+    - package-codium.yml
+    - package-conky.yml
+    - package-nala.yml
 
 
-
-
-#  aisleriot when: ansible_facts.os_family == "Ubuntu"
+# ---------------------------------------------------------
+- name: Remove unncessary game packages
+  ansible.builtin.apt:
+    name:
+      - aisleriot
+      - gnome-mahjongg
+      - gnome-mines
+      - gnome-sudoku
+    state: absent
+  when: ansible_facts.os_family == "Ubuntu"

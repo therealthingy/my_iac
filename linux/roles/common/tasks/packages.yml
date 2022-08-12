@@ -110,7 +110,8 @@
 #  become: false
 
 
-- include_tasks:
-  - package-python.yml
-  - package-tmux.yml
-  - package-zsh.yml
+- include_tasks: '{{ item }}'
+  loop:
+    - package-python.yml
+    - package-tmux.yml
+    - package-zsh.yml
