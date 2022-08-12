@@ -1,24 +1,28 @@
 ---
 # apt -- show installed packages: `apt list --installed`
 # ---------------------------------------------------------
-- name: Remove unncessary game packages
+- name: Uninstall unncessary apt packages (mostly Gnome stuff)
   ansible.builtin.apt:
     name:
       - aisleriot
       - gnome-mahjongg
       - gnome-mines
       - gnome-sudoku
+      - libreoffice*
+      - thunderbird
+      - rhythmbox
+      - mpv
+      - gnome-calendar
+      - gnome-todo
+      - totem
+      - totem-plugins
+      - simple-scan
+      - cheese
+      - shotwell
     state: absent
-    autoremove: true
     purge: true
-  when: ansible_facts.distribution == "Ubuntu"
-
-# TODO:  Cleanup Ubuntu distro
-- name: Uninstall stuff which may be useful
-  ansible.builtin.apt:
-    name:
-      - libreoffice
-    state: present
+    clean: true
+    autoremove: true
   when: ansible_facts.distribution == "Ubuntu"
 # ---------------------------------------------------------
 
@@ -28,8 +32,9 @@
     update_cache: true
     cache_valid_time: 3600
     upgrade: dist
+    clean: true
     autoremove: true
-    allow_downgrade: yes
+#    allow_downgrade: true
 
 - name: Install CLI tools
   ansible.builtin.apt:
@@ -37,12 +42,12 @@
       - trash-cli
     state: present
 
-- name: Install media tools
-  ansible.builtin.apt:
-    name:
-      - celluloid
-      - vlc
-    state: present
+#- name: Install media tools
+#  ansible.builtin.apt:
+#    name:
+#      - celluloid
+#      - vlc
+#    state: present
 
 - name: Install LaTex
   ansible.builtin.apt:
@@ -53,8 +58,8 @@
 
 - include_tasks: '{{ item }}'
   loop:
-    - package-brave.yml
     - package-firefox.yml
+    - package-brave.yml
     - package-codium.yml
     - package-conky.yml
     - package-nala.yml

@@ -24,7 +24,7 @@
 
 
 # --  "System specific"  --
-- hosts: workstations, office_workstations, dev_workstations
+- hosts: workstations, dev_workstations
   become: true
   roles:
     - role: workstation/base
