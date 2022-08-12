@@ -39,4 +39,4 @@
       - gnome-mines
       - gnome-sudoku
     state: absent
-  when: ansible_facts.os_family == "Ubuntu"
+  when: ansible_facts.distribution == "Ubuntu"
