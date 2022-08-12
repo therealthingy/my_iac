@@ -1,9 +1,11 @@
 ---
-# Enables TRIM support via UASP
+# Enables TRIM support via UASP    (validate: `lsusb -t` -> check whether "Driver" is equal to "uas"  //  `sudo fstrim -v /`)
 - name: Copy udev rule
   ansible.builtin.copy:
-    src: "10-trim_umap.rules"
-    dest: "/etc/udev/rules.d/10-trim_umap.rules"
+    content: |
+      # - FIDECO M.2 NVME SATA SSD Gehaeuse  (JMicron Technology Corp.)
+      ACTION=="add|change", ATTRS{idVendor}=="152d", ATTRS{idProduct}=="0562", SUBSYSTEM=="scsi_disk", ATTR{provisioning_mode}="unmap"
+    dest: /etc/udev/rules.d/10-trim_umap.rules
     owner: root
     group: root
     mode: 0644
