@@ -1,0 +1,43 @@
+---
+# --  Temporary workaround (for 3rd party integrations likevideodownload plugins)  --
+- name: Firefox - Remove snap
+  become: true
+  community.general.snap:
+    name: firefox
+    state: absent
+  when: ansible_facts.os_family == "Ubuntu"
+
+- name: Firefox - Add apt repo
+  become: true
+  ansible.builtin.apt_repository:
+    repo: ppa:mozillateam/ppa
+    state: present
+  when: ansible_facts.os_family == "Ubuntu"
+
+#TODO -- UNATTENDED UPGRADES: echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+
+- name: Firefox - Pin apt repo
+  become: true
+  ansible.builtin.copy:
+    content: |
+      Package: *
+      Pin: release o=LP-PPA-mozillateam
+      Pin-Priority: 1001
+    dest: /etc/apt/preferences.d/mozilla-firefox
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_facts.os_family == "Ubuntu"
+
+- name: Firefox - Update apt cache
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+  when: ansible_facts.os_family == "Ubuntu"
+
+
+- name: Firefox - Install it
+  become: true
+  ansible.builtin.apt:
+    name: firefox
+    state: present

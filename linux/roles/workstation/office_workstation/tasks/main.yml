@@ -6,3 +6,5 @@
       - texlive-full
       - texmaker
     state: present
+
+- include_tasks: package-firefox.yml
