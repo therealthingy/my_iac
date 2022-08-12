@@ -28,8 +28,8 @@ services:
 
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - {{ vpn_file }}:/etc/openvpn/custom/default.ovpn
-      - {{ storage_path }}/:/data
+      - {{ transmission_vpn_file }}:/etc/openvpn/custom/default.ovpn
+      - {{ transmission_storage_path }}/:/data
       #- ./scripts/transmission/hooks:/etc/scripts/hooks/
 
 
@@ -55,8 +55,8 @@ services:
       - TRANSMISSION_WEB_UI={{ web_interface }}
 
       - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true
-      - TRANSMISSION_RPC_USERNAME={{ web_username }}
-      - TRANSMISSION_RPC_PASSWORD={{ web_password }}
+      - TRANSMISSION_RPC_USERNAME={{ transmission_web_username }}
+      - TRANSMISSION_RPC_PASSWORD={{ transmission_web_password }}
 
       - TRANSMISSION_RATIO_LIMIT_ENABLED=true
       - TRANSMISSION_RATIO_LIMIT=1

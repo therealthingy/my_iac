@@ -19,8 +19,6 @@ all:
       hosts:
 
     home_servers:
-      hosts:
-        rpi.lan:
       vars:
         autoupdate_allowed_origins: |
           //"origin=Debian,codename=${distro_codename}-updates";
@@ -28,9 +26,43 @@ all:
           "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
           "origin=Raspbian,codename=${distro_codename},label=Raspbian";
           "origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
-        domainname: rpi.lan
-        timezone: Europe/Berlin
-        docker_default_network: reverse_proxy
+      hosts:
+        rpi.lan:
+          domainname: rpi.lan
+          timezone: Europe/Berlin
+          docker_default_network: reverse_proxy
+          ipv6_ula_iface: eth0
+          ipv6_ula_addr: fd00::40b3:8c93:9122:52c7/64
+          pihole_web_pw: !vault |
+                    $ANSIBLE_VAULT;1.1;AES256
+                    31353636613432393861396666663536373839366235643635353837636164363038376639663263
+                    6164333461383632656666316330626438616533636335650a623763613965666534303065653730
+                    65383261643938353634333933636639666532303965306135626465633034353661346266356137
+                    6235326661666339350a643934653038663166383236373831633666323161633635636365653936
+                    6661
+          transmission_web_username: choel
+          transmission_web_password: !vault |
+                    $ANSIBLE_VAULT;1.1;AES256
+                    30383434616136376135336635613366616261663134653238376235303337333834653764363462
+                    3062373034623261333537656238303536646464383437620a666662613066626330333561386132
+                    61336439653164313365623630323038363837303463376665353463353435373964383962326166
+                    3963363062653538620a313363353531353531356637346233393132643931643833623034333866
+                    3965
+          transmission_vpn_file: /mnt/storage/transmission/etc/vpn-profiles/AirVPN_Switzerland_UDP-443.ovpn
+          transmission_storage_path: /mnt/storage/transmission/var/downloads
+          samba_path_own_share: /mnt/storage/share/private
+          samba_path_shared_share: /mnt/storage/share/public
+          samba_transmission_downloads_dir: /mnt/storage/transmission/var/downloads/completed
+          samba_own_user_name: gtg
+          samba_own_user_pw: !vault |
+                    $ANSIBLE_VAULT;1.1;AES256
+                    33663564613033363663346538623237666233326238376361633734633163336133306338663031
+                    3930643565623630383833613661393736373036393763370a303461373435393765343634333463
+                    32646536616338316331386664363830313635323665613663366132373361613238653863316562
+                    6531363636383339390a646638356432653037383238626239326535383566383836333464396132
+                    6236
+          samba_shared_user_name: family
+          samba_shared_user_pw: 1
 
 
     # --  "HW specific"  --

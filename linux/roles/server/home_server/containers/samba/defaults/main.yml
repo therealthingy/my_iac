@@ -1,21 +1,5 @@
 ---
 container_name: samba
 
-# INSECURE !! Allows attackers to create symlink to every directory on server's fs
+# INSECURE !!  Allows attackers to create symlink to every directory on server's fs
 follow_symlinks: False
-
-path_own_share: /mnt/storage/share/private
-path_shared_share: /mnt/storage/share/public
-transmission_downloads_dir: /mnt/storage/transmission/var/downloads/completed
-
-own_user_name: gtg
-own_user_pw: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          33663564613033363663346538623237666233326238376361633734633163336133306338663031
-          3930643565623630383833613661393736373036393763370a303461373435393765343634333463
-          32646536616338316331386664363830313635323665613663366132373361613238653863316562
-          6531363636383339390a646638356432653037383238626239326535383566383836333464396132
-          6236
-
-shared_user_name: family
-shared_user_pw: 1
