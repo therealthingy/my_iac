@@ -17,12 +17,14 @@
     state: '{{ item.state }}'
   with_items:
     - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 0', state: present }
+#    - { key: '/org/gnome/desktop/input-sources/sources', value: "[('xkb', 'de')]", state: present }
     - { key: '/org/gnome/desktop/wm/preferences/button-layout', value: "'close,minimize,maximize:'", state: present }
     - { key: '/org/gnome/shell/extensions/ding/show-home', value: 'false', state: present }
     - { key: '/org/gnome/shell/extensions/ding/show-trash', value: 'false', state: present }
-#    - { key: '/org/gnome/shell/extensions/ding/dash-to-dock/dock-position', value: 'LEFT', state: present }
-    - { key: '/org/gnome/shell/extensions/ding/dash-to-dock/dash-max-icon-size', value: 'uint32 26', state: present }
-#    - { key: '/org/gnome/shell/extensions/ding/dash-to-dock/dock-fixed', value: 'true', state: present }
-    - { key: '/org/gnome/shell/extensions/ding/dash-to-dock/extend-height', value: 'false', state: present }
+    - { key: '/org/gnome/shell/extensions/dash-to-dock/extend-height', value: 'false', state: present }
+#    - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-position', value: 'LEFT', state: present }
+    - { key: '/org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size', value: '26', state: present }
+#    - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-fixed', value: 'true', state: present }
+    # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
+    - { key: '/org/gnome/shell/favorite-apps', value: "['firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'gnome-system-monitor.desktop', 'codium.desktop']", state: present }
   when: ansible_facts.distribution == 'Ubuntu'
-# TODO: Add applications 2 Dock  -->   https://github.com/ansible/ansible/issues/57920#issuecomment-641511604
