@@ -1,0 +1,12 @@
+---
+- name: Copy wallpaper file
+  become: false
+  ansible.builtin.copy:
+    src: Ballmer.jpg
+    dest: '/home/{{ user_name }}/.wallpaper.jpg'
+
+- name: Set GNOME Wallpaper
+  become: false
+  community.general.dconf:
+    key: '/org/gnome/desktop/background/picture-uri'
+    value: "'file:///home/{{ user_name }}/.wallpaper.jpg'"

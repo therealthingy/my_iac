@@ -2,6 +2,6 @@
 - include_tasks: '{{ included_task }}'
   loop:
     - packages.yml
-    - config-gnome.yml
+    - config-de_gnome.yml
   loop_control:
     loop_var: included_task

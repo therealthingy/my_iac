@@ -2,7 +2,7 @@
 - name: Install Python dev packages
   ansible.builtin.pip:
     name:
-      - pdm
+      - ansible
 # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
 
 - name: Install Python scientific packages
@@ -11,3 +11,8 @@
       - numpy
       - scipy
       - matplotlib
+
+- name: Install Python misc. packages
+  ansible.builtin.pip:
+    name:
+      - ansible

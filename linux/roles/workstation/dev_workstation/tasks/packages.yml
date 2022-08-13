@@ -15,4 +15,3 @@
     state: present
     classic: true
   when: ansible_facts.distribution == 'Ubuntu'
-# TODO: jupyterlab

@@ -1,5 +1,5 @@
 ---
-# --  Temporary workaround (for 3rd party integrations likevideodownload plugins)  --
+# --  Install firefox  (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
 - name: Firefox - Remove snap
   become: true
   community.general.snap:
@@ -44,5 +44,5 @@
     state: present
 
 
-
+# --  Configure Firefox  --
 # TODO: firefox config

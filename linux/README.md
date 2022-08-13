@@ -2,7 +2,7 @@
 
 
 ## TODOs
-- dev-workstation: Gnome (Terminal issues), Firefox, VsCode
+- dev-workstation: Gnome (Terminal issues),     Firefox, VsCode
 
 - Each container role should have role docker als dependency
 
@@ -27,8 +27,19 @@
 ansible-galaxy collection install community.docker
 ```
 
+
+## Not automated steps
+### Home servers
+* Generate ssl certs
+* Create directories (e.g., on (encrypted luks) sparse file)
+
+### Dev workstations
+* Setup apps
+  * VSCode: Install extension 'Settings Sync' & follow instructions
+
+
 ## Commands
-### Playbook
+### Setup steps
 * Initial setup   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
   * ( (0.) Install ssh daemon, e.g., for Ubuntu: **`sudo apt install -y ssh`** )
   * (1.) Generate ssh key using custom script `ssh-key_generate` (add it automatically to `.ssh/config`)
