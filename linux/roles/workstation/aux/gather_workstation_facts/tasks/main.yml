@@ -1,0 +1,22 @@
+---
+- name: 'Check if GNOME is used as desktop environment  (TODO: revise)'
+  ansible.builtin.command: which gsettings
+  become: false
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  when: gather_workstation_facts is not defined
+  register: result_gnome_command
+
+
+# --  Set workstation facts  --
+- name: Set variables (as facts)
+  ansible.builtin.set_fact:
+    desktop_envs={{ ['GNOME' if result_gnome_command.rc == 0] }}
+    gather_workstation_facts=true
+  become: false
+  when: gather_workstation_facts is not defined
+
+
+#-  ansible.builtin.debug:
+#    msg: desktop_envs={{ desktop_envs }}

@@ -6,9 +6,9 @@
     state: present
 
 
-- include_tasks: '{{ included_task }}'
+- include_tasks: '{{ included_dev_server_task }}'
   loop:
     - packages-systems_programming.yml
     - packages-python.yml
   loop_control:
-    loop_var: included_task
+    loop_var: included_dev_server_task

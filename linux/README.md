@@ -1,25 +1,24 @@
 # Playbook for GNU/Linux machines
 
-
 ## TODOs
-- dev-workstation: Gnome (Terminal issues),     Firefox, VsCode
-
-- Each container role should have role docker als dependency
-
-- pihole FIXES:
-   - idempotent data dir
-   - Fix issue
-     > dig google.com @fd00::40b3:8c93:9122:52c7
-     ;; reply from unexpected source: fd00::8656:3dd3:f10e:116d#53, expected fd00::40b3:8c93:9122:52c7#53
-    - by either configuring statically + disabling dhcpd (denyinterfaces; https://forums.raspberrypi.com/viewtopic.php?t=178387)
-    - iptables ??
-
-- traefik + filebrowser  restart container if config file has changed  ( https://raymii.org/s/tutorials/Ansible_-_Only-do-something-if-another-action-changed.html )
-
-
-- packages `pxz` & `nala`
-- ( FUTURE WORK 4 dyndns: Disable privacy extensions (i.e., derive global ipv6 address for eth0 iface from mac address, thus making sure fritzbox ipv6 permitted access works  (see also https://www.heise.de/ct/artikel/IPv6-DynDNS-klemmt-4785681.html)) )
-
+- *dev-workstation*:
+  - Gnome Terminal issue w/ oh-my-zsh & p10k theme
+  - Firefox
+    - https://galaxy.ansible.com/staticdev/firefox / https://github.com/staticdev/ansible-role-firefox
+    - https://github.com/pyllyukko/user.js/blob/master/user.js
+- *home_server*:
+  - Each container role should have role docker als dependency
+  - traefik + filebrowser  restart container if config file has changed  ( https://raymii.org/s/tutorials/Ansible_-_Only-do-something-if-another-action-changed.html )
+  - pihole FIXES:
+     - idempotent data dir
+     - Fix issue
+       > dig google.com @fd00::40b3:8c93:9122:52c7
+       ;; reply from unexpected source: fd00::8656:3dd3:f10e:116d#53, expected fd00::40b3:8c93:9122:52c7#53
+      - by either configuring statically + disabling dhcpd (denyinterfaces; https://forums.raspberrypi.com/viewtopic.php?t=178387)
+      - iptables ??
+- *rpi*:
+  - packages `pxz` & `nala`
+  - ( FUTURE WORK 4 dyndns: Disable privacy extensions (i.e., derive global ipv6 address for eth0 iface from mac address, thus making sure fritzbox ipv6 permitted access works  (see also https://www.heise.de/ct/artikel/IPv6-DynDNS-klemmt-4785681.html)) )
 
 
 ## Prereq.
@@ -29,13 +28,12 @@ ansible-galaxy collection install community.docker
 
 
 ## Not automated steps
-### Home servers
-* Generate ssl certs
-* Create directories (e.g., on (encrypted luks) sparse file)
-
-### Dev workstations
-* Setup apps
-  * VSCode: Install extension 'Settings Sync' & follow instructions
+* *Home servers*:
+  * traefik: SSL certs gen
+  * transmission & samba: Directory structure (e.g., on (encrypted luks) sparse file)
+* *Dev workstations*:
+  * Apps setup
+    * VSCod~~e~~ium: Install extension 'Settings Sync' & follow instructions
 
 
 ## Commands

@@ -1,10 +1,10 @@
 ---
-- include_tasks: '{{ included_task }}'
+- include_tasks: '{{ included_common_config_task }}'
   loop:
     - config-grub_verbose_boot.yml
     - config-ssh.yml
   loop_control:
-    loop_var: included_task
+    loop_var: included_common_config_task
 
 
 - name: Enable passwordless sudo for {{ user_name }}

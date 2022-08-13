@@ -1,41 +1,41 @@
 ---
 # --  Get user data  --
 - name: Get username of current user
-  changed_when: false
-  become: false
   ansible.builtin.shell: whoami
+  become: false
+  changed_when: false
   register: result_username
   when: gathered_host_facts is not defined
 
 - name: Get uid of current user
-  changed_when: false
-  become: false
   ansible.builtin.shell: id -u
+  become: false
+  changed_when: false
   register: result_uid
   when: gathered_host_facts is not defined
 
 - name: Get gid of current user
-  changed_when: false
-  become: false
   ansible.builtin.shell: id -g
+  become: false
+  changed_when: false
   register: result_gid
   when: gathered_host_facts is not defined
 
 - name: Get gid of the docker group
-  changed_when: false
-  become: false
   ansible.builtin.shell: >
             getent group |
             grep docker |
             awk -F: '{printf "%d", $3}'
+  become: false
+  changed_when: false
   register: result_docker_gid
   when: gathered_host_facts is not defined
 
 
 # --  Get system info  --
 - name: Get DEB architecture
-  changed_when: false
   ansible.builtin.shell: dpkg --print-architecture
+  changed_when: false
   register: result_deb_architecture
   when: gathered_host_facts is not defined
 
@@ -44,7 +44,6 @@
 # --  Set host facts  --
 # ALTERNATIVE 4 username: `id -u -n`
 - name: Set variables (as facts)
-  become: false
   ansible.builtin.set_fact:
                  #ansible_user_id
     user_name={{ result_username.stdout }}
@@ -53,6 +52,7 @@
     docker_gid={{ result_docker_gid.stdout }}
     deb_architecture={{ result_deb_architecture.stdout }}
     gathered_host_facts=true
+  become: false
   when: gathered_host_facts is not defined
 
 

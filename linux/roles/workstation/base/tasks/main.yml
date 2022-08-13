@@ -1,7 +1,7 @@
 ---
-- include_tasks: '{{ included_task }}'
+- include_tasks: '{{ included_workstation_task }}'
   loop:
     - packages.yml
     - config-de_gnome.yml
   loop_control:
-    loop_var: included_task
+    loop_var: included_workstation_task
