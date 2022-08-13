@@ -1,5 +1,4 @@
 ---
 - include_tasks: '{{ item }}'
   loop:
-    - grub-verbose_boot.yml
     - packages.yml

@@ -1,4 +1,12 @@
 ---
+- include_tasks: '{{ included_task }}'
+  loop:
+    - config-grub_verbose_boot.yml
+    - config-ssh.yml
+  loop_control:
+    loop_var: included_task
+
+
 - name: Enable passwordless sudo for {{ user_name }}
   ansible.builtin.copy:
     content: '{{ user_name }} ALL=(ALL) NOPASSWD: ALL'

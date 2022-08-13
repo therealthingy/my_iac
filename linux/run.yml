@@ -43,7 +43,7 @@
         - docker
 
 
-- hosts: servers, home_servers
+- hosts: servers, dev_servers, home_servers
   become: true
   roles:
     - role: server/base
@@ -53,6 +53,12 @@
     - role: docker
       tags:
         - docker
+
+- hosts: dev_servers
+  roles:
+    - role: server/dev_server
+      tags:
+        - dev_server
 
 - hosts: home_servers
   vars:

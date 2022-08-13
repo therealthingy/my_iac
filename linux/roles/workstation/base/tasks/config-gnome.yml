@@ -1,0 +1,8 @@
+---
+- name: Install Gnome config tools
+  ansible.builtin.apt:
+    name:
+      - dconf-editor
+      - gnome-shell-extensions
+    state: present
+  when: ansible_facts.distribution == 'Ubuntu'

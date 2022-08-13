@@ -5,14 +5,14 @@
   community.general.snap:
     name: firefox
     state: absent
-  when: ansible_facts.distribution == "Ubuntu"
+  when: ansible_facts.distribution == 'Ubuntu'
 
 - name: Firefox - Add apt repo
   become: true
   ansible.builtin.apt_repository:
     repo: ppa:mozillateam/ppa
     state: present
-  when: ansible_facts.distribution == "Ubuntu"
+  when: ansible_facts.distribution == 'Ubuntu'
   register: result_firefox_repo
 
 #TODO -- UNATTENDED UPGRADES: echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
@@ -28,13 +28,13 @@
     owner: root
     group: root
     mode: 0644
-  when: ansible_facts.distribution == "Ubuntu"
+  when: ansible_facts.distribution == 'Ubuntu'
 
 - name: Firefox - Update apt cache
   become: true
   ansible.builtin.apt:
     update_cache: true
-  when: ansible_facts.distribution == "Ubuntu" and result_firefox_repo.changed
+  when: ansible_facts.distribution == 'Ubuntu' and result_firefox_repo.changed
 
 
 - name: Firefox - Install it

@@ -1,4 +1,5 @@
 ---
+# TODO: for all systems: common ansible ssh-key
 #- name: Add ssh key for {{ user_name }}
 #  authorized_key:
 #    user: {{ user_name }}

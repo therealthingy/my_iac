@@ -8,20 +8,17 @@ all:
 
     dev_workstations:
       hosts:
-#        linux-dev-vm.local:
+#        ansible_test:
 
 
+    # - "Headless" systems -
     servers:
       hosts:
 
+    dev_servers:
+      hosts:
+
     home_servers:
-      vars:
-        autoupdate_allowed_origins: |
-          //"origin=Debian,codename=${distro_codename}-updates";
-          "origin=Debian,codename=${distro_codename},label=Debian";
-          "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
-          "origin=Raspbian,codename=${distro_codename},label=Raspbian";
-          "origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
       hosts:
         rpi.lan:
           domainname: rpi.lan
@@ -65,9 +62,16 @@ all:
 
     # --  "HW specific"  --
     rpis:
+      vars:
+        autoupdate_allowed_origins: |
+          //"origin=Debian,codename=${distro_codename}-updates";
+          "origin=Debian,codename=${distro_codename},label=Debian";
+          "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+          "origin=Raspbian,codename=${distro_codename},label=Raspbian";
+          "origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
       hosts:
         rpi.lan:
 
     vmware_vms:
       hosts:
-#        linux-dev-vm.local:
+#        ansible_test:

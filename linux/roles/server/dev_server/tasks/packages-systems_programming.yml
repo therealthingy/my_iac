@@ -1,0 +1,16 @@
+---
+- name: Install systems programming tools/libs
+  ansible.builtin.apt:
+    name:
+      # Compiler / build tools
+      - build-essential
+      - manpages-dev
+      - cmake
+      - cmake-curses-gui
+      # Debuggers / Tools  (binutils & gdb are most likely already installed)
+      - binutils
+      - gdb
+      - valgrind
+      # Libs
+      - libomp-dev
+    state: present

@@ -16,4 +16,4 @@
   ansible.builtin.service:
     name: NetworkManager
     state: restarted
-  when: ansible_facts.distribution == "Ubuntu"
+  when: ansible_facts.distribution == 'Ubuntu'

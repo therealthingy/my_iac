@@ -14,7 +14,6 @@
       - transmission*
       - libreoffice*
       - '*rhythmbox*'
-#      - mpv
       - '*totem*'
       - simple-scan
       - '*cheese*'
@@ -23,7 +22,7 @@
     purge: true
     clean: true
     autoremove: true
-  when: ansible_facts.distribution == "Ubuntu"
+  when: ansible_facts.distribution == 'Ubuntu'
 # ---------------------------------------------------------
 
 
@@ -61,4 +60,3 @@
     - package-brave.yml
     - package-codium.yml
     - package-conky.yml
-    - package-nala.yml

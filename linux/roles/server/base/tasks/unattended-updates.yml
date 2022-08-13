@@ -5,7 +5,7 @@
     state: present
   become: true
 
-- name: Remove default config  ??
+- name: 'Remove default config  (TODO: check / revise)'
   ansible.builtin.file:
     path: /etc/apt/apt.conf.d/20auto-upgrades
     state: absent

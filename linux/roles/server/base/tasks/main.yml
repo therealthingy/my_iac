@@ -1,4 +1,15 @@
 ---
+# Check runlevel: `systemctl get-default`  //  Change runlevel: `systemctl set-default multi-user.target`  (runlevels: multi-user.target, graphical.target)
+- name: Change default target to multi-user.target
+  file:
+    src: /usr/lib/systemd/system/multi-user.target
+    dest: /etc/systemd/system/default.target
+    state: link
+
+
+- include_tasks: unattended-updates.yml
+
+
 - name: Install login system stats script
   ansible.builtin.copy:
     src: 10-show_system_info
@@ -6,5 +17,3 @@
     owner: root
     group: root
     mode: 0644
-
-- include_tasks: unattended-updates.yml

@@ -117,3 +117,4 @@
     - package-python.yml
     - package-tmux.yml
     - package-zsh.yml
+    - package-nala.yml
