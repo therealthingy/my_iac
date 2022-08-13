@@ -2,7 +2,7 @@
 
 
 ## TODOs
-- dev-workstation: Gnome, Firefox, VsCode
+- dev-workstation: Gnome (disable error reporting, prevent settings uninstall (unity-control-center), set favorite apps, fix dock issues), Firefox, VsCode
 
 - Each container role should have role docker als dependency
 

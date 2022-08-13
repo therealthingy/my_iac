@@ -6,3 +6,23 @@
       - gnome-shell-extensions
     state: present
   when: ansible_facts.distribution == 'Ubuntu'
+
+
+# HOW2: gesettings tool  (e.g., `gsettings get org.gnome.desktop.input-sources sources`); example: https://gist.github.com/carlwgeorge/c560a532b6929f49d9c0df52f75a68ae
+- name: Set Gnome settings
+  become: false
+  community.general.dconf:
+    key: '{{ item.key }}'
+    value: '{{ item.value }}'
+    state: '{{ item.state }}'
+  with_items:
+    - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 0', state: present }
+    - { key: '/org/gnome/desktop/wm/preferences/button-layout', value: "'close,minimize,maximize:'", state: present }
+    - { key: '/org/gnome/shell/extensions/ding/show-home', value: 'false', state: present }
+    - { key: '/org/gnome/shell/extensions/ding/show-trash', value: 'false', state: present }
+#    - { key: '/org/gnome/shell/extensions/ding/dash-to-dock/dock-position', value: 'LEFT', state: present }
+    - { key: '/org/gnome/shell/extensions/ding/dash-to-dock/dash-max-icon-size', value: 'uint32 26', state: present }
+#    - { key: '/org/gnome/shell/extensions/ding/dash-to-dock/dock-fixed', value: 'true', state: present }
+    - { key: '/org/gnome/shell/extensions/ding/dash-to-dock/extend-height', value: 'false', state: present }
+  when: ansible_facts.distribution == 'Ubuntu'
+# TODO: Add applications 2 Dock  -->   https://github.com/ansible/ansible/issues/57920#issuecomment-641511604
