@@ -1,34 +1,34 @@
 ---
-- name: Install conky
+- name: conky - Install
   ansible.builtin.apt:
     name: conky
     state: present
 
 
-- name: Copy config file
-  become: false
+- name: conky - Copy config file
   ansible.builtin.copy:
     src: conky-config
     dest: '/home/{{ user_name }}/.conkyrc'
     owner: '{{ user_name }}'
     group: '{{ user_name }}'
     mode: 0644
-
-
-- name: Create autostart dir
   become: false
+
+
+- name: conky - Create autostart dir
   ansible.builtin.file:
     path: '/home/{{ user_name }}/.config/autostart/'
     state: directory
     owner: '{{ user_name }}'
     group: '{{ user_name }}'
     mode: 0755
-
-- name: Create autostart entry
   become: false
+
+- name: conky - Create autostart entry
   ansible.builtin.copy:
     src: 'conky-autostart_entry'
     dest: '/home/{{ user_name }}/.config/autostart/conky.desktop'
     owner: '{{ user_name }}'
     group: '{{ user_name }}'
     mode: 0644
+  become: false

@@ -3,6 +3,7 @@
   loop:
     - config-grub_verbose_boot.yml
     - config-ssh.yml
+    - config-privacy.yml
   loop_control:
     loop_var: included_common_config_task
 

@@ -1,5 +1,5 @@
 ---
-- name: Install Gnome config tools
+- name: GNOME - Install config tools
   ansible.builtin.apt:
     name:
       - dconf-editor
@@ -9,7 +9,7 @@
 
 
 # HOW2: gesettings tool  (e.g., `gsettings get org.gnome.desktop.input-sources sources`); example: https://gist.github.com/carlwgeorge/c560a532b6929f49d9c0df52f75a68ae
-- name: Set Gnome settings
+- name: GNOME - Set settings
   community.general.dconf:
     key: '{{ item.key }}'
     value: '{{ item.value }}'
@@ -25,6 +25,6 @@
     - { key: '/org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size', value: '26', state: present }
 #    - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-fixed', value: 'true', state: present }
     # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
-    - { key: '/org/gnome/shell/favorite-apps', value: "['firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'gnome-system-monitor.desktop', 'codium.desktop']", state: present }
+    - { key: '/org/gnome/shell/favorite-apps', value: "['org.gnome.Nautilus.desktop', 'firefox.desktop', 'codium.desktop', 'org.gnome.Terminal.desktop', 'gnome-system-monitor.desktop']", state: present }
   become: false
   when: "'GNOME' in desktop_envs"

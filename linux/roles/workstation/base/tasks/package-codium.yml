@@ -1,21 +1,34 @@
 ---
 - name: VSCodium - Add apt signing key
-  become: true
   ansible.builtin.apt_key:
     url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
     keyring: /usr/share/keyrings/vscodium-archive-keyring.gpg
     state: present
+  become: true
 
 - name: VSCodium - Add apt repo
-  become: true
   ansible.builtin.apt_repository:
     repo: 'deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main'
     filename: vscodium.list
     state: present
+  become: true
+
+# CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
+- name: VSCodium - Pin apt repo
+  ansible.builtin.copy:
+    content: |
+      Package: *
+      Pin: origin download.vscodium.com
+      Pin-Priority: 100
+    dest: /etc/apt/preferences.d/vscodium
+    owner: root
+    group: root
+    mode: 0644
+  become: true
 
 - name: VSCodium - Update apt cache and install it
-  become: true
   ansible.builtin.apt:
     update_cache: true
     name: codium
     state: present
+  become: true

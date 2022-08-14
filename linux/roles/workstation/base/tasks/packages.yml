@@ -24,19 +24,6 @@
     clean: true
     autoremove: true
   when: ansible_facts.distribution == 'Ubuntu'
-
-# See https://vitux.com/how-to-disable-enable-automatic-error-reporting-in-ubuntu/
-- name: Uninstall telemetry services + error reporting
-  ansible.builtin.apt:
-    name:
-      - apport
-      - ubuntu-report
-      - whoopsie
-    state: absent
-    purge: true
-    clean: true
-    autoremove: true
-  when: ansible_facts.distribution == 'Ubuntu'
 # ---------------------------------------------------------
 
 

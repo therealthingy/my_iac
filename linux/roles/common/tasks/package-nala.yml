@@ -1,25 +1,38 @@
 ---
 # TODO:  REVISE (Works only for Ubuntu  ??)
 - name: nala - Add apt signing key
-  become: true
   ansible.builtin.apt_key:
     url: https://deb.volian.org/volian/scar.key
     keyring: /etc/apt/trusted.gpg.d/volian-archive-scar-unstable.gpg
     state: present
+  become: true
   when: ansible_facts.distribution == 'Ubuntu'
 
 - name: nala - Add apt repo
-  become: true
   ansible.builtin.apt_repository:
-    repo: deb [arch=amd64,arm64,armhf] http://deb.volian.org/volian/ scar main
+    repo: deb [arch={{ deb_architecture }}] http://deb.volian.org/volian/ scar main
     filename: 'volian-archive-scar-unstable.list'
     state: present
+  become: true
   when: ansible_facts.distribution == 'Ubuntu'
 
-- name: nala - Update apt cache and install it
+# CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
+- name: nala - Pin apt repo
+  ansible.builtin.copy:
+    content: |
+      Package: *
+      Pin: origin deb.volian.org
+      Pin-Priority: 100
+    dest: /etc/apt/preferences.d/nala
+    owner: root
+    group: root
+    mode: 0644
   become: true
+
+- name: nala - Update apt cache and install it
   ansible.builtin.apt:
     update_cache: true
     name: nala
     state: present
+  become: true
   when: ansible_facts.distribution == 'Ubuntu'

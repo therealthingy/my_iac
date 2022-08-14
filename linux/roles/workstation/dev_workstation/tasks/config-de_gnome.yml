@@ -1,36 +1,35 @@
 ---
-- name: Set GNOME Nautilus settings
+- name: GNOME Nautilus - Set settings
   community.general.dconf:
     key: '{{ item.key }}'
     value: '{{ item.value }}'
     state: '{{ item.state }}'
   with_items:
-    - { key: '/org/gnome/nautilus/preferences/default-folder-viewer', value: '"list-view"', state: present }
-    - { key: '/org/gnome/nautilus/preferences/default-sort-order', value: '"type"', state: present }
+    - { key: '/org/gnome/nautilus/preferences/default-sort-order', value: "'type'", state: present }
     - { key: '/org/gnome/nautilus/preferences/sort-directories-first', value: 'true', state: present }
-#    - { key: '/org/gnome/nautilus/preferences/show-image-thumbnails', value: '"never"', state: present }
+#    - { key: '/org/gnome/nautilus/preferences/show-image-thumbnails', value: "'never'", state: present }
     - { key: '/org/gnome/nautilus/list-view/use-tree-view', value: 'true', state: present }
-    - { key: '/org/gnome/nautilus/list-view/default-zoom-level', value: '"small"', state: present }
+    - { key: '/org/gnome/nautilus/list-view/default-zoom-level', value: "'small'", state: present }
     - { key: '/org/gtk/Settings/FileChooser/show-hidden', value: 'true', state: present }
   become: false
   when: "'GNOME' in desktop_envs"
 
 
-- name: wallpaper - Ensure wallpaper dir exists
+- name: GNOME wallpaper - Ensure wallpaper dir exists
   ansible.builtin.file:
     path: '/home/{{ user_name }}/Pictures/wallpapers'
     state: directory
   become: false
   when: "'GNOME' in desktop_envs"
 
-- name: wallpaper - Copy wallpaper file
+- name: GNOME wallpaper - Copy wallpaper file
   ansible.builtin.copy:
     src: Ballmer.jpg
     dest: '/home/{{ user_name }}/Pictures/wallpapers/Ballmer.jpg'
   become: false
   when: "'GNOME' in desktop_envs"
 
-- name: wallpaper - Set GNOME Wallpaper
+- name: GNOME wallpaper - Set it
   community.general.dconf:
     key: '/org/gnome/desktop/background/picture-uri'
     value: "'file:///home/{{ user_name }}/Pictures/wallpapers/Ballmer.jpg'"

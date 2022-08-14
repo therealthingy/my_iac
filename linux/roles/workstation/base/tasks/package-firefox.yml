@@ -1,5 +1,6 @@
 ---
-# --  Install firefox  (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
+# --------------------------------------------------------------------------------
+# Install firefox  (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
 - name: Firefox - Remove snap
   become: true
   community.general.snap:
@@ -17,6 +18,7 @@
 
 #TODO -- UNATTENDED UPGRADES: echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
 
+# CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
 - name: Firefox - Pin apt repo
   become: true
   ansible.builtin.copy:
@@ -35,6 +37,7 @@
   ansible.builtin.apt:
     update_cache: true
   when: ansible_facts.distribution == 'Ubuntu' and result_firefox_repo.changed
+# --------------------------------------------------------------------------------
 
 
 - name: Firefox - Install it
