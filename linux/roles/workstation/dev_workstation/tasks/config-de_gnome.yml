@@ -1,9 +1,9 @@
 ---
 - name: GNOME Nautilus - Set settings
   community.general.dconf:
-    key: '{{ item.key }}'
-    value: '{{ item.value }}'
-    state: '{{ item.state }}'
+    key: '{{ nautilus_dconf_item.key }}'
+    value: '{{ nautilus_dconf_item.value }}'
+    state: '{{ nautilus_dconf_item.state }}'
   with_items:
     - { key: '/org/gnome/nautilus/preferences/default-sort-order', value: "'type'", state: present }
     - { key: '/org/gnome/nautilus/preferences/sort-directories-first', value: 'true', state: present }
@@ -13,6 +13,8 @@
     - { key: '/org/gtk/Settings/FileChooser/show-hidden', value: 'true', state: present }
   become: false
   when: "'GNOME' in desktop_envs"
+  loop_control:
+    loop_var: nautilus_dconf_item
 
 
 - name: GNOME wallpaper - Ensure wallpaper dir exists

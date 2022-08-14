@@ -12,3 +12,32 @@
     - packages.yml
   loop_control:
     loop_var: included_common_task
+
+
+
+# ---------------------------------- Ubuntu specific stuff ----------------------------------
+# See https://vitux.com/how-to-disable-enable-automatic-error-reporting-in-ubuntu/
+- name: Uninstall Telemetry/error reporting services
+  ansible.builtin.apt:
+    name:
+      - apport
+      - ubuntu-report
+      - whoopsie
+    state: absent
+    purge: true
+    clean: true
+    autoremove: true
+  when: ansible_facts.distribution == 'Ubuntu'
+
+- name: Disable Telemetry/error reporting + Ubuntu services
+  community.general.dconf:
+    key: '{{ item.key }}'
+    value: '{{ item.value }}'
+    state: '{{ item.state }}'
+  with_items:
+    - { key: '/com/ubuntu/update-notifier/show-apport-crashes', value: 'false', state: present }
+    - { key: '/com/ubuntu/update-notifier/notify-ubuntu-advantage-available', value: 'false', state: present }
+    - { key: '/com/ubuntu/update-notifier/show-livepatch-status-icon', value: 'false', state: present }
+  become: false
+  when: ansible_facts.distribution == 'Ubuntu'
+# -------------------------------------------------------------------------------------------

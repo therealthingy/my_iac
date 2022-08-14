@@ -41,20 +41,6 @@
       - trash-cli
     state: present
 
-#- name: Install media tools
-#  ansible.builtin.apt:
-#    name:
-#      - celluloid
-#      - vlc
-#    state: present
-
-- name: Install LaTex
-  ansible.builtin.apt:
-    name:
-      - texlive-full
-      - texmaker
-    state: present
-
 - include_tasks: '{{ item }}'
   loop:
     - package-firefox.yml

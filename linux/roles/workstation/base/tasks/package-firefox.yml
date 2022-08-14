@@ -2,17 +2,17 @@
 # --------------------------------------------------------------------------------
 # Install firefox  (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
 - name: Firefox - Remove snap
-  become: true
   community.general.snap:
     name: firefox
     state: absent
+  become: true
   when: ansible_facts.distribution == 'Ubuntu'
 
 - name: Firefox - Add apt repo
-  become: true
   ansible.builtin.apt_repository:
     repo: ppa:mozillateam/ppa
     state: present
+  become: true
   when: ansible_facts.distribution == 'Ubuntu'
   register: result_firefox_repo
 
@@ -20,7 +20,6 @@
 
 # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
 - name: Firefox - Pin apt repo
-  become: true
   ansible.builtin.copy:
     content: |
       Package: *
@@ -30,6 +29,7 @@
     owner: root
     group: root
     mode: 0644
+  become: true
   when: ansible_facts.distribution == 'Ubuntu'
 
 - name: Firefox - Update apt cache
@@ -41,10 +41,10 @@
 
 
 - name: Firefox - Install it
-  become: true
   ansible.builtin.apt:
     name: firefox
     state: present
+  become: true
 
 
 # --  Configure Firefox  --

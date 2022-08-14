@@ -8,6 +8,7 @@
 
 - include_tasks: ../../../server/dev_server/tasks/packages.yml
 
+# TODO: GET RID OF SNAP VERSION
 - name: Install IDEs
   community.general.snap:
     name:
@@ -16,3 +17,10 @@
     state: present
     classic: true
   when: ansible_facts.distribution == 'Ubuntu'
+
+- name: Install LaTex
+  ansible.builtin.apt:
+    name:
+      - texlive-full
+      - texmaker
+    state: present
