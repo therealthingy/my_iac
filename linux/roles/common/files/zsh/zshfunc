@@ -99,7 +99,10 @@ alias dusage='du -h -d1'
 # alias delete_ds="find . -type f -name '.DS_Store' -delete"
 
 alias inet-pg="echo 'Pinging Google' && ping google.com"
-alias inet-public_ip="curl http://ipecho.net/plain; echo"
+alias inet-public_ip="curl -4 icanhazip.com && curl -6 icanhazip.com; echo"
+
+# Use max # of threads
+alias xz='xz -T 0'
 
 
 # --- RPi specific ---
@@ -110,7 +113,6 @@ alias temp='vcgencmd measure_temp'
 # - Replace existing commands -
 alias-add pigz gzip='pigz' gunzip='unpigz'
 alias-add pbzip2 bzip2='pbzip2' # bunzip2='pbunzip2' bzcat='pbzcat'
-alias-add pxz xz='pxz'
 
 
 

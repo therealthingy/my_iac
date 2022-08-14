@@ -26,7 +26,6 @@
     name:
       - pigz
       - pbzip2
-#      - pxz
       - zip
       - unzip
     state: present

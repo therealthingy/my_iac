@@ -2,7 +2,6 @@
 
 ## TODOs
 - GENERAL:
-  - package `pxz`
   - additional role:
     #- name: Install media tools
     #  ansible.builtin.apt:
