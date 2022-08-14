@@ -10,7 +10,7 @@
   ansible.builtin.service:
     name: networking
     state: restarted
-  when: ansible_facts.os_family == "Debian"
+  when: ansible_facts.os_family == 'Debian'
 
 - name: restart networking daemon
   ansible.builtin.service:

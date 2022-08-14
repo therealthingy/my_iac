@@ -1,11 +1,4 @@
 ---
-- name: Install networking tools
-  ansible.builtin.apt:
-    name:
-      - netcat
-    state: present
-
-
 - include_tasks: '{{ included_dev_server_task }}'
   loop:
     - packages-systems_programming.yml

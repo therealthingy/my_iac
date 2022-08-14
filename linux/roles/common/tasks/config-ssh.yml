@@ -6,7 +6,7 @@
 #    key: {{ user_ssh_key }}
 
 
-- name: Disable SSH root login
+- name: SSH - Disable root login
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^#?PermitRootLogin'
@@ -15,7 +15,7 @@
     validate: '/usr/sbin/sshd -T -f %s'
   notify: restart ssh daemon
 
-- name: Enable SSH public key authentication
+- name: SSH - Enable public key authentication
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^#?PubkeyAuthentication'
@@ -24,27 +24,29 @@
     validate: '/usr/sbin/sshd -T -f %s'
   notify: restart ssh daemon
 
-- name: Disable SSH password login
+- name: SSH - Disable password login
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: '{{ item.regex }}'
-    line: '{{ item.line }}'
+    regexp: '{{ common_ssh_item.regex }}'
+    line: '{{ common_ssh_item.line }}'
     validate: '/usr/sbin/sshd -T -f %s'
+  loop_control:
+    loop_var: common_ssh_item
   with_items:
     - { regex: '^#?PasswordAuthentication', line: 'PasswordAuthentication no' }
     - { regex: '^#?ChallengeResponseAuthentication', line: 'ChallengeResponseAuthentication no' }
   notify: restart ssh daemon
 
-- name: Change SSH port
+- name: SSH - Change port
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^#?Port'
-    line: 'Port 2233'
+    line: 'Port {{ ssh_port }}'
     validate: '/usr/sbin/sshd -T -f %s'
   notify: restart ssh daemon
 
 
-- name: Allow client to pass locale environment variables
+- name: SSH - Allow client to pass locale environment variables
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^#?AcceptEnv LANG LC_\*$'

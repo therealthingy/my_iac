@@ -2,7 +2,7 @@
 
 ## TODOs
 - GENERAL:
-  - additional role:
+  - new role:
     #- name: Install media tools
     #  ansible.builtin.apt:
     #    name:
@@ -10,12 +10,14 @@
     #      - vlc
     #    state: present
     # TODO: yt-dl
+
 - *dev-workstation*:
   - Firefox
     - https://galaxy.ansible.com/staticdev/firefox / https://github.com/staticdev/ansible-role-firefox
     - https://github.com/pyllyukko/user.js/blob/master/user.js
   - Eliminate snap for IDEs
   - Gnome Terminal issue w/ oh-my-zsh & p10k theme  +  Firefox dock app icon
+
 - *home_server*:
   - Each container role should have role docker als dependency
   - traefik + filebrowser  restart container if config file has changed  ( https://raymii.org/s/tutorials/Ansible_-_Only-do-something-if-another-action-changed.html )
@@ -26,6 +28,7 @@
        ;; reply from unexpected source: fd00::8656:3dd3:f10e:116d#53, expected fd00::40b3:8c93:9122:52c7#53
       - by either configuring statically + disabling dhcpd (denyinterfaces; https://forums.raspberrypi.com/viewtopic.php?t=178387)
       - iptables ??
+
 - *rpi*:
   - package `nala`
   - ( FUTURE WORK 4 dyndns: Disable privacy extensions (i.e., derive global ipv6 address for eth0 iface from mac address, thus making sure fritzbox ipv6 permitted access works  (see also https://www.heise.de/ct/artikel/IPv6-DynDNS-klemmt-4785681.html)) )
