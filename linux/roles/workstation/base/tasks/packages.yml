@@ -1,20 +1,42 @@
 ---
 # apt -- show installed packages: `apt list --installed`
 # ---------------------------------------------------------
-- name: Uninstall unncessary apt packages (mostly Gnome stuff)
+- name: '[Debian/Ubuntu] Uninstall unncessary apt packages (mostly Gnome stuff)'
   ansible.builtin.apt:
     name:
       - aisleriot
       - gnome-mahjongg
       - gnome-mines
       - gnome-sudoku
+      - gnome-2048
+      - gnome-chess
+      - five-or-more
+      - four-in-a-row
+      - hitori
+      - gnome-klotski
+      - lightsoff
+      - gnome-nibbles
+      - quadrapassel
+      - gnome-robots
+      - swell-foop
+      - iagno
+      - tali
+      - gnome-taquin
+      - gnome-tetravex
+      - gnome-clocks
       - gnome-calendar
+      - gnome-contacts
+      - gnome-documents
       - '*gnome-todo*'
-      - thunderbird*
+      - gnome-maps
+      - gnome-music
+      - '*rhythmbox*'
+      - gnome-weather
+      - evolution
       - transmission*
       - libreoffice*
-      - '*rhythmbox*'
       - totem
+      - thunderbird*
       - simple-scan
       # NOTE: 'cheese-common', 'libcheese-gtk25' & 'libcheese8' are required by the Settings app (package 'unity-control-center')
       - cheese
@@ -23,6 +45,13 @@
     purge: true
     clean: true
     autoremove: true
+  when: ansible_facts.distribution == 'Ubuntu' or ansible_facts.distribution == 'Debian'
+
+- name: '[Ubuntu] Uninstall unncessary apt packages (rmv snap store)'
+  community.general.snap:
+    name: snap-store
+    state: absent
+  become: true
   when: ansible_facts.distribution == 'Ubuntu'
 # ---------------------------------------------------------
 

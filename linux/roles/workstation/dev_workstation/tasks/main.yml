@@ -1,5 +1,5 @@
 ---
 - include_tasks: '{{ item }}'
   loop:
-    - config-de_gnome.yml
+    - config-ui.yml
     - packages.yml

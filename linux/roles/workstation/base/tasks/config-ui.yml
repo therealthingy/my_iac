@@ -1,0 +1,62 @@
+---
+- name: GNOME - Install config tools
+  ansible.builtin.apt:
+    name:
+      - dconf-editor
+      - gnome-shell-extensions
+    state: present
+  when: "'GNOME' in desktop_envs"
+
+
+# HOW2: gesettings tool  (e.g., `gsettings get org.gnome.desktop.input-sources sources`); example: https://gist.github.com/carlwgeorge/c560a532b6929f49d9c0df52f75a68ae
+- name: GNOME - Set settings
+  community.general.dconf:
+    key: '{{ gnome_setting.key }}'
+    value: '{{ gnome_setting.value }}'
+    state: '{{ gnome_setting.state }}'
+  with_items:
+    - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 0', state: present }
+#    - { key: '/org/gnome/desktop/input-sources/sources', value: "[('xkb', 'de')]", state: present }
+    - { key: '/org/gnome/desktop/wm/preferences/button-layout', value: "'close,minimize,maximize:'", state: present }
+    - { key: '/org/gnome/shell/extensions/ding/show-home', value: 'false', state: present }
+    - { key: '/org/gnome/shell/extensions/ding/show-trash', value: 'false', state: present }
+    - { key: '/org/gnome/shell/extensions/dash-to-dock/extend-height', value: 'false', state: present }
+#    - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-position', value: 'LEFT', state: present }
+    - { key: '/org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size', value: '26', state: present }
+#    - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-fixed', value: 'true', state: present }
+    # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
+    - { key: '/org/gnome/shell/favorite-apps', value: "['org.gnome.Nautilus.desktop', 'firefox.desktop', 'codium.desktop', 'org.gnome.Terminal.desktop', 'gnome-system-monitor.desktop']", state: present }
+    - { key: '/org/gnome/nautilus/preferences/default-sort-order', value: "'type'", state: present }
+    - { key: '/org/gnome/nautilus/preferences/sort-directories-first', value: 'true', state: present }
+#    - { key: '/org/gnome/nautilus/preferences/show-image-thumbnails', value: "'never'", state: present }
+    - { key: '/org/gnome/nautilus/list-view/use-tree-view', value: 'true', state: present }
+    - { key: '/org/gnome/nautilus/list-view/default-zoom-level', value: "'small'", state: present }
+    - { key: '/org/gtk/Settings/FileChooser/show-hidden', value: 'true', state: present }
+  loop_control:
+    loop_var: gnome_setting
+  become: false
+  when: "'GNOME' in desktop_envs"
+
+
+- name: gdm3 - Check whether gdm3 is used
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: gdm3 - Check whether gdm3 is used
+  ansible.builtin.package_facts:
+    manager: auto
+  when: "'gdm3' in ansible_facts.packages"
+
+- name: gdm3 - Set autologin config file
+  ansible.builtin.set_fact:
+    gdm3_config_file={{ 'daemon.conf' if ansible_facts.distribution == 'Debian' else 'custom.conf' }}
+  become: false
+
+- name: 'gdm3 - Enable autologin for {{ user_name }}'
+  ansible.builtin.replace:
+    path: '/etc/gdm3/{{ gdm3_config_file }}'
+    # UNMATCH IF NAME is already contained: '^(#\s*|\s*)AutomaticLoginEnable\s*=\s*(true|false)\n^(#\s*|\s*)AutomaticLogin\s*=\s*(?!{{ user_name }}$)\w+$'  (doesn't work -- PROBLEM: name unmatches, which causes it not to be updated if it's commented out)
+    regexp: '^#\s*AutomaticLoginEnable\s*=\s*(true|false)\n^#\s*AutomaticLogin\s*=\s*\w+$'
+    replace: |
+      AutomaticLoginEnable = true
+      AutomaticLogin = {{ user_name }}

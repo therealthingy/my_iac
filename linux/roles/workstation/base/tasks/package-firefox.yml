@@ -1,14 +1,14 @@
 ---
-# --------------------------------------------------------------------------------
+# ------------------------------- Ubuntu specific --------------------------------
 # Install firefox  (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
-- name: Firefox - Remove snap
+- name: 'Firefox - [Ubuntu] Remove snap'
   community.general.snap:
     name: firefox
     state: absent
   become: true
   when: ansible_facts.distribution == 'Ubuntu'
 
-- name: Firefox - Add apt repo
+- name: '[Ubuntu] Firefox - Add apt repo'
   ansible.builtin.apt_repository:
     repo: ppa:mozillateam/ppa
     state: present
@@ -19,7 +19,7 @@
 #TODO -- UNATTENDED UPGRADES: echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
 
 # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
-- name: Firefox - Pin apt repo
+- name: 'Firefox - [Ubuntu] Pin apt repo'
   ansible.builtin.copy:
     content: |
       Package: *
@@ -32,19 +32,26 @@
   become: true
   when: ansible_facts.distribution == 'Ubuntu'
 
-- name: Firefox - Update apt cache
-  become: true
+- name: 'Firefox - [Ubuntu] Update apt cache'
   ansible.builtin.apt:
     update_cache: true
+  become: true
   when: ansible_facts.distribution == 'Ubuntu' and result_firefox_repo.changed
-# --------------------------------------------------------------------------------
 
+
+- name: Firefox - Set package name
+  ansible.builtin.set_fact:
+    firefox_package_name={{ 'firefox-esr' if ansible_facts.distribution == 'Debian' else 'firefox' }}
+  become: false
+
+# --------------------------------------------------------------------------------
 
 - name: Firefox - Install it
   ansible.builtin.apt:
-    name: firefox
+    name: '{{ firefox_package_name }}'
     state: present
   become: true
+
 
 
 # --  Configure Firefox  --

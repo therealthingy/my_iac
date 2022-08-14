@@ -2,17 +2,6 @@
 - include_tasks: '{{ included_workstation_task }}'
   loop:
     - packages.yml
-    - config-de_gnome.yml
+    - config-ui.yml
   loop_control:
     loop_var: included_workstation_task
-
-
-
-# ---------------------------------- Ubuntu specific stuff ----------------------------------
-- name: Remove snap store
-  community.general.snap:
-    name: snap-store
-    state: absent
-  become: true
-  when: ansible_facts.distribution == 'Ubuntu'
-# -------------------------------------------------------------------------------------------

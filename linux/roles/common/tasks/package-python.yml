@@ -21,6 +21,10 @@
     path: /usr/bin/pip3
 
 # NOTE: 2 check for updates, use: `pip-review --local --auto`
-- name: Install pip-review python package
+- name: Install pip packages
   ansible.builtin.pip:
-    name: pip-review
+    name:
+      - pip-review
+      # Required for setting dcnonf
+      - psutil
+

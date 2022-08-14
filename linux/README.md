@@ -1,5 +1,7 @@
 # Playbook for GNU/Linux machines
 
+Debian: always show dock
+
 ## TODOs
 - GENERAL:
   - new role:
@@ -15,8 +17,12 @@
   - Firefox
     - https://galaxy.ansible.com/staticdev/firefox / https://github.com/staticdev/ansible-role-firefox
     - https://github.com/pyllyukko/user.js/blob/master/user.js
+  - DB stuff (sqlite, db browser for sqlite, mysql workbench, sequel pro)
   - Eliminate snap for IDEs
-  - Gnome Terminal issue w/ oh-my-zsh & p10k theme  +  Firefox dock app icon
+  - Gnome Terminal issue w/ oh-my-zsh & p10k theme
+  - dconf issues:
+    - Naultilus dconf settings get ignored ??
+    - Firefox dock app icon
 
 - *home_server*:
   - Each container role should have role docker als dependency
@@ -52,7 +58,7 @@ ansible-galaxy collection install community.docker
 ## Commands
 ### Setup steps
 * Initial setup   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
-  * ( (0.) Install ssh daemon, e.g., for Ubuntu: **`sudo apt install -y ssh`** )
+  * ( (0.) Ubuntu: Install *ssh daemon*: **`sudo apt install -y ssh`**  //  Debian: `su` &rarr; `/sbin/usermod -aG sudo <username>` )
   * (1.) Generate ssh key using custom script `ssh-key_generate` (add it automatically to `.ssh/config`)
   * (2.) Add `HostNamne <hostname>`
   * (3.) **`ssh-copy-id -i ~/.ssh/<identity-file>.pub <user>@<ip>`**
