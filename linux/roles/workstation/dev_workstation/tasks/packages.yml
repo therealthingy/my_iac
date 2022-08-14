@@ -3,6 +3,7 @@
   ansible.builtin.apt:
     name:
       - wireshark
+      - openvpn
     state: present
 
 - include_tasks: ../../../server/dev_server/tasks/packages.yml
