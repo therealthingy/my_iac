@@ -10,6 +10,7 @@
     owner: root
     group: root
     mode: 0644
+  become: true
   notify:
     - restart docker daemon
 
@@ -44,6 +45,7 @@
       - iptables
       - iptables-persistent
     state: present
+  become: true
 
 - name: Copy iptable config tables
   ansible.builtin.copy:
@@ -52,5 +54,6 @@
     owner: root
     group: root
     mode: 0644
+  become: true
   notify:
     - restart networking daemon
