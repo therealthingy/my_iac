@@ -4,6 +4,7 @@
     name:
       - dconf-editor
       - gnome-shell-extensions
+      - gnome-tweak-tool
     state: present
   when: "'GNOME' in desktop_envs"
 
@@ -15,17 +16,20 @@
     value: '{{ gnome_setting.value }}'
     state: '{{ gnome_setting.state }}'
   with_items:
+    # General UI
     - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 0', state: present }
 #    - { key: '/org/gnome/desktop/input-sources/sources', value: "[('xkb', 'de')]", state: present }
     - { key: '/org/gnome/desktop/wm/preferences/button-layout', value: "'close,minimize,maximize:'", state: present }
     - { key: '/org/gnome/shell/extensions/ding/show-home', value: 'false', state: present }
     - { key: '/org/gnome/shell/extensions/ding/show-trash', value: 'false', state: present }
+    # Dock
     - { key: '/org/gnome/shell/extensions/dash-to-dock/extend-height', value: 'false', state: present }
 #    - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-position', value: 'LEFT', state: present }
     - { key: '/org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size', value: '26', state: present }
 #    - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-fixed', value: 'true', state: present }
     # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
     - { key: '/org/gnome/shell/favorite-apps', value: "['org.gnome.Nautilus.desktop', 'firefox.desktop', 'codium.desktop', 'org.gnome.Terminal.desktop', 'gnome-system-monitor.desktop']", state: present }
+    # Nautilus
     - { key: '/org/gnome/nautilus/preferences/default-sort-order', value: "'type'", state: present }
     - { key: '/org/gnome/nautilus/preferences/sort-directories-first', value: 'true', state: present }
 #    - { key: '/org/gnome/nautilus/preferences/show-image-thumbnails', value: "'never'", state: present }

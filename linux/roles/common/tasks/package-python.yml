@@ -25,6 +25,6 @@
   ansible.builtin.pip:
     name:
       - pip-review
-      # Required for setting dcnonf
+      # Required for setting dconf
       - psutil
 

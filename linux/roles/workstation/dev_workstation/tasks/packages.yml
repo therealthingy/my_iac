@@ -7,6 +7,14 @@
       - netcat
     state: present
 
+- name: Install db tools
+  ansible.builtin.apt:
+    name:
+      - sqlitebrowser
+#      TODO (No package matching 'mysql-workbench' is available)
+#      - mysql-workbench-community
+    state: present
+
 - include_tasks: ../../../server/dev_server/tasks/packages.yml
 
 # TODO: GET RID OF SNAP VERSION

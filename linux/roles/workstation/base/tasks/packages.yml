@@ -4,6 +4,7 @@
 - name: '[Debian/Ubuntu] Uninstall unncessary apt packages (mostly Gnome stuff)'
   ansible.builtin.apt:
     name:
+      # Games
       - aisleriot
       - gnome-mahjongg
       - gnome-mines
@@ -23,6 +24,7 @@
       - tali
       - gnome-taquin
       - gnome-tetravex
+      # Apps
       - gnome-clocks
       - gnome-calendar
       - gnome-contacts
@@ -35,6 +37,7 @@
       - evolution
       - transmission*
       - libreoffice*
+      # Media player
       - totem
       - thunderbird*
       - simple-scan
@@ -45,7 +48,7 @@
     purge: true
     clean: true
     autoremove: true
-  when: ansible_facts.distribution == 'Ubuntu' or ansible_facts.distribution == 'Debian'
+  when: ansible_facts.os_family == 'Debian'
 
 - name: '[Ubuntu] Uninstall unncessary apt packages (rmv snap store)'
   community.general.snap:

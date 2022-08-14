@@ -19,7 +19,7 @@
   when: result_grub_command.rc == 0
   register: result_grub_verbose_updated
 
-- name: No timeout
+- name: No boot timeout
   ansible.builtin.lineinfile:
     dest: /etc/default/grub
     regexp: '^GRUB_TIMEOUT=[0-9]+$'

@@ -16,6 +16,13 @@
 
 
 # ---------------------------------- Distro specific stuff ----------------------------------
+- name: '[Debian] Remove CD/DVD install as apt source'
+  ansible.builtin.replace:
+    dest: /etc/apt/sources.list
+    regexp: '^(# )?deb cdrom:\[.+\]\/ .+ (contrib|main) (contrib|main)$'
+  become: true
+  when: ansible_facts.distribution == 'Debian'
+
 # See https://vitux.com/how-to-disable-enable-automatic-error-reporting-in-ubuntu/
 - name: '[Ubuntu] Uninstall Telemetry/error reporting services'
   ansible.builtin.apt:
@@ -40,11 +47,4 @@
     - { key: '/com/ubuntu/update-notifier/show-livepatch-status-icon', value: 'false', state: present }
   become: false
   when: ansible_facts.distribution == 'Ubuntu'
-
-- name: '[Debian] Remove CD/DVD install as apt source'
-  ansible.builtin.replace:
-    dest: /etc/apt/sources.list
-    regexp: '^(# )?deb cdrom:\[.+\]\/ .+ (contrib|main) (contrib|main)$'
-  become: true
-  when: ansible_facts.distribution == 'Debian'
 # -------------------------------------------------------------------------------------------
