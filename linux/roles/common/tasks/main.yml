@@ -6,20 +6,11 @@
     state: present
 
 
-- include_tasks: '{{ included_common_task }}'
-  loop:
-    - config.yml
-    - packages.yml
-  loop_control:
-    loop_var: included_common_task
-
-
-
 # ---------------------------------- Distro specific stuff ----------------------------------
 - name: '[Debian] Remove CD/DVD install as apt source'
   ansible.builtin.replace:
     dest: /etc/apt/sources.list
-    regexp: '^(# )?deb cdrom:\[.+\]\/ .+ (contrib|main) (contrib|main)$'
+    regexp: '^(#\s*)?deb cdrom:\[.+\]\/ \w+ (contrib|main) (contrib|main)$'
   become: true
   when: ansible_facts.distribution == 'Debian'
 
@@ -48,3 +39,11 @@
   become: false
   when: ansible_facts.distribution == 'Ubuntu'
 # -------------------------------------------------------------------------------------------
+
+
+- include_tasks: '{{ included_common_task }}'
+  loop:
+    - config.yml
+    - packages.yml
+  loop_control:
+    loop_var: included_common_task
