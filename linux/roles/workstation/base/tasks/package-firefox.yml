@@ -1,6 +1,7 @@
 ---
+# --  Install firefox  --
 # ------------------------------- Ubuntu specific --------------------------------
-# Install firefox  (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
+# (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
 - name: 'Firefox - [Ubuntu] Remove snap'
   community.general.snap:
     name: firefox
@@ -37,14 +38,12 @@
     update_cache: true
   become: true
   when: ansible_facts.distribution == 'Ubuntu' and result_firefox_repo.changed
-
+# --------------------------------------------------------------------------------
 
 - name: Firefox - Set package name
   ansible.builtin.set_fact:
     firefox_package_name={{ 'firefox-esr' if ansible_facts.distribution == 'Debian' else 'firefox' }}
   become: false
-
-# --------------------------------------------------------------------------------
 
 - name: Firefox - Install it
   ansible.builtin.apt:

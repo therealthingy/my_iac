@@ -1,4 +1,10 @@
 # TODO
+
+## THINGS 2 REMEMBER 4 NEXT mac setup
+- User should have name 'gg'
+
+
+
 ## References (Ex.s)
 * https://github.com/geerlingguy/mac-dev-playbook
 
