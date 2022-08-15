@@ -7,7 +7,7 @@
 
 - name: conky - Copy config file
   ansible.builtin.copy:
-    src: conky-config
+    src: conkyrc
     dest: '/home/{{ user_name }}/.conkyrc'
     owner: '{{ user_name }}'
     group: '{{ user_name }}'
