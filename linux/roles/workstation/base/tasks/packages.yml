@@ -34,11 +34,12 @@
       - gnome-music
       - '*rhythmbox*'
       - gnome-weather
-      - evolution
       - transmission*
       - libreoffice*
       # Media player
       - totem
+      # Mail
+      - evolution
       - thunderbird*
       - simple-scan
       # NOTE: 'cheese-common', 'libcheese-gtk25' & 'libcheese8' are required by the Settings app (package 'unity-control-center')

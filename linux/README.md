@@ -10,20 +10,19 @@
     #      - celluloid
     #      - vlc
     #    state: present
-    # TODO: yt-dlp
+    # TODO: yt-dlp  +  shell aliases
 
 - *dev-workstation*:
-  - dconf issues: Firefox dock app icon
+  - Firefox
+    - https://galaxy.ansible.com/staticdev/firefox / https://github.com/staticdev/ansible-role-firefox
+    - https://github.com/pyllyukko/user.js/blob/master/user.js
+
   - Debian:
     - always show dock
     - Eliminate snap for IDEs
 
 
-  - Firefox
-    - https://galaxy.ansible.com/staticdev/firefox / https://github.com/staticdev/ansible-role-firefox
-    - https://github.com/pyllyukko/user.js/blob/master/user.js
-
-
+  - dconf issues: Firefox dock app icon
 
 
 

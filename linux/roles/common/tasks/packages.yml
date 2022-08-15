@@ -12,6 +12,7 @@
 - name: Install file general purpose tools
   ansible.builtin.apt:
     name:
+      - file
       - tree
       - rename
       - fdupes
