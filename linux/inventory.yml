@@ -9,6 +9,7 @@ all:
     dev_workstations:
       hosts:
 #        ansible_test:
+#          ssh_port: 22
 
 
     # - "Headless" systems -

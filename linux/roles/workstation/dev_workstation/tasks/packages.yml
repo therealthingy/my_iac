@@ -7,6 +7,12 @@
       - netcat
     state: present
 
+- name: Install dev tools
+  ansible.builtin.apt:
+    name:
+      - terminator
+    state: present
+
 - name: Install db tools
   ansible.builtin.apt:
     name:
@@ -17,8 +23,9 @@
 
 - include_tasks: ../../../server/dev_server/tasks/packages.yml
 
+
 # TODO: GET RID OF SNAP VERSION
-- name: Install IDEs
+- name: Install IntelliJ IDEs
   community.general.snap:
     name:
       - clion
@@ -26,6 +33,7 @@
     state: present
     classic: true
   when: ansible_facts.distribution == 'Ubuntu'
+
 
 - name: Install LaTex
   ansible.builtin.apt:

@@ -13,15 +13,21 @@
     # TODO: yt-dlp
 
 - *dev-workstation*:
-  - Firefox
-    - https://galaxy.ansible.com/staticdev/firefox / https://github.com/staticdev/ansible-role-firefox
-    - https://github.com/pyllyukko/user.js/blob/master/user.js
-
   - dconf issues: Firefox dock app icon
   - Debian:
     - always show dock
     - Eliminate snap for IDEs
+
+
+
   - Gnome Terminal issue w/ oh-my-zsh & p10k theme
+
+  - Firefox
+    - https://galaxy.ansible.com/staticdev/firefox / https://github.com/staticdev/ansible-role-firefox
+    - https://github.com/pyllyukko/user.js/blob/master/user.js
+
+
+
 
 
 
