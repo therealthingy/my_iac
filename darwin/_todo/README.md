@@ -1,7 +1,10 @@
 # TODO
 
-## THINGS 2 REMEMBER 4 NEXT mac setup
+## THINGS 2 CONSIDER 4 Mac playbook
 - User should have name 'gg'
+- SW:
+  - https://github.com/Lymphatus/caesium-image-compressor  (once stable)
+  - Android emulator 4 Whatsapp  (BlueStacks ??)
 
 
 

@@ -28,6 +28,7 @@
     group: root
     mode: 0644
   become: true
+  when: ansible_facts.distribution == 'Ubuntu'
 
 - name: nala - Update apt cache and install it
   ansible.builtin.apt:
