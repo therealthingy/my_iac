@@ -10,7 +10,7 @@
     #      - celluloid
     #      - vlc
     #    state: present
-    # TODO: yt-dl
+    # TODO: yt-dlp
 
 - *dev-workstation*:
   - Firefox

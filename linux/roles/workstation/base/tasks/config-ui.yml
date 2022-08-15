@@ -30,7 +30,9 @@
     # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
     - { key: '/org/gnome/shell/favorite-apps', value: "['org.gnome.Nautilus.desktop', 'firefox.desktop', 'codium.desktop', 'org.gnome.Terminal.desktop', 'gnome-system-monitor.desktop']", state: present }
 
-    # Nautilus
+    # Nautilus  (BE AWARE: Schema for gtk (used by `gsettings`): `org.gtk.Settings.FileChooser` vs. Path (used by dconf editor and Ansible module): `org.gtk.settings.file-chooser`)
+    - { key: '/org/gnome/desktop/interface/clock-format', value: "'12h'", state: present }
+    - { key: '/org/gtk/settings/file-chooser/clock-format', value: "'12h'", state: present }
     - { key: '/org/gnome/nautilus/preferences/show-delete-permanently', value: 'true', state: present }
     - { key: '/org/gnome/nautilus/preferences/default-sort-order', value: "'type'", state: present }         # Possible values: size, type, mtime, atime, starred
     - { key: '/org/gnome/nautilus/preferences/default-sort-in-reverse-order', value: 'false', state: present }
