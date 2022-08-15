@@ -1,6 +1,5 @@
 # Playbook for GNU/Linux machines
 
-Debian: always show dock
 
 ## TODOs
 - GENERAL:
@@ -18,12 +17,13 @@ Debian: always show dock
     - https://galaxy.ansible.com/staticdev/firefox / https://github.com/staticdev/ansible-role-firefox
     - https://github.com/pyllyukko/user.js/blob/master/user.js
 
-  - dconf issues:
-    - Naultilus dconf settings get ignored ??
-    - Firefox dock app icon
-
-  - Eliminate snap for IDEs
+  - dconf issues: Firefox dock app icon
+  - Debian:
+    - always show dock
+    - Eliminate snap for IDEs
   - Gnome Terminal issue w/ oh-my-zsh & p10k theme
+
+
 
 - *home_server*:
   - Each container role should have role docker als dependency
