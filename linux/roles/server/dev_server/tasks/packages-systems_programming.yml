@@ -7,7 +7,7 @@
       - manpages-dev
       - cmake
       - cmake-curses-gui
-      # Debuggers / Tools  (binutils & gdb are most likely already installed)
+      # Debuggers / Tools  (binutils, util-linux & gdb are most likely already installed)
       - binutils
       - gdb
       - valgrind

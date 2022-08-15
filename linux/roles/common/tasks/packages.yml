@@ -63,6 +63,8 @@
 - name: Install administration tools
   ansible.builtin.apt:
     name:
+      # Most likely already installed (contains MANY utilities)
+      - util-linux
       - ssh
       - mosh
     state: present
