@@ -22,6 +22,7 @@
 
 - *home_server*:
 	- **SECURITY: https://christitus.com/linux-security-mistakes/**
+  - Backup via Borgbackup
   - Containers:
     - Add traefik allowed ip range 4 vault (https://doc.traefik.io/traefik/middlewares/http/forwardauth/)
     - ( Each container role should have role docker als dependency )
@@ -306,7 +307,8 @@
       - by either configuring statically + disabling dhcpd (denyinterfaces; https://forums.raspberrypi.com/viewtopic.php?t=178387)
       - iptables ??
   -FUTURE WORK:
-    - SSO service 4 which allows authenticating all services
+    - **SSO service** 4 which allows authenticating all services   (https://goauthentik.io/, https://github.com/authelia/authelia)
+    - Heimdall
     - dyndns:
       - CURRENTLY: https://dynv6.com/  /  http://garygee.dynv6.net/
       - Disable privacy extensions (i.e., derive global ipv6 address for eth0 iface from mac address, thus making sure fritzbox ipv6 permitted access works  (see also https://www.heise.de/ct/artikel/IPv6-DynDNS-klemmt-4785681.html))
