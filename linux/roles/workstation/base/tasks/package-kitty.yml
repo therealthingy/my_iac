@@ -1,0 +1,14 @@
+---
+- name: kitty - Install it
+  ansible.builtin.apt:
+    name: kitty
+    state: present
+
+- name: kitty - Copy config
+  ansible.builtin.copy:
+    src: 'kitty.conf'
+    dest: '/home/{{ user_name }}/.config/kitty/kitty.conf'
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
+    mode: 0644
+  become: false

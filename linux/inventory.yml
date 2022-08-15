@@ -10,6 +10,12 @@ all:
       hosts:
 #        ansible_test:
 #          ssh_port: 22
+#          dock_favorite_apps:
+#            - "'org.gnome.Nautilus.desktop'"
+#            - "'firefox.desktop'"
+#            - "'codium.desktop'"
+#            - "'terminator.desktop'"
+#            - "'gnome-system-monitor.desktop'"
 
 
     # - "Headless" systems -

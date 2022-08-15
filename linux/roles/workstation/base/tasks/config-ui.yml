@@ -31,7 +31,9 @@
     - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-position', value: "'LEFT'", state: present }
     - { key: '/org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size', value: '25', state: present }
     - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-fixed', value: 'true', state: present }
-    - { key: '/org/gnome/shell/favorite-apps', value: "['org.gnome.Nautilus.desktop', 'firefox.desktop', 'codium.desktop', 'terminator.desktop', 'gnome-system-monitor.desktop']", state: present }  # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
+
+    - { key: '/org/gnome/shell/favorite-apps', value: "[{{ dock_favorite_apps|join(', ') }}]", state: present }  # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
+
     # --  Nautilus  --
     - { key: '/org/gnome/nautilus/preferences/show-delete-permanently', value: 'true', state: present }
     - { key: '/org/gnome/nautilus/preferences/default-sort-order', value: "'type'", state: present }         # Possible values: size, type, mtime, atime, starred

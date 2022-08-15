@@ -74,20 +74,24 @@
       - trash-cli
     state: present
 
-- name: Replace Terminal Emulator w/ Terminator
-  ansible.builtin.apt:
-    name: '{{ terminal_emulator_package.package }}'
-    state: '{{ terminal_emulator_package.state }}'
-  with_items:
-    - { package: 'gnome-terminal', state: 'absent' }
-    - { package: 'terminator', state: 'present' }
-  loop_control:
-    loop_var: terminal_emulator_package
-
 - include_tasks: '{{ item }}'
   loop:
+#    - package-kitty.yml
     - package-firefox.yml
     - package-brave.yml
     - package-codium.yml
     - package-conky.yml
     - package-flatpak.yml
+
+
+- name: Unintall GNOME Terminal (got replaced by Kitty)
+  ansible.builtin.apt:
+    name: gnome-terminal
+    state: absent
+
+
+# TODO:  REVISE
+- name: 'TEMPORARY WORKAROUND (since no windows buttons for kitty): Install termiantor'
+  ansible.builtin.apt:
+    name: terminator
+    state: present
