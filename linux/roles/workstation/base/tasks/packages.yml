@@ -73,6 +73,16 @@
       - trash-cli
     state: present
 
+- name: Replace Terminal Emulator w/ Terminator
+  ansible.builtin.apt:
+    name: '{{ terminal_emulator_package.package }}'
+    state: '{{ terminal_emulator_package.state }}'
+  with_items:
+    - { package: 'gnome-terminal', state: 'absent' }
+    - { package: 'terminator', state: 'present' }
+  loop_control:
+    loop_var: terminal_emulator_package
+
 - include_tasks: '{{ item }}'
   loop:
     - package-firefox.yml

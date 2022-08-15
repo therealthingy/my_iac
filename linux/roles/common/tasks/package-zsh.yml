@@ -15,6 +15,12 @@
     mode: 0755
   become: false
 
+- name: zsh - Install oh-my-zsh dependencies (ONLY required when using Terminal Emultators in Desktop environments)
+  ansible.builtin.apt:
+    name:
+      - fonts-powerline
+    state: present
+
 - name: zsh - Install oh-my-zsh
   ansible.builtin.git:
     repo: https://github.com/ohmyzsh/ohmyzsh.git
@@ -56,10 +62,10 @@
     group: '{{ user_name }}'
     mode: 0644
   with_items:
+    - { src: 'zsh/zshrc', dest_file: '.zshrc' }
     - { src: 'zsh/zshenv', dest_file: '.zshenv' }
     - { src: 'zsh/zshfunc', dest_file: '.zshfunc' }
-    - { src: 'zsh/p10k', dest_file: '.p10k.zsh' }
-    - { src: 'zsh/zshrc', dest_file: '.zshrc' }
+    - { src: 'zsh/p10k', dest_file: '.p10k.zsh' }    # 'Generated' using `p10k configure` (and just copied)
   loop_control:
     loop_var: config_file
   become: false

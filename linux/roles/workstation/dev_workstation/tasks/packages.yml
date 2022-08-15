@@ -7,12 +7,6 @@
       - netcat
     state: present
 
-- name: Install dev tools
-  ansible.builtin.apt:
-    name:
-      - terminator
-    state: present
-
 - name: Install db tools
   ansible.builtin.apt:
     name:
@@ -35,9 +29,9 @@
   when: ansible_facts.distribution == 'Ubuntu'
 
 
-- name: Install LaTex
-  ansible.builtin.apt:
-    name:
-      - texlive-full
-      - texmaker
-    state: present
+#- name: Install LaTex
+#  ansible.builtin.apt:
+#    name:
+#      - texlive-full
+#      - texmaker
+#    state: present
