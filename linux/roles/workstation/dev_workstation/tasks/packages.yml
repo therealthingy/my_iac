@@ -29,9 +29,9 @@
   when: ansible_facts.distribution == 'Ubuntu'
 
 
-#- name: Install LaTex
-#  ansible.builtin.apt:
-#    name:
-#      - texlive-full
-#      - texmaker
-#    state: present
+- name: Install LaTex
+  ansible.builtin.apt:
+    name:
+      - texlive-full
+      - texmaker
+    state: present
