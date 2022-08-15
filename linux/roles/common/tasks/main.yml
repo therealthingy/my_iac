@@ -6,7 +6,7 @@
     state: present
 
 
-# ---------------------------------- Distro specific stuff ----------------------------------
+# ---------------------------------- PRE-packages - Distro specific stuff ----------------------------------
 - name: '[Debian] Remove CD/DVD install as apt source'
   ansible.builtin.replace:
     dest: /etc/apt/sources.list
@@ -22,7 +22,18 @@
     filename: backports
     update_cache: yes
   when: ansible_facts.distribution == 'Debian'
+# ----------------------------------------------------------------------------------------------------------
 
+
+- include_tasks: '{{ included_common_task }}'
+  loop:
+    - config.yml
+    - packages.yml
+  loop_control:
+    loop_var: included_common_task
+
+
+# ---------------------------------- POST packages - Distro specific stuff ----------------------------------
 # See https://vitux.com/how-to-disable-enable-automatic-error-reporting-in-ubuntu/
 - name: '[Ubuntu] Uninstall Telemetry/error reporting services'
   ansible.builtin.apt:
@@ -47,12 +58,4 @@
     - { key: '/com/ubuntu/update-notifier/show-livepatch-status-icon', value: 'false', state: present }
   become: false
   when: ansible_facts.distribution == 'Ubuntu'
-# -------------------------------------------------------------------------------------------
-
-
-- include_tasks: '{{ included_common_task }}'
-  loop:
-    - config.yml
-    - packages.yml
-  loop_control:
-    loop_var: included_common_task
+# -----------------------------------------------------------------------------------------------------------
