@@ -12,19 +12,24 @@
   become: true
 
 
-- name: Check if Docker is installed
+# -----------  Check for installed sw  -----------
+- name: "Check if package 'Docker' is installed"
   ansible.builtin.command: which docker
   failed_when: false
   changed_when: false
   check_mode: false
   register: result_docker_command
 
+# TODO: nala  ??
+# ------------------------------------------------
+
+
 # NOTE: To debug, use `sudo unattended-upgrade --debug --dry-run`
 #       Log file: `cat /var/log/unattended-upgrades/unattended-upgrades.log`
 - name: Copy unattended-upgrades configuration files in place
   ansible.builtin.template:
-    src: '{{ item }}.j2'
-    dest: '/etc/apt/apt.conf.d/{{ item }}'
+    src: '{{ unattended_update_config_file }}.j2'
+    dest: '/etc/apt/apt.conf.d/{{ unattended_update_config_file }}'
     owner: root
     group: root
     mode: 0644
@@ -32,3 +37,5 @@
     - 10periodic
     - 50unattended-upgrades
   become: true
+  loop_control:
+    loop_var: unattended_update_config_file

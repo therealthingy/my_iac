@@ -7,7 +7,15 @@ Unattended-Upgrade::MailOnlyOnError "true";
 
 // See `apt-cache policy` for origins
 Unattended-Upgrade::Origins-Pattern {
-        {{ autoupdate_allowed_origins | indent(width=8) }}};
+{% if ansible_facts.distribution == 'Debian' %}
+        // --  Debian origins  --
+        "origin=Debian,codename=${distro_codename},label=Debian";
+        "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+        //"origin=Debian,codename=${distro_codename}-updates";
+        "origin=Debian Backports,codename=${distro_codename}-backports,label=Debian Backports";
+{% endif %}
+        // --  Additional origins  --
+        {{ autoupdate_additional_allowed_origins | indent(width=8) }}};
 
 Unattended-Upgrade::Allowed-Origins {
 {% if result_docker_command.rc == 0 %}
