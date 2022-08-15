@@ -45,7 +45,7 @@
 # ALTERNATIVE 4 username: `id -u -n`
 - name: Set variables (as facts)
   ansible.builtin.set_fact:
-                 #ansible_user_id
+                 #ansible_user_id  //  ansible_architecture
     user_name={{ result_username.stdout }}
     user_uid={{ result_uid.stdout }}
     user_gid={{ result_gid.stdout }}

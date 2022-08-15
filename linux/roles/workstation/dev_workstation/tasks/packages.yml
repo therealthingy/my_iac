@@ -17,16 +17,13 @@
 
 - include_tasks: ../../../server/dev_server/tasks/packages.yml
 
-
-# TODO: GET RID OF SNAP VERSION
+# KEEP IN MIND: Logout is required for app to show up
 - name: Install IntelliJ IDEs
-  community.general.snap:
+  community.general.flatpak:
     name:
-      - clion
-      - pycharm-professional
+      - com.jetbrains.CLion
+      - com.jetbrains.PyCharm-Professional
     state: present
-    classic: true
-  when: ansible_facts.distribution == 'Ubuntu'
 
 
 - name: Install LaTex

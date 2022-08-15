@@ -90,3 +90,4 @@
     - package-brave.yml
     - package-codium.yml
     - package-conky.yml
+    - package-flatpak.yml

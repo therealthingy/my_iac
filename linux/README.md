@@ -13,19 +13,12 @@
     # TODO: yt-dlp  +  shell aliases
 
 - *dev-workstation*:
-  - Firefox
+  - Brave & Firefox setup:
     - https://galaxy.ansible.com/staticdev/firefox / https://github.com/staticdev/ansible-role-firefox
     - https://github.com/pyllyukko/user.js/blob/master/user.js
-
-  - Debian:
-    - always show dock
-    - Eliminate snap for IDEs
-
-
   - dconf issues: Firefox dock app icon
-
-
-
+  - Debian: always show dock  (like Ubuntu --> dash-to-dock)
+  - Consider switching all apps to flatpak (Brave, Codium & EVENTUALLY firefox)
 
 - *home_server*:
   - Each container role should have role docker als dependency
