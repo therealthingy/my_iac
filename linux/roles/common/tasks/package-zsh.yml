@@ -15,11 +15,6 @@
     mode: 0755
   become: false
 
-- name: zsh - Install oh-my-zsh dependencies (ONLY required when using Terminal Emultators in Desktop environments)
-  ansible.builtin.apt:
-    name:
-      - fonts-powerline
-    state: present
 
 - name: zsh - Install oh-my-zsh
   ansible.builtin.git:
@@ -43,6 +38,12 @@
   loop_control:
     loop_var: plugin
   become: false
+
+- name: zsh - Install fonts for Powerlevel10k theme (ONLY required when using Terminal Emultators in Desktop environments)
+  ansible.builtin.apt:
+    name:
+      - fonts-powerline
+    state: present
 
 - name: zsh - Install Powerlevel10k theme
   ansible.builtin.git:
