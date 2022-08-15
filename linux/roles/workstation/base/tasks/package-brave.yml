@@ -7,11 +7,12 @@
     state: present
   become: true
 
-- name: Brave - Add apt repo
+- name: Brave - Add apt repo and update cache
   ansible.builtin.apt_repository:
     repo: 'deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch={{ deb_architecture }}] https://brave-browser-apt-release.s3.brave.com/ stable main'
     filename: brave-browser-release.list
     state: present
+    update_cache: true
   become: true
 
 # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
@@ -27,9 +28,8 @@
     mode: 0644
   become: true
 
-- name: Brave - Update apt cache and install it
+- name: Brave - Install it
   ansible.builtin.apt:
-    update_cache: true
     name: brave-browser
     state: present
   become: true

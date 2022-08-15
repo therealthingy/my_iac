@@ -9,10 +9,11 @@
   become: true
   when: ansible_facts.distribution == 'Ubuntu'
 
-- name: '[Ubuntu] Firefox - Add apt repo'
+- name: '[Ubuntu] Firefox - Add apt repo and update cache'
   ansible.builtin.apt_repository:
     repo: ppa:mozillateam/ppa
     state: present
+    update_cache: true
   become: true
   when: ansible_facts.distribution == 'Ubuntu'
   register: result_firefox_repo
@@ -32,12 +33,6 @@
     mode: 0644
   become: true
   when: ansible_facts.distribution == 'Ubuntu'
-
-- name: 'Firefox - [Ubuntu] Update apt cache'
-  ansible.builtin.apt:
-    update_cache: true
-  become: true
-  when: ansible_facts.distribution == 'Ubuntu' and result_firefox_repo.changed
 # --------------------------------------------------------------------------------
 
 - name: Firefox - Set package name

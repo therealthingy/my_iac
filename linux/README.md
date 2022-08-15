@@ -20,9 +20,6 @@
   - Debian: always show dock  (like Ubuntu --> dash-to-dock)
   - Consider switching all apps to flatpak (Brave, Codium & EVENTUALLY firefox)
 
-- *rpi*:
-  - package `nala`
-
 - *home_server*:
 	- **SECURITY: https://christitus.com/linux-security-mistakes/**
   - Containers:
