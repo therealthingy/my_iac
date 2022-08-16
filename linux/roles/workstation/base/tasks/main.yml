@@ -3,5 +3,6 @@
   loop:
     - packages.yml
     - config-ui.yml
+    - config-firefox.yml
   loop_control:
     loop_var: included_workstation_task

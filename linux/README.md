@@ -4,16 +4,17 @@
 ## TODOs
 - GENERAL:
   - new role:
-    #- name: Install media tools
-    #  ansible.builtin.apt:
-    #    name:
-    #      - celluloid
-    #      - vlc
-    #    state: present
-    # TODO: yt-dlp + shell aliases
+    ```
+    - name: Install media tools
+      ansible.builtin.apt:
+        name:
+          - celluloid
+          - vlc
+        state: present
+    ```
+      - TODO: yt-dlp + shell aliases
 
 - *dev-workstation*:
-  - **Firefox config  (https://github.com/staticdev/ansible-role-firefox)**
   - Debian: always show dock  (like Ubuntu --> dash-to-dock)
   - Consider switching all apps to flatpak (Brave, Codium & EVENTUALLY firefox)
 
@@ -162,7 +163,12 @@
   * transmission & samba: Directory structure (e.g., on (encrypted luks) sparse file)
 * *Dev workstations*:
   * Apps setup
-    * VSCod~~e~~ium: Install extension 'Settings Sync' & follow instructions
+    * *VSCod~~e~~ium*: Install extension 'Settings Sync' & follow instructions
+    * *Firefox*:
+      * Go to [about:profiles](about:profiles) and open profile default
+      * Open it again in new browser window & delete other profile
+      * Allow extensions
+      * Import bookmarks from [firefox-bookmarks-dev.html](roles/workstation/base/files/firefox-bookmarks-dev.html)
 
 
 ## Commands
