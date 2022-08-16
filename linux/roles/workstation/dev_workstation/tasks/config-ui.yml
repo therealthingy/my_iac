@@ -1,5 +1,5 @@
 ---
-- name: GNOME wallpaper
+- name: Change GNOME wallpaper
   block:
     - name: Ensure wallpaper dir exists
       ansible.builtin.file:
@@ -11,7 +11,7 @@
         src: Ballmer.jpg
         dest: '/home/{{ user_name }}/Pictures/wallpapers/Ballmer.jpg'
 
-    - name: Set it
+    - name: Change wallpaper
       community.general.dconf:
         key: '/org/gnome/desktop/background/picture-uri'
         value: "'file:///home/{{ user_name }}/Pictures/wallpapers/Ballmer.jpg'"
