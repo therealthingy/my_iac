@@ -165,10 +165,11 @@
   * Apps setup
     * *VSCod~~e~~ium*: Install extension 'Settings Sync' & follow instructions
     * *Firefox*:
-      * Go to [about:profiles](about:profiles) and open profile default
-      * Open it again in new browser window & delete other profile
+      * Go to [about:profiles](about:profiles) and *Launch profile in new browser* for 'default'
+      * Open [about:profiles](about:profiles) again in a new browser window & delete the other profile, including data
       * Allow extensions
-      * Import bookmarks from [firefox-bookmarks-dev.html](roles/workstation/base/files/firefox-bookmarks-dev.html)
+      * Right click on Bookmarks bar &rarr; *Manage bookmarks* &rarr; *Import and Backup* &rarr; *Import Bookmarks from HTML...* &rarr; Select [firefox-bookmarks-dev.html](roles/workstation/base/files/firefox-bookmarks-dev.html)
+      * Cleanup &rarr;
 
 
 ## Commands
