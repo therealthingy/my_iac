@@ -12,8 +12,8 @@
 # --  Set workstation facts  --
 - name: Set variables (as facts)
   ansible.builtin.set_fact:
-    desktop_envs={{ ['GNOME' if result_gnome_command.rc == 0] }}
-    gather_workstation_facts=true
+    desktop_envs: "{{ ['GNOME' if result_gnome_command.rc == 0] }}"
+    gather_workstation_facts: True
   become: false
   when: gather_workstation_facts is not defined
 

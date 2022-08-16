@@ -34,7 +34,7 @@
 # -------- TODO: TEMPORARY WORKARDOUND FOR RPI --------
 - name: nala - Set package name
   ansible.builtin.set_fact:
-    nala_package_name={{ 'nala' if ansible_architecture == 'x86_64' else 'nala-legacy' }}
+    nala_package_name: "{{ 'nala' if ansible_architecture == 'x86_64' else 'nala-legacy' }}"
   become: false
 # -----------------------------------------------------
 

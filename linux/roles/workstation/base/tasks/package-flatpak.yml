@@ -1,25 +1,25 @@
 ---
-- name: flatpak - Install depdencies
-  ansible.builtin.apt:
-    name: dirmngr
-    state: present
+- name: Install flatpak
+  block:
+    - name: Install depdencies
+      ansible.builtin.apt:
+        name: dirmngr
+        state: present
+
+    - name: Install it
+      ansible.builtin.apt:
+        name: flatpak
+        state: present
+
+    - name: 'Install GNOME Software "store"'
+      ansible.builtin.apt:
+        name: gnome-software-plugin-flatpak
+        state: present
+        install_recommends: true
   become: true
   when: ansible_os_family == 'Debian'
 
-- name: flatpak - Install it
-  ansible.builtin.apt:
-    name: flatpak
-    state: present
-  become: true
-  when: ansible_os_family == 'Debian'
 
-- name: 'flatpak - Install GNOME Software "store"'
-  ansible.builtin.apt:
-    name: gnome-software-plugin-flatpak
-    state: present
-    install_recommends: true
-  become: true
-  when: ansible_os_family == 'Debian'
 
 - name: Add the flathub flatpak repository
   community.general.flatpak_remote:

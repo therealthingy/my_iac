@@ -1,21 +1,19 @@
 ---
-- name: GNOME wallpaper - Ensure wallpaper dir exists
-  ansible.builtin.file:
-    path: '/home/{{ user_name }}/Pictures/wallpapers'
-    state: directory
-  become: false
-  when: "'GNOME' in desktop_envs"
+- name: GNOME wallpaper
+  block:
+    - name: Ensure wallpaper dir exists
+      ansible.builtin.file:
+        path: '/home/{{ user_name }}/Pictures/wallpapers'
+        state: directory
 
-- name: GNOME wallpaper - Copy wallpaper file
-  ansible.builtin.copy:
-    src: Ballmer.jpg
-    dest: '/home/{{ user_name }}/Pictures/wallpapers/Ballmer.jpg'
-  become: false
-  when: "'GNOME' in desktop_envs"
+    - name: Copy wallpaper file
+      ansible.builtin.copy:
+        src: Ballmer.jpg
+        dest: '/home/{{ user_name }}/Pictures/wallpapers/Ballmer.jpg'
 
-- name: GNOME wallpaper - Set it
-  community.general.dconf:
-    key: '/org/gnome/desktop/background/picture-uri'
-    value: "'file:///home/{{ user_name }}/Pictures/wallpapers/Ballmer.jpg'"
+    - name: Set it
+      community.general.dconf:
+        key: '/org/gnome/desktop/background/picture-uri'
+        value: "'file:///home/{{ user_name }}/Pictures/wallpapers/Ballmer.jpg'"
   become: false
   when: "'GNOME' in desktop_envs"
