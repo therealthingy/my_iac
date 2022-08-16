@@ -1,7 +1,7 @@
 ---
 - name: Copy config file
   ansible.builtin.copy:
-    src: 'tmux.conf'
+    src: tmux.conf
     dest: '/home/{{ user_name }}/.tmux.conf'
     owner: '{{ user_name }}'
     group: '{{ user_name }}'
@@ -9,6 +9,5 @@
 
 - name: Install tmux
   ansible.builtin.apt:
-    name:
-      - tmux
+    name: tmux
     state: present

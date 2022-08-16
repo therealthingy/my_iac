@@ -7,21 +7,24 @@
 
 
 # ---------------------------------- PRE-packages - Distro specific stuff ----------------------------------
-- name: '[Debian] Remove CD/DVD install as apt source'
-  ansible.builtin.replace:
-    dest: /etc/apt/sources.list
-    regexp: '^(#\s*)?deb cdrom:\[.+\]\/ \w+ (contrib|main) (contrib|main)$'
+- name: 'Debian pre packages - apt sources'
+  block:
+    - name: 'Remove CD/DVD install as apt source'
+      ansible.builtin.replace:
+        dest: /etc/apt/sources.list
+        regexp: '^(#\s*)?deb cdrom:\[.+\]\/ \w+ (contrib|main) (contrib|main)$'
+
+    # Will have by default prio of 100  (check via `apt-cache policy`)
+    - name: 'Add Backports apt source (to get newer packages backported to the release stable)'
+      # NOTE: Equivalent command: `sudo add-apt-repository 'deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main'`
+      ansible.builtin.apt_repository:
+        repo: deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main
+        state: present
+        filename: backports
+        update_cache: yes
   become: true
   when: ansible_facts.distribution == 'Debian'
 
-# Will have by default prio of 100  (check via `apt-cache policy`)
-- name: '[Debian] Add Backports apt source (to get newer packages backported to the release stable)'
-  ansible.builtin.apt_repository:
-    repo: deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main
-    state: present
-    filename: backports
-    update_cache: yes
-  when: ansible_facts.distribution == 'Debian'
 # ----------------------------------------------------------------------------------------------------------
 
 
@@ -35,27 +38,28 @@
 
 # ---------------------------------- POST packages - Distro specific stuff ----------------------------------
 # See https://vitux.com/how-to-disable-enable-automatic-error-reporting-in-ubuntu/
-- name: '[Ubuntu] Uninstall Telemetry/error reporting services'
-  ansible.builtin.apt:
-    name:
-      - apport
-      - ubuntu-report
-      - whoopsie
-    state: absent
-    purge: true
-    clean: true
-    autoremove: true
-  when: ansible_facts.distribution == 'Ubuntu'
+- name: 'Ubuntu post packages - Disable annoying stuff'
+  block:
+    - name: 'Uninstall Telemetry/error reporting services'
+      ansible.builtin.apt:
+        name:
+          - apport
+          - ubuntu-report
+          - whoopsie
+        state: absent
+        purge: true
+        clean: true
+        autoremove: true
 
-- name: '[Ubuntu] Disable Telemetry/error reporting + Ubuntu services'
-  community.general.dconf:
-    key: '{{ item.key }}'
-    value: '{{ item.value }}'
-    state: '{{ item.state }}'
-  with_items:
-    - { key: '/com/ubuntu/update-notifier/show-apport-crashes', value: 'false', state: present }
-    - { key: '/com/ubuntu/update-notifier/notify-ubuntu-advantage-available', value: 'false', state: present }
-    - { key: '/com/ubuntu/update-notifier/show-livepatch-status-icon', value: 'false', state: present }
-  become: false
+    - name: 'Disable Telemetry/error reporting + Ubuntu services'
+      community.general.dconf:
+        key: '{{ item.key }}'
+        value: '{{ item.value }}'
+        state: '{{ item.state }}'
+      with_items:
+        - { key: '/com/ubuntu/update-notifier/show-apport-crashes', value: 'false', state: present }
+        - { key: '/com/ubuntu/update-notifier/notify-ubuntu-advantage-available', value: 'false', state: present }
+        - { key: '/com/ubuntu/update-notifier/show-livepatch-status-icon', value: 'false', state: present }
+      become: false
   when: ansible_facts.distribution == 'Ubuntu'
 # -----------------------------------------------------------------------------------------------------------

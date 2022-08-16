@@ -1,6 +1,7 @@
 ---
 # See: https://github.com/staticdev/ansible-role-brave/blob/main/tasks/main.yml
 - name: Brave - Add apt signing key
+  # NOTE: Equivalent command: `wget -O - https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg | sudo apt-key add -`; Show keys: `apt-key list`
   ansible.builtin.apt_key:
     url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
     keyring: /usr/share/keyrings/brave-browser-archive-keyring.gpg
@@ -8,6 +9,7 @@
   become: true
 
 - name: Brave - Add apt repo and update cache
+  # NOTE: Equivalent command: `sudo add-apt-repository 'deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch={{ deb_architecture }}] https://brave-browser-apt-release.s3.brave.com/ stable main'`
   ansible.builtin.apt_repository:
     repo: 'deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch={{ deb_architecture }}] https://brave-browser-apt-release.s3.brave.com/ stable main'
     filename: brave-browser-release.list

@@ -10,6 +10,7 @@
   when: ansible_facts.distribution == 'Ubuntu'
 
 - name: '[Ubuntu] Firefox - Add apt repo and update cache'
+  # NOTE: Equivalent command: `sudo add-apt-repository 'ppa:mozillateam/ppa'`
   ansible.builtin.apt_repository:
     repo: ppa:mozillateam/ppa
     state: present
@@ -27,7 +28,7 @@
       Package: *
       Pin: release o=LP-PPA-mozillateam
       Pin-Priority: 1001
-    dest: /etc/apt/preferences.d/mozilla-firefox
+    dest: /etc/apt/preferences.d/firefox-no-snap
     owner: root
     group: root
     mode: 0644
@@ -50,3 +51,5 @@
 
 # --  Configure Firefox  --
 # TODO: firefox config
+#    - https://galaxy.ansible.com/staticdev/firefox / https://github.com/staticdev/ansible-role-firefox
+#    - https://github.com/pyllyukko/user.js/blob/master/user.js

@@ -67,6 +67,8 @@
     name:
       # Most likely already installed (contains MANY utilities)
       - util-linux
+      # - abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
+      - software-properties-common
       - ssh
       - mosh
     state: present
