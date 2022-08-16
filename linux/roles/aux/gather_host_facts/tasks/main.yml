@@ -1,61 +1,50 @@
 ---
-# --  Get user data  --
-- name: Get username of current user
-  ansible.builtin.shell: whoami
-  become: false
-  changed_when: false
-  register: result_username
-  when: gathered_host_facts is not defined
+- name: Gather host data and set it as facts
+  block:
+    - name: Gather data
+      block:
+        # --  User data  --
+        - name: Get username of current user
+          ansible.builtin.shell: whoami                               # ALTERNATIVE 4 username: `id -u -n` OR ansible_user_id
+          register: result_username
+          changed_when: false
 
-- name: Get uid of current user
-  ansible.builtin.shell: id -u
-  become: false
-  changed_when: false
-  register: result_uid
-  when: gathered_host_facts is not defined
+        - name: Get uid of current user
+          ansible.builtin.shell: id -u
+          register: result_uid
+          changed_when: false
 
-- name: Get gid of current user
-  ansible.builtin.shell: id -g
-  become: false
-  changed_when: false
-  register: result_gid
-  when: gathered_host_facts is not defined
+        - name: Get gid of current user
+          ansible.builtin.shell: id -g
+          register: result_gid
+          changed_when: false
 
-- name: Get gid of the docker group
-  ansible.builtin.shell: >
-            getent group |
-            grep docker |
-            awk -F: '{printf "%d", $3}'
-  become: false
-  changed_when: false
-  register: result_docker_gid
-  when: gathered_host_facts is not defined
+        - name: Get gid of the docker group
+          ansible.builtin.shell: >
+                    getent group |
+                    grep docker |
+                    awk -F: '{printf "%d", $3}'
+          register: result_docker_gid
+          changed_when: false
 
-
-# --  Get system info  --
-- name: Get DEB architecture
-  ansible.builtin.shell: dpkg --print-architecture
-  changed_when: false
-  register: result_deb_architecture
-  when: gathered_host_facts is not defined
+        # --  System info  --
+        - name: Get DEB architecture
+          ansible.builtin.shell: dpkg --print-architecture            # ALTERNATIVE for arch.: ansible_architecture
+          register: result_deb_architecture
+          changed_when: false
 
 
-
-# --  Set host facts  --
-# ALTERNATIVE 4 username: `id -u -n`
-- name: Set variables (as facts)
-  ansible.builtin.set_fact:
-                 #ansible_user_id  //  ansible_architecture
-    user_name: '{{ result_username.stdout }}'
-    user_uid: '{{ result_uid.stdout }}'
-    user_gid: '{{ result_gid.stdout }}'
-    docker_gid: '{{ result_docker_gid.stdout }}'
-    deb_architecture: '{{ result_deb_architecture.stdout }}'
-    gathered_host_facts: True
+    - name: Set variables (as facts)
+      ansible.builtin.set_fact:
+        user_name: '{{ result_username.stdout }}'
+        user_uid: '{{ result_uid.stdout }}'
+        user_gid: '{{ result_gid.stdout }}'
+        docker_gid: '{{ result_docker_gid.stdout }}'
+        deb_architecture: '{{ result_deb_architecture.stdout }}'
+        gathered_host_facts: True
   become: false
   when: gathered_host_facts is not defined
 
 
 #-  ansible.builtin.debug:
 #    msg: user_name={{ user_name }}, user_uid={{ user_uid }}, docker_gid={{ docker_gid }}, deb_architecture={{ deb_architecture }}
-

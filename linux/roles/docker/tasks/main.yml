@@ -6,17 +6,18 @@
   check_mode: false
   register: result_docker_command
 
-- name: Download Docker install convenience script.
-  ansible.builtin.get_url:
-    url: https://get.docker.com/
-    dest: /tmp/get-docker.sh
-    mode: 0775
-  when: result_docker_command.rc == 1
+- name: Install Docker
+  block:
+    - name: Download Docker install convenience script.
+      ansible.builtin.get_url:
+        url: https://get.docker.com/
+        dest: /tmp/get-docker.sh
+        mode: 0775
 
-- name: Run Docker install convenience script.
-  ansible.builtin.command: /tmp/get-docker.sh
-  environment:
-    CHANNEL: stable
+    - name: Run Docker install convenience script.
+      ansible.builtin.command: /tmp/get-docker.sh
+      environment:
+        CHANNEL: stable
   when: result_docker_command.rc == 1
 
 - name: Ensure Docker is started.
