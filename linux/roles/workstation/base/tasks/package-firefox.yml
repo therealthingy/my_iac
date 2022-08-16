@@ -43,5 +43,5 @@
 
 # --  Configure Firefox  --
 # TODO: firefox config
-#    - https://galaxy.ansible.com/staticdev/firefox / https://github.com/staticdev/ansible-role-firefox
+#    - https://github.com/staticdev/ansible-role-firefox
 #    - https://github.com/pyllyukko/user.js/blob/master/user.js

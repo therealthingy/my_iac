@@ -14,31 +14,10 @@
 
 
 
-
-
-
-
-
-
-
-
-
 - *dev-workstation*:
-  - Removing snap doesn't work the first time  ??
   - Firefox config
-  - dconf issues: Firefox dock app icon
   - Debian: always show dock  (like Ubuntu --> dash-to-dock)
   - Consider switching all apps to flatpak (Brave, Codium & EVENTUALLY firefox)
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -183,12 +162,6 @@
       - Disable privacy extensions (i.e., derive global ipv6 address for eth0 iface from mac address, thus making sure fritzbox ipv6 permitted access works  (see also https://www.heise.de/ct/artikel/IPv6-DynDNS-klemmt-4785681.html))
 
 
-## Prereq.
-```bash
-ansible-galaxy collection install community.docker
-```
-
-
 ## Not automated steps
 * *Home servers*:
   * traefik: SSL certs gen
@@ -200,6 +173,7 @@ ansible-galaxy collection install community.docker
 
 ## Commands
 ### Setup steps
+* Install "dependencies" for playbook: `ansible-galaxy install -r requirements.yml`
 * Initial setup   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
   * ( (0.) Ubuntu: Install *ssh daemon*: **`sudo apt install -y ssh`**  //  Debian: `su` &rarr; `/sbin/usermod -aG sudo <username>` )
   * (1.) Generate ssh key using custom script `ssh-key_generate` (add it automatically to `.ssh/config`)
