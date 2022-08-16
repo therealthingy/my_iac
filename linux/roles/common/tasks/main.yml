@@ -25,6 +25,64 @@
   become: true
   when: ansible_facts.distribution == 'Debian'
 
+
+- name: 'Ubuntu pre packages - Snaps'
+  block:
+    - name: Shutdown services, sockets and timers
+      ansible.builtin.service:
+        name: '{{ item }}'
+        state: stopped
+        enabled: false
+      failed_when: false
+      with_items:
+        - snapd.apparmor.service
+        - snapd.autoimport.service
+        - snapd.core-fixup.service
+        - snapd.recovery-chooser-trigger.service
+        - snapd.seeded.service
+        - snapd.service
+        - snapd.snap-repair.timer
+        - snapd.socket
+        - snapd.system-shutdown.service
+
+    - name: Set package names
+      ansible.builtin.set_fact:
+        snapd_packages:
+          #- gir1.2-snapd-1
+          #- libsnapd-glib1
+          - snapd
+      become: false
+
+    - name: Remove snapd packages
+      ansible.builtin.apt:
+        name: '{{ item }}'
+        state: absent
+        purge: true
+        autoremove: true
+        allow_downgrade: true
+      with_items: '{{ snapd_packages }}'
+
+    - name: 'Block snapd from installing again'
+      # NOTE: ALTERNATIVE command  ??: `sudo apt-mark hold snapd`
+      ansible.builtin.template:
+        src: apt-snapd-block.pref.j2
+        dest: /etc/apt/preferences.d/snapd-block.pref
+        mode: 0644
+
+    - name: Cleanup
+      ansible.builtin.file:
+        path: '{{ item }}'
+        state: absent
+      with_items:
+        - /home/{{ user_name }}/snap
+        - /snap
+        - /var/snap
+        - /var/lib/snapd
+        - /var/cache/snapd
+        - /run/snapd-snap.socket
+        - /run/snapd.socket
+        - /etc/apt/apt.conf.d/20snapd.conf
+  when: ansible_facts.distribution == 'Ubuntu'
 # ----------------------------------------------------------------------------------------------------------
 
 

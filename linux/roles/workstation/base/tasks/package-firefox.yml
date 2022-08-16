@@ -1,40 +1,31 @@
 ---
 # --  Install firefox  --
-# ------------------------------- Ubuntu specific --------------------------------
-# (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
-- name: 'Firefox - [Ubuntu] Remove snap'
-  community.general.snap:
-    name: firefox
-    state: absent
+# TODO: (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
+- name: 'Ubuntu - Ensure no snap is installed'
+  block:
+    - name: Add apt repo and update cache
+      # NOTE: Equivalent command: `sudo add-apt-repository 'ppa:mozillateam/ppa'`
+      ansible.builtin.apt_repository:
+        repo: ppa:mozillateam/ppa
+        state: present
+        update_cache: true
+
+    # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
+    - name: Pin apt repo
+      ansible.builtin.copy:
+        content: |
+          Package: *
+          Pin: release o=LP-PPA-mozillateam
+          Pin-Priority: 1001
+        dest: /etc/apt/preferences.d/snapd-exclude-firefox.pref
+        owner: root
+        group: root
+        mode: 0644
+
+    #TODO -- UNATTENDED UPGRADES: echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
   become: true
   when: ansible_facts.distribution == 'Ubuntu'
 
-- name: '[Ubuntu] Firefox - Add apt repo and update cache'
-  # NOTE: Equivalent command: `sudo add-apt-repository 'ppa:mozillateam/ppa'`
-  ansible.builtin.apt_repository:
-    repo: ppa:mozillateam/ppa
-    state: present
-    update_cache: true
-  become: true
-  when: ansible_facts.distribution == 'Ubuntu'
-  register: result_firefox_repo
-
-#TODO -- UNATTENDED UPGRADES: echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
-
-# CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
-- name: 'Firefox - [Ubuntu] Pin apt repo'
-  ansible.builtin.copy:
-    content: |
-      Package: *
-      Pin: release o=LP-PPA-mozillateam
-      Pin-Priority: 1001
-    dest: /etc/apt/preferences.d/firefox-no-snap
-    owner: root
-    group: root
-    mode: 0644
-  become: true
-  when: ansible_facts.distribution == 'Ubuntu'
-# --------------------------------------------------------------------------------
 
 - name: Firefox - Set package name
   ansible.builtin.set_fact:
@@ -45,6 +36,7 @@
   ansible.builtin.apt:
     name: '{{ firefox_package_name }}'
     state: present
+    allow_downgrade: true
   become: true
 
 

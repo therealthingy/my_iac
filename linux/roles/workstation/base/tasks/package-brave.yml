@@ -24,7 +24,7 @@
       Package: *
       Pin: origin brave-browser-apt-release.s3.brave.com
       Pin-Priority: 100
-    dest: /etc/apt/preferences.d/brave-browser
+    dest: /etc/apt/preferences.d/brave-browser.pref
     owner: root
     group: root
     mode: 0644

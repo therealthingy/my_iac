@@ -50,13 +50,6 @@
     clean: true
     autoremove: true
   when: ansible_facts.os_family == 'Debian'
-
-- name: '[Ubuntu] Uninstall unncessary apt packages (rmv snap store)'
-  community.general.snap:
-    name: snap-store
-    state: absent
-  become: true
-  when: ansible_facts.distribution == 'Ubuntu'
 # ---------------------------------------------------------
 
 
