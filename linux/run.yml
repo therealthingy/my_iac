@@ -28,8 +28,8 @@
   become: true
   roles:
     - role: workstation/base
-      tags:
-        - workstation
+#    - role: staticdev.firefox
+  tags: workstation
 
 - hosts: dev_workstations
   become: true
@@ -51,8 +51,6 @@
         - server
         - home_server
     - role: docker
-      tags:
-        - docker
 
 - hosts: dev_servers
   roles:
@@ -66,48 +64,38 @@
     docker_container_config_basedir: /home/{{ user_name }}/homeserver_config/container_config
   roles:
     - role: server/home_server/base
-      tags:
-        - home_server
     - role: server/home_server/containers/bitwarden
       tags:
-        - home_server
         - bitwarden
     - role: server/home_server/containers/nginx-helloworld
       tags:
-        - home_server
         - testing
     - role: server/home_server/containers/pihole
       tags:
-        - home_server
         - pihole
     - role: server/home_server/containers/portainer
       tags:
-        - home_server
         - portainer
 
 # KEEP IN MIND: Only run samba - OR - filebrowser (otherwise weird behvaior when using simultaneously)
     - role: server/home_server/containers/filebrowser
       tags:
-        - home_server
         - filebrowser
     - role: server/home_server/containers/samba
       tags:
-        - home_server
         - samba
 
     - role: server/home_server/containers/traefik
       tags:
-        - home_server
         - traefik
     - role: server/home_server/containers/transmission
       tags:
-        - home_server
         - transmission
     - role: server/home_server/containers/volact
       tags:
-        - home_server
         - volact
     - role: server/home_server/containers/watchtower
       tags:
-        - home_server
         - watchtower
+  tags:
+    - home_server

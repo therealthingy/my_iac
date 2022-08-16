@@ -27,6 +27,7 @@
 - *home_server*:
 	- **SECURITY: https://christitus.com/linux-security-mistakes/**
   - Backup via Borgbackup
+  - EMail communication / notifications
   - Containers:
     - Add traefik allowed ip range 4 vault (https://doc.traefik.io/traefik/middlewares/http/forwardauth/)
     - **SSO service** 4 which allows authenticating all services   (https://goauthentik.io/, https://github.com/authelia/authelia)

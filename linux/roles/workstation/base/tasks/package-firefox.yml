@@ -38,10 +38,3 @@
     state: present
     allow_downgrade: true
   become: true
-
-
-
-# --  Configure Firefox  --
-# TODO: firefox config
-#    - https://github.com/staticdev/ansible-role-firefox
-#    - https://github.com/pyllyukko/user.js/blob/master/user.js
