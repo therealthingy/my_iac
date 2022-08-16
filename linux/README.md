@@ -12,17 +12,10 @@
     #    state: present
     # TODO: yt-dlp + shell aliases
 
-
-
 - *dev-workstation*:
-  - Firefox config
+  - **Firefox config  (https://github.com/staticdev/ansible-role-firefox)**
   - Debian: always show dock  (like Ubuntu --> dash-to-dock)
   - Consider switching all apps to flatpak (Brave, Codium & EVENTUALLY firefox)
-
-
-
-
-
 
 - *home_server*:
 	- **SECURITY: https://christitus.com/linux-security-mistakes/**

@@ -25,10 +25,25 @@
 
 # --  "System specific"  --
 - hosts: workstations, dev_workstations
+  vars:
+    firefox_profiles:
+      default:
+        extensions:
+          # URL on addons.mozilla.org
+          - ublock-origin
+          - umatrix
+          - darkreader
+          - save-page-we
+          - i-dont-care-about-cookies
+        # Privacy friendly settings reference: https://github.com/pyllyukko/user.js/blob/master/user.js
+        preferences:
+          network.cookie.cookieBehavior: 1
+          privacy.donottrackheader.enabled: true
+          datareporting.healthreport.uploadEnabled: false
   become: true
   roles:
     - role: workstation/base
-#    - role: staticdev.firefox
+    - role: staticdev.firefox     # >>>>>>>>>>>>    TODO: include_role
   tags: workstation
 
 - hosts: dev_workstations

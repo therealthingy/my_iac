@@ -53,6 +53,11 @@
 # ---------------------------------------------------------
 
 
+- name: Install dependencies required for Firefox config
+  ansible.builtin.pip:
+    name:
+      - requests
+
 - name: Update and upgrade apt packages
   ansible.builtin.apt:
     update_cache: true
