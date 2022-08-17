@@ -6,14 +6,22 @@
         path: '/home/{{ user_name }}/Pictures/wallpapers'
         state: directory
 
-    - name: Copy wallpaper file
-      ansible.builtin.copy:
-        src: Ballmer.jpg
-        dest: '/home/{{ user_name }}/Pictures/wallpapers/Ballmer.jpg'
+    - name: Copy wallpapers
+      ansible.posix.synchronize:
+        src: wallpapers/
+        dest: '/home/{{ user_name }}/Pictures/wallpapers/'
 
     - name: Change wallpaper
       community.general.dconf:
         key: '/org/gnome/desktop/background/picture-uri'
-        value: "'file:///home/{{ user_name }}/Pictures/wallpapers/Ballmer.jpg'"
+        value: "'file:///home/{{ user_name }}/Pictures/wallpapers/{{ gnome_wallpaper }}'"
   become: false
   when: "'GNOME' in desktop_envs"
+
+
+
+- name: Copy ASCII table
+  ansible.builtin.copy:
+    src: ASCII-Table.png
+    dest: '/home/{{ user_name }}/Desktop/ASCII-Table.png'
+  become: false
