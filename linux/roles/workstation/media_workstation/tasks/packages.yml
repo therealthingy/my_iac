@@ -1,0 +1,12 @@
+---
+- name: Install media tools
+  ansible.builtin.apt:
+    name:
+      - celluloid
+      - vlc
+    state: present
+
+- name: Install yt-dl
+  ansible.builtin.pip:
+    name: yt-dlp
+# TODO: SHELL ALIASES 4 yt-dl

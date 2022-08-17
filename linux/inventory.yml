@@ -17,8 +17,12 @@ all:
 #            - "'terminator.desktop'"
 #            - "'gnome-system-monitor.desktop'"
 
+    media_workstations:
+      hosts:
+#        ansible_test:
 
-    # - "Headless" systems -
+
+    # -  "Headless" systems  -
     servers:
       hosts:
 

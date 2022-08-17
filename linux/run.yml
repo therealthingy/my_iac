@@ -41,6 +41,14 @@
       tags:
         - docker
 
+- hosts: media_workstations
+  become: true
+  roles:
+    - role: workstation/media_workstation
+      tags:
+        - workstation
+        - media_workstation
+
 
 - hosts: servers, dev_servers, home_servers
   become: true
