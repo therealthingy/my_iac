@@ -110,6 +110,11 @@ alias temp='vcgencmd measure_temp'
 
 
 # --- Installed tools  ---
+{% if 'media_workstations' in group_names %}
+alias-add yt-dlp yt-vids_download="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'" yt-vids_download_audio="yt-dlp -f 'bestaudio[ext=m4a]'"
+alias-add yt-vids_download yt-vids_download_channel_prefix="yt-vids_download -o '%(channel)s - %(title)s-%(id)s.%(ext)s'"
+{% endif %}
+
 # - Replace existing commands -
 alias-add pigz gzip='pigz' gunzip='unpigz'
 alias-add pbzip2 bzip2='pbzip2' # bunzip2='pbunzip2' bzcat='pbzcat'
@@ -120,11 +125,11 @@ alias-add pbzip2 bzip2='pbzip2' # bunzip2='pbunzip2' bzcat='pbzcat'
 alias journal-clear='sudo journalctl --vacuum-time=2d' # --vacuum-size=500M
 
 # - apt-get aliases
-alias agi='sudo apt-get install' #packages
+alias agi='sudo apt-get install' #<packages>
 alias agu='sudo apt-get update'
-alias ags='sudo apt-cache search' #string-in-package-name-or-descr
-alias agsh='sudo apt-cache show' #string
-alias agr='sudo apt-get remove' #packages
+alias ags='sudo apt-cache search' #<string-in-package-name-or-descr>
+alias agsh='sudo apt-cache show' #<string>
+alias agr='sudo apt-get remove' #<packages>
 alias agd='sudo apt-get dist-upgrade'
 alias agc='sudo apt-get clean'
 alias agac='sudo apt-get autoclean'

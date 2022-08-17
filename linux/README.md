@@ -2,11 +2,9 @@
 
 
 ## TODOs
-  - TODO: yt-dlp + shell aliases
-
 - *dev-workstation*:
   - Firefox: After system reboot  --> non indempotent
-  - Debian: Use Ubuntu dock  (dash-to-dock)
+  - **Debian: Use Ubuntu dock**  (dash-to-dock)
       - uninstall horizontal-workspaces@gnome-shell-extensions.gcampax.github.com
       - install ubuntu-appindicators@ubuntu.com
       - install ubuntu-dock@ubuntu.com

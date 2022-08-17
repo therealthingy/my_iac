@@ -65,10 +65,15 @@
   with_items:
     - { src: 'zsh/zshrc', dest_file: '.zshrc' }
     - { src: 'zsh/zshenv', dest_file: '.zshenv' }
-    - { src: 'zsh/zshfunc', dest_file: '.zshfunc' }
     - { src: 'zsh/p10k', dest_file: '.p10k.zsh' }    # 'Generated' using `p10k configure` (and just copied)
   loop_control:
     loop_var: config_file
+  become: false
+
+- name: zsh - Copy config files 2
+  ansible.builtin.template:
+    src: zsh/zshfunc.j2
+    dest: '/home/{{ user_name }}/.config/zsh/.zshfunc'
   become: false
 
 - name: zsh - Set config dir
