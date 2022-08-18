@@ -10,3 +10,9 @@
       ansible.builtin.include_role:
         name: staticdev.firefox
   become: false
+
+- name: 'Copy default suggested bookmarks  (TODO: AUTO IMPORT  !!)'
+  ansible.builtin.copy:
+    src: firefox-dev_bookmarks.json
+    dest: '/home/{{ user_name }}/.firefox-default_dev_bookmarks.json'
+  become: false
