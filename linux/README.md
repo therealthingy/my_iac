@@ -4,7 +4,6 @@
 ## TODOs
 - *dev-workstation*:
   - Firefox: After system reboot  --> non indempotent  ???
-  - BUG: Ubuntu: Desktop doesn't show files
   - (  Debian: Use Ubuntu dock  (dash-to-dock)  )
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 

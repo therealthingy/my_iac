@@ -4,7 +4,7 @@
 - name: '[Debian/Ubuntu] Uninstall unncessary apt packages (mostly Gnome stuff)'
   ansible.builtin.apt:
     name:
-      # Games
+    # --  Games  --
       - aisleriot
       - gnome-mahjongg
       - gnome-mines
@@ -24,7 +24,7 @@
       - tali
       - gnome-taquin
       - gnome-tetravex
-      # Apps
+    # --  Apps  --
       - gnome-clocks
       - gnome-calendar
       - gnome-contacts
@@ -36,14 +36,11 @@
       - gnome-weather
       - transmission*
       - libreoffice*
-      # Media player
-      - totem
-      # Mail
-      - evolution
+      - totem                     # Media player
+      - evolution                 # Mail
       - thunderbird*
       - simple-scan
-      # NOTE: 'cheese-common', 'libcheese-gtk25' & 'libcheese8' are required by the Settings app (package 'unity-control-center')
-      - cheese
+      - cheese                    # NOTE: 'cheese-common', 'libcheese-gtk25' & 'libcheese8' are required by the Settings app (package 'unity-control-center')
       - 'shotwell*'
     state: absent
     purge: true

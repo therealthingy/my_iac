@@ -142,7 +142,6 @@
   roles:
     - role: workstation/dev_workstation
       tags:
-        - workstation
         - dev_workstation
     - role: docker
       tags:
@@ -155,7 +154,6 @@
   roles:
     - role: workstation/il_workstation
       tags:
-        - workstation
         - il_workstation
 
 
