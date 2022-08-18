@@ -159,7 +159,7 @@
       * Go to [about:profiles](about:profiles) and *Launch profile in new browser* for 'default'
       * Open [about:profiles](about:profiles) again in a new browser window & delete the other profile, including data
       * Allow extensions
-      * Right click on Bookmarks bar &rarr; *Manage bookmarks* &rarr; *Import and Backup* &rarr; *Import Bookmarks from HTML...* &rarr; Select [firefox-bookmarks-dev.html](roles/workstation/base/files/firefox-bookmarks-dev.html)
+      * Right click on Bookmarks bar &rarr; *Manage bookmarks* &rarr; *Import and Backup* &rarr; *Restore* &rarr; *Choose File* &rarr; Select the hidden firefox default bookmarks file
       * Cleanup &rarr;
 
 

@@ -16,3 +16,11 @@
     src: firefox-dev_bookmarks.json
     dest: '/home/{{ user_name }}/.firefox-default_dev_bookmarks.json'
   become: false
+
+
+- name: Autostart Firefox on login
+  ansible.builtin.file:
+    src: /usr/share/applications/firefox.desktop
+    dest: '/home/{{ user_name }}/.config/autostart/firefox.desktop'
+    state: link
+  become: false
