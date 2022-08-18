@@ -6,7 +6,7 @@ networks:
 
 services:
   {{ container_name }}:
-    image: filebrowser/filebrowser:latest
+    image: filebrowser/filebrowser
     container_name: {{ container_name }}
     #restart: unless-stopped          # (Since the sparse file has to be mounted manually ...)
     user: {{ user_uid }}:{{ docker_gid }}

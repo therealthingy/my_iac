@@ -6,7 +6,7 @@ networks:
 
 services:
   {{ container_name }}:
-    image: containrrr/watchtower:latest
+    image: containrrr/watchtower
     hostname: {{ container_name }}
     container_name: {{ container_name }}
 
@@ -32,13 +32,13 @@ services:
 {% if notifications_mail_config is defined %}
       - WATCHTOWER_NOTIFICATIONS=email
       # - Emailing
-      - 'WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ smtp_host }}'
-      - 'WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT={{ smtp_port }}'
-      - 'WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER={{ smtp_username }}'
-      - 'WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD={{ smtp_password }}'
-      - 'WATCHTOWER_NOTIFICATION_EMAIL_FROM={{ smtp_username }}'
-      - 'WATCHTOWER_NOTIFICATION_EMAIL_TO={{ system_admin_mail }}'
-      - 'WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG={{ inventory_hostname }} maintenance'
+      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ notifications_mail_config.smtp_host }}
+      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT={{ notifications_mail_config.smtp_port }}
+      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER={{ notifications_mail_config.smtp_username }}
+      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD={{ notifications_mail_config.smtp_password }}
+      - WATCHTOWER_NOTIFICATION_EMAIL_FROM={{ notifications_mail_config.smtp_username }}
+      - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail_config.system_admin_mail }}
+      - WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG={{ inventory_hostname }} maintenance
 {% endif %}
 
     # command: --run-once

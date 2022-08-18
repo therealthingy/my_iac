@@ -1,6 +1,7 @@
 ---
 container_name: volact
 container_port: 1688
+container_enable_logging: false
 
 container_image: !vault |
           $ANSIBLE_VAULT;1.1;AES256

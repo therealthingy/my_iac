@@ -1,9 +1,14 @@
 ---
 container_name: transmission
-peers_blocklist: https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz
-max_parallel_downloads: 10
+container_enable_logging: true
 
-#          OG: kettu
-web_interface: combustion
+notifications_hide_filename: true
 
-enable_watchtower: "true"
+
+transmission_peers_blocklist: https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz
+transmission_max_parallel_downloads: 10
+
+#                OG: kettu
+transmission_web_ui: combustion
+
+container_enable_watchtower: "true"

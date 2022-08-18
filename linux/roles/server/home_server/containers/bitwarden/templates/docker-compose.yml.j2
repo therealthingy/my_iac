@@ -6,7 +6,7 @@ networks:
 
 services:
   {{ container_name }}:
-    image: vaultwarden/server:latest
+    image: vaultwarden/server
     container_name: {{ container_name }}
     restart: always
 
@@ -29,13 +29,13 @@ services:
       - DOMAIN=https://{{ container_name }}.{{ domainname }}
 {% if notifications_mail_config is defined %}
       # --- Emailing
-      - 'SMTP_HOST={{ smtp_host }}'
-      - 'SMTP_FROM={{ smtp_username }}'
+      - SMTP_HOST={{ notifications_mail_config.smtp_host }}
+      - SMTP_FROM={{ notifications_mail_config.smtp_username }}
       - SMTP_FROM_NAME=Bitwarden_RS
-      - 'SMTP_PORT={{ smtp_port }}'
+      - SMTP_PORT={{ notifications_mail_config.smtp_port }}
       - SMTP_SECURITY=starttls
-      - 'SMTP_USERNAME={{ smtp_username }}'
-      - 'SMTP_PASSWORD={{ smtp_password }}'
+      - SMTP_USERNAME={{ notifications_mail_config.smtp_username }}
+      - SMTP_PASSWORD={{ notifications_mail_config.smtp_password }}
       - SMTP_AUTH_MECHANISM=Plain
       - SMTP_TIMEOUT=15
 {% endif %}

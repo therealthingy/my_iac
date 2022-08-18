@@ -3,28 +3,14 @@
 
 ## TODOs
 - *dev-workstation*:
-  - Firefox: After system reboot  --> non indempotent
-  - **Debian: Use Ubuntu dock**  (dash-to-dock)
-      - uninstall horizontal-workspaces@gnome-shell-extensions.gcampax.github.com
-      - install ubuntu-appindicators@ubuntu.com
-      - install ubuntu-dock@ubuntu.com
-      - guide:
-        [Solution]build from source may solve this.
-        $git clone https://github.com/micheleg/dash-to-dock.git -b ubuntu-dock
-        $cd dash-to-dock
-        $make
-        $make install #without sudo
-        #the extension is installed at ~/.local/share/gnome-shell/extensions/ubuntu-dock@ubuntu.com
-        press ALT + F2, input 'r' and 'Enter'
-        $ gnome-extensions list # it will appear in the list
-        $ gnome-extensinos enable ubuntu-dock@ubuntu.com
-        It should work as long as you're in gnome desktop.(Fedora/Ubuntu/...)
+  - Firefox: After system reboot  --> non indempotent  ???
+  - Debian: Use Ubuntu dock  (dash-to-dock)
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
 - *home_server*:
 	- **SECURITY: https://christitus.com/linux-security-mistakes/**
   - **Backup** via Borgbackup
-  - **EMail** notifications
+  - **EMail** notifications  (transmission: check whether execution flag is required for `postprocess.sh`)
   - Containers:
     - Fix issue: **2 ipv6 addresses**
       - ISSUEs:

@@ -6,7 +6,7 @@ networks:
 
 services:
   {{ container_name }}:
-    image: traefik:latest
+    image: traefik
     restart: always
     container_name: {{ container_name }}
     hostname: {{ container_name }}

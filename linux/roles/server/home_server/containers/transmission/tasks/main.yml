@@ -12,3 +12,8 @@
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
     mode: 0640
   become: false
+
+- name: Copy scripts
+  ansible.posix.synchronize:
+    src: scripts/
+    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/scripts/'

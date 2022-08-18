@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 
 NOTIFICATION_MAIL_FROM_ADDR=${NOTIFICATION_MAIL_SERVER_USERNAME}
 
