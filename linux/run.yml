@@ -50,16 +50,13 @@
         # Privacy friendly settings reference: https://github.com/arkenfox/user.js/blob/master/user.js
         preferences:
           browser.aboutConfig.showWarning: false
-          # Disable "Recommend extensions / features as you browse"
-          browser.discovery.enabled: false
+          browser.discovery.enabled: false                                             # Disable "Recommend extensions / features as you browse"
           browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons: false
           browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features: false
           #browser.shell.checkDefaultBrowser: false
-          # Show bookmarks bar (always, newtab, never)
-          browser.toolbars.bookmarks.visibility: 'always'
-          # 0=blank, 1=home, 2=last visited page, 3=resume previous session
-          browser.startup.page: 1
-          browser.startup.homepage: "about:home"
+          browser.toolbars.bookmarks.visibility: 'always'                              # Show bookmarks bar (always, newtab, never)
+          browser.startup.page: 1                                                      # 0=blank, 1=home, 2=last visited page, 3=resume previous session
+          browser.startup.homepage: "{{ 'https://ipleak.net/' if 'il_workstations' in group_names else 'about:home' }}"
           browser.newtabpage.enabled: true
           browser.newtab.preload: false
           browser.newtabpage.activity-stream.feeds.telemetry: false
@@ -80,9 +77,9 @@
           extensions.pocket.oAuthConsumerKey: ''
           extensions.pocket.site: "''"
           geo.provider.network.url: "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%"
-          geo.provider.ms-windows-location: false   # Windows
-          geo.provider.use_corelocation: false      # Mac
-          geo.provider.use_gpsd: false              # Linux
+          geo.provider.ms-windows-location: false                                      # Windows
+          geo.provider.use_corelocation: false                                         # Mac
+          geo.provider.use_gpsd: false                                                 # Linux
           browser.region.network.url: ''
           browser.region.update.enabled: false
           intl.accept_languages: 'en-US, en'
@@ -112,20 +109,19 @@
           browser.crashReports.unsubmittedCheck.autoSubmit2: false
           browser.safebrowsing.downloads.remote.enabled: false
           #browser.places.speculativeConnect.enabled: false
-          browser.fixup.alternate.enabled: false            # disable location bar domain guessing
-          browser.search.suggest.enabled: false             # location bar
+          browser.fixup.alternate.enabled: false                                       # disable location bar domain guessing
+          browser.search.suggest.enabled: false                                        # location bar
           browser.urlbar.suggest.searches: false
           browser.urlbar.speculativeConnect.enabled: false
           browser.urlbar.suggest.quicksuggest.nonsponsored: false
           browser.urlbar.suggest.quicksuggest.sponsored: false
-          browser.formfill.enable: false                    # Search & form history
-          extensions.formautofill.addresses.enabled: false  # Autofill
+          browser.formfill.enable: false                                               # Search & form history
+          extensions.formautofill.addresses.enabled: false                             # Autofill
           extensions.formautofill.available: 'off'
           extensions.formautofill.creditCards.available: false
           extensions.formautofill.creditCards.enabled: false
           extensions.formautofill.heuristics.enabled: false
-          # disable auto-filling username & password form fields
-          signon.rememberSignons: false
+          signon.rememberSignons: false                                                # disable auto-filling username & password form fields
           signon.autofillForms: false
           #security.ssl.require_safe_negotiation: true
           #security.tls.enable_0rtt_data: false
