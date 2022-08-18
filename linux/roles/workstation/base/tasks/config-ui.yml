@@ -46,6 +46,12 @@
       loop_control:
         loop_var: gnome_setting
       become: false
+
+    - name: Set installed apps as default
+      ansible.builtin.copy:
+        src: registered_default_apps.list
+        dest: '/home/{{ user_name }}/.config/mimeapps.list'
+      become: false
   when: "'GNOME' in desktop_envs"
 
 

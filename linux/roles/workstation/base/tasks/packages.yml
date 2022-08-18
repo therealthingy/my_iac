@@ -77,10 +77,11 @@
     - package-flatpak.yml
 
 
-- name: Unintall GNOME Terminal (got replaced by Kitty)
-  ansible.builtin.apt:
-    name: gnome-terminal
-    state: absent
+# BAD IDEA  --> Context menu item 'Open in Terminal' will disappear
+#- name: Unintall GNOME Terminal (got replaced by Kitty)
+#  ansible.builtin.apt:
+#    name: gnome-terminal
+#    state: absent
 
 
 # TODO:  REVISE
