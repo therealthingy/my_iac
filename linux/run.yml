@@ -46,6 +46,7 @@
           - darkreader
           - save-page-we
           - i-dont-care-about-cookies
+          - buster-captcha-solver
         # Privacy friendly settings reference: https://github.com/arkenfox/user.js/blob/master/user.js
         preferences:
           browser.aboutConfig.showWarning: false
@@ -53,7 +54,9 @@
           browser.discovery.enabled: false
           browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons: false
           browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features: false
-          browser.shell.checkDefaultBrowser: false
+          #browser.shell.checkDefaultBrowser: false
+          # Show bookmarks bar (always, newtab, never)
+          browser.toolbars.bookmarks.visibility: 'always'
           # 0=blank, 1=home, 2=last visited page, 3=resume previous session
           browser.startup.page: 1
           browser.startup.homepage: "about:home"
@@ -151,13 +154,13 @@
   vars:
     gnome_wallpaper: win10-jobs.jpg
 
-- hosts: media_workstations
+- hosts: il_workstations
   become: true
   roles:
-    - role: workstation/media_workstation
+    - role: workstation/il_workstation
       tags:
         - workstation
-        - media_workstation
+        - il_workstation
 
 
 - hosts: servers, dev_servers, home_servers

@@ -13,3 +13,10 @@
     fstype: fuse
     opts: 'defaults,allow_other'
     state: mounted
+
+- name: Create symlink in home dir
+  ansible.builtin.file:
+    src: /mnt/hgfs/
+    dest: '/home/{{ user_name }}/vmware-shares'
+    state: link
+  become: false

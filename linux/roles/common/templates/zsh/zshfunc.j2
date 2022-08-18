@@ -110,7 +110,7 @@ alias temp='vcgencmd measure_temp'
 
 
 # --- Installed tools  ---
-{% if 'media_workstations' in group_names %}
+{% if 'il_workstations' in group_names %}
 alias-add yt-dlp yt-vids_download="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'" yt-vids_download_audio="yt-dlp -f 'bestaudio[ext=m4a]'"
 alias-add yt-vids_download yt-vids_download_channel_prefix="yt-vids_download -o '%(channel)s - %(title)s-%(id)s.%(ext)s'"
 {% endif %}
@@ -124,6 +124,7 @@ alias-add pbzip2 bzip2='pbzip2' # bunzip2='pbunzip2' bzcat='pbzcat'
 # --- GNU/Linux specific ---
 alias journal-clear='sudo journalctl --vacuum-time=2d' # --vacuum-size=500M
 
+{% if ansible_facts.os_family == 'Debian' %}
 # - apt-get aliases
 alias agi='sudo apt-get install' #<packages>
 alias agu='sudo apt-get update'
@@ -136,6 +137,7 @@ alias agac='sudo apt-get autoclean'
 
 # additional
 alias agud='agu && agd'
+{% endif %}
 
 
 
@@ -184,7 +186,7 @@ if command -v ssh-keygen > /dev/null; then
 
     if [ "$add_identity_file" != "n" ]; then
         chmod 600 $export_file_path
-      chmod 644 $export_file_path.pub
+        chmod 644 $export_file_path.pub
 
         vared -p 'Enter username for config file: ' -c ssh_username
         vared -p 'Enter host for config file: ' -c ssh_host
@@ -193,9 +195,8 @@ if command -v ssh-keygen > /dev/null; then
         echo "Added entry for ssh-key pair in config."
     fi
 
-
-    pbcopy < $export_file_path.pub
-    echo "Copied public key in clipboard."
+    echo "Your public key:"
+    cat $export_file_path.pub
   }
 
 fi
