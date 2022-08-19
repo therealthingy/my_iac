@@ -32,7 +32,7 @@
   vars:
     dock_favorite_apps:
       - "'org.gnome.Nautilus.desktop'"
-      - "'firefox.desktop'"
+      - "'{{ firefox_package_name }}.desktop'"
       - "'codium.desktop'"
       - "'terminator.desktop'"
       - "'gnome-system-monitor.desktop'"

@@ -17,7 +17,8 @@
       - rename
       - fdupes
       - dos2unix
-      - rclone
+      - rsync
+      - rclone              # Cloud storage management software
       - lsof
       - neovim
     state: present

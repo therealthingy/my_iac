@@ -1,0 +1,3 @@
+---
+dependencies:
+  - role: workstation/aux/gather_workstation_facts

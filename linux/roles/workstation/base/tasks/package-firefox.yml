@@ -27,11 +27,6 @@
   when: ansible_facts.distribution == 'Ubuntu'
 
 
-- name: Firefox - Set package name
-  ansible.builtin.set_fact:
-    firefox_package_name: "{{ 'firefox-esr' if ansible_facts.distribution == 'Debian' else 'firefox' }}"
-  become: false
-
 - name: Firefox - Install it
   ansible.builtin.apt:
     name: '{{ firefox_package_name }}'
