@@ -1,0 +1,30 @@
+---
+- name: "Workaround (since `include_role` doesn't accept `become`)"
+  block:
+    - name: Run firefox config role
+      ansible.builtin.include_role:
+        name: staticdev.firefox
+  become: false
+
+
+- name: Install dependencies for extension
+  # Equivalent command: `dpkg -s net.downloadhelper.coapp`
+  block:
+    - name: Check whether already installed
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Install if not yet installed
+      block:
+        - name: Download package as deb
+          get_url:
+            # TODO: Always fetch latest version
+            url: 'https://github.com/mi-g/vdhcoapp/releases/download/v{{ downloadhelper_coapp_ver }}/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ deb_architecture }}.deb'
+            dest: '/tmp/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ deb_architecture }}.deb'
+          become: false
+
+        - name: Install it
+          # Equivalent command: `sudo apt install ./name.deb`
+          apt:
+            deb: '/tmp/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ deb_architecture }}.deb'
+      when: ansible_os_family == 'Debian' and 'net.downloadhelper.coapp' not in ansible_facts.packages

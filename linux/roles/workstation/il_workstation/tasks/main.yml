@@ -1,2 +1,7 @@
 ---
-- include_tasks: packages.yml
+- include_tasks: '{{ included_il_workstation_task }}'
+  loop:
+    - packages.yml
+    - config-firefox.yml
+  loop_control:
+    loop_var: included_il_workstation_task

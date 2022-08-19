@@ -155,6 +155,13 @@
     - role: workstation/il_workstation
       tags:
         - il_workstation
+  vars:
+    firefox_profiles:
+      default:
+        extensions:
+          # URL on addons.mozilla.org
+          - video-downloader-profession
+          - video-downloadhelper
 
 
 - hosts: servers, dev_servers, home_servers

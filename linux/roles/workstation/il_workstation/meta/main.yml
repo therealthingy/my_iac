@@ -1,3 +1,4 @@
 ---
 dependencies:
   - role: workstation/aux/gather_workstation_facts
+  - role: aux/gather_host_facts

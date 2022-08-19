@@ -3,7 +3,9 @@
 
 ## TODOs
 - *dev-workstation*:
-  - Firefox: After system reboot  --> non indempotent  ???
+  - Firefox: After system reboot  --> not indempotent  ???
+
+
   - (  Debian: Use Ubuntu dock  (dash-to-dock)  )
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 

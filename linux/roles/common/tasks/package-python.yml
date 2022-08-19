@@ -25,6 +25,10 @@
   ansible.builtin.pip:
     name:
       - pip-review
-      # Required for setting dconf
-      - psutil
 
+
+- name: Install pip packages required by Ansible modules
+  ansible.builtin.pip:
+    name:
+      - python-apt
+      - psutil          # Required for dconf module
