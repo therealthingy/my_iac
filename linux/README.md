@@ -8,9 +8,6 @@
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
 - *home_server*:
-	- **SECURITY: https://christitus.com/linux-security-mistakes/**
-  - **Backup** via Borgbackup
-  - **EMail** notifications  (transmission: check whether execution flag is required for `postprocess.sh`)
   - Containers:
     - Fix issue: **2 ipv6 addresses**
       - ISSUEs:
@@ -132,17 +129,21 @@
           time="2022-08-14T09:05:24+02:00" level=warning msg="Reason: Get \"https://index.docker.io/v2/\": dial tcp: lookup index.docker.io on [fd00::40b3:8c93:9122:52c7]:53: read udp [2001:db8:1::4]:60137->[fd00::40b3:8c93:9122:52c7]:53: i/o timeout" container=/transmission image="haugene/transmission-openvpn:latest"
           time="2022-08-14T09:05:45+02:00" level=warning msg="Could not do a head request for \"portainer/portainer-ce:latest\", falling back to regular pull." container=/portainer image="portainer/portainer-ce:latest"
           ```
-    - Add traefik allowed ip range 4 vault (https://doc.traefik.io/traefik/middlewares/http/forwardauth/)
-    - **SSO service** 4 which allows authenticating all services   (https://goauthentik.io/, https://github.com/authelia/authelia)
-      - REQUIREMENT: [oauth2, etc. support (also for protected application necessary)](https://www.reddit.com/r/selfhosted/comments/s9ky8f/pass_credentials_from_authelia_to_protected/)
-      - [Guide: 2 Factor Auth and Single Sign On with Authelia](https://piped.kavin.rocks/watch?v=u6H-Qwf4nZA)
-    - ( Each container role should have role docker als dependency )
     - traefik + filebrowser  restart container if config file has changed  ( https://raymii.org/s/tutorials/Ansible_-_Only-do-something-if-another-action-changed.html )
     - pihole idempotent data dir
       - by either configuring statically + disabling dhcpd (denyinterfaces; https://forums.raspberrypi.com/viewtopic.php?t=178387)
       - iptables ??
+	- **SECURITY: https://christitus.com/linux-security-mistakes/**
   -FUTURE WORK:
-    - Heimdall
+    - **EMail** notifications  (transmission: check whether execution flag is required for `postprocess.sh`)
+    - **Backup** via Borgbackup
+    - containers:
+      - Heimdall
+      - Add traefik allowed ip range 4 vault (https://doc.traefik.io/traefik/middlewares/http/forwardauth/)
+      - **SSO service** 4 which allows authenticating all services   (https://goauthentik.io/, https://github.com/authelia/authelia)
+        - REQUIREMENT: [oauth2, etc. support (also for protected application necessary)](https://www.reddit.com/r/selfhosted/comments/s9ky8f/pass_credentials_from_authelia_to_protected/)
+        - [Guide: 2 Factor Auth and Single Sign On with Authelia](https://piped.kavin.rocks/watch?v=u6H-Qwf4nZA)
+      - ( Each container role should have role docker als dependency )
     - dyndns:
       - CURRENTLY: https://dynv6.com/  /  http://garygee.dynv6.net/
       - Disable privacy extensions (i.e., derive global ipv6 address for eth0 iface from mac address, thus making sure fritzbox ipv6 permitted access works  (see also https://www.heise.de/ct/artikel/IPv6-DynDNS-klemmt-4785681.html))
