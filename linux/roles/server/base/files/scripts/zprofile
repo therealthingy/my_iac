@@ -1,15 +1,13 @@
 #!/usr/bin/env zsh
 
-
-# --- Logo ---
+# -- Shows system stats on login –-
+# -  Logo  -
 clear
 printf "\n"
 neofetch -L
 printf "\n"
 
-
-
-# --- System stats ---
+# -  Show System stats  -
 printf "\n======================================================\n"
 printf "Local systime: %s \n" "$(date)"
 
