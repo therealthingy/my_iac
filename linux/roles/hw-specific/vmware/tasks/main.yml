@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     name:
       - open-vm-tools
-      - fuse
+      - gvfs-fuse         # NOTE: Package `fuse` causes autoremove of GNOME packages (https://askubuntu.com/questions/1406236/desktop-icons-gone-in-22-04), hence install `gvfs-fuse`
     state: present
 
 - name: Mount vmware shares on boot
