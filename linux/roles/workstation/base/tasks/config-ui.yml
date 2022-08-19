@@ -19,20 +19,39 @@
         # !!  BE AWARE: Schema for gtk (used by `gsettings`): `org.gtk.Settings.FileChooser` vs. Path (used by dconf editor and Ansible module): `org.gtk.settings.file-chooser`  !!
         # --  General settings  --
     #    - { key: '/org/gnome/desktop/input-sources/sources', value: "[('xkb', 'de')]", state: present }
+
+        # --  General Behvaior  --
+        - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 0', state: present }                 # Don't show black screen after idle timeout
+        - { key: '/org/gnome/desktop/privacy/show-full-name-in-top-bar', value: 'true', state: present }
+        - { key: '/org/gnome/desktop/privacy/remember-recent-files', value: 'false', state: present }
+        - { key: '/org/gnome/desktop/privacy/remove-old-temp-files', value: 'true', state: present }
+        - { key: '/org/gnome/desktop/sound/event-sounds', value: 'false', state: present }
+        - { key: '/org/gnome/desktop/wm/preferences/audible-bell', value: 'false', state: present }           # TODO: Use `visual-bell`` bell instead (currently not suitable (flashes entire screen))
+        - { key: '/org/gnome/gnome-session/logout-prompt', value: 'false', state: present }
+        # -  Privacy  -
+        - { key: '/org/gnome/desktop/privacy/report-technical-problems', value: 'false', state: present }
+        - { key: '/org/gnome/desktop/privacy/send-software-usage-stats', value: 'false', state: present }
+
+        # -  Security  -
+        - { key: '/org/gnome/desktop/media-handling/automount-open', value: 'false', state: present }
+
         # --  General UI  --
-        - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 0', state: present }
         - { key: '/org/gnome/desktop/interface/clock-format', value: "'12h'", state: present }
         - { key: '/org/gtk/settings/file-chooser/clock-format', value: "'12h'", state: present }
+        - { key: '/org/gnome/shell/favorite-apps', value: "[{{ dock_favorite_apps|join(', ') }}]", state: present }  # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
         - { key: '/org/gnome/desktop/wm/preferences/button-layout', value: "'close,minimize,maximize:'", state: present }
-        - { key: '/org/gnome/shell/extensions/ding/show-home', value: 'false', state: present }
-        - { key: '/org/gnome/shell/extensions/ding/show-trash', value: 'false', state: present }
-        # --  Dock  --
+        # --  Extensions  --
+        # -  Dock  -
         - { key: '/org/gnome/shell/extensions/dash-to-dock/extend-height', value: 'false', state: present }
         - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-position', value: "'LEFT'", state: present }
         - { key: '/org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size', value: '25', state: present }
         - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-fixed', value: 'true', state: present }
-
-        - { key: '/org/gnome/shell/favorite-apps', value: "[{{ dock_favorite_apps|join(', ') }}]", state: present }  # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
+        # -  Desktop  -
+        - { key: '/org/gnome/shell/extensions/ding/show-home', value: 'false', state: present }
+        - { key: '/org/gnome/shell/extensions/ding/show-trash', value: 'false', state: present }
+        - { key: '/org/gnome/shell/extensions/ding/icon-size', value: "'small'", state: present }
+        - { key: '/org/gnome/shell/extensions/ding/show-link-emblem', value: 'true', state: present }
+        - { key: '/org/gnome/shell/extensions/ding/start-corner', value: "'top-left'", state: present }
 
         # --  Nautilus  --
         - { key: '/org/gnome/nautilus/preferences/show-delete-permanently', value: 'true', state: present }

@@ -1,4 +1,4 @@
-# Playbook for GNU/Linux machines
+# Playbook for GNU/Linu (Debian) machines
 
 
 ## TODOs
