@@ -68,6 +68,7 @@ services:
       - TRANSMISSION_BLOCKLIST_URL={{ transmission_peers_blocklist }}
       - TRANSMISSION_DOWNLOAD_QUEUE_SIZE={{ transmission_max_parallel_downloads }}
       - TRANSMISSION_SCRAPE_PAUSED_TORRENTS_ENABLED=false
+
 {% if notifications_mail_config is defined %}
       # Emailing
       - TRANSMISSION_SCRIPT_TORRENT_DONE_ENABLED=true

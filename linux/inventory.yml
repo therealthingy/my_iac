@@ -28,12 +28,12 @@ all:
     home_servers:
       hosts:
         rpi.lan:
-          notifications_mail_config:
-            smtp_host: xxx
-            smtp_port: xxx
-            smtp_username: xxx
-            smtp_password: xxx
-            system_admin_mail: xxx@xxx.xxx
+#          notifications_mail_config:
+#            smtp_host: xxx
+#            smtp_port: xxx
+#            smtp_username: xxx
+#            smtp_password: xxx
+#            system_admin_mail: xxx@xxx.xxx
           domainname: rpi.lan
           timezone: Europe/Berlin
           docker_default_network: reverse_proxy

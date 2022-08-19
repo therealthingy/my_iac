@@ -27,6 +27,7 @@ services:
       - SIGNUPS_ALLOWED=true
       - SIGNUPS_VERIFY=false
       - DOMAIN=https://{{ container_name }}.{{ domainname }}
+
 {% if notifications_mail_config is defined %}
       # --- Emailing
       - SMTP_HOST={{ notifications_mail_config.smtp_host }}

@@ -29,6 +29,7 @@ services:
       # - WATCHTOWER_SCHEDULE="0 4 * * * SUN"
       # Filter by enable label
       - WATCHTOWER_LABEL_ENABLE=true
+
 {% if notifications_mail_config is defined %}
       - WATCHTOWER_NOTIFICATIONS=email
       # - Emailing
