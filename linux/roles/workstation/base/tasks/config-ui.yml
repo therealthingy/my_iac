@@ -27,6 +27,7 @@
         - { key: '/org/gnome/desktop/privacy/remove-old-temp-files', value: 'true', state: present }
         - { key: '/org/gnome/desktop/sound/event-sounds', value: 'false', state: present }
         - { key: '/org/gnome/desktop/wm/preferences/audible-bell', value: 'false', state: present }           # TODO: Use `visual-bell`` bell instead (currently not suitable (flashes entire screen))
+        - { key: '/org/gnome/desktop/notifications/show-banners', value: 'false', state: present }            # 'Do not disturb' in Ubuntu's Settings app
         - { key: '/org/gnome/gnome-session/logout-prompt', value: 'false', state: present }
         # -  Privacy  -
         - { key: '/org/gnome/desktop/privacy/report-technical-problems', value: 'false', state: present }

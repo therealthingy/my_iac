@@ -53,9 +53,9 @@
           browser.discovery.enabled: false                                             # Disable "Recommend extensions / features as you browse"
           browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons: false
           browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features: false
-          #browser.shell.checkDefaultBrowser: false
+#          browser.shell.checkDefaultBrowser: false
           browser.toolbars.bookmarks.visibility: 'always'                              # Show bookmarks bar (always, newtab, never)
-          browser.startup.page: 1                                                      # 0=blank, 1=home, 2=last visited page, 3=resume previous session
+          browser.startup.page: 1                                                      # 0=blank, 1=home (DEFAULT), 2=last visited page, 3=resume previous session
           browser.startup.homepage: "{{ 'https://ipleak.net/' if 'il_workstations' in group_names else 'about:home' }}"
           browser.newtabpage.enabled: true
           browser.newtab.preload: false
@@ -108,7 +108,7 @@
           browser.tabs.crashReporting.sendReport: false
           browser.crashReports.unsubmittedCheck.autoSubmit2: false
           browser.safebrowsing.downloads.remote.enabled: false
-          #browser.places.speculativeConnect.enabled: false
+#          browser.places.speculativeConnect.enabled: false
           browser.fixup.alternate.enabled: false                                       # disable location bar domain guessing
           browser.search.suggest.enabled: false                                        # location bar
           browser.urlbar.suggest.searches: false
@@ -123,8 +123,8 @@
           extensions.formautofill.heuristics.enabled: false
           signon.rememberSignons: false                                                # disable auto-filling username & password form fields
           signon.autofillForms: false
-          #security.ssl.require_safe_negotiation: true
-          #security.tls.enable_0rtt_data: false
+#          security.ssl.require_safe_negotiation: true
+#          security.tls.enable_0rtt_data: false
           beacon.enabled: false
           privacy.sanitize.sanitizeOnShutdown: true
           privacy.clearOnShutdown.cache: true
