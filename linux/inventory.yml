@@ -10,7 +10,6 @@ all:
       hosts:
 #        ansible-test:
 #          ansible_sudo_pass: 1
-#          ssh_port: 22
 #          gnome_wallpaper: Ballmer.jpg
 
     il_workstations:
@@ -28,6 +27,7 @@ all:
     home_servers:
       hosts:
         rpi.lan:
+          ssh_port: 2233
 #          notifications_mail_config:
 #            smtp_host: xxx
 #            smtp_port: xxx

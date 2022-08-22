@@ -1,7 +1,4 @@
 
 # --  Global  --
 locale: en_US.UTF-8
-ssh_port: 2233
-
-
-# TODO: MAIL W/ ANSIBLE VAULT
+ssh_port: 22
