@@ -37,6 +37,8 @@ all:
           domainname: rpi.lan
           timezone: Europe/Berlin
           docker_default_network: reverse_proxy
+          reverse_proxy_certs_dir: /mnt/storage/traefik
+          reverse_proxy_restart_policy: 'no'
           ipv6_ula_iface: eth0
           ipv6_ula_addr: fd00::40b3:8c93:9122:52c7/64
           pihole_web_pw: !vault |

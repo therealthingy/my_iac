@@ -9,12 +9,12 @@
   become: true
 
 
-- name: Ensure data dir exists
-  ansible.builtin.file:
-    path: '{{ docker_container_data_basedir }}/{{ container_name }}'
-    state: directory
-    mode: 0755
-  become: false
+#- name: Ensure data dir exists                # Will only contain certs ..
+#  ansible.builtin.file:
+#    path: '{{ docker_container_data_basedir }}/{{ container_name }}'
+#    state: directory
+#    mode: 0755
+#  become: false
 
 - name: Create config dir
   ansible.builtin.file:

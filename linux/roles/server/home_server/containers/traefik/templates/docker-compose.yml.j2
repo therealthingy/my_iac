@@ -7,7 +7,7 @@ networks:
 services:
   {{ container_name }}:
     image: traefik
-    restart: {{ reverse_proxy_restart_policy }}
+    restart: "{{ reverse_proxy_restart_policy }}"
     container_name: {{ container_name }}
     hostname: {{ container_name }}
 
