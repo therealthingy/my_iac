@@ -1,6 +1,6 @@
 ---
 container_name: pihole
-pihole_docker_tag: 2022.07.1
+pihole_docker_tag: 2022.08
 
 pihole_dns_server_1: 1.1.1.1
 pihole_dns_server_2: 8.8.8.8

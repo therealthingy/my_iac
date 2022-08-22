@@ -1,2 +1,5 @@
 ---
 container_name: traefik
+
+reverse_proxy_certs_dir: '{{ docker_container_data_basedir }}/{{ container_name }}/'
+reverse_proxy_restart_policy: always

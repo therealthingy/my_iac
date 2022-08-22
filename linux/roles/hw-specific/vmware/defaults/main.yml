@@ -1,2 +1,2 @@
 ---
-mount_dir: /mnt/hgfs
+vmshares_mount_dir: /mnt/hgfs

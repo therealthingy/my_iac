@@ -8,7 +8,7 @@
 
 - name: Mount vmware shares on boot
   ansible.posix.mount:
-    path: '{{ mount_dir }}'
+    path: '{{ vmshares_mount_dir }}'
     src: 'vmhgfs-fuse'
     fstype: fuse
     opts: 'defaults,allow_other'
@@ -16,7 +16,7 @@
 
 - name: Create symlink in home dir
   ansible.builtin.file:
-    src: /mnt/hgfs/
+    src: '{{ vmshares_mount_dir }}'
     dest: '/home/{{ user_name }}/vmware-shares'
     state: link
   become: false
