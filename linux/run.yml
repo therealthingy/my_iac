@@ -42,17 +42,19 @@
           # URL on addons.mozilla.org
           - startpage-private-search
           - ublock-origin
-          - umatrix
-          - darkreader
-          - save-page-we
           - i-dont-care-about-cookies
-          - buster-captcha-solver
         # Privacy friendly settings reference: https://github.com/arkenfox/user.js/blob/master/user.js
         preferences:
           browser.aboutConfig.showWarning: false
           browser.discovery.enabled: false                                             # Disable "Recommend extensions / features as you browse"
           browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons: false
           browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features: false
+          # Privacy - Safe browsing
+          browser.safebrowsing.downloads.enabled: false
+          browser.safebrowsing.downloads.remote.block_potentially_unwanted: false
+          browser.safebrowsing.downloads.remote.block_uncommon: false
+          browser.safebrowsing.malware.enabled: false
+          browser.safebrowsing.phishing.enabled: false
 #          browser.shell.checkDefaultBrowser: false
           browser.toolbars.bookmarks.visibility: 'always'                              # Show bookmarks bar (always, newtab, never)
           browser.startup.page: 1                                                      # 0=blank, 1=home (DEFAULT), 2=last visited page, 3=resume previous session
@@ -148,6 +150,12 @@
         - docker
   vars:
     gnome_wallpaper: win10-jobs.jpg
+    firefox_profiles:
+      default:
+        extensions:
+          - umatrix
+          - darkreader
+          - save-page-we
 
 - hosts: il_workstations
   become: true
@@ -162,6 +170,7 @@
           # URL on addons.mozilla.org
           - video-downloader-profession
           - video-downloadhelper
+          - buster-captcha-solver
 
 
 - hosts: servers, dev_servers, home_servers

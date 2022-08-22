@@ -4,9 +4,6 @@
 ## TODOs
 - *dev-workstation*:
   - Firefox: After restart  --> not indempotent  ???
-  - Copy b/w Ubuntu VM & host doesn't work
-
-
   - (  Debian: Use Ubuntu dock  (dash-to-dock)  )
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
@@ -138,7 +135,7 @@
       - iptables ??
 	- **SECURITY: https://christitus.com/linux-security-mistakes/**
   -FUTURE WORK:
-    - **EMail** notifications  (transmission: check whether execution flag is required for `postprocess.sh`)
+    - **EMail** notifications  (use [sendinblue](https://developers.sendinblue.com/docs/send-a-transactional-email) OR [sendgrid](https://sendgrid.com/pricing/); transmission: check whether execution flag is required for `postprocess.sh`)
     - **Backup** via Borgbackup
     - containers:
       - Heimdall
