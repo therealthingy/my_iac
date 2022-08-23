@@ -57,6 +57,7 @@ all:
                     61336439653164313365623630323038363837303463376665353463353435373964383962326166
                     3963363062653538620a313363353531353531356637346233393132643931643833623034333866
                     3965
+          transmission_restart_policy: 'no'
           transmission_vpn_file: /mnt/storage/transmission/etc/vpn-profiles/AirVPN_Switzerland_UDP-443.ovpn
           transmission_storage_path: /mnt/storage/transmission/var/downloads
           filebrowser_container_share_dir: /mnt/storage

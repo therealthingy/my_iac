@@ -7,6 +7,9 @@
   - (  Debian: Use Ubuntu dock  (dash-to-dock)  )
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
+- *server*:
+  - Support for headless system w/ encrypted root partition (https://github.com/ViRb3/pi-encrypted-boot-ssh)
+
 - *home_server*:
   - Containers:
     - Fix issue: **2 ipv6 addresses**

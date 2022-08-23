@@ -7,7 +7,7 @@ networks:
 services:
   {{ container_name }}:
     image: haugene/transmission-openvpn
-    restart: "no"
+    restart: "{{ transmission_restart_policy }}"
     container_name: {{ container_name }}
 
     cap_add:
