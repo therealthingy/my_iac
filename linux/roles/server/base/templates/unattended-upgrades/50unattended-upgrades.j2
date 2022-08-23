@@ -1,7 +1,13 @@
 Unattended-Upgrade::MinimalSteps "true";
 Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
+{% if autoupdate_reboot_enabled %}
 Unattended-Upgrade::Automatic-Reboot "true";
-Unattended-Upgrade::Automatic-Reboot-Time "{{ autoupdate_reboot_time }}";
+Unattended-Upgrade::Automatic-Reboot-Time "{{ autoupdate_reboot_time |d('04:00', true) }}";                 // 24H format
+{% else %}
+Unattended-Upgrade::Automatic-Reboot "false";
+{% endif %}
+
 Unattended-Upgrade::InstallOnShutdown "false";
 Unattended-Upgrade::MailOnlyOnError "true";
 

@@ -36,6 +36,7 @@ all:
 #            system_admin_mail: xxx@xxx.xxx
           domainname: rpi.lan
           timezone: Europe/Berlin
+          autoupdate_reboot_enabled: true
           docker_default_network: reverse_proxy
           reverse_proxy_certs_dir: /mnt/storage/traefik
           reverse_proxy_restart_policy: 'no'

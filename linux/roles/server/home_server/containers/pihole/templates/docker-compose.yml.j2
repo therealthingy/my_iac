@@ -18,8 +18,9 @@ services:
       - 53:53/udp
       # 67 = DHCP -> could be uncommented ???
       - 67:67/udp
-      # Backdoor for Admin-interface (bypassing traefik)
-      # 8053:80/tcp
+      # Admin-interface  (ports not necessary since we use reverse proxy)
+      #- 80:80/tcp
+      #- 443:443/tcp
 
     # See: https://github.com/pi-hole/docker-pi-hole#environment-variables
     environment:
