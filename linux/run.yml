@@ -11,14 +11,14 @@
 - hosts: rpis
   become: true
   roles:
-    - role: hw-specific/rpi
+    - role: hw_specific/rpi
       tags:
         - rpi
 
 - hosts: vmware_vms
   become: true
   roles:
-    - role: hw-specific/vmware
+    - role: hw_specific/vmware
       tags:
         - vmware
 
