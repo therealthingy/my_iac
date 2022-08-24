@@ -24,6 +24,10 @@ all:
     dev_servers:
       hosts:
 
+    dns_servers:
+      hosts:
+        rpi.lan:
+
     home_servers:
       hosts:
         rpi.lan:

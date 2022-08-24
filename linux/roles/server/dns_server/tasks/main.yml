@@ -4,7 +4,7 @@
 
 - name: Ensure data dir exists
   ansible.builtin.file:
-    path: '{{ docker_container_data_basedir }}/{{ container_name }}/{{ item }}'
+    path: '{{ pihole_data_dir }}/{{ item }}'
     state: directory
     mode: 0755
   with_items:
@@ -14,7 +14,7 @@
 
 - name: Create config dir
   ansible.builtin.file:
-    path: '{{ docker_container_config_basedir }}/{{ container_name }}'
+    path: '{{ pihole_config_dir }}'
     state: directory
     mode: 0755
   become: false
@@ -22,12 +22,12 @@
 - name: Copy docker-compose file
   ansible.builtin.template:
     src: docker-compose.yml.j2
-    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
+    dest: '{{ pihole_config_dir }}/docker-compose.yml'
     mode: 0640
   become: false
 
 - name: Ensure container is running
   community.docker.docker_compose:
-    project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'
+    project_src: '{{ pihole_config_dir }}'
     build: false
   become: false

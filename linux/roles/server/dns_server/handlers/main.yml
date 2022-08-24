@@ -1,6 +1,6 @@
 ---
 - name: restart and enable new ipv6 addr service
   ansible.builtin.service:
-    name: "{{ ipv6_systemd_service_name }}"
+    name: '{{ ipv6_systemd_service_name }}'
     state: restarted
     enabled: true

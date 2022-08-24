@@ -1,5 +1,9 @@
 ---
 container_name: pihole
+
+pihole_config_dir: '/home/{{ user_name }}/pihole/'
+pihole_data_dir:   '/home/{{ user_name }}/pihole/data'
+
 pihole_docker_tag: 2022.08
 
 pihole_dns_server_1: 1.1.1.1
