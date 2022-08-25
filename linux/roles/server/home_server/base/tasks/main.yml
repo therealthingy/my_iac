@@ -1,17 +1,17 @@
 ---
 - name: Set domainname as hostname
-  become: true
   ansible.builtin.hostname:
     name: '{{ domainname }}'
+  become: true
 
 # IMPORTANT: Requires this special indentation, otherwise other entries will be replaced !!
 - name: Fix hosts file
-  become: true
   ansible.builtin.lineinfile:
     dest: /etc/hosts
     regexp: '^127.0.1.1		.+$'
     line: '127.0.1.1		{{ domainname }}'
     state: present
+  become: true
 
 
 - include_tasks: docker-ipv6.yml
