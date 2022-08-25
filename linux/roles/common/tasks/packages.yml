@@ -56,7 +56,7 @@
   ansible.builtin.apt:
     name:
       - nmap
-      - net-tools
+      - iproute2       # NOTE: net-tools is deprecated
       - wget
       - curl
       - iperf
