@@ -137,7 +137,7 @@
       - by either configuring statically + disabling dhcpd (denyinterfaces; https://forums.raspberrypi.com/viewtopic.php?t=178387)
       - iptables ??
 	- **SECURITY: https://christitus.com/linux-security-mistakes/**
-  -FUTURE WORK:
+  - FUTURE WORK:
     - **EMail** notifications  (use [sendinblue](https://developers.sendinblue.com/docs/send-a-transactional-email) OR [sendgrid](https://sendgrid.com/pricing/); transmission: check whether execution flag is required for `postprocess.sh`)
     - **Backup** via Borgbackup
     - containers:

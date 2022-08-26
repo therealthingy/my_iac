@@ -63,6 +63,7 @@
           browser.startup.homepage: "{{ 'https://ipleak.net/' if 'il_workstations' in group_names else 'about:home' }}"
           browser.newtabpage.enabled: true
           browser.newtab.preload: false
+          browser.newtabpage.activity-stream.feeds.topsites: false                     # We have already bookmark bar, hence shortcuts are useless
           browser.newtabpage.activity-stream.feeds.telemetry: false
           browser.newtabpage.activity-stream.telemetry: false
           browser.newtabpage.activity-stream.feeds.snippets: false
