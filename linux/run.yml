@@ -44,6 +44,7 @@
           - ublock-origin
           - i-dont-care-about-cookies
         # Privacy friendly settings reference: https://github.com/arkenfox/user.js/blob/master/user.js
+        # TODO: Rmv 'Import bookmarks from another browser to Firefox' from bookmarks bar
         preferences:
           browser.aboutConfig.showWarning: false
           browser.discovery.enabled: false                                             # Disable "Recommend extensions / features as you browse"
@@ -108,6 +109,7 @@
           app.normandy.api_url: ''
           breakpad.reportURL: ''
           browser.tabs.crashReporting.sendReport: false
+          browser.tabs.warnOnClose: false
           browser.crashReports.unsubmittedCheck.autoSubmit2: false
           browser.safebrowsing.downloads.remote.enabled: false
 #          browser.places.speculativeConnect.enabled: false
@@ -154,6 +156,7 @@
       default:
         extensions:
           - umatrix
+          - privacy-redirect
           - darkreader
           - save-page-we
 
