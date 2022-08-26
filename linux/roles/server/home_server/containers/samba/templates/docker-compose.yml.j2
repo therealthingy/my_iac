@@ -6,7 +6,7 @@ services:
     image: dperson/samba
     container_name: {{ container_name }}
     restart: "no"
-    hostname: 'samba'
+    hostname: {{ hostname }}
 
     # $$$  DOESN'T WORK  $$$
     #user: {{ user_uid }}:{{ docker_gid }}
