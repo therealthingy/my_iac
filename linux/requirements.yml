@@ -4,3 +4,4 @@ collections:
 
 roles:
   - name: staticdev.firefox
+  - name: petermosmans.customize-gnome

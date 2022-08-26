@@ -6,7 +6,7 @@
 
 - name: "Workaround (since `include_role` doesn't accept `become`)"
   block:
-    - name: Run firefox config role
+    - name: "Run 'staticdev.firefox' role"
       ansible.builtin.include_role:
         name: staticdev.firefox
   become: false

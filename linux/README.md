@@ -4,7 +4,6 @@
 ## TODOs
 - *dev-workstation*:
   - Firefox: After restart  --> not indempotent  ???
-  - (  Debian: Use Ubuntu dock  (dash-to-dock)  )
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
 - *server*:
@@ -156,6 +155,8 @@
 * *Home servers*:
   * traefik: SSL certs gen
   * transmission & samba: Directory structure (e.g., on (encrypted luks) sparse file)
+* *workstations*:
+  * Enable installed Gnome extensions (via 'Extensions app')  (!!  TODO: AUTOMATE  !!)
 * *Dev workstations*:
   * Apps setup
     * *VSCod~~e~~ium*: Install extension 'Settings Sync' & follow instructions

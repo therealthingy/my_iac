@@ -9,6 +9,24 @@
           #- gnome-tweak-tool
         state: present
 
+
+    # NOTE: List extensions: `gnome-extensions list --enabled`
+    - name: Install GNOME extensions
+      block:
+        - name: Set config as vars
+          ansible.builtin.set_fact:
+            gnome_extensions:  # (ids are dervied from URL, e.g., https://extensions.gnome.org/extension/307/dash-to-dock/)
+                # Dash to Dock
+                - id: 307
+                  enable: true       # TODO: Currently not working ??!!
+                # Desktop Icons NG (DING)
+                - id: 2087
+                  enable: true       # TODO: Currently not working ??!!
+        - name: "Run 'customize-gnome' role"
+          ansible.builtin.include_role:
+            name: petermosmans.customize-gnome
+      when: ansible_facts.distribution == 'Debian'    # (Ubuntu has already different dock  ???)
+
     # HOW2: gesettings tool  (e.g., `gsettings get org.gnome.desktop.input-sources sources`); example: https://gist.github.com/carlwgeorge/c560a532b6929f49d9c0df52f75a68ae
     - name: GNOME - Set settings
       community.general.dconf:
