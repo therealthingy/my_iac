@@ -1,4 +1,27 @@
 ---
+- name: Set hostname
+  block:
+    - name: Get current hostname
+      ansible.builtin.shell: hostname            # ALTERNATIVE for hostname: ansible_hostname
+      register: result_hostname
+      changed_when: false
+
+    - name: Set new hostname
+      ansible.builtin.hostname:
+        name: '{{ domainname }}'
+      become: true
+
+    # IMPORTANT: Requires this special indentation, otherwise other entries will be replaced !!
+    - name: Fix hosts file
+      ansible.builtin.lineinfile:
+        dest: /etc/hosts
+        regexp: '^127\.0\.0\.1\s+{{ result_hostname.stdout }}$'
+        line: '127.0.0.1	{{ hostname }}'
+        state: present
+      become: true
+  when: hostname is defined
+
+
 - include_tasks: '{{ included_common_config_task }}'
   loop:
     - config-grub_verbose_boot.yml

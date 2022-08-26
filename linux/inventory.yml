@@ -39,6 +39,7 @@ all:
 #            smtp_password: xxx
 #            system_admin_mail: xxx@xxx.xxx
           domainname: rpi.lan
+          hostname: '{{ domainname }}'
           timezone: Europe/Berlin
           autoupdate_reboot_enabled: true
           docker_default_network: reverse_proxy
