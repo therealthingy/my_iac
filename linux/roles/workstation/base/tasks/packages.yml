@@ -82,7 +82,7 @@
 
 
 # TODO:  REVISE
-- name: 'TEMPORARY WORKAROUND (since no windows buttons for kitty): Install termiantor'
+- name: 'TEMPORARY WORKAROUND (since no window buttons for kitty): Install termiantor'
   ansible.builtin.apt:
     name: terminator
     state: present

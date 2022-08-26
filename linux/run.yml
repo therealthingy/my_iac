@@ -44,12 +44,13 @@
           - ublock-origin
           - i-dont-care-about-cookies
         # Privacy friendly settings reference: https://github.com/arkenfox/user.js/blob/master/user.js
-        # TODO: Rmv 'Import bookmarks from another browser to Firefox' from bookmarks bar
+        # TODO: Rmv 'Import bookmarks from another browser to Firefox' from bookmarks bar  (`browser.uiCustomization.state` -> ""PersonalToolbar":["import-button","personal-bookmarks"]")
         preferences:
           browser.aboutConfig.showWarning: false
           browser.discovery.enabled: false                                             # Disable "Recommend extensions / features as you browse"
           browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons: false
           browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features: false
+          privacy.sanitize.timeSpan: 0                                                 # Changes Burger menu -> History -> 'Clear recent history' ... -> 'Time range to clear': 'Everything'
           # Privacy - Safe browsing
           browser.safebrowsing.downloads.enabled: false
           browser.safebrowsing.downloads.remote.block_potentially_unwanted: false
