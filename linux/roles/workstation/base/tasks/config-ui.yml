@@ -21,7 +21,6 @@
     #    - { key: '/org/gnome/desktop/input-sources/sources', value: "[('xkb', 'de')]", state: present }
 
         # --  General Behvaior  --
-        - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 0', state: present }                 # Don't show black screen after idle timeout
         - { key: '/org/gnome/desktop/privacy/show-full-name-in-top-bar', value: 'true', state: present }
         - { key: '/org/gnome/desktop/privacy/remember-recent-files', value: 'false', state: present }
         - { key: '/org/gnome/desktop/privacy/remove-old-temp-files', value: 'true', state: present }
@@ -29,10 +28,12 @@
         - { key: '/org/gnome/desktop/wm/preferences/audible-bell', value: 'false', state: present }           # TODO: Use `visual-bell`` bell instead (currently not suitable (flashes entire screen))
         - { key: '/org/gnome/desktop/notifications/show-banners', value: 'false', state: present }            # 'Do not disturb' in Ubuntu's Settings app
         - { key: '/org/gnome/gnome-session/logout-prompt', value: 'false', state: present }
+        # -  Power  -
+        - { key: '/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type', value: "'nothing'", state: present }
+        - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 0', state: present }                 # Don't show black screen after idle timeout
         # -  Privacy  -
         - { key: '/org/gnome/desktop/privacy/report-technical-problems', value: 'false', state: present }
         - { key: '/org/gnome/desktop/privacy/send-software-usage-stats', value: 'false', state: present }
-
         # -  Security  -
         - { key: '/org/gnome/desktop/media-handling/automount-open', value: 'false', state: present }
 
@@ -54,7 +55,8 @@
         - { key: '/org/gnome/shell/extensions/ding/show-link-emblem', value: 'true', state: present }
         - { key: '/org/gnome/shell/extensions/ding/start-corner', value: "'top-left'", state: present }
 
-        # --  Nautilus  --
+        # --  Apps  --
+        # -  Nautilus  --
         - { key: '/org/gnome/nautilus/preferences/show-delete-permanently', value: 'true', state: present }
         - { key: '/org/gnome/nautilus/preferences/default-sort-order', value: "'type'", state: present }         # Possible values: size, type, mtime, atime, starred
         - { key: '/org/gnome/nautilus/preferences/default-sort-in-reverse-order', value: 'false', state: present }
@@ -63,6 +65,8 @@
         - { key: '/org/gnome/nautilus/list-view/default-visible-columns', value: "['name', 'type', 'size', 'date_modified']", state: present }
         - { key: '/org/gnome/nautilus/list-view/use-tree-view', value: 'true', state: present }
         - { key: '/org/gtk/settings/file-chooser/show-hidden', value: 'true', state: present }
+        # -  dconf  -
+        - { key: '/ca/desrt/dconf-editor/show-warning', value: 'false', state: present }
       loop_control:
         loop_var: gnome_setting
       become: false
