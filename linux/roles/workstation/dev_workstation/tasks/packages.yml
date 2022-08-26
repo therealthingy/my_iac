@@ -4,7 +4,6 @@
     name:
       - wireshark
       - openvpn
-      - netcat
     state: present
 
 - name: Install db tools
