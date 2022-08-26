@@ -22,6 +22,7 @@
                 # Desktop Icons NG (DING)
                 - id: 2087
                   enable: true       # TODO: Currently not working ??!!
+
         - name: "Run 'customize-gnome' role"
           ansible.builtin.include_role:
             name: petermosmans.customize-gnome

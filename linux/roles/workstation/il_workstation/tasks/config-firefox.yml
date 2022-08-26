@@ -1,6 +1,16 @@
 ---
-- name: "Workaround (since `include_role` doesn't accept `become`)"
+- name: Configure
   block:
+    - name: Set config as vars
+      ansible.builtin.set_fact:
+        firefox_profiles:
+          default:
+            extensions:
+              # URL on addons.mozilla.org
+              - video-downloader-profession
+              - video-downloadhelper
+              - buster-captcha-solver
+
     - name: "Run 'staticdev.firefox' role"
       ansible.builtin.include_role:
         name: staticdev.firefox

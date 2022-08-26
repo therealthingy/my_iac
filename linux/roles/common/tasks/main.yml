@@ -7,15 +7,15 @@
 
 
 # ---------------------------------- PRE-packages - Distro specific stuff ----------------------------------
-- name: 'Debian pre packages - apt sources'
+- name: Debian pre packages - apt sources
   block:
-    - name: 'Remove CD/DVD install as apt source'
+    - name: Remove CD/DVD install as apt source
       ansible.builtin.replace:
         dest: /etc/apt/sources.list
         regexp: '^(#\s*)?deb cdrom:\[.+\]\/ \w+ (contrib|main) (contrib|main)$'
 
     # Will have by default prio of 100  (check via `apt-cache policy`)
-    - name: 'Add Backports apt source (to get newer packages backported to the release stable)'
+    - name: Add Backports apt source (to get newer packages backported to the release stable)
       # NOTE: Equivalent command: `sudo add-apt-repository 'deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main'`
       ansible.builtin.apt_repository:
         repo: deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main
@@ -26,7 +26,7 @@
   when: ansible_facts.distribution == 'Debian'
 
 
-- name: 'Ubuntu pre packages - Snaps'
+- name: Ubuntu pre packages - Snaps
   block:
     - name: Shutdown services, sockets and timers
       ansible.builtin.service:
@@ -62,7 +62,7 @@
         allow_downgrade: true
       with_items: '{{ snapd_packages }}'
 
-    - name: 'Block snapd from installing again'
+    - name: Block snapd from installing again
       # NOTE: ALTERNATIVE command  ??: `sudo apt-mark hold snapd`
       ansible.builtin.template:
         src: apt-snapd-block.pref.j2
@@ -96,9 +96,9 @@
 
 # ---------------------------------- POST packages - Distro specific stuff ----------------------------------
 # See https://vitux.com/how-to-disable-enable-automatic-error-reporting-in-ubuntu/
-- name: 'Ubuntu post packages - Disable annoying stuff'
+- name: Ubuntu post packages - Disable annoying stuff
   block:
-    - name: 'Uninstall Telemetry/error reporting services'
+    - name: Uninstall Telemetry/error reporting services
       ansible.builtin.apt:
         name:
           - apport
@@ -109,7 +109,7 @@
         clean: true
         autoremove: true
 
-    - name: 'Disable Telemetry/error reporting + Ubuntu services'
+    - name: Disable Telemetry/error reporting + Ubuntu services
       community.general.dconf:
         key: '{{ item.key }}'
         value: '{{ item.value }}'
