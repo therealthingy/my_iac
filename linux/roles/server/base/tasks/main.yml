@@ -11,8 +11,8 @@
 
 
 - name: Install login system stats script
-  ansible.builtin.copy:
-    src: scripts/zprofile
+  ansible.builtin.template:
+    src: zprofile.j2
     dest: /etc/zsh/zprofile
     owner: root
     group: root

@@ -14,7 +14,9 @@ printf "Local systime: %s \n" "$(date)"
 uptime --pretty |awk '{printf "Uptime: %s\n", substr($0, 4)}'
 
 top -bn1 | grep load | awk '{printf "CPU Load: %.2f, ", $(NF-2)}'
+{% if 'rpis' in group_names %}
 awk '{printf("temperature: %.1f°C\n",$1/1e3)}' /sys/class/thermal/thermal_zone0/temp
+{% endif %}
 
 free -m | awk 'NR==2{printf "Memory Usage: %s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2 }'
 

@@ -20,8 +20,10 @@ Unattended-Upgrade::Origins-Pattern {
         //"origin=Debian,codename=${distro_codename}-updates";
         "origin=Debian Backports,codename=${distro_codename}-backports,label=Debian Backports";
 {% endif %}
+{% if autoupdate_additional_allowed_origins is defined %}
         // --  Additional origins  --
         {{ autoupdate_additional_allowed_origins | indent(width=8) }}};
+{% endif %}
 
 Unattended-Upgrade::Allowed-Origins {
 {% if 'docker' in group_names %}

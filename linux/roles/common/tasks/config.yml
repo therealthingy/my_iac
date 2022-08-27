@@ -8,7 +8,7 @@
 
     - name: Set new hostname
       ansible.builtin.hostname:
-        name: '{{ domainname }}'
+        name: '{{ hostname }}'
       become: true
 
     # IMPORTANT: Requires this special indentation, otherwise other entries will be replaced !!
