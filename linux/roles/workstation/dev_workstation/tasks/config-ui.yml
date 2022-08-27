@@ -11,7 +11,7 @@
         src: wallpapers/
         dest: '/home/{{ user_name }}/Pictures/wallpapers/'
 
-    - name: Change wallpaper
+    - name: Update GNOME setting
       community.general.dconf:
         key: '/org/gnome/desktop/background/picture-uri'
         value: "'file:///home/{{ user_name }}/Pictures/wallpapers/{{ gnome_wallpaper }}'"
@@ -20,7 +20,7 @@
 
 
 
-- name: Copy references to Desktop
+- name: Copy dev references to Desktop
   ansible.posix.synchronize:
     src: references/
     dest: '/home/{{ user_name }}/Desktop/'
