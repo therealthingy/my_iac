@@ -10,6 +10,7 @@
               - video-downloader-profession
               - video-downloadhelper
               - buster-captcha-solver
+              - duplicate-tabs-closer
 
     - name: "Run 'staticdev.firefox' role"
       ansible.builtin.include_role:
