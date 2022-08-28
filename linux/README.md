@@ -66,8 +66,10 @@
 
 
 ## Setup steps
-* Install "dependencies" for playbook: `ansible-galaxy install -r requirements.yml`
-* Initial setup   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
+* Ansible:
+  * Install "dependencies" for playbook: `ansible-galaxy install -r requirements.yml`
+  * Create local inventory (for local vms): `cp inventory.yml ~/.ansible-inventory.yml`
+* VM &mdash; Initial setup   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
   * (0.) Distro specific "preparations":
     * Ubuntu (non Server): **`sudo apt install -y ssh`**
     * Debian: `su` &rarr; `apt install sudo  &&  /sbin/usermod -aG sudo <username>  &&  /sbin/reboot`
@@ -77,11 +79,12 @@
   * (4.) LATER (after initial ansible run): Add `Port 2233`
 * Exec 4 specific client: **`ansible-playbook --ask-vault-pass run.yml`**
   * Flags:
-    * **`--ask-become-pass`**  (required for first setup, not required afterwards due to passwordless sudo)
-    * `--tags "<tag>,"`: Target only tagged tasks
+    * **`--ask-become-pass`**  (may be required for 1st ansible run (if not set as host var '`ansible_sudo_pass`' in inventory), but not afterwards (due to passwordless sudo))
+    * **`--tags "<tag>,"`: Target only tagged tasks**
+    * **`--limit "host1,host2,host3,host4"`: Only specified hosts**
+    * **`-i "xxx.xxx.xxx.xxx,"`: Inventory (list ips/hostnames OR file)**
     * `-e "<key>=<value>"`: Overwrite vars
-    * `--limit "host1,host2,host3,host4"`: Only specified hosts
-    * `-i "xxx.xxx.xxx.xxx,"`: Inventory
+    * `--list-hosts`: Only list matching hosts
 
 ### POST ansible run (i.e., not automated steps)
 * *Home servers*:

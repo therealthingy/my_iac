@@ -8,13 +8,9 @@ all:
 
     dev_workstations:
       hosts:
-#        ansible-test:
-#          ansible_sudo_pass: 1
-#          gnome_wallpaper: Ballmer.jpg
 
     il_workstations:
       hosts:
-#        ansible-test:
 
 
     # -  "Headless" systems  -
@@ -93,4 +89,3 @@ all:
 
     vmware_vms:
       hosts:
-#        ansible-test:
