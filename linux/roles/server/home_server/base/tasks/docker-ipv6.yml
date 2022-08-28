@@ -13,7 +13,7 @@
   notify: restart docker daemon
   become: true
 
-# Command: `docker network create --subnet="2001:db8:1::/64" --ipv6 traefik`
+# Equivalent command: `docker network create --subnet="2001:db8:1::/64" --ipv6 traefik`
 - name: Create a network w/ IPv6 IPAM config
   community.docker.docker_network:
     name: '{{ docker_default_network }}'

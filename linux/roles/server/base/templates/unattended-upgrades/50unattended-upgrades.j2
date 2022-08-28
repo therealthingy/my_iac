@@ -11,7 +11,7 @@ Unattended-Upgrade::Automatic-Reboot "false";
 Unattended-Upgrade::InstallOnShutdown "false";
 Unattended-Upgrade::MailOnlyOnError "true";
 
-// See `apt-cache policy` for origins
+// NOTE: See `apt-cache policy` for origins
 Unattended-Upgrade::Origins-Pattern {
 {% if ansible_facts.distribution == 'Debian' %}
         // --  Debian origins  --
@@ -20,10 +20,15 @@ Unattended-Upgrade::Origins-Pattern {
         //"origin=Debian,codename=${distro_codename}-updates";
         "origin=Debian Backports,codename=${distro_codename}-backports,label=Debian Backports";
 {% endif %}
+{% if 'rpis' in group_names %}
+        // --  Raspberry Pi OS origins  --
+        "origin=Raspbian,codename=${distro_codename},label=Raspbian";
+        "origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
+{% endif %}
 {% if autoupdate_additional_allowed_origins is defined %}
         // --  Additional origins  --
-        {{ autoupdate_additional_allowed_origins | indent(width=8) }}};
-{% endif %}
+        {{ autoupdate_additional_allowed_origins | indent(width=8) }}
+{% endif %}};
 
 Unattended-Upgrade::Allowed-Origins {
 {% if 'docker' in ansible_role_names %}
