@@ -1,7 +1,7 @@
 Unattended-Upgrade::MinimalSteps "true";
 Unattended-Upgrade::Remove-Unused-Dependencies "true";
 
-{% if autoupdate_reboot_enabled %}
+{% if autoupdate_reboot_enabled is defined and autoupdate_reboot_enabled %}
 Unattended-Upgrade::Automatic-Reboot "true";
 Unattended-Upgrade::Automatic-Reboot-Time "{{ autoupdate_reboot_time |d('04:00', true) }}";                 // 24H format
 {% else %}
@@ -26,6 +26,6 @@ Unattended-Upgrade::Origins-Pattern {
 {% endif %}
 
 Unattended-Upgrade::Allowed-Origins {
-{% if 'docker' in group_names %}
+{% if 'docker' in ansible_role_names %}
         "Docker:${distro_codename}";
 {% endif %}};

@@ -67,8 +67,6 @@
     - role: docker
       tags:
         - docker
-  vars:
-    autoupdate_reboot_enabled: false
 
 - hosts: dev_servers
   roles:
