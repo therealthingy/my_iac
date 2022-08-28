@@ -63,10 +63,6 @@
     - role: server/base
       tags:
         - server
-        - home_server
-    - role: docker
-      tags:
-        - docker
 
 - hosts: dev_servers
   roles:
