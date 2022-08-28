@@ -21,7 +21,7 @@
 
 
 # --  "System specific"  --
-- hosts: workstations, dev_workstations
+- hosts: workstations, dev_workstations, il_workstations
   roles:
     - role: workstation/base
   tags: workstation
