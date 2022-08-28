@@ -6,8 +6,8 @@
     url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
     keyring: /usr/share/keyrings/brave-browser-archive-keyring.gpg
     state: present
-  become: true
   when: ansible_architecture == "x86_64"              # TODO: arm64 currently not supported: https://github.com/brave/brave-browser/issues/11836
+  become: true
 
 - name: Brave - Add apt repo and update cache
   # NOTE: Equivalent command: `sudo add-apt-repository 'deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch={{ deb_architecture }}] https://brave-browser-apt-release.s3.brave.com/ stable main'`
@@ -16,8 +16,8 @@
     filename: brave-browser-release
     state: present
     update_cache: true
-  become: true
   when: ansible_architecture == "x86_64"              # TODO: arm64 currently not supported: https://github.com/brave/brave-browser/issues/11836
+  become: true
 
 # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
 - name: Brave - Pin apt repo
@@ -30,12 +30,12 @@
     owner: root
     group: root
     mode: 0644
-  become: true
   when: ansible_architecture == "x86_64"              # TODO: arm64 currently not supported: https://github.com/brave/brave-browser/issues/11836
+  become: true
 
 - name: Brave - Install it
   ansible.builtin.apt:
     name: brave-browser
     state: present
-  become: true
   when: ansible_architecture == "x86_64"              # TODO: arm64 currently not supported: https://github.com/brave/brave-browser/issues/11836
+  become: true

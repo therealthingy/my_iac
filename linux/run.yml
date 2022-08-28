@@ -1,6 +1,5 @@
 ---
 - hosts: all
-  become: true
   roles:
     - role: common
       tags:
@@ -9,14 +8,12 @@
 
 # --  "HW specific"  --
 - hosts: rpis
-  become: true
   roles:
     - role: hw_specific/rpi
       tags:
         - rpi
 
 - hosts: vmware_vms
-  become: true
   roles:
     - role: hw_specific/vmware
       tags:
@@ -27,7 +24,6 @@
 - hosts: workstations, dev_workstations
   roles:
     - role: workstation/base
-      become: true
   tags: workstation
   vars:
     dock_favorite_apps:
@@ -38,7 +34,6 @@
       - "'gnome-system-monitor.desktop'"
 
 - hosts: dev_workstations
-  become: true
   roles:
     - role: workstation/dev_workstation
       tags:
@@ -57,7 +52,6 @@
           - save-page-we
 
 - hosts: il_workstations
-  become: true
   roles:
     - role: workstation/il_workstation
       tags:
@@ -65,7 +59,6 @@
 
 
 - hosts: servers, dev_servers, home_servers
-  become: true
   roles:
     - role: server/base
       tags:
@@ -78,7 +71,6 @@
     autoupdate_reboot_enabled: false
 
 - hosts: dev_servers
-  become: true
   roles:
     - role: server/dev_server
   tags:

@@ -10,9 +10,8 @@
     owner: root
     group: root
     mode: 0644
+  notify: restart docker daemon
   become: true
-  notify:
-    - restart docker daemon
 
 # Command: `docker network create --subnet="2001:db8:1::/64" --ipv6 traefik`
 - name: Create a network w/ IPv6 IPAM config
@@ -21,9 +20,18 @@
     enable_ipv6: true
     ipam_config:
       - subnet: 2001:db8:1::/64
+  become: false
 
 
 # Fix routing (since we use internally private IPv6 addresses which are NOT routable)
+- name: Install iptables
+  ansible.builtin.apt:
+    name:
+      - iptables
+      - iptables-persistent
+    state: present
+  become: true
+
 # VALIDATION: `docker run --network=reverse_proxy --rm -t busybox ping6 -c 4 google.com`
 # $$$$$$$$$$$$$$    WORKAROUND since ansible iptables doesn't seem 2 support masquerade ??!!    $$$$$$$$$$$$$$
 # `ip6tables -t nat -A POSTROUTING -s 2001:db8:1::/64 ! -o docker0 -j MASQUERADE`
@@ -39,21 +47,20 @@
 #    state: present
 # `ip6tables -t nat -A POSTROUTING -s 2001:db8:1::/64 ! -o docker0 -j MASQUERADE`
 # sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"
-- name: Install iptables
-  ansible.builtin.apt:
-    name:
-      - iptables
-      - iptables-persistent
-    state: present
-  become: true
-
 - name: Copy iptable config tables
   ansible.builtin.copy:
-    src: rules.v6
+    content: |
+      *nat
+      :PREROUTING ACCEPT [3537:366712]
+      :INPUT ACCEPT [1428:179948]
+      :OUTPUT ACCEPT [51:5820]
+      :POSTROUTING ACCEPT [46:5420]
+      -A POSTROUTING -s 2001:db8:1::/64 ! -o docker0 -j MASQUERADE
+      -A POSTROUTING -s 2001:db8:abc1::/64 ! -o docker0 -j MASQUERADE
+      COMMIT
     dest: /etc/iptables/rules.v6
     owner: root
     group: root
     mode: 0644
+  notify: restart networking daemon
   become: true
-  notify:
-    - restart networking daemon

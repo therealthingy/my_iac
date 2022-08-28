@@ -9,9 +9,11 @@
     owner: root
     group: root
     mode: 0644
+  become: true
 
 - name: Enable fstrimmer service
   ansible.builtin.service:
     name: fstrim.timer
     enabled: true
     state: started
+  become: true

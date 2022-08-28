@@ -1,9 +1,9 @@
 ---
 - name: Generate the locale
-  become: true
   community.general.locale_gen:
     name: '{{ locale }}'
     state: present
+  become: true
 
 
 # ---------------------------------- PRE-packages - Distro specific stuff ----------------------------------
@@ -22,8 +22,8 @@
         state: present
         filename: backports
         update_cache: yes
-  become: true
   when: ansible_facts.distribution == 'Debian'
+  become: true
 
 
 - name: Ubuntu pre packages - Snaps
@@ -51,7 +51,6 @@
           #- gir1.2-snapd-1
           #- libsnapd-glib1
           - snapd
-      become: false
 
     - name: Remove snapd packages
       ansible.builtin.apt:
@@ -83,6 +82,7 @@
         - /run/snapd.socket
         - /etc/apt/apt.conf.d/20snapd.conf
   when: ansible_facts.distribution == 'Ubuntu'
+  become: true
 # ----------------------------------------------------------------------------------------------------------
 
 
@@ -108,6 +108,7 @@
         purge: true
         clean: true
         autoremove: true
+      become: true
 
     - name: Disable Telemetry/error reporting + Ubuntu services
       community.general.dconf:

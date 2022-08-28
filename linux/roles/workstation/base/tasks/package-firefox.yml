@@ -23,8 +23,8 @@
         mode: 0644
 
     #TODO -- UNATTENDED UPGRADES: echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
-  become: true
   when: ansible_facts.distribution == 'Ubuntu'
+  become: true
 
 
 - name: Firefox - Install it

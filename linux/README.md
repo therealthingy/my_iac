@@ -70,7 +70,7 @@
 * Initial setup   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
   * (0.) Distro specific "preparations":
     * Ubuntu (non Server): **`sudo apt install -y ssh`**
-    * Debian: `su` &rarr; `apt install sudo  &&  /sbin/usermod -aG sudo <username>`
+    * Debian: `su` &rarr; `apt install sudo  &&  /sbin/usermod -aG sudo <username>  &&  /sbin/reboot`
   * (1.) Generate ssh key using custom script `ssh-key_generate` (add it automatically to `.ssh/config`)
   * (2.) Add `HostNamne <hostname>`
   * (3.) **`ssh-copy-id -i ~/.ssh/<identity-file>.pub <user>@<ip>`**

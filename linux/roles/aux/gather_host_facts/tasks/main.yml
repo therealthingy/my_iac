@@ -42,8 +42,8 @@
         docker_gid: '{{ result_docker_gid.stdout }}'
         deb_architecture: '{{ result_deb_architecture.stdout }}'
         gathered_host_facts: True
-  become: false
   when: gathered_host_facts is not defined
+  become: false
 
 
 #-  ansible.builtin.debug:

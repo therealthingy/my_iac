@@ -8,6 +8,7 @@
           - gnome-shell-extensions
           #- gnome-tweak-tool
         state: present
+      become: true
 
 
     # NOTE: List extensions: `gnome-extensions list --enabled`
@@ -120,4 +121,5 @@
             replace: |
               AutomaticLoginEnable = true
               AutomaticLogin = {{ user_name }}
+          become: true
       when: "'gdm3' in ansible_facts.packages"

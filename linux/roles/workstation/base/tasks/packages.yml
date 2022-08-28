@@ -47,6 +47,7 @@
     clean: true
     autoremove: true
   when: ansible_facts.os_family == 'Debian'
+  become: true
 # ---------------------------------------------------------
 
 
@@ -57,12 +58,14 @@
     upgrade: dist
     clean: true
     autoremove: true
+  become: true
 
 - name: Install CLI tools
   ansible.builtin.apt:
     name:
       - trash-cli
     state: present
+  become: true
 
 - include_tasks: '{{ item }}'
   loop:
@@ -82,7 +85,8 @@
 
 
 # TODO:  REVISE
-- name: 'TEMPORARY WORKAROUND (since no window buttons for kitty): Install termiantor'
+- name: 'TODO: WORKAROUND (since no window buttons for kitty): Install termiantor'
   ansible.builtin.apt:
     name: terminator
     state: present
+  become: true

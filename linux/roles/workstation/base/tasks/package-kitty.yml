@@ -3,6 +3,7 @@
   ansible.builtin.apt:
     name: kitty
     state: present
+  become: true
 
 - name: kitty - Copy config
   ansible.builtin.copy:

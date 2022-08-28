@@ -6,29 +6,37 @@
       - python3
       - python3-pip
     state: present
+  become: true
 
 
-- name: Switch to python3
-  community.general.alternatives:
-    name: python
-    link: /usr/bin/python
-    path: /usr/bin/python3
+- name: Update alternatives
+  block:
+    - name: Switch to python3
+      community.general.alternatives:
+        name: python
+        link: /usr/bin/python
+        path: /usr/bin/python3
 
-- name: Switch to pip3
-  community.general.alternatives:
-    name: pip
-    link: /usr/bin/pip
-    path: /usr/bin/pip3
+    - name: Switch to pip3
+      community.general.alternatives:
+        name: pip
+        link: /usr/bin/pip
+        path: /usr/bin/pip3
+  become: true
 
-# NOTE: 2 check for updates, use: `pip-review --local --auto`
+
 - name: Install pip packages
-  ansible.builtin.pip:
+  ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
     name:
-      - pip-review
+      - pip-review              # NOTE: 2 check for updates, use: `pip-review --local --auto`
+      # required by Ansible modules
+      - psutil                  # Required for dconf module
+  become: true
 
-
-- name: Install pip packages required by Ansible modules
-  ansible.builtin.pip:
+- name: Install pip packages for Debian-based systems
+  ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
     name:
+      # required by Ansible modules
       - python-apt
-      - psutil          # Required for dconf module
+  when: ansible_os_family == 'Debian'
+  become: true

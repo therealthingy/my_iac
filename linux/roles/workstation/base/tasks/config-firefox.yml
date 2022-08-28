@@ -1,8 +1,9 @@
 ---
 - name: Install dependencies required for Firefox config
-  ansible.builtin.pip:
+  ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
     name:
       - requests
+  become: true
 
 - name: Configure
   block:
@@ -121,7 +122,7 @@
   become: false
 
 
-- name: 'Copy default suggested bookmarks  (TODO: AUTO IMPORT  !!)'
+- name: 'Copy default suggested bookmarks  (TODO: AUTO IMPORT INTO FF  !!)'
   ansible.builtin.copy:
     src: firefox-dev_bookmarks.json
     dest: '/home/{{ user_name }}/.firefox-default_dev_bookmarks.json'

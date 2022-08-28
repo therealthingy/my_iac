@@ -1,4 +1,11 @@
 ---
+- name: Install tmux
+  ansible.builtin.apt:
+    name: tmux
+    state: present
+  become: true
+
+
 - name: Copy config file
   ansible.builtin.copy:
     src: tmux.conf
@@ -6,8 +13,4 @@
     owner: '{{ user_name }}'
     group: '{{ user_name }}'
     mode: 0644
-
-- name: Install tmux
-  ansible.builtin.apt:
-    name: tmux
-    state: present
+  become: false

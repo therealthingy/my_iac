@@ -2,11 +2,11 @@
 - name: 'Check if grub is used  (TODO: revise)'
   # NOTE: `PATH` may not be set correctly (e.g., on Debian)
   ansible.builtin.command: which /sbin/update-grub
-  become: false
   failed_when: false
   changed_when: false
   check_mode: false
   register: result_grub_command
+  become: false
 
 
 - name: Change grub settings
@@ -25,11 +25,10 @@
         regexp: '^GRUB_TIMEOUT=[0-9]+$'
         line: 'GRUB_TIMEOUT=0'
         state: present
-      become: true
       register: result_grub_timeout_updated
 
     - name: grub makeconfig
       ansible.builtin.shell: update-grub
       when: result_grub_verbose_updated.changed or result_grub_timeout_updated.changed
-  become: true
   when: result_grub_command.rc == 0
+  become: true

@@ -4,6 +4,7 @@
     name:
       - zsh
     state: present
+  become: true
 
 
 - name: zsh - Create zsh config dir
@@ -44,6 +45,7 @@
     name:
       - fonts-powerline
     state: present
+  become: true
 
 - name: zsh - Install Powerlevel10k theme
   ansible.builtin.git:
@@ -88,3 +90,4 @@
   ansible.builtin.user:
     name: '{{ user_name }}'
     shell: /bin/zsh
+  become: true

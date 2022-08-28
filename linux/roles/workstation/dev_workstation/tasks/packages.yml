@@ -7,6 +7,7 @@
       - wireshark
       - openvpn
     state: present
+  become: true
 
 - name: Install db tools
   community.general.flatpak:
@@ -14,6 +15,7 @@
       - org.sqlitebrowser.sqlitebrowser
       - io.dbeaver.DBeaverCommunity
     state: present
+  become: true
 
 - name: Install misc tools
   community.general.flatpak:
@@ -23,6 +25,7 @@
       - org.ghidra_sre.Ghidra
       - com.syntevo.SmartGit
     state: present
+  become: true
 
 
 # KEEP IN MIND: Logout is required for app to show up
@@ -32,6 +35,7 @@
       - com.jetbrains.CLion
       - com.jetbrains.PyCharm-Professional
     state: present
+  become: true
 
 
 #- name: Install LaTex
@@ -40,3 +44,4 @@
 #      - texlive-full
 #      - texmaker
 #    state: present
+#  become: true

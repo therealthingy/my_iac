@@ -1,4 +1,3 @@
 
 # --  Global  --
 locale: en_US.UTF-8
-ssh_port: 22

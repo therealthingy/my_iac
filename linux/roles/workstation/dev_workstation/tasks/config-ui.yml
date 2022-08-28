@@ -15,8 +15,8 @@
       community.general.dconf:
         key: '/org/gnome/desktop/background/picture-uri'
         value: "'file:///home/{{ user_name }}/Pictures/wallpapers/{{ gnome_wallpaper }}'"
-  become: false
   when: "'GNOME' in desktop_envs"
+  become: false
 
 
 

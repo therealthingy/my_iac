@@ -4,3 +4,4 @@
     name: '{{ ipv6_systemd_service_name }}'
     state: restarted
     enabled: true
+  become: true

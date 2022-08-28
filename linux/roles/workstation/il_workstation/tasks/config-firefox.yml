@@ -37,4 +37,5 @@
           # Equivalent command: `sudo apt install ./name.deb`
           apt:
             deb: '/tmp/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ deb_architecture }}.deb'
+          become: true
       when: ansible_os_family == 'Debian' and 'net.downloadhelper.coapp' not in ansible_facts.packages

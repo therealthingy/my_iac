@@ -1,9 +1,10 @@
 ---
 - name: 'Delete default pi user passwordless file  (TODO: Check whether newer versions still use user "pi")'
-  become: true
   ansible.builtin.file:
     state: absent
     path: /etc/sudoers.d/010_pi-nopasswd
+  become: true
+
 
 - include_tasks: '{{ item }}'
   loop:

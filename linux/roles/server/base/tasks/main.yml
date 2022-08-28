@@ -5,6 +5,7 @@
     src: /usr/lib/systemd/system/multi-user.target
     dest: /etc/systemd/system/default.target
     state: link
+  become: true
 
 
 - include_tasks: config-unattended_updates.yml
@@ -17,3 +18,4 @@
     owner: root
     group: root
     mode: 0644
+  become: true

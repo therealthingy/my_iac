@@ -36,12 +36,13 @@
         - { regex: '^#?PasswordAuthentication', line: 'PasswordAuthentication no' }
         - { regex: '^#?ChallengeResponseAuthentication', line: 'ChallengeResponseAuthentication no' }
 
-    - name: Change port
+    - name: Change ssh port
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: '^#?Port'
         line: 'Port {{ ssh_port }}'
         validate: '/usr/sbin/sshd -T -f %s'
+      when: ssh_port is defined
 
 
     - name: Allow client to pass locale environment variables
@@ -51,3 +52,4 @@
         line: 'AcceptEnv LANG LC_*'
         validate: '/usr/sbin/sshd -T -f %s'
   notify: restart ssh daemon
+  become: true

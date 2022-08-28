@@ -1,18 +1,16 @@
 ---
 - name: Install Python dev packages
-  ansible.builtin.pip:
+  ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
     name:
       - ansible
+      - pdm
+  become: true
 # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
 
 - name: Install Python scientific packages
-  ansible.builtin.pip:
+  ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
     name:
       - numpy
       - scipy
       - matplotlib
-
-- name: Install Python misc. packages
-  ansible.builtin.pip:
-    name:
-      - ansible
+  become: true

@@ -7,6 +7,7 @@
     clean: true
     autoremove: true
     allow_downgrade: true
+  become: true
 
 
 - name: Install file general purpose tools
@@ -22,6 +23,7 @@
       - lsof
       - neovim
     state: present
+  become: true
 
 - name: Install file archiving tools
   ansible.builtin.apt:
@@ -31,12 +33,14 @@
       - zip
       - unzip
     state: present
+  become: true
 
 - name: Install backup tools
   ansible.builtin.apt:
     name:
       - borgbackup
     state: present
+  become: true
 
 - name: Install monitoring tools
   ansible.builtin.apt:
@@ -51,6 +55,7 @@
       - hdparm
       - usbutils
     state: present
+  become: true
 
 - name: Install networking tools
   ansible.builtin.apt:
@@ -64,6 +69,7 @@
       - iperf
       - speedtest-cli
     state: present
+  become: true
 
 - name: Install administration tools
   ansible.builtin.apt:
@@ -75,6 +81,7 @@
       - ssh
       - mosh
     state: present
+  become: true
 
 - name: Privacy tools
   block:
@@ -93,6 +100,7 @@
         owner: root
         group: root
         mode: 0755
+  become: true
 
 
 - name: Install shell related tools
@@ -103,6 +111,7 @@
       - pv
       - uuid
     state: present
+  become: true
 
 
 # (!!  ALSO REQUIRED FOR ZSH  !!)
@@ -112,6 +121,7 @@
       - git
       - git-lfs
     state: present
+  become: true
 
 #- name: Init git LFS for current user        # TODO: NOT  IDEMPOTENT ???
 #  ansible.builtin.command: git lfs install

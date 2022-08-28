@@ -3,9 +3,11 @@
   ansible.builtin.service:
     name: docker
     state: restarted
+  become: true
 
 
-- name: restart network daemon
+- name: restart networking daemon
   ansible.builtin.service:
     name: networking
     state: restarted
+  become: true
