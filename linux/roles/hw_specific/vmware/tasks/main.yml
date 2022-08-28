@@ -7,23 +7,6 @@
     state: present
   become: true
 
-- name: Mount vmware shares on boot
-  ansible.posix.mount:
-    path: '{{ vmshares_mount_dir }}'
-    src: 'vmhgfs-fuse'
-    fstype: fuse
-    opts: 'defaults,allow_other'
-    state: mounted
-  become: true
-
-- name: Create symlink in home dir
-  ansible.builtin.file:
-    src: '{{ vmshares_mount_dir }}'
-    dest: '/home/{{ user_name }}/vmware-shares'
-    state: link
-  become: false
-
-
 
 - name: "TODO (RMV ONCE FIXED): WORKAROUND for 'Unknown ioctl 1976'"
   ansible.builtin.blockinfile:
@@ -39,3 +22,26 @@
     mode: 0644
   when: ansible_architecture == 'aarch64' and ansible_facts.distribution == 'Debian'
   become: true
+
+
+- name: Setup vmware shares
+  block:
+    - name: Mount vmware shares on boot
+      ansible.posix.mount:
+        path: '{{ vmshares_mount_dir }}'
+        src: 'vmhgfs-fuse'
+        fstype: fuse
+        opts: 'defaults,allow_other'
+        state: mounted
+      become: true
+
+    - name: Create symlink in home dir
+      ansible.builtin.file:
+        src: '{{ vmshares_mount_dir }}'
+        dest: '/home/{{ user_name }}/vmware-shares'
+        state: link
+      become: false
+  when: vm_sharing_is_enabled
+
+
+
