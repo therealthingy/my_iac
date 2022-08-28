@@ -64,7 +64,26 @@
       - Disable privacy extensions (i.e., derive global ipv6 address for eth0 iface from mac address, thus making sure fritzbox ipv6 permitted access works  (see also https://www.heise.de/ct/artikel/IPv6-DynDNS-klemmt-4785681.html))
 
 
-## Not automated steps
+
+## Setup steps
+* Install "dependencies" for playbook: `ansible-galaxy install -r requirements.yml`
+* Initial setup   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
+  * (0.) Distro specific "preparations":
+    * Ubuntu (non Server): **`sudo apt install -y ssh`**
+    * Debian: `su` &rarr; `apt install sudo  &&  /sbin/usermod -aG sudo <username>`
+  * (1.) Generate ssh key using custom script `ssh-key_generate` (add it automatically to `.ssh/config`)
+  * (2.) Add `HostNamne <hostname>`
+  * (3.) **`ssh-copy-id -i ~/.ssh/<identity-file>.pub <user>@<ip>`**
+  * (4.) LATER (after initial ansible run): Add `Port 2233`
+* Exec 4 specific client: **`ansible-playbook --ask-vault-pass run.yml`**
+  * Flags:
+    * **`--ask-become-pass`**  (required for first setup, not required afterwards due to passwordless sudo)
+    * `--tags "<tag>,"`: Target only tagged tasks
+    * `-e "<key>=<value>"`: Overwrite vars
+    * `--limit "host1,host2,host3,host4"`: Only specified hosts
+    * `-i "xxx.xxx.xxx.xxx,"`: Inventory
+
+### POST ansible run (i.e., not automated steps)
 * *Home servers*:
   * traefik: SSL certs gen
   * transmission & samba: Directory structure (e.g., on (encrypted luks) sparse file)
@@ -81,23 +100,8 @@
       * Cleanup &mldr;
 
 
-## Commands
-### Setup steps
-* Install "dependencies" for playbook: `ansible-galaxy install -r requirements.yml`
-* Initial setup   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
-  * ( (0.) Ubuntu: Install *ssh daemon*: **`sudo apt install -y ssh`**  //  Debian: `su` &rarr; `/sbin/usermod -aG sudo <username>` )
-  * (1.) Generate ssh key using custom script `ssh-key_generate` (add it automatically to `.ssh/config`)
-  * (2.) Add `HostNamne <hostname>`
-  * (3.) **`ssh-copy-id -i ~/.ssh/<identity-file>.pub <user>@<ip>`**
-  * (4.) LATER (after initial ansible run): Add `Port 2233`
-* Exec 4 specific client: **`ansible-playbook --ask-vault-pass run.yml`**
-  * Flags:
-    * **`--ask-become-pass`**  (required for first setup, not required afterwards due to passwordless sudo)
-    * `--tags "<tag>,"`: Target only tagged tasks
-    * `-e "<key>=<value>"`: Overwrite vars
-    * `--limit "host1,host2,host3,host4"`: Only specified hosts
-    * `-i "xxx.xxx.xxx.xxx,"`: Inventory
 
+## Misc. commands
 ### Dev
 * Validate playbook: `ansible-playbook run.yml --syntax-check`
 * Encrypt:
