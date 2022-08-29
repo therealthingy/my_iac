@@ -7,11 +7,13 @@
       - manpages-dev
       - cmake
       - cmake-curses-gui
-      # Debuggers / Tools  (binutils, util-linux & gdb are most likely already installed)
+      # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
       - binutils
       - gdb
       - valgrind
       # Libs
       - libomp-dev
+      # Misc.
+      - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design)
     state: present
   become: true
