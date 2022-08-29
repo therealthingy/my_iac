@@ -19,7 +19,7 @@
       - fdupes
       - dos2unix
       - rsync
-      - rclone              # Cloud storage management software
+      - rclone                        # Cloud storage management software
       - lsof
       - neovim
     state: present
@@ -63,7 +63,7 @@
       - nmap
       - netcat
       - tcpdump
-      - iproute2       # NOTE: net-tools is deprecated
+      - iproute2                      # NOTE: net-tools is deprecated
       - wget
       - curl
       - iperf
@@ -74,10 +74,9 @@
 - name: Install administration tools
   ansible.builtin.apt:
     name:
-      # Most likely already installed (contains MANY utilities)
-      - util-linux
-      # - abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
-      - software-properties-common
+      - sudo                          # (NOTE: Only for documentation purpose, since prerequisite for this playbook)
+      - util-linux                    # Most likely already installed (contains MANY utilities)
+      - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
       - ssh
       - mosh
     state: present
@@ -107,7 +106,7 @@
   ansible.builtin.apt:
     name:
       - moreutils
-      - procps      # watch command
+      - procps                        # `watch` command
       - pv
       - uuid
     state: present
