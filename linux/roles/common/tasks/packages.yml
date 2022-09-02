@@ -25,6 +25,19 @@
     state: present
   become: true
 
+- name: Set alternatives for nvim
+  community.general.alternatives:
+    name: '{{ common_nvim_alt.name }}'
+    link: '{{ common_nvim_alt.link }}'
+    path: '{{ common_nvim_alt.path }}'
+  with_items:
+    - { name: editor, link: /usr/bin/editor, path: /usr/bin/nvim }
+    - { name: vi,     link: /usr/bin/vi,     path: /usr/bin/nvim }
+  loop_control:
+    loop_var: common_nvim_alt
+  become: true
+
+
 - name: Install file archiving tools
   ansible.builtin.apt:
     name:
