@@ -2,6 +2,9 @@
 
 
 ## TODOs
+- *rpis*:
+  - Switch to brtfs
+  
 - *dev-workstation*:
   - Firefox: After restart  --> not indempotent  ???
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)

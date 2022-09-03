@@ -24,8 +24,8 @@ services:
       - DATA_FOLDER=/data
       - DATABASE_URL=/data/db.sqlite3
       - WEBSOCKET_ENABLED=true
-      - SIGNUPS_ALLOWED=true
-      - SIGNUPS_VERIFY=false
+      - SIGNUPS_ALLOWED={{ bitwarden_signups_allowed | default('false', true) }}
+      - SIGNUPS_VERIFY={{ 'true' if notifications_mail_config is defined else 'false' }}
       - DOMAIN=https://{{ container_name }}.{{ domainname }}
 
 {% if notifications_mail_config is defined %}

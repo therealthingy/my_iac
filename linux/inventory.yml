@@ -23,6 +23,8 @@ all:
     dns_servers:
       hosts:
         rpi.lan:
+          ipv6_ula_iface: eth0
+          ipv6_ula_addr: fd00::40b3:8c93:9122:52c7/64
 
     home_servers:
       hosts:
@@ -41,8 +43,6 @@ all:
           docker_default_network: reverse_proxy
           reverse_proxy_certs_dir: /mnt/storage/traefik
           reverse_proxy_restart_policy: 'no'
-          ipv6_ula_iface: eth0
-          ipv6_ula_addr: fd00::40b3:8c93:9122:52c7/64
           pihole_web_pw: !vault |
                     $ANSIBLE_VAULT;1.1;AES256
                     31353636613432393861396666663536373839366235643635353837636164363038376639663263
