@@ -31,6 +31,6 @@ Unattended-Upgrade::Origins-Pattern {
 {% endif %}};
 
 Unattended-Upgrade::Allowed-Origins {
-{% if 'docker' in ansible_role_names %}
+{% if 'home_servers' in group_names %}
         "Docker:${distro_codename}";
 {% endif %}};

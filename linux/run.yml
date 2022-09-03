@@ -60,7 +60,8 @@
 
 - hosts: servers, dev_servers, home_servers
   roles:
-    - role: server/base   # NOTE: Can't have tag, otherwise unattended-upgrade file will be wrong (since `ansible_role_names` won't work w/ tags)
+    - role: server/base
+      tags: server
 
 - hosts: dev_servers
   roles:
