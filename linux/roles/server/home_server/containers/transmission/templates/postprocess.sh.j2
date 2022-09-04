@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+
+{% if notifications_mail_config is defined %}
+# --- Send mail ---
+# Create mail msg
+TMP_MAILFILE=`mktemp -t transmission.XXXXXXXXXX`
+
+cat <<- EOF > $TMP_MAILFILE
+From: "Transmission" <{{ notifications_mail_config.smtp_username }}>
+To: "Transmission Admin" <{{ notifications_mail_config.system_admin_mail }}>
+Subject: Finished downloading torrent
+
+Transmission has finished downloading "{{ '$TR_TORRENT_NAME' if not transmission_notifications_hide_filename else 'xxxxxxx' }}" on ${TR_TIME_LOCALTIME}."
+EOF
+
+# Semd mail & cleanup
+curl \
+  --url "smtps://{{ notifications_mail_config.smtp_host }}:{{ notifications_mail_config.smtp_port }}" --ssl-reqd \
+  --user "{{ notifications_mail_config.smtp_username }}:{{ notifications_mail_config.smtp_password }}" \
+  --mail-from "{{ notifications_mail_config.smtp_username }}" \
+  --mail-rcpt "{{ notifications_mail_config.system_admin_mail }}" \
+  --upload-file $TMP_MAILFILE \
+-s > /dev/null
+
+rm $TMP_MAILFILE
+{% endif %}
+
+
+exit 0

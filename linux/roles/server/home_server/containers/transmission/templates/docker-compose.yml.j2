@@ -32,7 +32,7 @@ services:
       - {{ transmission_vpn_file }}:/etc/openvpn/custom/default.ovpn
 {% endif %}
       - {{ transmission_storage_path }}/:/data
-      - ./scripts/:/scripts/custom/
+      - ./postprocess.sh:/scripts/custom/postprocess.sh
 
 {% if not container_enable_logging %}
     logging:
@@ -69,18 +69,9 @@ services:
       - TRANSMISSION_DOWNLOAD_QUEUE_SIZE={{ transmission_max_parallel_downloads }}
       - TRANSMISSION_SCRAPE_PAUSED_TORRENTS_ENABLED=false
 
-{% if notifications_mail_config is defined %}
-      # Emailing
+      # -  Postprocess  (currently only sending mail)  -
       - TRANSMISSION_SCRIPT_TORRENT_DONE_ENABLED=true
       - TRANSMISSION_SCRIPT_TORRENT_DONE_FILENAME=/scripts/custom/postprocess.sh
-      # VARs for 'registered' script
-      - NOTIFICATION_MAIL_SMTP_SERVER_HOST=={{ notifications_mail_config.smtp_host }}
-      - NOTIFICATION_MAIL_SMTP_SERVER_PORT={{ notifications_mail_config.smtp_port }}
-      - NOTIFICATION_MAIL_SERVER_USERNAME={{ notifications_mail_config.smtp_username }}
-      - NOTIFICATION_MAIL_SERVER_PASSWORD={{ notifications_mail_config.smtp_password }}
-      - NOTIFICATION_MAIL_TO_ADDR={{ notifications_mail_config.system_admin_mail }}
-      - NOTIFICATION_MAIL_HIDE_FILENAME={{ notifications_hide_filename }}
-{% endif %}
 
     labels:
      # Watchtower

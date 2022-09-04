@@ -13,7 +13,9 @@
     mode: 0640
   become: false
 
-- name: Copy scripts
-  ansible.posix.synchronize:
-    src: scripts/
-    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/scripts/'
+- name: Copy postscript
+  ansible.builtin.template:
+    src: postprocess.sh.j2
+    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/postprocess.sh'
+    mode: 0755
+  become: false
