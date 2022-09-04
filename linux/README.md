@@ -2,15 +2,13 @@
 
 
 ## TODOs
-- *rpis*:
-  - Switch to brtfs  (+ backup via borg: https://github.com/borgbackup/borg/issues/4532)
-
 - *dev-workstation*:
   - Firefox: After restart  --> not indempotent  ???
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
 - *server*:
-  - Support for headless system w/ encrypted root partition (https://github.com/ViRb3/pi-encrypted-boot-ssh)
+  - Switch to brtfs  (+ backup via borg: https://github.com/borgbackup/borg/issues/4532 // https://linuxtut.com/en/d34053037468488eacab/)
+  - Support for headless system w/ encrypted root partition (https://github.com/ViRb3/pi-encrypted-boot-ssh  //  https://docs.ansible.com/ansible/latest/collections/community/crypto/luks_device_module.html)
 
 - *home_server*:
   - Containers:
