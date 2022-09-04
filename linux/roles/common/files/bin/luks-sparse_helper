@@ -87,7 +87,7 @@ case $1 in
 
         echo "(III) Mounting fs of luks mapper-device \"$luks_mapper_name\"  @ \"$mountpoint\""
         sudo mkdir $mountpoint 2> /dev/null  &&  sudo chown "$USER": $mountpoint
-        sudo mount -t ext4 -o discard,defaults,auto,user,noatime /dev/mapper/$luks_mapper_name $mountpoint
+        sudo mount -t ext4 -o discard,defaults,auto,user,noatime,noexec /dev/mapper/$luks_mapper_name $mountpoint
     else
         echo "\"$sparse_file_path\" is already mounted!"
         exit 0
