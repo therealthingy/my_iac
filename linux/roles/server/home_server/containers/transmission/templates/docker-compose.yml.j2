@@ -32,7 +32,7 @@ services:
       - {{ transmission_vpn_file }}:/etc/openvpn/custom/default.ovpn
 {% endif %}
       - {{ transmission_storage_path }}/:/data
-      - ./postprocess.sh:/scripts/custom/postprocess.sh
+      - ./script-torrent_done:/scripts/custom/script-torrent_done
 
 {% if not container_enable_logging %}
     logging:
@@ -71,7 +71,7 @@ services:
 
       # -  Postprocess  (currently only sending mail)  -
       - TRANSMISSION_SCRIPT_TORRENT_DONE_ENABLED=true
-      - TRANSMISSION_SCRIPT_TORRENT_DONE_FILENAME=/scripts/custom/postprocess.sh
+      - TRANSMISSION_SCRIPT_TORRENT_DONE_FILENAME=/scripts/custom/script-torrent_done
 
     labels:
      # Watchtower
