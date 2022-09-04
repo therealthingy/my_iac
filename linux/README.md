@@ -80,8 +80,9 @@
   * (2.) Add `HostNamne <hostname>`
   * (3.) **`ssh-copy-id -i ~/.ssh/<identity-file>.pub <user>@<ip>`**
   * (4.) LATER (after initial ansible run): Add `Port 2233`
-* Exec 4 specific client: **`ansible-playbook --ask-vault-pass run.yml`**
+* Exec 4 specific client: **`ansible-playbook --vault-pass-file ~/.ansible-vault run.yml`**
   * Flags:
+    * `--ask-vault-pass`  (when not using `--vault-pass-file <file>`)
     * **`--ask-become-pass`**  (may be required for 1st ansible run (if not set as host var '`ansible_sudo_pass`' in inventory), but not afterwards (due to passwordless sudo))
     * **`--tags "<tag>,"`: Target only tagged tasks**
     * **`--limit "host1,host2,host3,host4"`: Only specified hosts**
