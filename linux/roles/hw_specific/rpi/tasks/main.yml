@@ -10,3 +10,12 @@
   loop:
     - usb-boot.yml
     - rpi-fan-pwm.yml
+
+
+- name: Ubuntu - Install rpi stuff
+  ansible.builtin.apt:
+    name:
+      - rpi-eeprom                                      # TODO: not tested yet  (see https://askubuntu.com/questions/1253070/raspberry-pi-4-firmware-upgrade-eeprom-over-ubuntu-20-04)
+    state: present
+  become: true
+  when: ansible_facts.distribution == 'Ubuntu'

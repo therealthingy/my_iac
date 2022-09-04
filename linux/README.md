@@ -3,8 +3,8 @@
 
 ## TODOs
 - *rpis*:
-  - Switch to brtfs
-  
+  - Switch to brtfs  (+ backup via borg: https://github.com/borgbackup/borg/issues/4532)
+
 - *dev-workstation*:
   - Firefox: After restart  --> not indempotent  ???
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
