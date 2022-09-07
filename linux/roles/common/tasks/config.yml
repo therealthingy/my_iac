@@ -24,7 +24,7 @@
 
 - include_tasks: '{{ included_common_config_task }}'
   loop:
-    - config-grub_verbose_boot.yml
+    - config-grub.yml
     - config-ssh.yml
   loop_control:
     loop_var: included_common_config_task
