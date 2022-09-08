@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  # >>  Reference: https://hub.docker.com/r/dperson/samba  <<
+  # >>  Reference: https://hub.docker.com/r/dperson/samba  //  https://github.com/dperson/samba  <<
   {{ container_name }}:
     image: dperson/samba
     container_name: {{ container_name }}
@@ -13,10 +13,12 @@ services:
 
     network_mode: bridge
     ports:
+{% if advertise_shares %}
       # netbios-ns – 137/tcp # NETBIOS Name Service
       - 137:137/udp
       # netbios-dgm – 138/tcp # NETBIOS Datagram Service
       - 138:138/udp
+{% endif %}
       # netbios-ssn – 139/tcp # NETBIOS session service
       - 139:139/tcp
       # microsoft-ds – 445/tcp # if you are using Active Directory
@@ -27,16 +29,19 @@ services:
       - "{{ samba_path_own_share }}:/mnt/share/private"
       - "{{ samba_transmission_downloads_dir }}:/mnt/share/private/torrents"
 
-    # -- Directories: -s "<name;/path>[;browse;readonly;guest;users;admins;writelist;comment]" --
-    # -n -> Start the 'nmbd' daemon to advertise the shares
-    # -p -> Set ownership and permissions on the shares
+    # `-r` = Disable recycle bin for shares
+    # `-n` = Start the 'nmbd' daemon to advertise the shares
+    # `-s`syntax: "<name;/path>[;browsable;readonly;guest;users;admins;writelist;comment]"
     command: >
       -r
+{% if advertise_shares %}
+      -n
+{% endif %}
       -w "{{ domainname }}"
       -u "{{ samba_own_user_name }};{{ samba_own_user_pw }}"
       -u "{{ samba_shared_user_name }};{{ samba_shared_user_pw }}"
-      -s shared;/mnt/share/public;yes;no;no;all;none;;comment1
-      -s private;/mnt/share/private;no;no;no;{{ samba_own_user_name }};none;;comment1
+      -s "shared;/mnt/share/public;yes;no;no;all;none;;Public share"
+      -s "private;/mnt/share/private;no;no;no;{{ samba_own_user_name }};none;;Private share"
 
     environment:
       - TZ={{ timezone }}

@@ -1,5 +1,7 @@
 ---
 container_name: samba
 
+advertise_shares: false
+
 # INSECURE !!  Allows attackers to create symlink to every directory on server's fs
 follow_symlinks: False
