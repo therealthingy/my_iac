@@ -3,7 +3,7 @@ version: '3.7'
 services:
   # >>  Reference: https://hub.docker.com/r/dperson/samba  //  https://github.com/dperson/samba  <<
   {{ container_name }}:
-    image: dperson/samba
+    image: {{ container_image }}
     container_name: {{ container_name }}
     restart: "no"
     hostname: {{ hostname }}

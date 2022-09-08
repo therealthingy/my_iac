@@ -1,5 +1,6 @@
 ---
 container_name: samba
+container_image: quay.io/unixfox/samba
 
 advertise_shares: false
 
