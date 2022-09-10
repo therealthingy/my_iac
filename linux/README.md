@@ -7,8 +7,12 @@
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
 - *server*:
-  - Switch to brtfs  (+ backup via borg: https://github.com/borgbackup/borg/issues/4532 // https://linuxtut.com/en/d34053037468488eacab/)
-  - Support for headless system w/ encrypted root partition (https://github.com/ViRb3/pi-encrypted-boot-ssh  //  https://docs.ansible.com/ansible/latest/collections/community/crypto/luks_device_module.html)
+  - Switch to btrfs
+    - Backup via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/)
+    - DEBIAN: Switch from swapfile to swap partition
+      - Switch off the swapfile + remove dphys-swapfile: `sudo apt-get purge dphys-swapfile`
+      - Activate the swap partition: `sudo swapon /dev/sdaX`
+  - Support for headless system w/ encrypted root partition  (https://github.com/ViRb3/pi-encrypted-boot-ssh, https://docs.ansible.com/ansible/latest/collections/community/crypto/luks_device_module.html)
 
 - *home_server*:
   - Containers:
