@@ -16,6 +16,9 @@
 
 - *home_server*:
   - Containers:
+    - CONSIDER:
+      - https://hub.docker.com/r/hurlenko/aria2-ariang
+      - https://hub.docker.com/r/dyonr/jackettvpn/
     - ISSUE: **2 ipv6 addresses**
       - SOLUTION:
         - by either configuring statically + disabling dhcpd (denyinterfaces; https://forums.raspberrypi.com/viewtopic.php?t=178387)

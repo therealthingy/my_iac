@@ -1,34 +1,52 @@
 ---
-- name: Set GNOME settings
+- name: Setup GNOME
   block:
-    - name: Install config tools
+    - name: Install tools
       ansible.builtin.apt:
         name:
           - dconf-editor
-          - gnome-shell-extensions
-          #- gnome-tweak-tool
+          - gnome-shell-extension-manager
         state: present
+      become: true
+
+    - name: Remove 'old' tools
+      ansible.builtin.apt:
+        name:
+          - gnome-shell-extension-prefs
+        state: absent
       become: true
 
 
     # NOTE: List extensions: `gnome-extensions list --enabled`
     - name: Install GNOME extensions
       block:
-        - name: Set config as vars
-          ansible.builtin.set_fact:
-            gnome_extensions:  # (ids are dervied from URL, e.g., https://extensions.gnome.org/extension/307/dash-to-dock/)
-                # Desktop Icons NG (DING)
-                - id: 2087
-                  enable: true       # TODO: Currently not working ??!!
-                # Clipboard history
-                - id: 4839
-                  enable: true
+        - name: Install dependencies for GNOME extensions
+          ansible.builtin.apt:
+            name:
+              - gir1.2-gtop-2.0                     # Top Hat  (like iStats menu 4 mac)
+            state: present
+          become: true
 
-        - name: Debian - Append config as vars
-          ansible.builtin.set_fact:
-            # Dash to Dock
-            gnome_extensions: "{{ gnome_extensions + [ { 'id': 307, 'enable': true } ]  }}"
-          when: ansible_facts.distribution == 'Debian'
+        - name: "'Determine' which extensions shall be installed"
+          block:
+            - name: Set config as vars
+              ansible.builtin.set_fact:
+                gnome_extensions:  # (ids are dervied from URL, e.g., https://extensions.gnome.org/extension/307/dash-to-dock/)
+                    - id: 2087                      # Desktop Icons NG (DING)
+                      enable: true       # TODO: Currently not working ??!!
+                    - id: 3193                      # Blur my Shell
+                      enable: true
+                    - id: 5219                      # Top Hat  (like iStats menu 4 mac)
+                      enable: true
+                    - id: 4839                      # Clipboard history
+                      enable: true
+                    # TODO (for non-vms): caffeine, cpufreq, wireguard-indicator
+
+            - name: Debian - Set distro specific stuff
+              ansible.builtin.set_fact:
+                # Dash to Dock
+                gnome_extensions: "{{ gnome_extensions + [ { 'id': 307, 'enable': true } ]  }}"
+              when: ansible_facts.distribution == 'Debian'
 
         - name: "Run 'customize-gnome' role"
           ansible.builtin.include_role:
