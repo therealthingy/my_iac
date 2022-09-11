@@ -90,3 +90,11 @@
     name: terminator
     state: present
   become: true
+
+
+
+- name: '[Ubuntu] Install proprietary extra stuff (codecs, fonts, ...)'
+  ansible.builtin.apt:
+    name: ubuntu-restricted-extras
+  when: ansible_facts.os_family == 'Ubuntu'
+  become: true

@@ -91,6 +91,7 @@
         - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-position', value: "'LEFT'", state: present }
         - { key: '/org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size', value: '25', state: present }
         - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-fixed', value: 'true', state: present }
+        - { key: '/org/gnome/shell/extensions/dash-to-dock/click-action', value: "'minimize'", state: present }
         # -  Desktop  -
         - { key: '/org/gnome/shell/extensions/ding/show-home', value: 'false', state: present }
         - { key: '/org/gnome/shell/extensions/ding/show-trash', value: 'false', state: present }
