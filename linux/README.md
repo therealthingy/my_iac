@@ -20,8 +20,9 @@
       - https://hub.docker.com/r/hurlenko/aria2-ariang
       - https://hub.docker.com/r/dyonr/jackettvpn/
     - ISSUE: **2 ipv6 addresses**
+      - DEBUG DOCKER images: https://github.com/nicolaka/netshoot
       - SOLUTION:
-        - by either configuring statically + disabling dhcpd (denyinterfaces; https://forums.raspberrypi.com/viewtopic.php?t=178387)
+        - by either configuring statically + disabling dhcpd (denyinterfaces; https://forums.raspberrypi.com/viewtopic.php?t=178387;  https://libredd.it/r/ipv6/comments/uvjbif/setting_a_ula_it_just_worked/)
         - iptables ??
       - ISSUEs:
         - pihole IPv6:
