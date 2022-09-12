@@ -3,17 +3,21 @@
   ansible.builtin.apt:
     name:
       # Compiler / build tools
-      - build-essential
       - manpages-dev
+      - build-essential       # Includes GNU debugger, g++/GNU compiler collection, and some more tools (`make`) and libraries that are required to compile a program
       - cmake
       - cmake-curses-gui
       # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
       - binutils
-      - gdb
       - valgrind
       # Libs
       - libomp-dev
+      - libelf-dev
+      - libdw-dev
       # Misc.
+      - flex                  # Generates lexical analyzers
+      - bison                 # Parser generator
+      # Utils
       - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design)
     state: present
   become: true
