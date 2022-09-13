@@ -27,7 +27,7 @@ services:
     volumes:
       - "{{ samba_path_shared_share }}:/mnt/share/public"
       - "{{ samba_path_own_share }}:/mnt/share/private"
-      - "{{ samba_transmission_downloads_dir }}:/mnt/share/private/torrents"
+      - "{{ samba_transmission_downloads_dir }}:/mnt/share/private/storage/downloads/torrents"
 
     # `-r` = Disable recycle bin for shares
     # `-n` = Start the 'nmbd' daemon to advertise the shares
