@@ -3,18 +3,24 @@
 
 ## TODOs
 - *dev-workstation*:
-  - Firefox: After restart  --> not indempotent  ???
+  - ISSUE: Firefox: After restart  --> not indempotent  ???
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
 - *server*:
-  - Switch to btrfs
-    - Backup via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/)
+  - **Switch to btrfs**
     - DEBIAN: Switch from swapfile to swap partition
       - Switch off the swapfile + remove dphys-swapfile: `sudo apt-get purge dphys-swapfile`
       - Activate the swap partition: `sudo swapon /dev/sdaX`
-  - Support for headless system w/ encrypted root partition  (https://github.com/ViRb3/pi-encrypted-boot-ssh, https://docs.ansible.com/ansible/latest/collections/community/crypto/luks_device_module.html)
+
+	- **SECURITY**:
+    - https://christitus.com/linux-security-mistakes/
+      - Fail2ban
+    - Support for headless system w/ encrypted root partition  (https://github.com/ViRb3/pi-encrypted-boot-ssh, https://docs.ansible.com/ansible/latest/collections/community/crypto/luks_device_module.html)
+      - REVISE reboot policy for unattended upgrades: SHOULD BE EMail  (see down below)
 
 - *home_server*:
+  - **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/)
+
   - Containers:
     - CONSIDER:
       - https://hub.docker.com/r/hurlenko/aria2-ariang
@@ -57,10 +63,8 @@
           ```
     - traefik + filebrowser  restart container if config file has changed  ( https://raymii.org/s/tutorials/Ansible_-_Only-do-something-if-another-action-changed.html )
     - pihole idempotent data dir
-	- **SECURITY: https://christitus.com/linux-security-mistakes/**
   - FUTURE WORK:
-    - **EMail** notifications  (use [sendinblue](https://developers.sendinblue.com/docs/send-a-transactional-email) OR [sendgrid](https://sendgrid.com/pricing/); transmission: check whether execution flag is required for `postprocess.sh`)
-    - **Backup** via Borgbackup
+    - **EMail** AGENT  (which supports SMTP)  (use [sendinblue](https://developers.sendinblue.com/docs/send-a-transactional-email) OR [sendgrid](https://sendgrid.com/pricing/); transmission: check whether execution flag is required for `postprocess.sh`)
     - containers:
       - Heimdall
       - Add traefik allowed ip range 4 vault (https://doc.traefik.io/traefik/middlewares/http/forwardauth/)
