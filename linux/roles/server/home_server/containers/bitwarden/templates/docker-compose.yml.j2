@@ -40,6 +40,7 @@ services:
       - SMTP_AUTH_MECHANISM=Plain
       - SMTP_TIMEOUT=15
 {% endif %}
+
     volumes:
       - {{ docker_container_data_basedir }}/{{ container_name }}/:/data
 

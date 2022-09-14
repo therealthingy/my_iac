@@ -76,7 +76,8 @@
       - nmap
       - netcat
       - tcpdump
-      - iproute2                      # NOTE: net-tools is deprecated
+      - iproute2                      # NOTE: package 'net-tools' is deprecated
+      - dnsutils                      # `dig`
       - wget
       - curl
       - iperf
