@@ -2,6 +2,15 @@
 - include_tasks: local-static-ipv6-addr.yml
 
 
+- name: "Add DNS servers to {{ dns_server_1 }} and {{ dns_server_2 }} for interface {{ dns_iface }}  (TODO: revise)"
+  ansible.builtin.blockinfile:
+    block: |
+      interface {{ dns_iface }}
+      static domain_name_servers={{ dns_server_1 }} {{ dns_server_2 }}
+    path: /etc/dhcpcd.conf
+  become: true
+
+
 - name: Ensure data dir exists
   ansible.builtin.file:
     path: '{{ pihole_data_dir }}/{{ item }}'

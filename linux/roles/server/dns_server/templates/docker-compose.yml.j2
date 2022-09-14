@@ -27,13 +27,14 @@ services:
 
     # See: https://github.com/pi-hole/docker-pi-hole#environment-variables
     environment:
+      TZ: {{ timezone }}
+
       PIHOLE_UID: {{ user_uid }}
       WEB_UID: {{ user_gid }}
       PIHOLE_GID: {{ user_uid }}
       WEB_GID: {{ user_gid }}
 
-      TZ: {{ timezone }}
-      PIHOLE_DNS_: {{ pihole_dns_server_1 }};{{ pihole_dns_server_2 }}
+      PIHOLE_DNS_: {{ dns_server_1 }};{{ dns_server_2 }}
       WEBPASSWORD: {{ pihole_web_pw }}
 
       IPv6: "true"
@@ -51,8 +52,8 @@ services:
       - {{ docker_default_network }}
 
     dns:
-      - {{ pihole_dns_server_1 }}
-      - {{ pihole_dns_server_2 }}
+      - {{ dns_server_1 }}
+      - {{ dns_server_2 }}
       #- 127.0.0.1
 
     # Recommended but not required (DHCP needs NET_ADMIN)

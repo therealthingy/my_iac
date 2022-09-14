@@ -7,7 +7,7 @@ pihole_data_dir:   '/home/{{ user_name }}/pihole/data'
 # See: https://hub.docker.com/r/pihole/pihole/tags
 pihole_docker_tag: 2022.09.2
 
-pihole_dns_server_1: 1.1.1.1
-pihole_dns_server_2: 8.8.8.8
+dns_server_1: 1.1.1.1
+dns_server_2: 2606:4700:4700::1111
 
 ipv6_systemd_service_name: add-local-ipv6.service

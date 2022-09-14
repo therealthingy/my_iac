@@ -23,8 +23,8 @@ all:
     dns_servers:
       hosts:
         rpi.lan:
-          ipv6_ula_iface: eth0
-          ipv6_ula_addr: fd00::40b3:8c93:9122:52c7/64
+          dns_iface: eth0
+          dns_ipv6_ula_addr: fd00::40b3:8c93:9122:52c7/64
 
     home_servers:
       hosts:
@@ -62,6 +62,7 @@ all:
           transmission_restart_policy: 'no'
           transmission_vpn_file: /mnt/storage/transmission/etc/vpn-profiles/AirVPN_Switzerland_UDP-443.ovpn
           transmission_storage_path: /mnt/storage/transmission/var/downloads
+          transmission_notifications_hide_filename: True
           filebrowser_container_share_dir: /mnt/storage
           samba_path_own_share: /mnt/storage/share/private
           samba_path_shared_share: /mnt/storage/share/public

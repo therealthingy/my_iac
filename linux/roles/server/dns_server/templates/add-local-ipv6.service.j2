@@ -5,7 +5,7 @@ After=basic.target
 [Service]
 Type=oneshot
 RemainAfterExit=no
-ExecStart=/usr/sbin/ip addr add {{ ipv6_ula_addr }} dev {{ ipv6_ula_iface }}
+ExecStart=/usr/sbin/ip addr add {{ dns_ipv6_ula_addr }} dev {{ dns_iface }}
 
 [Install]
 WantedBy=multi-user.target
