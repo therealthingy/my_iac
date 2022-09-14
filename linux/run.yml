@@ -93,7 +93,7 @@
       tags:
         - portainer
 
-# KEEP IN MIND: Only run samba - OR - filebrowser (otherwise weird behvaior when using simultaneously)
+# KEEP IN MIND: Only run samba - OR - filebrowser (otherwise weird behavior when using simultaneously)
     - role: server/home_server/containers/filebrowser
       tags:
         - filebrowser
