@@ -1,13 +1,14 @@
 ---
-- include_tasks: local-static-ipv6-addr.yml
-
-
-- name: "Add DNS servers to {{ dns_server_1 }} and {{ dns_server_2 }} for interface {{ dns_iface }}  (TODO: revise)"
+- name: "FIX  (TODO: revise): Add DNS servers + static IPv6 addr"
+  # Equivalent command (for adding IPv6 address): `sudo ip addr add {{ dns_ipv6_ula_addr }} dev {{ dns_iface }}`
+  # Validate (show ip addresses): `ip -6 address show dev eth0`
   ansible.builtin.blockinfile:
     block: |
       interface {{ dns_iface }}
+      static ip6_address={{ dns_ipv6_ula_addr }}
       static domain_name_servers={{ dns_server_1 }} {{ dns_server_2 }}
     path: /etc/dhcpcd.conf
+  notify: restart dhcpcd service
   become: true
 
 

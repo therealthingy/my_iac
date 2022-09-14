@@ -1,7 +1,7 @@
 ---
-- name: restart and enable new ipv6 addr service
+- name: restart dhcpcd service
   ansible.builtin.service:
-    name: '{{ ipv6_systemd_service_name }}'
+    name: dhcpcd
     state: restarted
     enabled: true
   become: true
