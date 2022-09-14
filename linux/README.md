@@ -7,15 +7,14 @@
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
 - *server*:
-  - **Switch to btrfs**
+	- **SECURITY**: https://christitus.com/linux-security-mistakes/  (Fail2ban)
+
+  - **Switch to btrfs** (https://mutschler.dev/linux/raspi-btrfs/, btrfs maintenance: https://mutschler.dev/linux/raspi-post-install/,  https://raspberrypi.stackexchange.com/questions/8265/btrfs-root-filesystem-on-raspbian) + encrypted root fs
     - DEBIAN: Switch from swapfile to swap partition
       - Switch off the swapfile + remove dphys-swapfile: `sudo apt-get purge dphys-swapfile`
       - Activate the swap partition: `sudo swapon /dev/sdaX`
-
-	- **SECURITY**:
-    - https://christitus.com/linux-security-mistakes/
-      - Fail2ban
-    - Support for headless system w/ encrypted root partition  (https://github.com/ViRb3/pi-encrypted-boot-ssh, https://docs.ansible.com/ansible/latest/collections/community/crypto/luks_device_module.html)
+      - REMOVE sparse file + add subvolume QUOTA 4 samba share
+    - Support for **headless system** w/ **encrypted root partition**  (https://linuxconfig.org/how-to-unlock-a-luks-volume-on-boot-on-raspberry-pi-os, https://github.com/ViRb3/pi-encrypted-boot-ssh, https://docs.ansible.com/ansible/latest/collections/community/crypto/luks_device_module.html)
       - REVISE reboot policy for unattended upgrades: SHOULD BE EMail  (see down below)
 
 - *home_server*:
@@ -79,17 +78,21 @@
 
 
 ## Setup steps
-* Ansible:
-  * Install "dependencies" for playbook: `ansible-galaxy install -r requirements.yml`
-  * Create local inventory (for local vms): `cp inventory.yml ~/.ansible-inventory.yml`
-* VM &mdash; Initial setup   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
-  * (0.) Distro specific "preparations":
-    * Ubuntu (non Server): **`sudo apt install -y ssh`**
-    * Debian: `su` &rarr; `apt install sudo  &&  /sbin/usermod -aG sudo <username>  &&  /sbin/reboot`
-  * (1.) Generate ssh key using custom script `ssh-key_generate` (add it automatically to `.ssh/config`)
-  * (2.) Add `HostNamne <hostname>`
-  * (3.) **`ssh-copy-id -i ~/.ssh/<identity-file>.pub <user>@<ip>`**
-  * (4.) LATER (after initial ansible run): Add `Port 2233`
+* Install "dependencies" for playbook: **`ansible-galaxy install -r requirements.yml`**
+* OPTIONAL: Add own new sytem in local inventory:
+  * `cp inventory.yml ~/.ansible-inventory.yml`
+  * **New system** &mdash; Initial setup steps   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
+    * (0.) Distro specific "preps":
+      * Ubuntu (non Server): **`sudo apt install -y ssh`**
+      * Debian: `su` &rarr; `apt install sudo  &&  /sbin/usermod -aG sudo <username>  &&  /sbin/reboot`
+    * (1.) SSH login for Ansible:
+      * (1.1.) Generate new ssh key using custom script `ssh-key_generate` (which adds entry automatically to `.ssh/config`)
+      * (1.2.) Add `HostNamne <hostname>`
+      * (1.3.) Copy new key to new system: **`ssh-copy-id -i ~/.ssh/<identity-file>.pub <user>@<ip>`**
+      * (1.4.) IF SSH PORT SHALL BE CHANGED: Add AFTER initial ansible run: `Port 2233`
+
+## RUN Playbook
+* Cache SSH passphrase: `eval `ssh-agent` && ssh-add ~/.ssh/<cert-file>`
 * Exec 4 specific client: **`ansible-playbook --vault-pass-file ~/.ansible-vault run.yml`**
   * Flags:
     * `--ask-vault-pass`  (when not using `--vault-pass-file <file>`)

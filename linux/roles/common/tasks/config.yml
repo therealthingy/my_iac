@@ -1,4 +1,42 @@
 ---
+# Config (refer to https://wiki.archlinux.org/title/locale):
+#   - Files:
+#     - `/etc/locale.gen`: Locales to generate
+#     - `/etc/default/locale`: Set by update-locale
+#     - ~~`/etc/environment`~~
+#   - Commands:
+#     - `locale -a`: Display a list of all available locales
+#     - `sudo locale-gen "en_US.UTF-8"`: Generate locale
+- name: locale-gen
+  block:
+    # NOTE: Equivalent command: `sudo locale-gen en_US.UTF-8`
+    - name: Generate locale {{ locale }}
+      community.general.locale_gen:
+        name: '{{ locale }}'
+        state: present
+      become: true
+
+    - name: "Fix ssh locale issue  (causing '<command>: Cannot set LC_CTYPE to default locale: No such file or directory')"
+      ansible.builtin.lineinfile:
+        dest: /etc/default/locale
+        regexp: '{{ common_locale_fix_item.regex }}'
+        line: '{{ common_locale_fix_item.line }}'
+        state: present
+      with_items:
+        - { regex: '^LANG="?{{ locale }}"?$', line: 'LANG={{ locale }}' }
+        - { regex: '^LC_ALL="?{{ locale }}"?$', line: 'LC_ALL={{ locale }}' }
+      loop_control:
+        loop_var: common_locale_fix_item
+      become: true
+
+
+# Check result: `sudo dpkg-reconfigure tzdata`
+- name: Set timezone to {{ timezone }}
+  community.general.timezone:
+    name: '{{ timezone }}'
+  become: true
+
+
 - name: Set hostname
   block:
     - name: Get current hostname
@@ -6,7 +44,7 @@
       register: result_hostname
       changed_when: false
 
-    - name: Set new hostname
+    - name: "Set new hostname '{{ hostname }}'"
       ansible.builtin.hostname:
         name: '{{ hostname }}'
       become: true
@@ -39,3 +77,4 @@
     mode: 0440
     validate: visudo -cf %s
   become: true
+  when: passwordless_sudo is not defined or passwordless_sudo

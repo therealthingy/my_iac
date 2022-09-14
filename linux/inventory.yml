@@ -36,12 +36,12 @@ all:
 #            smtp_username: xxx
 #            smtp_password: xxx
 #            system_admin_mail: xxx@xxx.xxx
+          timezone: Europe/Berlin
           domainname: rpi.lan
           hostname: '{{ domainname }}'
-          timezone: Europe/Berlin
           autoupdate_reboot_enabled: true
           docker_default_network: reverse_proxy
-          reverse_proxy_certs_dir: /mnt/storage/traefik
+          reverse_proxy_certs_dir: /mnt/storage/traefik          # TODO: REVISE & MV EVERYTHING TO ENCRYPTED ROOT PARTITION
           reverse_proxy_restart_policy: 'no'
           pihole_web_pw: !vault |
                     $ANSIBLE_VAULT;1.1;AES256

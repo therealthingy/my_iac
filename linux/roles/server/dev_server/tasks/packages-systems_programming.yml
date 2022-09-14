@@ -8,7 +8,7 @@
       - cmake
       - cmake-curses-gui
       # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
-      - binutils
+      - binutils              # Contains `readelf`, ...
       - valgrind
       # Libs
       - libomp-dev

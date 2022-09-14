@@ -90,7 +90,6 @@
       - sudo                          # (NOTE: Only for documentation purpose, since prerequisite for this playbook)
       - util-linux                    # Most likely already installed (contains MANY utilities)
       - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
-      - initramfs-tools
       - ssh
       - mosh
       - btrfs-progs
