@@ -34,7 +34,7 @@ services:
       PIHOLE_GID: {{ user_uid }}
       WEB_GID: {{ user_gid }}
 
-      PIHOLE_DNS_: {{ dns_server_1 }};{{ dns_server_2 }}
+      PIHOLE_DNS_: {{ dns_server1_ipv4 }};{{ dns_server1_ipv6 }}
       WEBPASSWORD: {{ pihole_web_pw }}
 
       IPv6: "true"
@@ -52,8 +52,8 @@ services:
       - {{ docker_default_network }}
 
     dns:
-      - {{ dns_server_1 }}
-      - {{ dns_server_2 }}
+      - {{ dns_server1_ipv4 }}
+      - {{ dns_server1_ipv6 }}
       #- 127.0.0.1
 
     # Recommended but not required (DHCP needs NET_ADMIN)
