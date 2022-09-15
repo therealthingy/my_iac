@@ -22,16 +22,17 @@
 
   - Containers:
     - **NETWORKING**  (DEBUG DOCKER images: https://github.com/nicolaka/netshoot):
-      - Convert *iptables* 2 *nftables*  (https://www.unixtutorial.org/migrate-iptables-to-nftables-in-centos-8/)
-      - ISSUE: pihole -- **Request ipv6 addresses != Response ipv6 address**
+      - ISSUE: pihole -- **DESTINATION ipv6 addresses (of request) != SOURCE ipv6 address (of response)**
           ```
           > dig wikipedia.com @fd00::40b3:8c93:9122:52c7
           ;; reply from unexpected source: fd00::8656:3dd3:f10e:116d#53, expected fd00::40b3:8c93:9122:52c7#53
           ```
-        - SOLUTION: iptables MASQUERADE picks random IPv6 address -- either allow only 1 address OR use SNAT instead w/ to-addr ...
+        - SOLUTION: iptables MASQUERADE picks random IPv6 address -- either allow only 1 address OR ~~use SNAT instead w/ to-addr~~ (doesn't work since public IP addr will be overwritten !!) ...
           - iptables ??
 
-    - traefik + filebrowser  restart container iff config file has changed AND container is ALREADY RUNNING  ( https://raymii.org/s/tutorials/Ansible_-_Only-do-something-if-another-action-changed.html )
+      - Convert *iptables* 2 *nftables*  (https://www.unixtutorial.org/migrate-iptables-to-nftables-in-centos-8/)
+
+    - traefik + filebrowser: restart container iff config file has changed AND container is ALREADY RUNNING  ( https://raymii.org/s/tutorials/Ansible_-_Only-do-something-if-another-action-changed.html )
     - pihole idempotent data dir
 
   - FUTURE WORK:
