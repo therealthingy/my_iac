@@ -21,24 +21,22 @@
   - **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/)
 
   - Containers:
-    - **NETWORKING**:
-      - Convert *iptables* 2 *nftables*
-      - ISSUE: **Request ipv6 addresses != Response ipv6 address**
-        - DEBUG DOCKER images: https://github.com/nicolaka/netshoot
-        - SOLUTION:
-          - by either configuring statically + disabling dhcpd (denyinterfaces; https://forums.raspberrypi.com/viewtopic.php?t=178387;  https://libredd.it/r/ipv6/comments/uvjbif/setting_a_ula_it_just_worked/)
+    - **NETWORKING**  (DEBUG DOCKER images: https://github.com/nicolaka/netshoot):
+      - Convert *iptables* 2 *nftables*  (https://www.unixtutorial.org/migrate-iptables-to-nftables-in-centos-8/)
+      - ISSUE: pihole -- **Request ipv6 addresses != Response ipv6 address**
+          ```
+          > dig wikipedia.com @fd00::40b3:8c93:9122:52c7
+          ;; reply from unexpected source: fd00::8656:3dd3:f10e:116d#53, expected fd00::40b3:8c93:9122:52c7#53
+          ```
+        - SOLUTION: iptables MASQUERADE picks random IPv6 address -- either allow only 1 address OR use SNAT instead w/ to-addr ...
           - iptables ??
-        - ISSUEs:
-          - pihole IPv6:
-            ```
-            > dig google.com @fd00::40b3:8c93:9122:52c7
-            ;; reply from unexpected source: fd00::8656:3dd3:f10e:116d#53, expected fd00::40b3:8c93:9122:52c7#53
-            ```
-    - traefik + filebrowser  restart container if config file has changed  ( https://raymii.org/s/tutorials/Ansible_-_Only-do-something-if-another-action-changed.html )
+
+    - traefik + filebrowser  restart container iff config file has changed AND container is ALREADY RUNNING  ( https://raymii.org/s/tutorials/Ansible_-_Only-do-something-if-another-action-changed.html )
     - pihole idempotent data dir
+
   - FUTURE WORK:
-    - **EMail** AGENT  (which supports SMTP)  (use [sendinblue](https://developers.sendinblue.com/docs/send-a-transactional-email) OR [sendgrid](https://sendgrid.com/pricing/))
-    - containers:
+    - **EMail** Notifications   (use Transactional Mail provider which supports SMTP, e.g.: [sendinblue](https://developers.sendinblue.com/docs/send-a-transactional-email) OR [sendgrid](https://sendgrid.com/pricing/))
+    - Services:
       - https://hub.docker.com/r/hurlenko/aria2-ariang
       - https://hub.docker.com/r/dyonr/jackettvpn/
       - Heimdall

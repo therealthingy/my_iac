@@ -17,8 +17,6 @@ services:
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      # Docker login
-      #- ${HOME}/.docker/config.json:/config.json
 
     networks:
       - {{ docker_default_network }}

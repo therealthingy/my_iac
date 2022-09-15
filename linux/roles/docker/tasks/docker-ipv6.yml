@@ -23,33 +23,41 @@
   become: false
 
 
-# Fix routing (since we use internally private IPv6 addresses which are NOT routable)
-- name: Install iptables
-  ansible.builtin.apt:
-    name:
-      - iptables
-      - iptables-persistent
-    state: present
-  become: true
 
-# Equivalent command  (+ persist):
-#   `ip6tables -t nat -A POSTROUTING -s 2001:db8:1::/64 ! -o docker0 -j MASQUERADE`
-#   `sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"`
-# Validation: `docker run --network=reverse_proxy --rm -t busybox ping6 -c 4 google.com`
-- name: Copy iptable config tables
-  ansible.builtin.copy:
-    content: |
-      *nat
-      :PREROUTING ACCEPT [3537:366712]
-      :INPUT ACCEPT [1428:179948]
-      :OUTPUT ACCEPT [51:5820]
-      :POSTROUTING ACCEPT [46:5420]
-      -A POSTROUTING -s 2001:db8:1::/64 ! -o docker0 -j MASQUERADE
-      -A POSTROUTING -s 2001:db8:abc1::/64 ! -o docker0 -j MASQUERADE
-      COMMIT
-    dest: /etc/iptables/rules.v6
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart networking daemon
-  become: true
+- name: Configure IPv6 NAT
+  block:
+    # Fix routing (since we use internally private IPv6 addresses which are NOT routable)
+    - name: Install iptables
+      ansible.builtin.apt:
+        name:
+          - iptables
+          - iptables-persistent
+        state: present
+      become: true
+
+    # Equivalent command  (+ persist):
+    #   `ip6tables -t nat -A POSTROUTING  -s 2001:db8:1::/64 ! -o docker0     -j MASQUERADE`   (reference: https://linux.die.net/man/8/ip6tables)
+    #               table  Append <chain>  Source               Out-Interface  Jump  (target, i.e., what to do if the packet matches it ??)
+    #   INTERPRETATION: Add to table nat the POSTROUTING rule: Set
+    #   `sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"`
+    # Validation:
+    #   Whether rule was applied: `sudo ip6tables -t nat -n -L`
+    #   Whether 'correct' response ip address is used  (otherwise request- & reponse ip won't match): `ip route get <dst-in-network>`
+    #   Docker container connectivity: `docker run --network=reverse_proxy --rm -t busybox ping6 -c 4 google.com`
+    - name: Copy iptable config tables
+      ansible.builtin.copy:
+        content: |
+          *nat
+          :PREROUTING ACCEPT [3537:366712]
+          :INPUT ACCEPT [1428:179948]
+          :OUTPUT ACCEPT [51:5820]
+          :POSTROUTING ACCEPT [46:5420]
+          -A POSTROUTING -s 2001:db8:1::/64 ! -o docker0 -j MASQUERADE
+          -A POSTROUTING -s 2001:db8:abc1::/64 ! -o docker0 -j MASQUERADE
+          COMMIT
+        dest: /etc/iptables/rules.v6
+        owner: root
+        group: root
+        mode: 0644
+      notify: restart networking daemon
+      become: true
