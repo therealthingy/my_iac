@@ -24,7 +24,7 @@
 
 
 
-# Fix routing  (since we use internally private IPv6 addresses which are NOT routable)
+# TODO: WORKAROUND -- Fix routing:  Currently IPv6 w/ NAT (https://blog.widodh.nl/2017/04/docker-containers-with-ipv6-behind-nat/) since network prefix (provided by ISP) changes constantly :/
 - name: "Configure IPv6 NAT  (TODO: REVISE)"
   block:
     - name: Install iptables

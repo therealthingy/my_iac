@@ -29,7 +29,7 @@
           ```
         - SOLUTION: iptables MASQUERADE picks random IPv6 address -- either allow only 1 address OR ~~use SNAT instead w/ to-addr~~ (doesn't work since public IP addr will be overwritten !!) ...
 
-      - Convert *iptables* 2 *nftables*  (https://www.unixtutorial.org/migrate-iptables-to-nftables-in-centos-8/)
+      - Convert *iptables* 2 *nftables*  (https://www.unixtutorial.org/migrate-iptables-to-nftables-in-centos-8/;           VALIDATION: `nft list ruleset`; SERVICE-NAME: nftables)
 
     - filebrowser: restart container iff config file has changed AND container is ALREADY RUNNING  ( see traefik, BUT ONLY IF CONFIG FILE HAS CHANGED )
     - pihole idempotent data dir
