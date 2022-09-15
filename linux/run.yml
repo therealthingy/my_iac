@@ -81,7 +81,6 @@
     docker_container_data_basedir: /home/{{ user_name }}/homeserver_data/container_data
     docker_container_config_basedir: /home/{{ user_name }}/homeserver_config/container_config
   roles:
-    - role: server/home_server/base
   # -- Docker containers --
     - role: server/home_server/containers/bitwarden
       tags:

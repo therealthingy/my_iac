@@ -76,3 +76,10 @@
     #   TODO: Execute only once  ---- PROBLEM: reset_connection doesn't support conditionals.
     - name: Reset connection so docker group is picked up.
       meta: reset_connection
+
+
+
+# ------------------------------------------------------------------------------------------------------
+- name: Setup IPv6 for Docker
+  ansible.builtin.include_tasks: docker-ipv6.yml
+  when: "'dns_servers' in group_names  or  'home_servers' in group_names"
