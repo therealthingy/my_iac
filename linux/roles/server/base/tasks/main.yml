@@ -8,7 +8,7 @@
   become: true
 
 
-- include_tasks: config-unattended_updates.yml
+- ansible.builtin.include_tasks: config-unattended_updates.yml
 
 
 - name: Install login system stats script

@@ -60,7 +60,7 @@
   when: hostname is defined
 
 
-- include_tasks: '{{ included_common_config_task }}'
+- ansible.builtin.include_tasks: '{{ included_common_config_task }}'
   loop:
     - config-grub.yml
     - config-ssh.yml

@@ -62,7 +62,7 @@
     - traefik + filebrowser  restart container if config file has changed  ( https://raymii.org/s/tutorials/Ansible_-_Only-do-something-if-another-action-changed.html )
     - pihole idempotent data dir
   - FUTURE WORK:
-    - **EMail** AGENT  (which supports SMTP)  (use [sendinblue](https://developers.sendinblue.com/docs/send-a-transactional-email) OR [sendgrid](https://sendgrid.com/pricing/); transmission: check whether execution flag is required for `postprocess.sh`)
+    - **EMail** AGENT  (which supports SMTP)  (use [sendinblue](https://developers.sendinblue.com/docs/send-a-transactional-email) OR [sendgrid](https://sendgrid.com/pricing/))
     - containers:
       - https://hub.docker.com/r/hurlenko/aria2-ariang
       - https://hub.docker.com/r/dyonr/jackettvpn/

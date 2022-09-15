@@ -79,7 +79,7 @@
 # ----------------------------------------------------------------------------------------------------------
 
 
-- include_tasks: '{{ included_common_task }}'
+- ansible.builtin.include_tasks: '{{ included_common_task }}'
   loop:
     - config.yml
     - packages.yml

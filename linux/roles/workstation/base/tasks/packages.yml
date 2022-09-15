@@ -67,7 +67,7 @@
     state: present
   become: true
 
-- include_tasks: '{{ item }}'
+- ansible.builtin.include_tasks: '{{ item }}'
   loop:
 #    - package-kitty.yml
     - package-firefox.yml

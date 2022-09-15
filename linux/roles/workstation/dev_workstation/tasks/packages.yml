@@ -1,5 +1,5 @@
 ---
-- include_tasks: ../../../server/dev_server/tasks/packages.yml
+- ansible.builtin.include_tasks: ../../../server/dev_server/tasks/packages.yml
 
 - name: Install networking tools
   ansible.builtin.apt:

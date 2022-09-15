@@ -1,2 +1,2 @@
 ---
-- include_tasks: packages.yml
+- ansible.builtin.include_tasks: packages.yml

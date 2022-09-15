@@ -1,5 +1,5 @@
 ---
-- include_tasks: '{{ item }}'
+- ansible.builtin.include_tasks: '{{ item }}'
   loop:
     - config-ui.yml
     - config-firefox.yml

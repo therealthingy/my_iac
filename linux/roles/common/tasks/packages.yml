@@ -142,7 +142,7 @@
 #  become: false
 
 
-- include_tasks: '{{ item }}'
+- ansible.builtin.include_tasks: '{{ item }}'
   loop:
     - package-python.yml
     - package-tmux.yml

@@ -1,5 +1,5 @@
 ---
-- include_tasks: '{{ included_workstation_task }}'
+- ansible.builtin.include_tasks: '{{ included_workstation_task }}'
   loop:
     - packages.yml
     - config-ui.yml
