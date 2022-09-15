@@ -21,11 +21,9 @@
   - **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/)
 
   - Containers:
-    - **REVISE NETWORKING**:
-      - ASSIGN **STATIC DNS SERVERS**  (i.e., **ignore advertised local DNS servers** for DNS Server host; SEE: `/etc/dhcpcd.conf`)
-        - VERFIY IN bitwarden container: `docker container exec bitwarden  nslookup wikipedia.com`
-
-      - ISSUE: **2 ipv6 addresses**
+    - **NETWORKING**:
+      - Convert iptables 2 nftables
+      - ISSUE: **Request ipv6 addresses != Response ipv6 address**
         - DEBUG DOCKER images: https://github.com/nicolaka/netshoot
         - SOLUTION:
           - by either configuring statically + disabling dhcpd (denyinterfaces; https://forums.raspberrypi.com/viewtopic.php?t=178387;  https://libredd.it/r/ipv6/comments/uvjbif/setting_a_ula_it_just_worked/)
