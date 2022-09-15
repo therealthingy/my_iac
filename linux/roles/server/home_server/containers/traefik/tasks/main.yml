@@ -25,23 +25,28 @@
 
 - name: Copy config file
   ansible.builtin.copy:
-    src: 'dynamic-conf.yml'
+    src: dynamic-conf.yml
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/dynamic-conf.yml'
     owner: '{{ user_name }}'
     group: '{{ user_name }}'
     mode: 0644
+  register: result_config_file
   become: false
+
+- name: Set updated config flag
+  ansible.builtin.set_fact:
+    config_has_been_updated: '{{ true if result_config_file.changed else false }}'
 
 - name: Copy docker-compose file
   ansible.builtin.template:
     src: docker-compose.yml.j2
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
     mode: 0640
-  #notify: Restart pi-hole
   become: false
 
 - name: Ensure container is running
   community.docker.docker_compose:
     project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'
     build: false
+    restarted: '{{ config_has_been_updated }}'
   become: false

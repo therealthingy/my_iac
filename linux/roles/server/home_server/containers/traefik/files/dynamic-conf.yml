@@ -18,6 +18,7 @@ http:
         stsIncludeSubdomains: true
         stsPreload: true
 
+
 # - BasicAuth
 #    globalAuth:
 #      basicAuth:
