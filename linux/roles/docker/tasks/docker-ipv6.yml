@@ -24,9 +24,9 @@
 
 
 
-- name: Configure IPv6 NAT
+# Fix routing  (since we use internally private IPv6 addresses which are NOT routable)
+- name: "Configure IPv6 NAT  (TODO: REVISE)"
   block:
-    # Fix routing (since we use internally private IPv6 addresses which are NOT routable)
     - name: Install iptables
       ansible.builtin.apt:
         name:
@@ -36,10 +36,9 @@
       become: true
 
     # Equivalent command  (+ persist):
-    #   `ip6tables -t nat -A POSTROUTING  -s 2001:db8:1::/64 ! -o docker0     -j MASQUERADE`   (reference: https://linux.die.net/man/8/ip6tables)
-    #               table  Append <chain>  Source               Out-Interface  Jump  (target, i.e., what to do if the packet matches it ??)
-    #   INTERPRETATION: Add to table nat the POSTROUTING rule: Set
-    #   `sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"`
+    #   Apply rules:`ip6tables -t nat -A POSTROUTING  -s 2001:db8:1::/64 ! -o docker0     -j MASQUERADE`   (reference: https://linux.die.net/man/8/ip6tables)
+    #                           table  Append <chain>  Source               Out-Interface  Jump  (target, i.e., what to do if the packet matches it ??)
+    #   Persist rules: `sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"`
     # Validation:
     #   Whether rule was applied: `sudo ip6tables -t nat -n -L`
     #   Whether 'correct' response ip address is used  (otherwise request- & reponse ip won't match): `ip route get <dst-in-network>`

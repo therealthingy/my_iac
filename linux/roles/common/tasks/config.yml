@@ -68,7 +68,7 @@
     loop_var: included_common_config_task
 
 
-- name: Enable passwordless sudo for {{ user_name }}
+- name: "Enable passwordless sudo for '{{ user_name }}'"
   ansible.builtin.copy:
     content: '{{ user_name }} ALL=(ALL) NOPASSWD: ALL'
     dest: '/etc/sudoers.d/010_{{ user_name }}-nopasswd'
