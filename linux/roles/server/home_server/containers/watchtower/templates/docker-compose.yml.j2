@@ -31,8 +31,8 @@ services:
       - WATCHTOWER_LABEL_ENABLE=true
 
 {% if notifications_mail_config is defined %}
-      - WATCHTOWER_NOTIFICATIONS=email
       # - Emailing
+      - WATCHTOWER_NOTIFICATIONS=email
       - WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ notifications_mail_config.smtp_host }}
       - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT={{ notifications_mail_config.smtp_port }}
       - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER={{ notifications_mail_config.smtp_username }}
@@ -42,5 +42,4 @@ services:
       - WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG={{ inventory_hostname }} maintenance
 {% endif %}
 
-    # command: --run-once
-    command: --schedule "0 4 * * * SUN"
+    command: --schedule "0 4 * * * SUN"       # Debugging: `--run-once`
