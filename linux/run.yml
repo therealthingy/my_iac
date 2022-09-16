@@ -12,13 +12,13 @@
   roles:
     - role: hw_specific/rpi
       tags:
-        - rpi
+        - hw_specific
 
 - hosts: vmware_vms
   roles:
     - role: hw_specific/vmware
       tags:
-        - vmware
+        - hw_specific
 
 
 # --  "System specific"  --
