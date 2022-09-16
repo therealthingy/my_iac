@@ -63,7 +63,7 @@ services:
 
 
     labels:
-      - com.centurylinklabs.watchtower.enable=false
+      - com.centurylinklabs.watchtower.monitor-only=true
 {% if 'home_servers' in group_names %}
       - traefik.enable=true
       - traefik.http.services.{{ container_name }}_service.loadbalancer.server.port=80

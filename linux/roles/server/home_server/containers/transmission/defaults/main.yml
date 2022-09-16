@@ -10,5 +10,3 @@ transmission_max_parallel_downloads: 10
 
 #                OG: kettu
 transmission_web_ui: combustion
-
-container_enable_watchtower: "true"
