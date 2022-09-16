@@ -15,7 +15,7 @@
               # URL on addons.mozilla.org
               - startpage-private-search
               - ublock-origin
-              - i-dont-care-about-cookies
+              - consent-o-matic
             # Privacy friendly settings reference: https://github.com/arkenfox/user.js/blob/master/user.js
             # TODO: Rmv 'Import bookmarks from another browser to Firefox' from bookmarks bar  (`browser.uiCustomization.state` -> ""PersonalToolbar":["import-button","personal-bookmarks"]")
             preferences:
