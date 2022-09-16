@@ -31,7 +31,7 @@
 
 
 # Check result: `sudo dpkg-reconfigure tzdata`
-- name: Set timezone to {{ timezone }}
+- name: "Set timezone to '{{ timezone }}'"
   community.general.timezone:
     name: '{{ timezone }}'
   become: true
@@ -44,7 +44,7 @@
       register: result_hostname
       changed_when: false
 
-    - name: "Set new hostname '{{ hostname }}'"
+    - name: "Set hostname to '{{ hostname }}'"
       ansible.builtin.hostname:
         name: '{{ hostname }}'
       become: true

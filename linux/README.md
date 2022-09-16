@@ -2,6 +2,12 @@
 
 
 ## TODOs
+- General:
+  - **Change** all **networking** to *NetworkManager*  (packages: network-manager, nmcli)  using ***[netplan](https://netplan.io/)***
+
+
+
+
 - *dev-workstation*:
   - ISSUE: Firefox: After restart  --> not indempotent  ???
   - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
@@ -53,7 +59,7 @@
 
 ## Setup steps
 * Install "dependencies" for playbook: **`ansible-galaxy install -r requirements.yml`**
-* OPTIONAL: Add own new sytem in local inventory:
+* OPTIONAL: Add own systems to be managed in dedicated local inventory:
   * `cp inventory.yml ~/.ansible-inventory.yml`
   * **New system** &mdash; Initial setup steps   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
     * (0.) Distro specific "preps":
@@ -72,8 +78,8 @@
     * `--ask-vault-pass`  (when not using `--vault-pass-file <file>`)
     * **`--ask-become-pass`**  (may be required for 1st ansible run (if not set as host var '`ansible_sudo_pass`' in inventory), but not afterwards (due to passwordless sudo))
     * **`--tags "<tag>,"`: Target only tagged tasks**
-    * **`--limit "host1,host2,host3,host4"`: Only specified hosts**
-    * **`-i "xxx.xxx.xxx.xxx,"`: Inventory (list ips/hostnames OR file)**
+    * **`--limit "host1,host2,..."`: Only specified hosts**
+    * **`-i <inventory-file>`: Inventory (list ips/hostnames OR file)**
     * `-e "<key>=<value>"`: Overwrite vars
     * `--list-hosts`: Only list matching hosts
 
