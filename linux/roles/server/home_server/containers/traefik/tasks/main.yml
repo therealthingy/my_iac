@@ -1,12 +1,10 @@
 ---
 - name: Install cert-gen script
-  ansible.builtin.copy:
-    src: bin/ssl-certgen
-    dest: /usr/bin/ssl-certgen
-    owner: root
-    group: root
-    mode: 0644
-  become: true
+  ansible.builtin.template:
+    src: bin/ssl-certgen.j2
+    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/ssl-certgen'
+    mode: 0755
+  become: false
 
 
 #- name: Ensure data dir exists                # Will only contain certs ..
@@ -26,12 +24,9 @@
 - name: Update config
   block:
     - name: Copy config file
-      ansible.builtin.copy:
-        src: dynamic-conf.yml
+      ansible.builtin.template:
+        src: dynamic-conf.yml.j2
         dest: '{{ docker_container_config_basedir }}/{{ container_name }}/dynamic-conf.yml'
-        owner: '{{ user_name }}'
-        group: '{{ user_name }}'
-        mode: 0644
       register: result_config_file
 
     - name: Set updated config flag

@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
-# NOTE: THERE'S ALSO `/usr/lib/ssl/misc/CA.pl`, which basically does the same stuff
+# NOTE: THERE'S ALSO `/usr/lib/ssl/misc/CA.pl`, which basically DOES THE SAME
 
 
 # --------------------- ADAPT 2 OWN NEEDS ---------------------
 # --  DISTINGUISHED NAME OF CERTs  --
-DIST_NAME_C="DE"
-DIST_NAME_ST="BW"
-DIST_NAME_L="Urbach"
-DIST_NAME_O="garyGeeIOT"
-DIST_NAME_EMAIL="therealthingy95@gmail.com"
+DIST_NAME_C="{{ reverse_proxy_sslgen_country }}"
+DIST_NAME_ST="{{ reverse_proxy_sslgen_state }}"
+DIST_NAME_L="{{ reverse_proxy_sslgen_locality }}"
+DIST_NAME_O="{{ reverse_proxy_sslgen_orga }}"
+DIST_NAME_EMAIL="{{ reverse_proxy_sslgen_mail }}"
 DIST_CA_CN="${DIST_NAME_O} CA"
-DIST_CERT_CN="*.rpi.lan"
+DIST_CERT_CN="*.{{ domainname }}"
 
 
 # --  SEE `openssl ecparam -list_curves`  --
