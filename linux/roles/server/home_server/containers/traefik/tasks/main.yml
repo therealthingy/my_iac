@@ -23,19 +23,21 @@
     mode: 0755
   become: false
 
-- name: Copy config file
-  ansible.builtin.copy:
-    src: dynamic-conf.yml
-    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/dynamic-conf.yml'
-    owner: '{{ user_name }}'
-    group: '{{ user_name }}'
-    mode: 0644
-  register: result_config_file
-  become: false
+- name: Update config
+  block:
+    - name: Copy config file
+      ansible.builtin.copy:
+        src: dynamic-conf.yml
+        dest: '{{ docker_container_config_basedir }}/{{ container_name }}/dynamic-conf.yml'
+        owner: '{{ user_name }}'
+        group: '{{ user_name }}'
+        mode: 0644
+      register: result_config_file
 
-- name: Set updated config flag
-  ansible.builtin.set_fact:
-    config_has_been_updated: '{{ true if result_config_file.changed else false }}'
+    - name: Set updated config flag
+      ansible.builtin.set_fact:
+        config_has_been_updated: '{{ true if result_config_file.changed else false }}'
+  become: false
 
 - name: Copy docker-compose file
   ansible.builtin.template:
