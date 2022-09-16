@@ -1,8 +1,9 @@
 ---
-- name: 'Delete default pi user passwordless file  (TODO: Check whether newer versions still use username "pi" in filename)'
+- name: '[Raspberry Pi OS] Delete default pi user passwordless file  (TODO: Check whether newer versions still use username "pi" in filename)'
   ansible.builtin.file:
     state: absent
     path: /etc/sudoers.d/010_pi-nopasswd
+  when: ansible_facts.distribution == 'Debian'
   become: true
 
 
