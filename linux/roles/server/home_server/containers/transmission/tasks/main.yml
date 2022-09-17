@@ -21,3 +21,4 @@
   become: false
 
 # TODO: Create container, but don't start it  (i.e., `--no-start`; NOTE: not supported currently, see: https://docs.ansible.com/ansible/latest/collections/community/docker/docker_compose_module.html)
+#  IMPORANT: Container must be restarted if script changes  (!!  otherwise continue will conintue to use the old one  !!)
