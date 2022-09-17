@@ -24,7 +24,7 @@ OUTPUT=$(curl \
   -sS    2>&1 >/dev/null)
 
 if [ $? -ne 0 ]; then
-    echo "Failed at sending mail   ($OUTPUT)"
+    echo "Failed sending mail   ($OUTPUT)"
     exit 1
 fi
 
