@@ -19,3 +19,5 @@
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
     mode: 0640
   become: false
+
+# TODO: Create container, but don't start it  (i.e., `--no-start`; NOTE: not supported currently, see: https://docs.ansible.com/ansible/latest/collections/community/docker/docker_compose_module.html)

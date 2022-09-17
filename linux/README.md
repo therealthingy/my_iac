@@ -41,7 +41,7 @@
     - pihole idempotent data dir
 
   - FUTURE WORK:
-    - **EMail** Notifications   (use Transactional Mail provider which supports SMTP, e.g.: [sendinblue](https://developers.sendinblue.com/docs/send-a-transactional-email) OR [sendgrid](https://sendgrid.com/pricing/))
+    - **Switch Notifications to a service**  (e.g., by using https://github.com/caronc/apprise)
     - Services:
       - https://hub.docker.com/r/hurlenko/aria2-ariang
       - https://hub.docker.com/r/dyonr/jackettvpn/
