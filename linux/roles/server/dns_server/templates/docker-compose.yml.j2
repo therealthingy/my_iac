@@ -11,7 +11,7 @@ services:
     container_name: {{ container_name }}
 # TODO: `domainname` seems to prevent the WEB-UI from loading under Browsers on Windows  ??
 #    domainname: {{ domainname }}
-    image: pihole/pihole:{{ pihole_docker_tag }}
+    image: pihole/pihole
     restart: always
 
     ports:

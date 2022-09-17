@@ -4,8 +4,6 @@ container_name: pihole
 pihole_config_dir: '/home/{{ user_name }}/pihole/'
 pihole_data_dir:   '/home/{{ user_name }}/pihole/data'
 
-pihole_docker_tag: 2022.09.3               # See: https://hub.docker.com/r/pihole/pihole/tags
-
 
 # DNS Server 1: Cloudflare  (https://1.1.1.1/help)
 dns_server1_ipv4: 1.1.1.1
