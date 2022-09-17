@@ -7,11 +7,11 @@
 TMP_MAILFILE=$(mktemp -t transmission.XXXXXXXXXX)
 
 cat <<- EOF > "$TMP_MAILFILE"
-From: "Transmission" <{{ notifications_mail_config.smtp_username }}>
+From: "T_BT" <{{ notifications_mail_config.smtp_username }}>
 To: "Transmission Admin" <{{ notifications_mail_config.system_admin_mail }}>
-Subject: Finished downloading torrent
+Subject: Finished job
 
-Transmission has finished downloading "{{ '$TR_TORRENT_NAME' if not transmission_notifications_hide_filename else 'xxxxxxx' }}" on ${TR_TIME_LOCALTIME}."
+Finished BT "{{ '$TR_TORRENT_NAME' if not transmission_notifications_hide_filename else 'xxxxxxx' }}"."
 EOF
 
 # Semd mail & cleanup
