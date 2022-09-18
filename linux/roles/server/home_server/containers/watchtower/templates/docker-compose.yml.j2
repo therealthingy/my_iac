@@ -23,12 +23,12 @@ services:
 
     environment:
       - TZ={{ timezone }}
+
       - WATCHTOWER_CLEANUP=true
-      # - WATCHTOWER_SCHEDULE="0 4 * * * SUN"
-      # Filter by enable label
-      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_LABEL_ENABLE=true                            # Filter by enable label
 
 {% if notifications_mail_config is defined %}
+      #- WATCHTOWER_NO_STARTUP_MESSAGE=true
       # - Emailing
       - WATCHTOWER_NOTIFICATIONS=email
       - WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ notifications_mail_config.smtp_host }}
@@ -37,7 +37,9 @@ services:
       - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD={{ notifications_mail_config.smtp_password }}
       - WATCHTOWER_NOTIFICATION_EMAIL_FROM={{ notifications_mail_config.smtp_username }}
       - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail_config.system_admin_mail }}
-      - WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG={{ inventory_hostname }} maintenance
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG={{ inventory_hostname }}
 {% endif %}
 
-    command: --schedule "0 4 * * * SUN"       # Debugging: `--run-once`
+      # - WATCHTOWER_SCHEDULE="{{ cron_schedule }}"
+
+    command: --schedule "{{ cron_schedule }}"                   # TESTING: `--run-once`
