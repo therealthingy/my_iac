@@ -8,10 +8,10 @@ TMP_MAILFILE=$(mktemp -t transmission.XXXXXXXXXX)
 
 cat <<- EOF > "$TMP_MAILFILE"
 From: "T_BT" <{{ notifications_mail_config.smtp_username }}>
-To: "Transmission Admin" <{{ notifications_mail_config.system_admin_mail }}>
+To: "T_BT User" <{{ notifications_mail_config.system_admin_mail }}>
 Subject: Finished job
 
-Finished BT "{{ '$TR_TORRENT_NAME' if not transmission_notifications_hide_filename else 'xxxxxxx' }}"."
+Finished BT '{{ '$TR_TORRENT_NAME' if not transmission_notifications_hide_filename else '$(echo $TR_TORRENT_NAME | sed \'s/[^ ]/x/g\')' }}' on $TR_TIME_LOCALTIME.
 EOF
 
 # Semd mail & cleanup
