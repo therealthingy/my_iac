@@ -13,6 +13,24 @@
     - rpi-fan-pwm.yml
 
 
+- name: "Disable LEDs  (NOTE: WILL TAKE EFFECT AFTER SYSTEM REBOOT !!)"
+  ansible.builtin.blockinfile:
+    insertafter: '^[pi4]$'
+    block: |
+      # Disable Activity LED
+      dtparam=act_led_trigger=none
+      dtparam=act_led_activelow=off
+
+      # Disable PWR LED  (currently not working properly  ??, see: https://stackoverflow.com/a/71492090)
+      dtparam=pwr_led_trigger=default-on
+      dtparam=pwr_led_activelow=off
+
+      # Disable ethernet port (ACT & LNK) LEDs
+      dtparam=eth_led0=4
+      dtparam=eth_led1=4
+    path: /boot/config.txt
+  become: true
+
 
 - name: '[Ubuntu] Pi specific SW'
   ansible.builtin.apt:
