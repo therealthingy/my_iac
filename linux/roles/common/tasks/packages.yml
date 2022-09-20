@@ -13,9 +13,11 @@
 - name: Install file general purpose tools
   ansible.builtin.apt:
     name:
+      - libc-bin                      # Collection of helper programs, so called binary tools, that work in conjunction with libc  (`iconv`, ..)
       - file
       - tree
       - rename
+      - detox                         # Renames files to make them easier to work w/ under Unix & related OSes
       - fdupes
       - dos2unix
       - rsync
@@ -89,7 +91,7 @@
   ansible.builtin.apt:
     name:
       - sudo                          # (NOTE: Only for documentation purpose, since prerequisite for this playbook)
-      - util-linux                    # Most likely already installed (contains MANY utilities)
+      - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu``, `lspci``, ..)
       - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
       - ssh
       - mosh
