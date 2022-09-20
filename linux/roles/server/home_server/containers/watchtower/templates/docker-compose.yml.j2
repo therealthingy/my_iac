@@ -28,7 +28,7 @@ services:
       - WATCHTOWER_LABEL_ENABLE=true                            # Filter by enable label
 
 {% if notifications_mail_config is defined %}
-      #- WATCHTOWER_NO_STARTUP_MESSAGE=true
+      - WATCHTOWER_NO_STARTUP_MESSAGE=true
       # - Emailing
       - WATCHTOWER_NOTIFICATIONS=email
       - WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ notifications_mail_config.smtp_host }}
