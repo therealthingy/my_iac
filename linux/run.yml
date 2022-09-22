@@ -43,7 +43,7 @@
       tags:
         - docker
   vars:
-    gnome_wallpaper: win10-jobs.jpg
+    gnome_wallpaper: Ballmer.jpg
     firefox_profiles:
       default:
         extensions:
