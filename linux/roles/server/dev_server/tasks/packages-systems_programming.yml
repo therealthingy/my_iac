@@ -6,6 +6,7 @@
       # Compiler / build tools
       - manpages-dev
       - build-essential       # Includes GNU debugger, g++/GNU compiler collection, and some more tools (`make`) and libraries that are required to compile a program
+      - pkg-config
       - cmake
       - cmake-curses-gui
       # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
