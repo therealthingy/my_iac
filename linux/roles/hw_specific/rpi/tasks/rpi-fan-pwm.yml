@@ -13,6 +13,13 @@
     - not 'Local modifications exist in the destination' in repo_clone.msg
   become: false
 
+- name: Change config
+  ansible.builtin.lineinfile:
+    dest: '{{ rpi_fan_pwm_container_dir }}/.env'
+    regexp: '^UPDATE_INTERVAL_SEC=3$'
+    line: 'UPDATE_INTERVAL=6'
+  become: false
+
 - name: Ensure container is running
   community.docker.docker_compose:
     project_src: '{{ rpi_fan_pwm_container_dir }}'
