@@ -65,6 +65,7 @@
       - htop
       - psmisc
       - iotop
+      - powertop
       - sysstat
       - smartmontools
       - hdparm
