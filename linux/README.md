@@ -2,58 +2,55 @@
 
 
 ## TODOs
-- General:
-  - **Change** all **networking** to *NetworkManager*  (packages: network-manager, nmcli)  using ***[netplan](https://netplan.io/)***
+### General
+- **Change** all **networking** to *NetworkManager*  (packages: network-manager, nmcli)  using ***[netplan](https://netplan.io/)***
 
+### *dev-workstation*
+- ISSUE: Firefox: After restart  --> not indempotent  ???
+- Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
+### *server*:
+- **SECURITY**: https://christitus.com/linux-security-mistakes/  (Fail2ban)
 
+- **Switch to btrfs** (https://mutschler.dev/linux/raspi-btrfs/, btrfs maintenance: https://mutschler.dev/linux/raspi-post-install/,  https://raspberrypi.stackexchange.com/questions/8265/btrfs-root-filesystem-on-raspbian) + encrypted root fs
+  - DEBIAN: Switch from swapfile to swap partition
+    - Switch off the swapfile + remove dphys-swapfile: `sudo apt-get purge dphys-swapfile`
+    - Activate the swap partition: `sudo swapon /dev/sdaX`
+    - REMOVE sparse file + add subvolume QUOTA 4 samba share
+- Support for **headless system** w/ **encrypted root partition**  (https://linuxconfig.org/how-to-unlock-a-luks-volume-on-boot-on-raspberry-pi-os, https://github.com/ViRb3/pi-encrypted-boot-ssh, https://docs.ansible.com/ansible/latest/collections/community/crypto/luks_device_module.html)
+  - REVISE reboot policy for unattended upgrades: SHOULD BE EMail  (see down below)
 
-- *dev-workstation*:
-  - ISSUE: Firefox: After restart  --> not indempotent  ???
-  - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
+### *home_server*
+- **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/)
 
-- *server*:
-	- **SECURITY**: https://christitus.com/linux-security-mistakes/  (Fail2ban)
+- Containers:
+  - **NETWORKING**  (DEBUG DOCKER images: https://github.com/nicolaka/netshoot):
+    - ISSUE: pihole -- **DESTINATION ipv6 addresses (of request) != SOURCE ipv6 address (of response)**
+        ```
+        > dig wikipedia.com @fd00::40b3:8c93:9122:52c7
+        ;; reply from unexpected source: fd00::8656:3dd3:f10e:116d#53, expected fd00::40b3:8c93:9122:52c7#53
+        ```
+      - SOLUTION: iptables MASQUERADE picks random IPv6 address -- either allow only 1 address OR ~~use SNAT instead w/ to-addr~~ (doesn't work since public IP addr will be overwritten !!) ...
 
-  - **Switch to btrfs** (https://mutschler.dev/linux/raspi-btrfs/, btrfs maintenance: https://mutschler.dev/linux/raspi-post-install/,  https://raspberrypi.stackexchange.com/questions/8265/btrfs-root-filesystem-on-raspbian) + encrypted root fs
-    - DEBIAN: Switch from swapfile to swap partition
-      - Switch off the swapfile + remove dphys-swapfile: `sudo apt-get purge dphys-swapfile`
-      - Activate the swap partition: `sudo swapon /dev/sdaX`
-      - REMOVE sparse file + add subvolume QUOTA 4 samba share
-    - Support for **headless system** w/ **encrypted root partition**  (https://linuxconfig.org/how-to-unlock-a-luks-volume-on-boot-on-raspberry-pi-os, https://github.com/ViRb3/pi-encrypted-boot-ssh, https://docs.ansible.com/ansible/latest/collections/community/crypto/luks_device_module.html)
-      - REVISE reboot policy for unattended upgrades: SHOULD BE EMail  (see down below)
+    - Convert *iptables* 2 *nftables*  (https://www.unixtutorial.org/migrate-iptables-to-nftables-in-centos-8/;           VALIDATION: `nft list ruleset`; SERVICE-NAME: nftables)
 
-- *home_server*:
-  - **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/)
+  - filebrowser: restart container iff config file has changed AND container is ALREADY RUNNING  ( see traefik, BUT ONLY IF CONFIG FILE HAS CHANGED )
+  - pihole idempotent data dir
 
-  - Containers:
-    - **NETWORKING**  (DEBUG DOCKER images: https://github.com/nicolaka/netshoot):
-      - ISSUE: pihole -- **DESTINATION ipv6 addresses (of request) != SOURCE ipv6 address (of response)**
-          ```
-          > dig wikipedia.com @fd00::40b3:8c93:9122:52c7
-          ;; reply from unexpected source: fd00::8656:3dd3:f10e:116d#53, expected fd00::40b3:8c93:9122:52c7#53
-          ```
-        - SOLUTION: iptables MASQUERADE picks random IPv6 address -- either allow only 1 address OR ~~use SNAT instead w/ to-addr~~ (doesn't work since public IP addr will be overwritten !!) ...
-
-      - Convert *iptables* 2 *nftables*  (https://www.unixtutorial.org/migrate-iptables-to-nftables-in-centos-8/;           VALIDATION: `nft list ruleset`; SERVICE-NAME: nftables)
-
-    - filebrowser: restart container iff config file has changed AND container is ALREADY RUNNING  ( see traefik, BUT ONLY IF CONFIG FILE HAS CHANGED )
-    - pihole idempotent data dir
-
-  - FUTURE WORK:
-    - **Switch Notifications to a service**  (e.g., by using https://github.com/caronc/apprise)
-    - Services:
-      - https://hub.docker.com/r/hurlenko/aria2-ariang
-      - https://hub.docker.com/r/dyonr/jackettvpn/
-      - Heimdall
-      - Add traefik allowed ip range 4 vault (https://doc.traefik.io/traefik/middlewares/http/forwardauth/)
-      - **SSO service** 4 which allows authenticating all services   (https://goauthentik.io/, https://github.com/authelia/authelia)
-        - REQUIREMENT: [oauth2, etc. support (also for protected application necessary)](https://www.reddit.com/r/selfhosted/comments/s9ky8f/pass_credentials_from_authelia_to_protected/)
-        - [Guide: 2 Factor Auth and Single Sign On with Authelia](https://piped.kavin.rocks/watch?v=u6H-Qwf4nZA)
-      - ( Each container role should have role docker als dependency )
-    - dyndns:
-      - Setup https://dynv6.com
-      - Disable privacy extensions (i.e., derive global ipv6 address for eth0 iface from mac address, thus making sure fritzbox ipv6 permitted access works  (see also https://www.heise.de/ct/artikel/IPv6-DynDNS-klemmt-4785681.html))
+- FUTURE WORK:
+  - **Switch Notifications to a service**  (e.g., by using https://github.com/caronc/apprise)
+  - Services:
+    - https://hub.docker.com/r/hurlenko/aria2-ariang
+    - https://hub.docker.com/r/dyonr/jackettvpn/
+    - Heimdall
+    - Add traefik allowed ip range 4 vault (https://doc.traefik.io/traefik/middlewares/http/forwardauth/)
+    - **SSO service** 4 which allows authenticating all services   (https://goauthentik.io/, https://github.com/authelia/authelia)
+      - REQUIREMENT: [oauth2, etc. support (also for protected application necessary)](https://www.reddit.com/r/selfhosted/comments/s9ky8f/pass_credentials_from_authelia_to_protected/)
+      - [Guide: 2 Factor Auth and Single Sign On with Authelia](https://piped.kavin.rocks/watch?v=u6H-Qwf4nZA)
+    - ( Each container role should have role docker als dependency )
+  - dyndns:
+    - Setup https://dynv6.com
+---
 
 
 
