@@ -19,6 +19,9 @@
   become: true
 
 
+# WORKAROUND FOR "[...] cannot remove '/var/snap/firefox/common/host-hunspell/en_US.aff': Read-only file system\r\nr":
+#  sudo systemctl stop var-snap-firefox-common-host\\x2dhunspell.mount
+#  sudo systemctl disable var-snap-firefox-common-host\\x2dhunspell.mount
 - name: Ubuntu pre packages - Snaps
   block:
     - name: Shutdown services, sockets and timers
@@ -50,8 +53,6 @@
         name: '{{ item }}'
         state: absent
         purge: true
-        autoremove: true
-        allow_downgrade: true
       with_items: '{{ snapd_packages }}'
 
     - name: Block snapd from installing again
