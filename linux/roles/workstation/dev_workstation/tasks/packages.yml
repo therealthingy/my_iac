@@ -18,13 +18,18 @@
   become: true
 
 - name: Install misc tools
-  community.general.flatpak:
-    name:
-      - com.github.artemanufrij.graphui
-      - com.github.artemanufrij.regextester
-      - org.ghidra_sre.Ghidra
-      - com.syntevo.SmartGit
-    state: present
+  block:
+    - community.general.flatpak:
+        name:
+          - com.github.artemanufrij.graphui
+          - com.github.artemanufrij.regextester
+          - org.ghidra_sre.Ghidra
+          - com.syntevo.SmartGit
+        state: present
+    - ansible.builtin.apt:
+        name:
+          - graphviz
+        state: present
   become: true
 
 
