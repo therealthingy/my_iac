@@ -101,6 +101,8 @@
         - { key: '/org/gnome/shell/extensions/ding/icon-size', value: "'small'", state: present }
         - { key: '/org/gnome/shell/extensions/ding/show-link-emblem', value: 'true', state: present }
         - { key: '/org/gnome/shell/extensions/ding/start-corner', value: "'top-left'", state: present }
+        # - gnome-clipboard-history -
+        - { key: '/org/gnome/shell/extensions/clipboard-history/confirm-clear', value: 'false', state: present }
 
         # --  Apps  --
         # -  Nautilus  --
@@ -150,3 +152,33 @@
               AutomaticLogin = {{ user_name }}
           become: true
       when: "'gdm3' in ansible_facts.packages"
+
+
+
+- name: Perform initial-run only tasks  (which shall never be run again once completed)
+  block:
+    - name: Check whether tasks should be performed
+      ansible.builtin.stat:
+        path: '/home/{{ user_name }}/.ansible_first_run_completed'
+      register: first_run_completed
+    - name: Perform tasks
+      block:
+        - name: Mute audio (requires PulseAudio)
+          ansible.builtin.command: amixer -q -D pulse sset Master mute
+        - name: Set GNOME settings
+          community.general.dconf:
+            key: '{{ gnome_setting.key }}'
+            value: '{{ gnome_setting.value }}'
+            state: '{{ gnome_setting.state }}'
+          with_items:
+            - { key: '/org/gnome/shell/extensions/clipboard-history/private-mode', value: 'true', state: present }
+          loop_control:
+            loop_var: gnome_setting
+          when: "'GNOME' in desktop_envs"
+      when: first_run_completed.stat.exists == False
+    - name: Store initial-run completed
+      ansible.builtin.file:
+        path: '/home/{{ user_name }}/.ansible_first_run_completed'
+        state: touch
+      when: first_run_completed.stat.exists == False
+  become: false
