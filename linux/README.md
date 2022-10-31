@@ -10,7 +10,9 @@
 
 ### *dev-workstation*
 - initial setup: Muting audio doesn't work  (4 some reason ??!)
-- ISSUE: Firefox: After restart  --> not indempotent  ???
+- not indempotent ISSUE:
+   - Firefox settings after restart
+   - TASK [petermosmans.customize-gnome : Download GNOME Shell extensions]
 - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
 ### *server*:
