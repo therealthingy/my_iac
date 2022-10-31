@@ -5,7 +5,11 @@
 ### General
 - **Change** all **networking** to *NetworkManager*  (packages: network-manager, nmcli)  using ***[netplan](https://netplan.io/)***
 
+
+
+
 ### *dev-workstation*
+- initial setup: Muting audio doesn't work  (4 some reason ??!)
 - ISSUE: Firefox: After restart  --> not indempotent  ???
 - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 

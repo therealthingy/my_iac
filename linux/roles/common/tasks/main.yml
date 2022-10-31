@@ -20,8 +20,7 @@
 
 
 # WORKAROUND FOR "[...] cannot remove '/var/snap/firefox/common/host-hunspell/en_US.aff': Read-only file system\r\nr":
-#  sudo systemctl stop var-snap-firefox-common-host\\x2dhunspell.mount
-#  sudo systemctl disable var-snap-firefox-common-host\\x2dhunspell.mount
+#  sudo systemctl stop var-snap-firefox-common-host\\x2dhunspell.mount  &&  sudo systemctl disable var-snap-firefox-common-host\\x2dhunspell.mount
 - name: Ubuntu pre packages - Snaps
   block:
     - name: Shutdown services, sockets and timers

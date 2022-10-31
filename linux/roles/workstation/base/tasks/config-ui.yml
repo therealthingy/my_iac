@@ -164,7 +164,7 @@
     - name: Perform tasks
       block:
         - name: Mute audio (requires PulseAudio)
-          ansible.builtin.command: amixer -q -D pulse sset Master mute
+          ansible.builtin.command: pactl set-sink-mute @DEFAULT_SINK@ true
         - name: Set GNOME settings
           community.general.dconf:
             key: '{{ gnome_setting.key }}'
