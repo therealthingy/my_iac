@@ -15,7 +15,9 @@
    - TASK [petermosmans.customize-gnome : Download GNOME Shell extensions]
 - Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
-### *server*:
+### *server*
+- unattended-upgrades: mail on reboot
+
 - **SECURITY**: https://christitus.com/linux-security-mistakes/  (Fail2ban)
 
 - **Switch to btrfs** (https://mutschler.dev/linux/raspi-btrfs/, btrfs maintenance: https://mutschler.dev/linux/raspi-post-install/,  https://raspberrypi.stackexchange.com/questions/8265/btrfs-root-filesystem-on-raspbian) + encrypted root fs
