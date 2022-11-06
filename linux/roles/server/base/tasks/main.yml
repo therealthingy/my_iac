@@ -8,6 +8,33 @@
   become: true
 
 
+- name: Install msmtp-mailer + set it up (for e.g., mailing for notifications)
+  block:
+    - name: Set config as vars for role
+      ansible.builtin.set_fact:
+        msmtp_accounts:
+          - account: notifications
+            host: '{{ notifications_mail_config.smtp_host }}'
+            port: '{{ notifications_mail_config.smtp_port }}'
+            auth: "on"
+            from: '{{ notifications_mail_config.smtp_username }}'
+            user: '{{ notifications_mail_config.smtp_username }}'
+            password: '{{ notifications_mail_config.smtp_password }}'
+        msmtp_alias_default: '{{ notifications_mail_config.system_admin_mail }}'                # Affects aliases in `/etc/aliases`
+        msmtp_log: no
+        msmtp_remove_mtas: true
+        msmtp_default_account: notifications
+        msmtp_domain: '{{ domainname }}'
+      become: false
+
+    - block:
+      - name: "Run 'chriswayg.msmtp-mailer ' role"
+        ansible.builtin.include_role:
+          name: chriswayg.msmtp-mailer
+      become: true                               # UGLY workaround since `become` isn't allowed in `include_role`
+  when: notifications_mail_config is defined
+
+
 - ansible.builtin.include_tasks: config-unattended_updates.yml
 
 
