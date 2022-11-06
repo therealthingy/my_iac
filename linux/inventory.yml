@@ -63,7 +63,7 @@ all:
           timezone: Europe/Berlin
           domainname: rpi.lan
           hostname: gg-rpi0
-          autoupdate_reboot_enabled: true
+          autoupdate_reboot_enabled: false
           docker_default_network: reverse_proxy
           reverse_proxy_certs_dir: /mnt/storage/traefik          # TODO: REVISE & MV EVERYTHING TO ENCRYPTED ROOT PARTITION
           reverse_proxy_restart_policy: 'no'

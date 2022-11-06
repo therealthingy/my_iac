@@ -11,7 +11,11 @@ Unattended-Upgrade::Automatic-Reboot "false";
 {% endif %}
 
 Unattended-Upgrade::InstallOnShutdown "false";
-Unattended-Upgrade::MailOnlyOnError "true";
+
+{% if notifications_mail_config is defined %}
+Unattended-Upgrade::Mail "root";                                                                 // Alias (see `/etc/aliases`) who should receive mail
+Unattended-Upgrade::MailReport "on-change";                                                      // Possible values: "always", "only-on-error" or "on-change"
+{% endif %}
 
 // NOTE: See `apt-cache policy` for origins
 Unattended-Upgrade::Origins-Pattern {
