@@ -18,7 +18,7 @@ EOF
 
 # Semd mail & cleanup
 OUTPUT=$(curl \
-  --url "smtps://{{ notifications_mail_config.smtp_host }}:{{ notifications_mail_config.smtp_port }}" --ssl-reqd \
+  smtp://{{ notifications_mail_config.smtp_host }}:{{ notifications_mail_config.smtp_port }} --ssl \
   --user "{{ notifications_mail_config.smtp_username }}:{{ notifications_mail_config.smtp_password }}" \
   --mail-from "{{ notifications_mail_config.smtp_username }}" \
   --mail-rcpt "{{ notifications_mail_config.system_admin_mail }}" \
