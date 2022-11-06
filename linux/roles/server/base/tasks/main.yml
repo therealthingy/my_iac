@@ -1,7 +1,7 @@
 ---
 # Check runlevel: `systemctl get-default`  //  Change runlevel: `systemctl set-default multi-user.target`  (runlevels: multi-user.target, graphical.target)
 - name: Change default target to multi-user.target
-  file:
+  ansible.builtin.file:
     src: /usr/lib/systemd/system/multi-user.target
     dest: /etc/systemd/system/default.target
     state: link

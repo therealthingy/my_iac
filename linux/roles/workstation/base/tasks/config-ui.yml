@@ -51,7 +51,7 @@
                 gnome_extensions: "{{ gnome_extensions + [ { 'id': 307, 'enable': true } ]  }}"
               when: ansible_facts.distribution == 'Debian'
 
-        - name: "Run 'customize-gnome' role"
+        - name: "Run 'petermosmans.customize-gnome' role"
           ansible.builtin.include_role:
             name: petermosmans.customize-gnome
 
