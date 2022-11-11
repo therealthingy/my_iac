@@ -94,6 +94,8 @@ alias ls='ls -G'
 alias l='ls -lah --color=auto'
 alias ll='ls -lh --color=auto'
 
+alias decolorize='sed -r "s/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"'
+
 alias stat='stat -x'
 
 alias dusage='du -h -d1'
@@ -113,8 +115,9 @@ alias temp='vcgencmd measure_temp'
 
 # --- Installed tools  ---
 {% if 'il_workstations' in group_names %}
-alias-add yt-dlp yt-vids_download="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'" yt-vids_download_audio="yt-dlp -f 'bestaudio[ext=m4a]'"
-alias-add yt-vids_download yt-vids_download_channel_prefix="yt-vids_download -o '%(channel)s - %(title)s-%(id)s.%(ext)s'"
+alias-add yt-dlp   vid-download="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"   vid-download_audio="yt-dlp -f 'bestaudio[ext=m4a]'"
+alias-add vid-download vid-download-channel="yt-vids_download  -o '%(channel)s - %(title)s-%(id)s.%(ext)s'"
+alias-add vid-download vid-download-workaround_fname="yt-vids_download  -o '%(title).200s  [%(id)s].%(ext)s'"         # Workaround for: https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195
 {% endif %}
 
 # - Replace existing commands -
