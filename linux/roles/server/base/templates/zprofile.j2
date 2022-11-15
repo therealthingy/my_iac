@@ -2,7 +2,7 @@
 
 # {{ ansible_managed }}
 
-# -- Shows system stats on login –-
+# --  Shows system stats on login  –-
 # -  Distro Logo  -
 clear
 printf "\n"
@@ -15,6 +15,16 @@ printf "Local systime: %s \n" "$(date)"
 
 uptime --pretty |awk '{printf "Uptime: %s\n", substr($0, 4)}'
 
+if [ -f /var/run/reboot-required ]; then
+  echo -ne "\033[1;31mRequired reboot pending\033[0m "                # TODO: Consider using `needrestart` 4 more details  (PROBLEM: 2 slow)
+  USECS=$(busctl get-property org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager ScheduledShutdown | cut -d ' ' -f 3)
+  if [ "$USECS" -ne "0" ]; then
+    printf "(automatic reboot scheduled for %s)" "$(date --date=@$((USECS / 1000000)))"
+  fi
+  unset USECS                                                         # Declaring variable `local` doesn't work (still accessible afterwards) ??!
+  echo ""
+fi
+
 top -bn1 | grep load | awk '{printf "CPU Load: %.2f", $(NF-2)}'
 {% if 'rpis' in group_names %}
 awk '{printf(", temperature: %.1f°C",$1/1e3)}' /sys/class/thermal/thermal_zone0/temp
@@ -25,8 +35,4 @@ free -m | awk 'NR==2{printf "\nMemory Usage: %s/%sMB (%.2f%%)\n", $3,$2,$3*100/$
 df -h | awk '$NF=="/"{printf "Disk Usage: %d/%dGB (%s)\n", $3,$2,$5}'
 
 printf "Current user: %s@%s \n" "$(id -un)" "$(hostname)"        # .(domainname)
-
-if [ -f /var/run/reboot-required ]; then
-  echo -e "\033[1;31mreboot after update pending\033[0m"         # TODO: Consider using `needrestart` 4 more details  (PROBLEM: 2 slow)
-fi
 printf "======================================================\n\n"
