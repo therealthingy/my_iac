@@ -3,7 +3,7 @@
 # {{ ansible_managed }}
 
 # -- Shows system stats on login –-
-# -  Logo  -
+# -  Distro Logo  -
 clear
 printf "\n"
 neofetch -L
@@ -25,4 +25,10 @@ free -m | awk 'NR==2{printf "\nMemory Usage: %s/%sMB (%.2f%%)\n", $3,$2,$3*100/$
 df -h | awk '$NF=="/"{printf "Disk Usage: %d/%dGB (%s)\n", $3,$2,$5}'
 
 printf "Current user: %s@%s \n" "$(id -un)" "$(hostname)"        # .(domainname)
+
+if [ -f /var/run/reboot-required ]; then
+  echo -e "\033[1;31mreboot pending\033[0m"
+else
+  echo -e "\033[0;32mno reboot pending\033[0m"
+fi
 printf "======================================================\n\n"
