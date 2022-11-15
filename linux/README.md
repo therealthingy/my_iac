@@ -109,7 +109,7 @@
 * Validate playbook: `ansible-playbook run.yml --syntax-check`
 * Encrypt:
   * `ansible-vault encrypt <file>`   /   `ansible-vault decrypt <file>`
-  * `ansible-vault encrypt_string "<string>"`
+  * `ansible-vault encrypt_string <string>`
 
 ### ( Ad-hoc commands )
 * `ansible <group>  -m <module>`
