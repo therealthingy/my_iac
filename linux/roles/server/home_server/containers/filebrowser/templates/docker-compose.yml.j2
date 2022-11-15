@@ -19,9 +19,6 @@ services:
     networks:
       - {{ docker_default_network }}
     labels:
-     # Watchtower
       - com.centurylinklabs.watchtower.enable=true
-
-     # Traefik
       - traefik.enable=true
       - traefik.http.routers.{{ container_name }}_router.rule=Host(`files.{{ domainname }}`)

@@ -76,10 +76,7 @@ services:
       - TRANSMISSION_SCRIPT_TORRENT_DONE_FILENAME=/scripts/custom/script-torrent_done
 
     labels:
-     # Watchtower
       - com.centurylinklabs.watchtower.enable=true
-
-     # Traefik
       - traefik.enable=true
       - traefik.http.services.{{ container_name }}_service.loadbalancer.server.port=9091
       - traefik.http.routers.{{ container_name }}_router.rule=Host(`{{ container_name }}.{{ domainname }}`)

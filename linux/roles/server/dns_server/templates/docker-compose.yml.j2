@@ -65,6 +65,7 @@ services:
 
 
     labels:
+      - com.centurylinklabs.watchtower.enable=true
       - com.centurylinklabs.watchtower.monitor-only=true
 {% if 'home_servers' in group_names %}
       - traefik.enable=true

@@ -50,10 +50,7 @@ services:
       - {{ docker_default_network }}
 
     labels:
-     # Watchtower
       - com.centurylinklabs.watchtower.enable=true
-
-     # Traefik
       - traefik.enable=true
       - traefik.docker.network={{ docker_default_network }}
       - traefik.http.routers.bitwarden-ui-http.rule=Host(`{{ container_name }}.{{ domainname }}`)

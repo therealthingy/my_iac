@@ -26,10 +26,7 @@ services:
       - {{ docker_default_network }}
 
     labels:
-     # Watchtower
       - com.centurylinklabs.watchtower.enable=true
-
-     # Taefik
       - traefik.enable=true
       - traefik.http.services.{{ container_name }}_service.loadbalancer.server.port=9000
       - traefik.http.routers.{{ container_name }}_router.rule=Host(`{{ container_name }}.{{ domainname }}`)
