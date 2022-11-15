@@ -27,8 +27,6 @@ df -h | awk '$NF=="/"{printf "Disk Usage: %d/%dGB (%s)\n", $3,$2,$5}'
 printf "Current user: %s@%s \n" "$(id -un)" "$(hostname)"        # .(domainname)
 
 if [ -f /var/run/reboot-required ]; then
-  echo -e "\033[1;31mreboot pending\033[0m"
-else
-  echo -e "\033[0;32mno reboot pending\033[0m"
+  echo -e "\033[1;31mreboot after update pending\033[0m"         # TODO: Consider using `needrestart` 4 more details  (PROBLEM: 2 slow)
 fi
 printf "======================================================\n\n"
