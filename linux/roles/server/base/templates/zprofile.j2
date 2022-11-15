@@ -11,7 +11,9 @@ printf "\n"
 
 # -  Show System stats  -
 printf "\n======================================================\n"
-printf "Local systime: %s \n" "$(date)"
+printf "Login user: %s@%s \n" "$(id -un)" "$(hostname)"        # .(domainname)
+
+printf "Local systime: %s\n" "$(date)"
 
 uptime --pretty |awk '{printf "Uptime: %s\n", substr($0, 4)}'
 
@@ -33,6 +35,4 @@ awk '{printf(", temperature: %.1f°C",$1/1e3)}' /sys/class/thermal/thermal_zone0
 free -m | awk 'NR==2{printf "\nMemory Usage: %s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2 }'
 
 df -h | awk '$NF=="/"{printf "Disk Usage: %d/%dGB (%s)\n", $3,$2,$5}'
-
-printf "Current user: %s@%s \n" "$(id -un)" "$(hostname)"        # .(domainname)
 printf "======================================================\n\n"
