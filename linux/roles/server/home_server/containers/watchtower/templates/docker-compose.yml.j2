@@ -42,6 +42,6 @@ services:
       #- WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG={{ inventory_hostname }}
 {% endif %}
 
-      # - WATCHTOWER_SCHEDULE="{{ cron_schedule }}"
+      # - WATCHTOWER_SCHEDULE="{{ watchtower_cron_schedule }}"
 
-    command: --schedule "{{ cron_schedule }}"                   # TESTING: `--run-once`
+    command: --schedule "{{ watchtower_cron_schedule }}"                   # TESTING: `--run-once`
