@@ -24,7 +24,6 @@
     - Activate the swap partition: `sudo swapon /dev/sdaX`
     - REMOVE sparse file + add subvolume QUOTA 4 samba share
 - Support for **headless system** w/ **encrypted root partition**  (https://linuxconfig.org/how-to-unlock-a-luks-volume-on-boot-on-raspberry-pi-os, https://github.com/ViRb3/pi-encrypted-boot-ssh, https://docs.ansible.com/ansible/latest/collections/community/crypto/luks_device_module.html)
-  - REVISE reboot policy for unattended upgrades: SHOULD BE EMail  (see down below)
 
 ### *home_server*
 - **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/)
