@@ -46,6 +46,7 @@
 - FUTURE WORK:
   - **Switch Notifications to a service**  (e.g., by using https://github.com/caronc/apprise)
   - Services:
+    - **https://academy.pointtosource.com/containers/ebooks-calibre-readarr/**
     - https://hub.docker.com/r/hurlenko/aria2-ariang
     - https://hub.docker.com/r/dyonr/jackettvpn/
     - Heimdall
