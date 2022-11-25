@@ -91,13 +91,14 @@
 - name: Install administration tools
   ansible.builtin.apt:
     name:
-      - sudo                          # (NOTE: Only for documentation purpose, since prerequisite for this playbook)
+      - sudo
+      - aptitude
       - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu``, `lspci``, ..)
       - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
       - needrestart                   # NOTE: 2 check whether reboot is pending: `sudo needrestart -r i`
       - ssh
       - mosh
-      - btrfs-progs
+      #- btrfs-progs
     state: present
   become: true
 
