@@ -116,8 +116,8 @@ alias temp='vcgencmd measure_temp'
 # --- Installed tools  ---
 {% if 'il_workstations' in group_names %}
 alias-add yt-dlp   vid-download="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"   vid-download_audio="yt-dlp -f 'bestaudio[ext=m4a]'"
-alias-add vid-download vid-download-channel="yt-vids_download  -o '%(channel)s - %(title)s-%(id)s.%(ext)s'"
-alias-add vid-download vid-download-workaround_fname="yt-vids_download  -o '%(title).200s  [%(id)s].%(ext)s'"         # Workaround for: https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195
+alias-add vid-download vid-download-channel="vid-download  -o '%(channel)s - %(title)s-%(id)s.%(ext)s'"
+alias-add vid-download vid-download-workaround_fname="vid-download  -o '%(title).200s  [%(id)s].%(ext)s'"         # Workaround for: https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195
 {% endif %}
 
 # - Replace existing commands -
