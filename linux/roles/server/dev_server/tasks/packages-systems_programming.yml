@@ -6,7 +6,7 @@
       # Compiler / build tools
       - manpages-dev
       - build-essential       # Includes GNU debugger, g++/GNU compiler collection, and some more tools (`make`) and libraries that are required to compile a program
-      - gcc-multilib          # Useful for cross-compiling
+      #- gcc-multilib          # Useful for cross-compiling   (Debian arm64 -- Error: 'Package '' has no installation candidate')
       - pkg-config
       - cmake
       - cmake-curses-gui
@@ -14,6 +14,12 @@
       - binutils              # Contains `readelf`, ...
       - valgrind
       - strace
+      # 'Performance' analysis
+      - linux-base            # Installs `perf`  (NOTE: Is already installed)
+      - time                  # NOTE: Usually implemented as shell builting  (hence must be called directly via `/usr/bin/time ...`)
+      #- pahole                # Shows & manipulates data structure layout   (Debian arm64 -- Error: The following packages have unmet dependencies: pahole : Depends: libbpf0)
+      # Utils
+      - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design)
       # Libs
       - libomp-dev
       - libelf-dev
@@ -21,7 +27,5 @@
       # Misc.
       - flex                  # Generates lexical analyzers
       - bison                 # Parser generator
-      # Utils
-      - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design)
     state: present
   become: true
