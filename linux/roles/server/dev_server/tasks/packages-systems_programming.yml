@@ -6,18 +6,19 @@
       # Compiler / build tools
       - manpages-dev
       - build-essential       # Includes GNU debugger, g++/GNU compiler collection, and some more tools (`make`) and libraries that are required to compile a program
-      #- gcc-multilib          # Useful for cross-compiling   (Debian arm64 -- Error: 'Package '' has no installation candidate')
+      - gcc-multilib          # Useful for cross-compiling   (Debian arm64 -- Error: 'Package '' has no installation candidate')
       - pkg-config
       - cmake
       - cmake-curses-gui
       # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
       - binutils              # Contains `readelf`, ...
-      - valgrind
       - strace
+      - valgrind
       # 'Performance' analysis
-      - linux-base            # Installs `perf`  (NOTE: Is already installed)
+      - linux-tools-common    # Install `perf`  (Performance analysis tools for Linux)
+      - linux-tools-generic   # Install kernel modules required 4 `perf`
       - time                  # NOTE: Usually implemented as shell builting  (hence must be called directly via `/usr/bin/time ...`)
-      #- pahole                # Shows & manipulates data structure layout   (Debian arm64 -- Error: The following packages have unmet dependencies: pahole : Depends: libbpf0)
+      - pahole                # Shows & manipulates data structure layout
       # Utils
       - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design)
       # Libs
