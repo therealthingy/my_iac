@@ -20,7 +20,7 @@
 - name: zsh - Install oh-my-zsh
   ansible.builtin.git:
     repo: https://github.com/ohmyzsh/ohmyzsh.git
-    dest: '/home/{{ user_name }}/.oh-my-zsh/'
+    dest: '/home/{{ user_name }}/.config/zsh/.oh-my-zsh/'
     clone: true
     depth: 1
     update: true
@@ -29,7 +29,7 @@
 - name: zsh - Install oh-my-zsh plugins
   ansible.builtin.git:
     repo: 'https://github.com/zsh-users/{{ plugin }}'
-    dest: '/home/{{ user_name }}/.oh-my-zsh/custom/plugins/{{ plugin }}/'
+    dest: '/home/{{ user_name }}/.config/zsh/.oh-my-zsh/custom/plugins/{{ plugin }}/'
     clone: true
     depth: 1
     update: true
@@ -50,7 +50,7 @@
 - name: zsh - Install Powerlevel10k theme
   ansible.builtin.git:
     repo: 'https://github.com/romkatv/powerlevel10k.git'
-    dest: '/home/{{ user_name }}/.oh-my-zsh/custom/themes/powerlevel10k/'
+    dest: '/home/{{ user_name }}/.config/zsh/.oh-my-zsh/custom/themes/powerlevel10k/'
     clone: true
     depth: 1
     update: true
