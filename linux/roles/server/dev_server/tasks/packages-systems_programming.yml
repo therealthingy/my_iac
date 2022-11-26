@@ -14,6 +14,8 @@
       - binutils              # Contains `readelf`, ...
       - strace
       - valgrind
+      - kcachegrind           # KDE GUI 2 visualize profiling data (mainly used as visualization frontend for data measured by Cachegrind/Callgrind tools from the Valgrind package)
+      - graphviz              # TODO: Apparently required by kcachegrind  ??
       # 'Performance' analysis
       - linux-tools-common    # Install `perf`  (Performance analysis tools for Linux)
       - linux-tools-generic   # Install kernel modules required 4 `perf`
