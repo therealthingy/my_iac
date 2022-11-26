@@ -38,7 +38,7 @@
     - name: Create symlink in home dir
       ansible.builtin.file:
         src: '{{ vmshares_mount_dir }}'
-        dest: '/home/{{ user_name }}/vmware-shares'
+        dest: '/home/{{ user_name }}/vm-shares'
         state: link
       become: false
   when: vm_sharing_is_enabled
