@@ -1,4 +1,4 @@
-# Playbook for GNU/Linux (currently only Debian-based) machines
+# Playbook for GNU/Linux (currently only Debian based) machines
 
 
 ## TODOs
@@ -54,8 +54,7 @@
       - REQUIREMENT: [oauth2, etc. support (also for protected application necessary)](https://www.reddit.com/r/selfhosted/comments/s9ky8f/pass_credentials_from_authelia_to_protected/)
       - [Guide: 2 Factor Auth and Single Sign On with Authelia](https://piped.kavin.rocks/watch?v=u6H-Qwf4nZA)
     - ( Each container role should have role docker als dependency )
-  - dyndns:
-    - Setup https://dynv6.com
+  - dyndns: Setup https://dynv6.com
 ---
 
 
@@ -116,5 +115,5 @@
   * `--key-file ~/.ssh/rpi`
   * `-i inventory`
   * `--list-hosts`
-  * `--become --ask-become-pass`: Privelege escalation
+  * `--become --ask-become-pass`: Privilege escalation
   * Useful modules: `ping` (not ICMP ping !!), `gather_facts`
