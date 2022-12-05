@@ -63,10 +63,11 @@
       - neofetch
       - atop
       - htop
+      - dstat       # system monitoring tool  (allows monitoring system resources such as cpu, memory, disk & network stats)
       - psmisc
       - iotop
       - powertop
-      - sysstat
+      - sysstat    # `sar`, `iostat`
       - smartmontools
       - hdparm
       - usbutils
@@ -79,7 +80,7 @@
       - nmap
       - netcat
       - tcpdump
-      - iproute2                      # NOTE: package 'net-tools' is deprecated
+      - iproute2                      # `ip`;   NOTE: package 'net-tools' has been deprecated
       - dnsutils                      # `dig`
       - wget
       - curl

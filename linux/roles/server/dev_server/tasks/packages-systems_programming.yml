@@ -15,17 +15,19 @@
       # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
       - binutils              # Contains `readelf`, `gprof`, ...
       - strace
+      - bpftrace
+      - ltrace
       - valgrind
       - kcachegrind           # KDE GUI 2 visualize profiling data (mainly used as visualization frontend for data measured by Cachegrind/Callgrind tools from the Valgrind package)
       - graphviz              # TODO: Apparently required by kcachegrind  ??
       # 'Performance' analysis
-      - linux-tools-common    # Install `perf`  (Performance analysis tools for Linux)
-      - linux-tools-generic   # Install kernel modules required 4 `perf`
+      - linux-tools-common    # `perf`  (Performance analysis tools for Linux)
+      - linux-tools-generic   # Kernel modules required 4 `perf`
       - hotspot               # UI (similar 2 KCachegrind 4 valgrind, BUT) around perf
       - time                  # NOTE: Usually implemented as shell builting  (hence must be called directly via `/usr/bin/time ...`)
       - pahole                # Shows & manipulates data structure layout
       # Utils
-      - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design)
+      - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
       # Libs
       - libomp-dev
       - libelf-dev
