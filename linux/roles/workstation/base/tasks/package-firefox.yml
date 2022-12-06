@@ -1,7 +1,7 @@
 ---
-# --  Install firefox  --
+# --  Install Firefox  --
 # TODO: (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
-- name: 'Ubuntu - Ensure no firefox snap is / will be installed'
+- name: 'Ubuntu - Ensure no Firefox snap is / will be installed'
   block:
     - name: Add apt repo and update cache
       # NOTE: Equivalent command: `sudo add-apt-repository 'ppa:mozillateam/ppa'`
@@ -27,7 +27,7 @@
   become: true
 
 
-- name: Firefox - Install it
+- name: Firefox - Install
   ansible.builtin.apt:
     name: '{{ firefox_package_name }}'
     state: present

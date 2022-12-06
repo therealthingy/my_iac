@@ -63,11 +63,11 @@
       - neofetch
       - atop
       - htop
-      - dstat       # system monitoring tool  (allows monitoring system resources such as cpu, memory, disk & network stats)
+      - dstat                         # system monitoring tool  (allows monitoring system resources such as cpu, memory, disk & network stats)
       - psmisc
       - iotop
       - powertop
-      - sysstat    # `sar`, `iostat`
+      - sysstat                       # `sar`, `iostat`
       - smartmontools
       - hdparm
       - usbutils
