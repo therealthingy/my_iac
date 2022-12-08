@@ -37,3 +37,21 @@
       - bison                 # Parser generator
     state: present
   become: true
+
+
+
+# Installation steps: https://www.intel.com/content/www/us/en/develop/documentation/vtune-install-guide/top/linux/package-managers.html
+#- name: Install VTune
+#  block:
+#    - name: Add apt Repo
+#      # NOTE: Equivalent command: `sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"`
+#      ansible.builtin.apt_repository:
+#        repo: deb https://apt.repos.intel.com/oneapi all main
+#        state: present
+#        filename: intel
+#        update_cache: yes
+#    - name: Install VTune
+#      ansible.builtin.apt:
+#        name: intel-oneapi-vtune
+#  when: ansible_architecture == "x86_64"
+#  become: true

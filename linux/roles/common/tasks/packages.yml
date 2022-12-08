@@ -127,7 +127,7 @@
   ansible.builtin.apt:
     name:
       - moreutils
-      - procps                        # `watch` command
+      - procps                        # `watch`, `pmap` command
       - pv
       - uuid
     state: present
