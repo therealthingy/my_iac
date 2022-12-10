@@ -89,19 +89,37 @@
     state: present
   become: true
 
-- name: Install administration tools
-  ansible.builtin.apt:
-    name:
-      - sudo
-      - aptitude
-      - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu``, `lspci``, ..)
-      - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
-      - needrestart                   # NOTE: 2 check whether reboot is pending: `sudo needrestart -r i`
-      - ssh
-      - mosh
-      #- btrfs-progs
-    state: present
-  become: true
+- name: Administration tools
+  block:
+    - name: Install administration tools
+      ansible.builtin.apt:
+        name:
+          - sudo
+          - aptitude
+          - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu``, `lspci``, ..)
+          - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
+          - needrestart                   # NOTE: 2 check whether reboot is pending: `sudo needrestart -r i`
+          - ssh
+          - mosh
+          #- btrfs-progs
+        state: present
+      become: true
+
+    - name: Install + configure tmux
+      block:
+        - name: Install tmux
+          ansible.builtin.apt:
+            name: tmux
+            state: present
+          become: true
+        - name: Copy config file
+          ansible.builtin.copy:
+            src: tmux.conf
+            dest: '/home/{{ user_name }}/.tmux.conf'
+            owner: '{{ user_name }}'
+            group: '{{ user_name }}'
+            mode: 0644
+          become: false
 
 - name: Privacy tools
   block:
@@ -135,22 +153,22 @@
 
 
 # (!!  ALSO REQUIRED FOR ZSH  !!)
-- name: Install git
-  ansible.builtin.apt:
-    name:
-      - git
-      - git-lfs
-    state: present
-  become: true
-
-#- name: Init git LFS for current user        # TODO: NOT  IDEMPOTENT ???
-#  ansible.builtin.command: git lfs install
-#  become: false
+- name: Git
+  block:
+    - name: Install git
+      ansible.builtin.apt:
+        name:
+          - git
+          - git-lfs
+        state: present
+      become: true
+#    - name: Init git LFS for current user        # TODO: NOT  IDEMPOTENT ???
+#      ansible.builtin.command: git lfs install
+#      become: false
 
 
 - ansible.builtin.include_tasks: '{{ item }}'
   loop:
     - package-python.yml
-    - package-tmux.yml
     - package-zsh.yml
     - package-nala.yml
