@@ -11,6 +11,7 @@
   ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
     name:
       - numpy
-      - scipy
+      - pandas
       - matplotlib
+#      - scipy
   become: true
