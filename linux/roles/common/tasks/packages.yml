@@ -102,6 +102,7 @@
           - ssh
           - mosh
           #- btrfs-progs
+          #- stow                          # See https://www.gnu.org/software/stow/
         state: present
       become: true
 

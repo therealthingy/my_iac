@@ -29,15 +29,48 @@
       # Utils
       - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
       # Libs
-      - libomp-dev
-      - libelf-dev
-      - libdw-dev
+      - libomp-dev            # OpenMP
+      - libelf-dev            # Allows reading & writing of ELF files on a high level
+      - libdw-dev             # Provides access to DWARF debug information stored inside ELF files
+      - libdwarf-dev          # Allows reading/consuming and writing/producing of DWARF debugging information from object files, shared libraries, and executables    --  basically the same as `libdw-dev` ??!
       # Misc.
       - flex                  # Generates lexical analyzers
       - bison                 # Parser generator
     state: present
   become: true
 
+
+
+- name: Install Intel Pin Tools
+  block:
+    - name: Set version
+      ansible.builtin.set_fact:
+        # TODO: GET ALWAYS LATEST VERSION;  SEE: https://www.intel.com/content/www/us/en/developer/articles/tool/pin-a-binary-instrumentation-tool-downloads.html
+        intel_pin_tool_version: pin-3.25-98650-g8f6168173-gcc-linux
+    - name: Check already installed
+      ansible.builtin.command: 'which /opt/{{ intel_pin_tool_version }}/pin'
+      failed_when: false
+      changed_when: false
+      check_mode: false
+      register: result_pin_command
+      become: false
+    - name: Install if not installed
+      block:
+        - name: Download & Install Pin tools
+          ansible.builtin.unarchive:
+            src: 'https://software.intel.com/sites/landingpage/pintool/downloads/{{ intel_pin_tool_version }}.tar.gz'
+            remote_src: yes
+            dest: /opt/
+            mode: 0755
+        - name: Update PATH variable globally
+          ansible.builtin.lineinfile:
+            dest: /etc/zsh/zshenv
+            line: "export PATH=\"$PATH:/opt/{{ intel_pin_tool_version }}\""
+            state: present
+      when: result_pin_command.rc == 1
+      become: true
+  when: ansible_architecture == "x86_64"
+  become: false
 
 
 # Installation steps: https://www.intel.com/content/www/us/en/develop/documentation/vtune-install-guide/top/linux/package-managers.html
