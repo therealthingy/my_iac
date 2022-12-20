@@ -33,6 +33,7 @@
       - libelf-dev            # Allows reading & writing of ELF files on a high level
       - libdw-dev             # Provides access to DWARF debug information stored inside ELF files
       - libdwarf-dev          # Allows reading/consuming and writing/producing of DWARF debugging information from object files, shared libraries, and executables    --  basically the same as `libdw-dev` ??!
+      - libc6-dbg             # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
       # Misc.
       - flex                  # Generates lexical analyzers
       - bison                 # Parser generator
