@@ -43,6 +43,8 @@
                       enable: true
                     - id: 4839                      # Clipboard history
                       enable: true
+                    - id: 2236                      # Night Theme Switcher     (TODO: ALLEGEDLY NOT WORKING ON UBUNTU, BUT WORKS IN PRAXIS) ??
+                      enable: true
                     # TODO (for non-vms): caffeine, cpufreq, wireguard-indicator
 
             - name: Debian - Set distro specific stuff
