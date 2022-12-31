@@ -68,7 +68,7 @@
     loop_var: included_common_config_task
 
 
-- name: "Enable passwordless sudo for '{{ user_name }}'"
+- name: "Enable password-less sudo for '{{ user_name }}'"
   ansible.builtin.copy:
     content: '{{ user_name }} ALL=(ALL) NOPASSWD: ALL'
     dest: '/etc/sudoers.d/010_{{ user_name }}-nopasswd'
@@ -77,4 +77,4 @@
     mode: 0440
     validate: visudo -cf %s
   become: true
-  when: passwordless_sudo is not defined or passwordless_sudo
+  when: passwordless_sudo_enabled is defined and passwordless_sudo_enabled
