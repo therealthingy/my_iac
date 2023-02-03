@@ -1,0 +1,122 @@
+---
+#  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$   DOESN'T WORK   $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+- name: Clone repo
+  ansible.builtin.git:
+    repo: https://github.com/oijkn/Docker-Raspberry-PI-Monitoring
+    dest: '{{ container_dir }}'
+    clone: true
+    depth: 1
+    update: true
+  register: repo_clone
+  failed_when:
+    - repo_clone.failed
+    - not 'Local modifications exist in the destination' in repo_clone.msg
+  become: false
+
+## As described in: https://github.com/oijkn/Docker-Raspberry-PI-Monitoring#installation-and-configuration
+#- name: Setup dir structure
+#  block:
+#    - name: Create dirs
+#      ansible.builtin.file:
+#        path: '{{ container_dir }}/{{ data_dir_names }}'
+#        state: directory
+#        mode: 0755
+#      with_items:
+#        - 'prometheus/data'
+#        - 'grafana/data'
+#      loop_control:
+#        loop_var: data_dir_names
+#
+#    - name: Set ownership
+#      ansible.builtin.file:
+#        path: '{{ container_dir }}/{{ dir_names }}'
+#        state: directory
+#        owner: '{{ dir_names.ugid }}'
+#        group: '{{ dir_names.ugid }}'
+#        recurse: true
+#      with_items:
+#        - { dir: 'prometheus', ugid: 65534 }
+#        - { dir: 'grafana', ugid: 472 }
+#      loop_control:
+#        loop_var: dir_names
+#      become: true
+#  become: false
+
+- name: Change config
+  block:
+    - name: Change credentials
+      ansible.builtin.lineinfile:
+        dest: '{{ container_dir }}/grafana/.env'
+        regexp: '{{ config_cred_item.regex }}'
+        line: '{{ config_cred_item.line }}'
+        state: present
+      with_items:
+        - { regex: '^GF_SECURITY_ADMIN_USER=.+$', line: 'GF_SECURITY_ADMIN_USER={{monitoring_user_name}}' }
+        - { regex: '^GF_SECURITY_ADMIN_PASSWORD=.+$', line: 'GF_SECURITY_ADMIN_PASSWORD={{monitoring_user_pw}}' }
+      loop_control:
+        loop_var: config_cred_item
+
+    - name: Change docker-compose
+      block:
+        - name: Comment out stuff in docker-compose file
+          ansible.builtin.lineinfile:
+            dest: '{{ container_dir }}/docker-compose.yml'
+            regexp: '^{{ compose_config_item }}$'
+            line: '#{{ compose_config_item }}'
+          with_items:
+            - '    ports:'
+            - '      - "3000:3000"'                         # Only accessible via reverse-proxy
+            - '      - ./grafana/data:/var/lib/grafana'     # Don't store data permanently (only within container)
+            - '      - ./prometheus/data:/prometheus'
+          loop_control:
+            loop_var: compose_config_item
+
+        - name: Add network config
+          block:
+            - name: 'container Grafana'
+              ansible.builtin.lineinfile:
+                path: '{{ container_dir }}/docker-compose.yml'
+                insertbefore: 'ports:$'
+                line: '      - reverse_proxy'
+            - name: 'globally'
+              ansible.builtin.blockinfile:
+                marker: '# {mark} NETWORK CONFIG GLOBAL'
+                path: '{{ container_dir }}/docker-compose.yml'
+                insertafter: EOF
+                block: |2
+                    reverse_proxy:
+                      external: true
+
+        - name: Add traefik config
+          ansible.builtin.blockinfile:
+            marker: '# {mark} TRAEFIK CONFIG'
+            path: '{{ container_dir }}/docker-compose.yml'
+            insertbefore: '^  cadvisor:$'
+            block: |2
+                  labels:
+                    - com.centurylinklabs.watchtower.enable=true
+                    - traefik.enable=true
+                    - traefik.http.services.{{ container_name }}_service.loadbalancer.server.port=3000
+                    - traefik.http.routers.{{ container_name }}_router.rule=Host(`{{ container_name }}.{{ domainname }}`)
+
+        - name: Add watchtower labels 4 remaining containers
+          ansible.builtin.blockinfile:
+            marker: '# {mark} WATCHTOWER {{ config_cred_item }}'
+            path: '{{ container_dir }}/docker-compose.yml'
+            insertbefore: '^    hostname: {{config_cred_item}}$'
+            block: |2
+                  labels:
+                    - com.centurylinklabs.watchtower.enable=true
+          with_items:
+            - 'rpi-cadvisor'
+            - 'rpi-exporter'
+            - 'rpi-prometheus'
+          loop_control:
+            loop_var: config_cred_item
+      become: false
+
+- name: Start containers
+  community.docker.docker_compose:
+    project_src: '{{ container_dir }}'
+    build: false
+  become: false
