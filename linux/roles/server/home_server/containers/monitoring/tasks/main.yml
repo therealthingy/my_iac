@@ -115,8 +115,8 @@
             loop_var: config_cred_item
       become: false
 
-- name: Start containers
-  community.docker.docker_compose:
-    project_src: '{{ container_dir }}'
-    build: false
-  become: false
+#- name: Start containers
+#  community.docker.docker_compose:
+#    project_src: '{{ container_dir }}'
+#    build: false
+#  become: false
