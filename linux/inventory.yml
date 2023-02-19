@@ -133,9 +133,16 @@ all:
 
 
     # --  "HW specific"  --
+    vmware_vms:
+      hosts:
+
     rpis:
       hosts:
         gg-rpi0:
 
-    vmware_vms:
+    usb_external:
       hosts:
+        gg-rpi0:
+          usb_enclosure:                  # FIDECO M.2 NVME SATA SSD enclosure  (JMicron Technology Corp.)
+            vendor_id: "152d"
+            product_id: "0562"

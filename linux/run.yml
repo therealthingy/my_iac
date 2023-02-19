@@ -8,15 +8,21 @@
 
 
 # --  "HW specific"  --
+- hosts: vmware_vms
+  roles:
+    - role: hw_specific/vmware
+      tags:
+        - hw_specific
+
 - hosts: rpis
   roles:
     - role: hw_specific/rpi
       tags:
         - hw_specific
 
-- hosts: vmware_vms
+- hosts: usb_external
   roles:
-    - role: hw_specific/vmware
+    - role: hw_specific/usb_external
       tags:
         - hw_specific
 

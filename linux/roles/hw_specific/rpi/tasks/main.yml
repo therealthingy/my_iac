@@ -9,7 +9,6 @@
 
 - ansible.builtin.include_tasks: '{{ item }}'
   loop:
-    - usb-boot.yml
     - rpi-fan-pwm.yml
 
 
