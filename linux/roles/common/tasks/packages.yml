@@ -146,6 +146,7 @@
   ansible.builtin.apt:
     name:
       - moreutils
+      - parallel                      # NOTE: Installs also `parallel` like `moreutils`  (but seems 2 be newer version)
       - procps                        # `watch`, `pmap` command
       - pv
       - uuid
