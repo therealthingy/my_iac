@@ -29,6 +29,7 @@
       # Utils
       - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
       # Libs
+      - libboost-all-dev      # Boost
       - libomp-dev            # OpenMP
       - libelf-dev            # Allows reading & writing of ELF files on a high level
       - libdw-dev             # Provides access to DWARF debug information stored inside ELF files
