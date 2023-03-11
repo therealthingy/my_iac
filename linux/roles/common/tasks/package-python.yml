@@ -1,11 +1,19 @@
 ---
-- name: Install Python and pip
-  ansible.builtin.apt:
-    update_cache: true
-    name:
-      - python3
-      - python3-pip
-    state: present
+- name: Install Python and tools
+  block:
+    - name: Python interpreter + pip
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - python3
+          - python3-pip
+        state: present
+    - name: Dev libs
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - python3-dev    # Required 4 extending Python interpreter or embedding Python in applications  (we care about the latter)
+        state: present
   become: true
 
 
@@ -26,17 +34,17 @@
 
 
 - name: Install pip packages
-  ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
-    name:
-      - pip-review              # NOTE: 2 check for updates, use: `pip-review --local --auto`
-      # required by Ansible modules
-      - psutil                  # Required for dconf module
-  become: true
-
-- name: Install pip packages for Debian-based systems
-  ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
-    name:
-      # required by Ansible modules
-      - python-apt
-  when: ansible_os_family == 'Debian'
+  block:
+    - name: General packages
+      ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
+        name:
+          - pip-review              # NOTE: 2 check for updates, use: `pip-review --local --auto`
+          # required by Ansible modules
+          - psutil                  # Required for `dconf` module
+    - name: Debian-based systems
+      ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
+        name:
+          # required by Ansible modules
+          - python-apt
+      when: ansible_os_family == 'Debian'
   become: true
