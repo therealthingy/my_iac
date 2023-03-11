@@ -1,46 +1,83 @@
 ---
 - name: Install systems programming tools/libs
-  ansible.builtin.apt:
-    name:
-      - shellcheck            # Lint bash scripts
-      # Compiler / build tools
-      - manpages-dev
-      - build-essential       # Includes GNU debugger, g++/GNU compiler collection, and some more tools (`make`) and libraries that are required to compile a program
-      - gcc-multilib          # Useful for cross-compiling   (Debian arm64 -- Error: 'Package '' has no installation candidate')
-      - clang
-      - nasm
-      - pkg-config
-      - cmake
-      - cmake-curses-gui
-      - autoconf
-      # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
-      - binutils              # Contains `readelf`, `gprof`, ...
-      - gdb
-      - strace
-      - bpftrace
-      - ltrace
-      - valgrind
-      - kcachegrind           # KDE GUI 2 visualize profiling data (mainly used as visualization frontend for data measured by Cachegrind/Callgrind tools from the Valgrind package)
-      - graphviz              # TODO: Apparently required by kcachegrind  ??
-      # 'Performance' analysis
-      - linux-tools-common    # `perf`  (Performance analysis tools for Linux)
-      - linux-tools-generic   # Kernel modules required 4 `perf`
-      - hotspot               # UI (similar 2 KCachegrind 4 valgrind, BUT) around perf
-      - time                  # NOTE: Usually implemented as shell builting  (hence must be called directly via `/usr/bin/time ...`)
-      - pahole                # Shows & manipulates data structure layout
-      # Utils
-      - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
-      # Libs
-      - libboost-all-dev      # Boost
-      - libomp-dev            # OpenMP
-      - libelf-dev            # Allows reading & writing of ELF files on a high level
-      - libdw-dev             # Provides access to DWARF debug information stored inside ELF files
-      - libdwarf-dev          # Allows reading/consuming and writing/producing of DWARF debugging information from object files, shared libraries, and executables    --  basically the same as `libdw-dev` ??!
-      - libc6-dbg             # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
-      # Misc.
-      - flex                  # Generates lexical analyzers
-      - bison                 # Parser generator
-    state: present
+  block:
+    - name: Debian based systems
+      ansible.builtin.apt:
+        name:
+          - shellcheck            # Lint bash scripts
+          # Compiler / build tools
+          - manpages-dev
+          - build-essential       # Includes GNU debugger, g++/GNU compiler collection, and some more tools (`make`) and libraries that are required to compile a program
+          - gcc-multilib          # Useful for cross-compiling   (Debian arm64 -- Error: 'Package '' has no installation candidate')
+          - clang
+          - nasm
+          - pkg-config
+          - cmake
+          - cmake-curses-gui
+          - autoconf
+          # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
+          - binutils              # Contains `readelf`, `gprof`, ...
+          - gdb
+          - bpftrace
+          - strace
+          - ltrace
+          - valgrind
+          # 'Performance' analysis
+          - linux-tools-common    # `perf`  (Performance analysis tools for Linux)
+          - linux-tools-generic   # Kernel modules required 4 `perf`
+          - hotspot               # UI (similar 2 KCachegrind 4 valgrind, BUT) around perf
+          - kcachegrind           # KDE GUI 2 visualize profiling data (mainly used as visualization frontend for data measured by Cachegrind/Callgrind tools from the Valgrind package)
+          - graphviz              # TODO: Apparently required by kcachegrind  ??
+          - time                  # NOTE: Usually implemented as shell builting  (hence must be called directly via `/usr/bin/time ...`)
+          - pahole                # Shows & manipulates data structure layout
+          # Utils
+          - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
+          # Libs
+          - libboost-all-dev      # Boost
+          - libomp-dev            # OpenMP
+          - libelf-dev            # Allows reading & writing of ELF files on a high level
+          - libdw-dev             # Provides access to DWARF debug information stored inside ELF files
+          - libdwarf-dev          # Allows reading/consuming and writing/producing of DWARF debugging information from object files, shared libraries, and executables    --  basically the same as `libdw-dev` ??!
+          - libc6-dbg             # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
+          # Misc.
+          - flex                  # Generates lexical analyzers
+          - bison                 # Parser generator
+        state: present
+
+    - name: Install pwndbg
+      block:
+        - name: Check whether already installed
+          ansible.builtin.stat:
+            path: '/home/{{ user_name }}/.config/pwndbg/'
+          register: pwndbg_already_installed
+        - name: Install if not
+          block:
+            - name: Install prerequisites (otherwise error in setup.sh since no root privileges)
+              ansible.builtin.apt:
+                name:
+                  - git
+                  - gdb
+                  - gdbserver
+                  - python3-dev
+                  - python3-pip
+                  - python3-setuptools
+                  - libglib2.0-dev
+                  - libc6-dbg
+              become: true
+            - name: Clone repo
+              ansible.builtin.git:
+                repo: https://github.com/pwndbg/pwndbg.git
+                dest: '/home/{{ user_name }}/.config/pwndbg/'
+                clone: true
+                depth: 1
+                update: true
+              become: false
+            - name: Run install script
+              ansible.builtin.shell:
+                cmd: './setup.sh'
+                chdir: '/home/{{ user_name }}/.config/pwndbg/'
+              become: false
+          when: pwndbg_already_installed.stat.exists == False
   become: true
 
 
