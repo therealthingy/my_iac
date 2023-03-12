@@ -133,8 +133,8 @@
         state: present
 
     - name: Install luks sparse file helper
-      ansible.builtin.copy:
-        src: bin/luks-sparse_helper
+      ansible.builtin.template:
+        src: luks-sparse_helper.j2
         dest: /usr/local/bin/luks-sparse_helper
         owner: root
         group: root

@@ -51,7 +51,12 @@ case $1 in
     get_loopback_device_from_filename $sparse_file_path
 
     echo "(III) Formating block-device (attached under loopback device \"$lb_dev\") using luks"
-    sudo cryptsetup -y luksFormat $lb_dev                    # NOTE 2 check status: 'cryptsetup status secretfs'
+    # NOTE 2 check status: 'cryptsetup status <secretfs>'
+{% if 'rpis' in group_names %}
+    sudo cryptsetup -y luksFormat  --type luks2 --cipher xchacha20,aes-adiantum-plain64 --hash sha256 --iter-time 5000 --pbkdf argon2i   $lb_dev      # See: https://rr-developer.github.io/LUKS-on-Raspberry-Pi/
+{% else %}
+    sudo cryptsetup -y luksFormat $lb_dev
+{% endif %}
 
     echo "(IV ) Creating fs"
     luks_mapper_name="tmp__${RANDOM}__"
