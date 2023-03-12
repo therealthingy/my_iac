@@ -109,11 +109,6 @@ alias inet-public_ip="curl -4 icanhazip.com && curl -6 icanhazip.com; echo"
 alias xz='xz -T 0'
 
 
-{% if 'rpis' in group_names %}
-# --- RPi specific ---
-alias temp='vcgencmd measure_temp'
-{% endif %}
-
 
 # --- Installed tools  ---
 {% if 'il_workstations' in group_names %}
@@ -130,6 +125,15 @@ alias-add pbzip2 bzip2='pbzip2' # bunzip2='pbunzip2' bzcat='pbzcat'
 
 # --- GNU/Linux specific ---
 alias journal-clear='sudo journalctl --vacuum-time=2d' # --vacuum-size=500M
+
+{% if 'rpis' in group_names %}
+# --- RPi specific ---
+alias temp='vcgencmd measure_temp'
+{% endif %}
+
+{% if 'dev_workstations' in group_names or 'dev_servers' in group_names %}
+alias-add objdump obj="objdump -M intel -C --visualize-jumps -d "               # Note: Used 2 be fct. w/ (now removed) suffix: `$@ | nvim -`
+{% endif %}
 
 {% if ansible_facts.os_family == 'Debian' %}
 # - apt-get aliases
