@@ -123,6 +123,13 @@ alias-add pbzip2 bzip2='pbzip2' # bunzip2='pbunzip2' bzcat='pbzcat'
 
 
 
+# ---------------------- ------ Environment variables  (which SHOULD be in '.zshenv') ------ ----------------------
+{% if 'dev_workstations' in group_names or 'dev_servers' in group_names %}
+export MAKEFLAGS="-j$(nproc)"
+{% endif %}
+
+
+
 # --- GNU/Linux specific ---
 alias journal-clear='sudo journalctl --vacuum-time=2d' # --vacuum-size=500M
 
