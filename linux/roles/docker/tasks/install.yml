@@ -60,7 +60,7 @@
     name: docker-compose
     state: present
     executable: pip3
-  become: true
+    extra_args: --break-system-packages   # TODO: Workaround 4 now
 
 
 - name: Add user to docker group

@@ -3,7 +3,7 @@
   ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
     name:
       - requests
-  become: true
+    extra_args: --break-system-packages   # TODO: Workaround 4 now
 
 - name: Configure
   block:
