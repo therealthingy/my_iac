@@ -33,8 +33,11 @@
           # Utils
           - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
           # Libs
+          - libssl-dev            # OpenSSL
           - libboost-all-dev      # Boost
           - libomp-dev            # OpenMP
+          - libncurses5-dev       # ncurses  (terminal-independent method of updating character screens w/ reasonable optimization)
+          - binutils-dev          # Necessary 2 build programs which use the GNU BFD library  (which is part of binutils)
           - libelf-dev            # Allows reading & writing of ELF files on a high level
           - libdw-dev             # Provides access to DWARF debug information stored inside ELF files
           - libdwarf-dev          # Allows reading/consuming and writing/producing of DWARF debugging information from object files, shared libraries, and executables    --  basically the same as `libdw-dev` ??!
@@ -42,6 +45,7 @@
           # Misc.
           - flex                  # Generates lexical analyzers
           - bison                 # Parser generator
+          - fakeroot              # Gives a fake root environment (2 remove the need to become root for a package build)
         state: present
 
     - name: Install gef
