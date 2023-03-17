@@ -121,11 +121,15 @@ alias-add vid-download vid-download-workaround_fname="vid-download  -o '%(title)
 alias-add pigz gzip='pigz' gunzip='unpigz'
 alias-add pbzip2 bzip2='pbzip2' # bunzip2='pbunzip2' bzcat='pbzcat'
 
+{% if 'dev_workstations' in group_names or 'dev_servers' in group_names %}
+alias pmake='time nice make -j$(nproc) --load-average=$(nproc)'               # Taken from: https://stackoverflow.com/a/4778475
+{% endif %}
+
 
 
 # ---------------------- ------ Environment variables  (which SHOULD be in '.zshenv') ------ ----------------------
 {% if 'dev_workstations' in group_names or 'dev_servers' in group_names %}
-export MAKEFLAGS="-j$(nproc)"
+#export MAKEFLAGS="-j$(nproc)"
 {% endif %}
 
 
