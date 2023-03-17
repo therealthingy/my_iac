@@ -45,9 +45,9 @@
     - role: workstation/dev_workstation
       tags:
         - dev_workstation
-    - role: docker
-      tags:
-        - docker
+#    - role: docker
+#      tags:
+#        - docker
   vars:
     gnome_wallpaper: Ballmer.jpg
     firefox_profiles:

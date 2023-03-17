@@ -33,14 +33,14 @@
   become: true
 
 
-# KEEP IN MIND: Logout is required for app to show up
-- name: Install IntelliJ IDEs
-  community.general.flatpak:
-    name:
-      - com.jetbrains.CLion
-      - com.jetbrains.PyCharm-Professional
-    state: present
-  become: true
+## KEEP IN MIND: Logout is required for app to show up
+#- name: Install IntelliJ IDEs
+#  community.general.flatpak:
+#    name:
+#      - com.jetbrains.CLion
+#      - com.jetbrains.PyCharm-Professional
+#    state: present
+#  become: true
 
 
 #- name: Install LaTex
