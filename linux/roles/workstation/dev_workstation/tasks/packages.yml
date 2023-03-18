@@ -9,13 +9,13 @@
     state: present
   become: true
 
-- name: Install db tools
-  community.general.flatpak:
-    name:
-      - org.sqlitebrowser.sqlitebrowser
-      - io.dbeaver.DBeaverCommunity
-    state: present
-  become: true
+#- name: Install db tools
+#  community.general.flatpak:
+#    name:
+#      - org.sqlitebrowser.sqlitebrowser
+#      - io.dbeaver.DBeaverCommunity
+#    state: present
+#  become: true
 
 - name: Install misc tools
   block:
