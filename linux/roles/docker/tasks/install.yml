@@ -61,6 +61,7 @@
     state: present
     executable: pip3
     extra_args: --break-system-packages   # TODO: Workaround 4 now
+  become: false
 
 
 - name: Add user to docker group
