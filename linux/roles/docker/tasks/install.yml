@@ -60,7 +60,7 @@
     name: docker-compose
     state: present
     executable: pip3
-    extra_args: --break-system-packages   # TODO: Workaround 4 now
+    #extra_args: --break-system-packages   # TODO: Workaround 4 now
   become: false
 
 

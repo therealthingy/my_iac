@@ -4,7 +4,7 @@
     name:
       - ansible
       - pdm
-    extra_args: --break-system-packages   # TODO: Workaround 4 now
+    #extra_args: --break-system-packages   # TODO: Workaround 4 now
   become: false
 # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
 
@@ -15,5 +15,5 @@
       - pandas
       - matplotlib
 #      - scipy
-    extra_args: --break-system-packages   # TODO: Workaround 4 now
+    #extra_args: --break-system-packages   # TODO: Workaround 4 now
   become: false
