@@ -49,7 +49,7 @@
 #      tags:
 #        - docker
   vars:
-    gnome_wallpaper: Ballmer.jpg
+#    gnome_wallpaper: Ballmer.jpg
     firefox_profiles:
       default:
         extensions:
