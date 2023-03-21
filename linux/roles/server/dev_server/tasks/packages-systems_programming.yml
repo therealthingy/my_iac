@@ -123,3 +123,19 @@
 #        name: intel-oneapi-vtune
 #  when: ansible_architecture == "x86_64"
 #  become: true
+
+
+# Repo: https://github.com/bkw777/mainline  (tool 4 downloading & installing pre-compiled kernels)
+- name: Install mainline 4 Ubuntu
+  block:
+    - name: Add apt Repo
+      # NOTE: Equivalent command: `sudo add-apt-repository ppa:cappelikan/ppa`
+      ansible.builtin.apt_repository:
+        repo: ppa:cappelikan/ppa
+        state: present
+        update_cache: yes
+    - name: Install mainline
+      ansible.builtin.apt:
+        name: mainline
+  when: ansible_facts.distribution == 'Ubuntu'
+  become: true
