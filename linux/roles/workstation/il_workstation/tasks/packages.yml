@@ -7,7 +7,7 @@
     state: present
   become: true
 
-- name: Install yt-dl
+- name: Install yt-dlp
   ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
     name: yt-dlp
     #extra_args: --break-system-packages   # TODO: Workaround 4 now

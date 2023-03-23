@@ -41,6 +41,5 @@
       ansible.builtin.pip:                    # NOTE: sudo installs it for ALL users (otherwise only local user)
         name:
           - pip-review                        # NOTE: 2 check for updates, use: `pip-review --local --auto`
-          # required by Ansible modules
         #extra_args: --break-system-packages   # TODO: Workaround 4 now
   become: false

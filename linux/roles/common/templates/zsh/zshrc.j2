@@ -129,17 +129,18 @@ fi
 ################################################################################################
 # --- Misc.
 ################################################################################################
+# -- !! TODO: SHOULD BE GLOBAL !! --
+export PATH="$HOME/.local/bin:$PATH"       # NOTE: ~/.local/bin contains Python pip stuff
+
 # - Custom functions + aliases
 ZSH_FUNC_FOLDER=$ZDOTDIR
 [[ ! -f "$ZSH_FUNC_FOLDER/.zshfunc" ]] || source "$ZSH_FUNC_FOLDER/.zshfunc"
 
-
 # - PATH (! requires function from '.zshfunc' !)
 #path-add "$HOME/bin" "before"
-
-
-# -- !! TODO: SHOULD BE GLOBAL !! --
+{% if ansible_facts.distribution == 'Debian' %}
+# NOTE: 4 some inexplicable reason, those paths are already in $PATH on Ubuntu, but NOT on Debian
 path-add "/usr/local/sbin"     "after"
 path-add "/usr/sbin"           "after"
 path-add "/sbin"               "after"
-#path-add "/home/pi/.local/bin" "after"
+{% endif %}

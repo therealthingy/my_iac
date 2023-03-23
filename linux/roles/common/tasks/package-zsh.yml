@@ -57,7 +57,7 @@
   become: false
 
 
-- name: zsh - Copy config files
+- name: zsh - Copy config files I
   ansible.builtin.copy:
     src: '{{ config_file.src }}'
     dest: '/home/{{ user_name }}/.config/zsh/{{ config_file.dest_file }}'
@@ -65,17 +65,21 @@
     group: '{{ user_name }}'
     mode: 0644
   with_items:
-    - { src: 'zsh/zshrc', dest_file: '.zshrc' }
     - { src: 'zsh/zshenv', dest_file: '.zshenv' }
     - { src: 'zsh/p10k', dest_file: '.p10k.zsh' }    # 'Generated' using `p10k configure` (and just copied)
   loop_control:
     loop_var: config_file
   become: false
 
-- name: zsh - Copy config files 2
+- name: zsh - Copy config files II
   ansible.builtin.template:
-    src: zsh/zshfunc.j2
-    dest: '/home/{{ user_name }}/.config/zsh/.zshfunc'
+    src: '{{ config_file.src }}'
+    dest: '/home/{{ user_name }}/.config/zsh/{{ config_file.dest_file }}'
+  with_items:
+    - { src: 'zsh/zshfunc.j2', dest_file: '.zshfunc' }
+    - { src: 'zsh/zshrc.j2', dest_file: '.zshrc' }
+  loop_control:
+    loop_var: config_file
   become: false
 
 - name: zsh - Set config dir
