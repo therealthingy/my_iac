@@ -15,6 +15,7 @@
           - cmake
           - cmake-curses-gui
           - autoconf
+          - ninja-build
           # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
           - binutils              # Contains `readelf`, `gprof`, ...
           - gdb
