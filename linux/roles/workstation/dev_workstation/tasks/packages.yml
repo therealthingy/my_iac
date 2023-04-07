@@ -25,6 +25,7 @@
           - com.github.artemanufrij.regextester
           - org.ghidra_sre.Ghidra
           - com.syntevo.SmartGit
+          - com.github.tchx84.Flatseal             # Helps managing Flatpak permissions & file storage
         state: present
     - ansible.builtin.apt:
         name:

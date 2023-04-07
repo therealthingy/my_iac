@@ -34,15 +34,26 @@
           # Utils
           - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
           # Libs
-          - libssl-dev            # OpenSSL
-          - libboost-all-dev      # Boost
-          - libomp-dev            # OpenMP
-          - libncurses5-dev       # ncurses  (terminal-independent method of updating character screens w/ reasonable optimization)
-          - binutils-dev          # Necessary 2 build programs which use the GNU BFD library  (which is part of binutils)
+          - libc6-dbg             # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
+          - binutils-dev          # Necessary 2 build programs which use the GNU BFD library  (which is part of binutils); also includes libbfd
           - libelf-dev            # Allows reading & writing of ELF files on a high level
           - libdw-dev             # Provides access to DWARF debug information stored inside ELF files
           - libdwarf-dev          # Allows reading/consuming and writing/producing of DWARF debugging information from object files, shared libraries, and executables    --  basically the same as `libdw-dev` ??!
-          - libc6-dbg             # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
+          - libunwind-dev         # (libunwind)
+          - libcap-dev            # Implements user-space interfaces 2 the POSIX 1003.1e capabilities
+          - libnuma-dev           # Allows controlling specific NUMA (Non-Uniform Memory Architecture) scheduling or memory placement policies
+          - libncurses5-dev       # ncurses  (terminal-independent method of updating character screens w/ reasonable optimization)
+          - libssl-dev            # OpenSSL  (libcrypto)
+          - zlib1g-dev            # (zlib)
+          - liblzma-dev           # (lzma)
+          - libzstd-dev           # (Zstandard - Fast real-time compression algorithm)
+          - libaio-dev            # (Linux kernel AIO access -> Enables userspace 1 use Linux kernel asynchronous I/O system calls, important 4 the performance of dbs & other advanced apps)
+          - libboost-all-dev      # Boost
+          - libomp-dev            # OpenMP
+          #- libperl-dev           # Assists in developing applications which embed a Perl interpreter
+          #- python2
+          #- python2-dev
+          #- python-setuptools
           # Misc.
           - flex                  # Generates lexical analyzers
           - bison                 # Parser generator
