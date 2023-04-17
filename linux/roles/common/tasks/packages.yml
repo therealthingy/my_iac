@@ -155,7 +155,7 @@
 
 
 # (!!  ALSO REQUIRED FOR ZSH  !!)
-- name: Git
+- name: git
   block:
     - name: Install git
       ansible.builtin.apt:

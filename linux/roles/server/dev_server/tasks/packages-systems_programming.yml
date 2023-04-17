@@ -167,7 +167,7 @@
 
 
 # Repo: https://github.com/bkw777/mainline  (tool 4 downloading & installing pre-compiled kernels)
-- name: Install mainline 4 Ubuntu
+- name: "[Ubuntu] Install mainline"
   block:
     - name: Add apt Repo
       # NOTE: Equivalent command: `sudo add-apt-repository ppa:cappelikan/ppa`
