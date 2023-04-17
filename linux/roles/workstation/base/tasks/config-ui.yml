@@ -132,6 +132,8 @@
             - { key: '/org/gnome/settings-daemon/plugins/color/night-light-enabled', value: 'true', state: present }
             # - General Behavior -
             - { key: '/org/gnome/desktop/peripherals/mouse/natural-scroll', value: 'true', state: present }
+            # - Power -
+            - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 900', state: present }
           loop_control:
             loop_var: gnome_setting
           when: "'vmware_vms' not in group_names"
