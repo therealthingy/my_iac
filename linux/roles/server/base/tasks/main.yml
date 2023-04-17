@@ -48,14 +48,9 @@
   become: true
 
 
-- name: Configure git
+- name: Configure git (I)
   community.general.git_config:
-    name:  '{{ config_var.name }}'
-    value:  '{{ config_var.value }}'
-    scope:  '{{ config_var.scope }}'
-  with_items:
-    - { name: 'core.editor', value: 'editor', scope: global }
-    - { name: 'user.name', value: '{{ git_config.name }}', scope: global }
-    - { name: 'user.email', value: '{{ git_config.email }}', scope: global }
-  loop_control:
-    loop_var: config_var
+    name: core.editor
+    value: editor
+    scope: global
+  become: false

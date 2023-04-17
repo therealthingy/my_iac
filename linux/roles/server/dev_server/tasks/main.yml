@@ -1,2 +1,16 @@
 ---
 - ansible.builtin.include_tasks: packages.yml
+
+
+
+- name: Configure git (II)
+  community.general.git_config:
+    name:  '{{ config_var.name }}'
+    value:  '{{ config_var.value }}'
+    scope:  '{{ config_var.scope }}'
+  with_items:
+    - { name: 'user.name', value: '{{ git_config.name }}', scope: global }
+    - { name: 'user.email', value: '{{ git_config.email }}', scope: global }
+  loop_control:
+    loop_var: config_var
+  become: false
