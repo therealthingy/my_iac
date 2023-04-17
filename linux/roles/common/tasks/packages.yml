@@ -23,22 +23,48 @@
       - rsync
       - rclone                        # Cloud storage management software
       - lsof
-      - neovim
     state: present
   become: true
 
-- name: Set alternatives for nvim
-  community.general.alternatives:
-    name: '{{ common_nvim_alt.name }}'
-    link: '{{ common_nvim_alt.link }}'
-    path: '{{ common_nvim_alt.path }}'
-  with_items:
-    - { name: editor, link: /usr/bin/editor, path: /usr/bin/nvim }
-    - { name: vi,     link: /usr/bin/vi,     path: /usr/bin/nvim }
-  loop_control:
-    loop_var: common_nvim_alt
-  become: true
-
+- name: nvim
+  block:
+    - name: nvim - Install
+      ansible.builtin.apt:
+        name:
+          - neovim
+      become: true
+    - name: Configure
+      block:
+        - name: "nvim - Set 'alternatives'"
+          community.general.alternatives:
+            name: '{{ common_nvim_alt.name }}'
+            link: '{{ common_nvim_alt.link }}'
+            path: '{{ common_nvim_alt.path }}'
+          with_items:
+            - { name: editor, link: /usr/bin/editor, path: /usr/bin/nvim }
+            - { name: vi,     link: /usr/bin/vi,     path: /usr/bin/nvim }
+          loop_control:
+            loop_var: common_nvim_alt
+          become: true
+        - name: Config
+          block:
+            - name: nvim - vim config
+              ansible.builtin.copy:
+                dest: '/home/{{ user_name }}/.vimrc'
+                content: |
+                  set nu
+            - name: Config (II)
+              block:
+                - name: nvim - Create config dir
+                  ansible.builtin.file:
+                    path: '/home/{{ user_name }}/.config/nvim'
+                    state: directory
+                - name: nvim - nvim config
+                  ansible.builtin.copy:
+                    dest: '/home/{{ user_name }}/.config/nvim/init.vim'
+                    content: |
+                      source ~/.vimrc
+          become: false
 
 - name: Install file archiving tools
   ansible.builtin.apt:
