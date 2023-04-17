@@ -1,7 +1,7 @@
 ---
 - name: Install flatpak
   block:
-    - name: Install depdencies
+    - name: Install dependencies
       ansible.builtin.apt:
         name: dirmngr
         state: present

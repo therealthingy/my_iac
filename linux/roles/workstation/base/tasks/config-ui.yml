@@ -58,69 +58,96 @@
             name: petermosmans.customize-gnome
 
     # HOW2: gesettings tool  (e.g., `gsettings get org.gnome.desktop.input-sources sources`); example: https://gist.github.com/carlwgeorge/c560a532b6929f49d9c0df52f75a68ae
-    - name: GNOME - Set settings
-      community.general.dconf:
-        key: '{{ gnome_setting.key }}'
-        value: '{{ gnome_setting.value }}'
-        state: '{{ gnome_setting.state }}'
-      with_items:
-        # !!  BE AWARE: Schema for gtk (used by `gsettings`): `org.gtk.Settings.FileChooser` vs. Path (used by dconf editor and Ansible module): `org.gtk.settings.file-chooser`  !!
-        # --  General settings  --
-    #    - { key: '/org/gnome/desktop/input-sources/sources', value: "[('xkb', 'de')]", state: present }
+    - name: GNOME
+      block:
+        - name: GNOME - Set settings
+          community.general.dconf:
+            key: '{{ gnome_setting.key }}'
+            value: '{{ gnome_setting.value }}'
+            state: '{{ gnome_setting.state }}'
+          with_items:
+            # !!  BE AWARE: Schema for gtk (used by `gsettings`): `org.gtk.Settings.FileChooser` v.s. Path (used by dconf editor and Ansible module): `org.gtk.settings.file-chooser`  !!
+            # --  General settings  --
+        #    - { key: '/org/gnome/desktop/input-sources/sources', value: "[('xkb', 'de')]", state: present }
 
-        # --  General Behvaior  --
-        - { key: '/org/gnome/desktop/privacy/show-full-name-in-top-bar', value: 'true', state: present }
-        - { key: '/org/gnome/desktop/privacy/remember-recent-files', value: 'false', state: present }
-        - { key: '/org/gnome/desktop/privacy/remove-old-temp-files', value: 'true', state: present }
-        - { key: '/org/gnome/desktop/sound/event-sounds', value: 'false', state: present }
-        - { key: '/org/gnome/desktop/wm/preferences/audible-bell', value: 'false', state: present }           # TODO: Use `visual-bell`` bell instead (currently not suitable (flashes entire screen))
-        #- { key: '/org/gnome/desktop/interface/gtk-enable-primary-paste', value: 'false', state: present }    # TODO:  Disable "Middle-click paste"  (doesn't work 4 Ubuntu 22.04 LTS)
-        - { key: '/org/gnome/desktop/notifications/show-banners', value: 'false', state: present }            # 'Do not disturb' in Ubuntu's Settings app
-        - { key: '/org/gnome/gnome-session/logout-prompt', value: 'false', state: present }
-        # -  Power  -
-        - { key: '/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type', value: "'nothing'", state: present }
-        - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 0', state: present }                 # Don't show black screen after idle timeout
-        # -  Privacy  -
-        - { key: '/org/gnome/desktop/privacy/report-technical-problems', value: 'false', state: present }
-        - { key: '/org/gnome/desktop/privacy/send-software-usage-stats', value: 'false', state: present }
-        # -  Security  -
-        - { key: '/org/gnome/desktop/media-handling/automount-open', value: 'false', state: present }
+            # --  General Behavior  --
+            - { key: '/org/gnome/desktop/privacy/show-full-name-in-top-bar', value: 'true', state: present }
+            - { key: '/org/gnome/desktop/privacy/remember-recent-files', value: 'false', state: present }
+            - { key: '/org/gnome/desktop/privacy/remove-old-temp-files', value: 'true', state: present }
+            - { key: '/org/gnome/desktop/sound/event-sounds', value: 'false', state: present }
+            - { key: '/org/gnome/desktop/wm/preferences/audible-bell', value: 'false', state: present }           # TODO: Use `visual-bell`` bell instead (currently not suitable (flashes entire screen))
+            #- { key: '/org/gnome/desktop/interface/gtk-enable-primary-paste', value: 'false', state: present }    # TODO:  Disable "Middle-click paste"  (doesn't work 4 Ubuntu 22.04 LTS)
+            - { key: '/org/gnome/desktop/notifications/show-banners', value: 'false', state: present }            # 'Do not disturb' in Ubuntu's Settings app
+            - { key: '/org/gnome/gnome-session/logout-prompt', value: 'false', state: present }
+            # -  Privacy  -
+            - { key: '/org/gnome/desktop/privacy/report-technical-problems', value: 'false', state: present }
+            - { key: '/org/gnome/desktop/privacy/send-software-usage-stats', value: 'false', state: present }
+            # -  Security  -
+            - { key: '/org/gnome/desktop/media-handling/automount-open', value: 'false', state: present }
 
-        # --  General UI  --
-        - { key: '/org/gnome/desktop/interface/clock-format', value: "'12h'", state: present }
-        - { key: '/org/gtk/settings/file-chooser/clock-format', value: "'12h'", state: present }
-        - { key: '/org/gnome/shell/favorite-apps', value: "[{{ dock_favorite_apps|join(', ') }}]", state: present }  # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
-        - { key: '/org/gnome/desktop/wm/preferences/button-layout', value: "'close,minimize,maximize:'", state: present }
-        # --  Extensions  --
-        # -  Dock  -
-        - { key: '/org/gnome/shell/extensions/dash-to-dock/extend-height', value: 'false', state: present }
-        - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-position', value: "'LEFT'", state: present }
-        - { key: '/org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size', value: '25', state: present }
-        - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-fixed', value: 'true', state: present }
-        - { key: '/org/gnome/shell/extensions/dash-to-dock/click-action', value: "'minimize'", state: present }
-        # -  Desktop  -
-        - { key: '/org/gnome/shell/extensions/ding/show-home', value: 'false', state: present }
-        - { key: '/org/gnome/shell/extensions/ding/show-trash', value: 'false', state: present }
-        - { key: '/org/gnome/shell/extensions/ding/icon-size', value: "'small'", state: present }
-        - { key: '/org/gnome/shell/extensions/ding/show-link-emblem', value: 'true', state: present }
-        - { key: '/org/gnome/shell/extensions/ding/start-corner', value: "'top-left'", state: present }
-        # - gnome-clipboard-history -
-        - { key: '/org/gnome/shell/extensions/clipboard-history/confirm-clear', value: 'false', state: present }
+            # --  General UI  --
+            - { key: '/org/gnome/desktop/interface/clock-format', value: "'12h'", state: present }
+            - { key: '/org/gtk/settings/file-chooser/clock-format', value: "'12h'", state: present }
+            - { key: '/org/gnome/shell/favorite-apps', value: "[{{ dock_favorite_apps|join(', ') }}]", state: present }  # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
+            - { key: '/org/gnome/desktop/wm/preferences/button-layout', value: "'close,minimize,maximize:'", state: present }
+            # --  Extensions  --
+            # -  Dock  -
+            - { key: '/org/gnome/shell/extensions/dash-to-dock/extend-height', value: 'false', state: present }
+            - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-position', value: "'LEFT'", state: present }
+            - { key: '/org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size', value: '25', state: present }
+            - { key: '/org/gnome/shell/extensions/dash-to-dock/dock-fixed', value: 'true', state: present }
+            - { key: '/org/gnome/shell/extensions/dash-to-dock/click-action', value: "'minimize'", state: present }
+            # -  Desktop  -
+            - { key: '/org/gnome/shell/extensions/ding/show-home', value: 'false', state: present }
+            - { key: '/org/gnome/shell/extensions/ding/show-trash', value: 'false', state: present }
+            - { key: '/org/gnome/shell/extensions/ding/icon-size', value: "'small'", state: present }
+            - { key: '/org/gnome/shell/extensions/ding/show-link-emblem', value: 'true', state: present }
+            - { key: '/org/gnome/shell/extensions/ding/start-corner', value: "'top-left'", state: present }
+            # - gnome-clipboard-history -
+            - { key: '/org/gnome/shell/extensions/clipboard-history/confirm-clear', value: 'false', state: present }
 
-        # --  Apps  --
-        # -  Nautilus  --
-        - { key: '/org/gnome/nautilus/preferences/show-delete-permanently', value: 'true', state: present }
-        - { key: '/org/gnome/nautilus/preferences/default-sort-order', value: "'type'", state: present }         # Possible values: size, type, mtime, atime, starred
-        - { key: '/org/gnome/nautilus/preferences/default-sort-in-reverse-order', value: 'false', state: present }
-        - { key: '/org/gnome/nautilus/preferences/default-folder-viewer', value: "'list-view'", state: present } # Possible values: icon-view, list-view
-        - { key: '/org/gnome/nautilus/list-view/default-zoom-level', value: "'small'", state: present }
-        - { key: '/org/gnome/nautilus/list-view/default-visible-columns', value: "['name', 'type', 'size', 'date_modified']", state: present }
-        - { key: '/org/gnome/nautilus/list-view/use-tree-view', value: 'true', state: present }
-        - { key: '/org/gtk/settings/file-chooser/show-hidden', value: 'true', state: present }
-        # -  dconf  -
-        - { key: '/ca/desrt/dconf-editor/show-warning', value: 'false', state: present }
-      loop_control:
-        loop_var: gnome_setting
+            # --  Apps  --
+            # -  Nautilus  --
+            - { key: '/org/gnome/nautilus/preferences/show-delete-permanently', value: 'true', state: present }
+            - { key: '/org/gnome/nautilus/preferences/default-sort-order', value: "'type'", state: present }         # Possible values: size, type, mtime, atime, starred
+            - { key: '/org/gnome/nautilus/preferences/default-sort-in-reverse-order', value: 'false', state: present }
+            - { key: '/org/gnome/nautilus/preferences/default-folder-viewer', value: "'list-view'", state: present } # Possible values: icon-view, list-view
+            - { key: '/org/gnome/nautilus/list-view/default-zoom-level', value: "'small'", state: present }
+            - { key: '/org/gnome/nautilus/list-view/default-visible-columns', value: "['name', 'type', 'size', 'date_modified']", state: present }
+            - { key: '/org/gnome/nautilus/list-view/use-tree-view', value: 'true', state: present }
+            - { key: '/org/gtk/settings/file-chooser/show-hidden', value: 'true', state: present }
+            # -  System monitor  -
+            - { key: '/org/gnome/gnome-system-monitor/show-dependencies', value: 'true', state: present }
+            # -  dconf  -
+            - { key: '/ca/desrt/dconf-editor/show-warning', value: 'false', state: present }
+          loop_control:
+            loop_var: gnome_setting
+
+        - name: GNOME - Set settings [BARE-METAL]
+          community.general.dconf:
+            key: '{{ gnome_setting.key }}'
+            value: '{{ gnome_setting.value }}'
+            state: '{{ gnome_setting.state }}'
+          with_items:
+            - { key: '/org/gnome/settings-daemon/plugins/color/night-light-enabled', value: 'true', state: present }
+            # - General Behavior -
+            - { key: '/org/gnome/desktop/peripherals/mouse/natural-scroll', value: 'true', state: present }
+          loop_control:
+            loop_var: gnome_setting
+          when: "'vmware_vms' not in group_names"
+
+        - name: GNOME - Set settings [VMs]
+          community.general.dconf:
+            key: '{{ gnome_setting.key }}'
+            value: '{{ gnome_setting.value }}'
+            state: '{{ gnome_setting.state }}'
+          with_items:
+            # -  Power  -
+            - { key: '/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type', value: "'nothing'", state: present }
+            - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 0', state: present }                 # Don't show black screen after idle timeout
+          loop_control:
+            loop_var: gnome_setting
+          when: "'vmware_vms' in group_names"
       become: false
 
     - name: Set installed apps as default
@@ -164,10 +191,11 @@
       ansible.builtin.stat:
         path: '/home/{{ user_name }}/.ansible_first_run_completed'
       register: first_run_completed
-    - name: Perform tasks
+    - name: Perform ACTUAL tasks
       block:
         - name: Mute audio (requires PulseAudio)
           ansible.builtin.command: pactl set-sink-mute @DEFAULT_SINK@ true
+          when: "'vmware_vms' in group_names"
         - name: Set GNOME settings
           community.general.dconf:
             key: '{{ gnome_setting.key }}'
