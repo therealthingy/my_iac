@@ -51,9 +51,11 @@
           - libboost-all-dev      # Boost
           - libomp-dev            # OpenMP
           #- libperl-dev           # Assists in developing applications which embed a Perl interpreter
+          - libevent-dev          # Event notification library  (SEE: https://libevent.org/)
           #- python2
           #- python2-dev
           #- python-setuptools
+          - libseccomp-dev        # Provides high level iface 4 constructing, analyzing & installing seccomp filters via a BPF (passed 2 kernel's `prctl`)
           # Misc.
           - flex                  # Generates lexical analyzers
           - bison                 # Parser generator
