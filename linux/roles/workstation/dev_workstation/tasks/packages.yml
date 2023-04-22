@@ -21,11 +21,12 @@
   block:
     - community.general.flatpak:
         name:
-          - com.github.artemanufrij.graphui
-          - com.github.artemanufrij.regextester
-          - org.ghidra_sre.Ghidra
-          - com.syntevo.SmartGit
           - com.github.tchx84.Flatseal             # Helps managing Flatpak permissions & file storage
+          - org.ghidra_sre.Ghidra
+          #- com.github.artemanufrij.graphui        # Graph visualization based on graphviz with included a text editor and a preview area
+          #- com.github.artemanufrij.regextester
+          - com.syntevo.SmartGit
+          - com.getpostman.Postman
         state: present
     - ansible.builtin.apt:
         name:
