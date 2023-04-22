@@ -3,5 +3,6 @@
   loop:
     - packages-systems_programming.yml
     - packages-python.yml
+#    - packages-java.yml
   loop_control:
     loop_var: included_dev_server_task

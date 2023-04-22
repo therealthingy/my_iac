@@ -1,0 +1,10 @@
+---
+- name: Install Java stuff
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      - default-jdk                  # OpenJDK
+      - maven
+      # TODO: Gradle
+    state: present
+  become: true
