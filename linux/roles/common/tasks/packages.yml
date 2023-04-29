@@ -105,6 +105,7 @@
     name:
       - nmap
       - netcat
+      - socat
       - tcpdump
       - iproute2                      # `ip`;   NOTE: package 'net-tools' has been deprecated
       - dnsutils                      # `dig`

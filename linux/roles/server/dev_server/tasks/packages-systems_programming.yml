@@ -20,6 +20,7 @@
           - automake              # Automates parts of the compilation process
           - ninja-build
           # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
+          - poke                  # GNU poke: Extensible editor for structured binary data
           - binutils              # Contains `readelf`, `gprof`, ...
           - gdb
           - bpftrace
