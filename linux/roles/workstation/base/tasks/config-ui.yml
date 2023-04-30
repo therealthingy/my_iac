@@ -118,6 +118,8 @@
             - { key: '/org/gtk/settings/file-chooser/show-hidden', value: 'true', state: present }
             # -  System monitor  -
             - { key: '/org/gnome/gnome-system-monitor/show-dependencies', value: 'true', state: present }
+            - { key: '/org/gnome/gnome-system-monitor/proctree/columns-order', value: "[0, 12, 1, 8, 15, 4, 22, 2, 3, 6, 9, 10, 11, 13, 14, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26]", state: present }
+            - { key: '/org/gnome/gnome-system-monitor/proctree/col-4-visible', value: 'true', state: present }
             # -  dconf  -
             - { key: '/ca/desrt/dconf-editor/show-warning', value: 'false', state: present }
           loop_control:
