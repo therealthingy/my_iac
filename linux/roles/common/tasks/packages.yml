@@ -128,9 +128,13 @@
           - needrestart                   # NOTE: 2 check whether reboot is pending: `sudo needrestart -r i`
           - ssh
           - mosh
-          #- btrfs-progs
           #- stow                          # See https://www.gnu.org/software/stow/
           - binfmt-support                 # Allows admins 2 register interpreters 4 various binary formats based on a magic number or their file extension, and cause the appropriate interpreter 2 be invoked whenever a matching file is executed
+          # FS stuff
+          #- btrfs-progs
+          #- fuse
+          #- ntfs-3g                        # Read/write NTFS driver 4 FUSE
+          #- libapfs-utils                  # Contains `fsapfsinfo`, an APFS information retrieval utility, & `fpafsmount`, a FUSE-based APFS filesystem implementation
         state: present
       become: true
 
