@@ -1,7 +1,7 @@
 ---
-- name: Install systems programming tools/libs
+- name: "[Debian/Ubuntu] Install systems programming tools/libs"
   block:
-    - name: Debian based systems
+    - name: Install packages (I)
       ansible.builtin.apt:
         name:
           - shellcheck            # Lint bash scripts
@@ -67,9 +67,9 @@
           - checksec              # Used 2 check properties of executables (like PIE, RELRO, PaX, Canaries, ASLR, Fortify Source) & kernel security options (like  GRSecurity & SELinux)
         state: present
 
-    - name: Install gef (4 gdb)
+    - name: Install gef (4 `gdb`)
       block:
-        - name: Check whether already installed
+        - name: gef - Check whether already installed
           ansible.builtin.find:
             paths: '/home/{{ user_name }}/'
             file_type: file
@@ -77,7 +77,7 @@
             hidden: true
             patterns: '^\.gef-[0-9a-f]{40}\.py$'
           register: gef_find_output
-        - name: Run install script
+        - name: gef - Run install script
           ansible.builtin.shell:
             cmd: 'bash -c "$(curl -fsSL https://gef.blah.cat/sh)"'
           become: false
@@ -172,17 +172,22 @@
 #  become: true
 
 
-# Repo: https://github.com/bkw777/mainline  (tool 4 downloading & installing pre-compiled kernels)
-- name: "[Ubuntu] Install mainline"
+
+- name: "[Ubuntu] Install packages"
   block:
-    - name: Add apt Repo
-      # NOTE: Equivalent command: `sudo add-apt-repository ppa:cappelikan/ppa`
-      ansible.builtin.apt_repository:
-        repo: ppa:cappelikan/ppa
-        state: present
-        update_cache: yes
-    - name: Install mainline
+    - name: Install mainline                  # Repo: https://github.com/bkw777/mainline  (tool 4 downloading & installing pre-compiled kernels)
+      block:
+        - name: Add apt Repo
+          # NOTE: Equivalent command: `sudo add-apt-repository ppa:cappelikan/ppa`
+          ansible.builtin.apt_repository:
+            repo: ppa:cappelikan/ppa
+            state: present
+            update_cache: yes
+        - name: Install mainline
+          ansible.builtin.apt:
+            name: mainline
+    - name: Install packages (II)
       ansible.builtin.apt:
-        name: mainline
+        name: glibc-tools                   # Contains ’libSigSegv’ library (SEE: https://lemire.me/blog/2023/05/01/under-linux-libsegfault-and-addr2line-are-underrated/)
   when: ansible_facts.distribution == 'Ubuntu'
   become: true
