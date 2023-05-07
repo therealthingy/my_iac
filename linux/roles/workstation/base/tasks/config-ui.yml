@@ -165,6 +165,18 @@
       become: false
   when: "'GNOME' in desktop_envs"
 
+- name: Ubuntu post packages - Disable Telemetry/error reporting + Ubuntu services
+  community.general.dconf:
+    key: '{{ item.key }}'
+    value: '{{ item.value }}'
+    state: '{{ item.state }}'
+  with_items:
+    - { key: '/com/ubuntu/update-notifier/show-apport-crashes', value: 'false', state: present }
+    - { key: '/com/ubuntu/update-notifier/notify-ubuntu-advantage-available', value: 'false', state: present }
+    - { key: '/com/ubuntu/update-notifier/show-livepatch-status-icon', value: 'false', state: present }
+  when: ansible_facts.distribution == 'Ubuntu'
+  become: false
+
 
 
 - name: gdm3 - Enable Autologin
