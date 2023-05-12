@@ -26,6 +26,7 @@
           - strace
           - ltrace
           - valgrind
+          - doxygen               # Generates documentation from annotated C++ sources
           # 'Performance' analysis
           - linux-tools-common    # `perf`  (Performance analysis tools for Linux)
           - linux-tools-generic   # Kernel modules required 4 `perf`
