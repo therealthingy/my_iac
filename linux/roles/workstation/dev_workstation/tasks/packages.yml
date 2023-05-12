@@ -31,6 +31,7 @@
     - ansible.builtin.apt:
         name:
           - graphviz
+          #- timeshift
         state: present
   become: true
 
@@ -45,10 +46,8 @@
 #  become: true
 
 
-#- name: Install LaTex
+#- name: Install LaTex Distro
 #  ansible.builtin.apt:
-#    name:
-#      - texlive-full
-#      - texmaker
+#    name: texlive-full
 #    state: present
 #  become: true
