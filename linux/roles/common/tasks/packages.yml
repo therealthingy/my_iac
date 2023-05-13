@@ -129,7 +129,6 @@
           - ssh
           - mosh
           #- stow                          # See https://www.gnu.org/software/stow/
-          - binfmt-support                 # Allows admins 2 register interpreters 4 various binary formats based on a magic number or their file extension, and cause the appropriate interpreter 2 be invoked whenever a matching file is executed
           # FS stuff
           #- btrfs-progs
           #- fuse
@@ -205,4 +204,4 @@
   loop:
     - package-python.yml
     - package-zsh.yml
-    - package-nala.yml
+#    - package-nala.yml

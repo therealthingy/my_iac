@@ -1,0 +1,31 @@
+
+
+- name: Setup Rosetta 4 GNU/Linux on Apple Silicone Macs
+  block:
+    - name: Check Rosetta already setup
+      ansible.builtin.stat:
+        path: /var/run/rosetta
+      register: rosetta_already_installed
+      become: false
+
+    - name: Install Rosetta Runtime (required 4 running x86 apps)
+      block:
+        - name: Install binfmt
+          ansible.builtin.apt:
+            name: binfmt-support                 # Allows admins 2 register interpreters 4 various binary formats based on a magic number or their file extension, and cause the appropriate interpreter 2 be invoked whenever a matching file is executed
+        - name: Mount runtime
+          ansible.posix.mount:
+            fstype: virtiofs
+            src: ROSETTA                         # ELABORATION: The Rosetta runtime is shared in a VirtioFS mount named "rosetta"
+            path: /var/run/rosetta
+            opts: ro,nofail
+            state: mounted
+        - name: Register runtime 'magic'
+          ansible.builtin.command:
+            cmd: /usr/sbin/update-binfmts --install rosetta /var/run/rosetta/rosetta --magic "\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x3e\x00" --mask "\xff\xff\xff\xff\xff\xfe\xfe\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff" --credentials yes --preserve no --fix-binary yes
+        - name: Enable APT amd64 repos
+          ansible.builtin.command:
+            cmd: dpkg --add-architecture amd64   # NOTE: 2 install x64 apps, append: `:amd64` (e.g., `sudo apt install libx11-6:amd64`)
+      become: true
+      when: rosetta_already_installed.stat.exists == False
+  when: ansible_architecture == "aarch64" and 'vmware_vms' in group_names
