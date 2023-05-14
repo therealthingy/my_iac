@@ -102,12 +102,15 @@
         - monitoring
 
 # KEEP IN MIND: Only run samba - OR - filebrowser (otherwise weird behavior when using simultaneously)
-    - role: server/home_server/containers/filebrowser
-      tags:
-        - filebrowser
+#    - role: server/home_server/containers/filebrowser
+#      tags:
+#        - filebrowser
     - role: server/home_server/containers/samba
       tags:
         - samba
+    - role: server/home_server/containers/syncthing
+      tags:
+        - syncthing
 
     - role: server/home_server/containers/traefik
       tags:
@@ -115,9 +118,9 @@
     - role: server/home_server/containers/transmission
       tags:
         - transmission
-    - role: server/home_server/containers/volact
-      tags:
-        - volact
+#    - role: server/home_server/containers/volact
+#      tags:
+#        - volact
     - role: server/home_server/containers/watchtower
       tags:
         - watchtower

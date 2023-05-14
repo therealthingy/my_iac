@@ -1,0 +1,6 @@
+---
+container_name: syncthing
+
+
+syncthing_restart_policy: "no"
+syncthing_storage_path: /mnt/storage/syncthing
