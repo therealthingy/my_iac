@@ -126,7 +126,7 @@ all:
                     3633
           transmission_storage_path: /mnt/storage/transmission/var/downloads
           transmission_notifications_hide_filename: True
-          filebrowser_container_share_dir: /mnt/storage
+          filebrowser_container_share_dir: /mnt/storage/share
           samba_path_own_share: /mnt/storage/share/private
           samba_path_shared_share: /mnt/storage/share/public
           samba_transmission_downloads_dir: /mnt/storage/transmission/var/downloads/completed
