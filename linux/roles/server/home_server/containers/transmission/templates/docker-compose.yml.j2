@@ -30,8 +30,8 @@ services:
 
     volumes:
       - /etc/localtime:/etc/localtime:ro
-{% if transmission_vpn_file is defined %}
-      - {{ transmission_vpn_file }}:/etc/openvpn/custom/default.ovpn
+{% if transmission_vpn_config_dir is defined %}
+      - {{ transmission_vpn_config_dir }}:/etc/openvpn/custom/
 {% endif %}
       - {{ transmission_storage_path }}/:/data
       - ./script-torrent_done:/scripts/custom/script-torrent_done
@@ -50,9 +50,9 @@ services:
 
       - CREATE_TUN_DEVICE=true
 
-      - OPENVPN_PROVIDER={{ 'CUSTOM' if transmission_vpn_file is defined else openvpn_provider }}
-      - OPENVPN_USERNAME={{ 'XXX' if transmission_vpn_file is defined else openvpn_username }}
-      - OPENVPN_PASSWORD={{ 'XXX' if transmission_vpn_file is defined else openvpn_password }}
+      - OPENVPN_PROVIDER={{ 'CUSTOM' if transmission_vpn_config_dir is defined else openvpn_provider }}
+      - OPENVPN_USERNAME={{ 'XXX' if transmission_vpn_config_dir is defined else openvpn_username }}
+      - OPENVPN_PASSWORD={{ 'XXX' if transmission_vpn_config_dir is defined else openvpn_password }}
 
       - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
 
