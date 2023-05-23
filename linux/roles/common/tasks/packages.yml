@@ -83,21 +83,28 @@
     state: present
   become: true
 
-- name: Install monitoring tools
-  ansible.builtin.apt:
-    name:
-      - neofetch
-      - atop
-      - htop
-      - dstat                         # system monitoring tool  (allows monitoring system resources such as cpu, memory, disk & network stats)
-      - psmisc
-      - iotop
-      - powertop
-      - sysstat                       # `sar`, `iostat`
-      - smartmontools
-      - hdparm
-      - usbutils
-    state: present
+- name: Monitoring tools
+  block:
+    - name: Install monitoring tools (I)
+      ansible.builtin.apt:
+        name:
+          - neofetch
+          - atop
+          - htop
+          - dstat                         # System monitoring tool  (allows monitoring system resources such as cpu, memory, disk & network stats) -> replacement 4 `vmstat`, `iostat` & `ifstat`
+          - psmisc                        # Utilities that use the proc file-system (`fuser` - Identifies processes using files or sockets, `killall` - kills processes by name, `prtstat` - prints process statistics, `pslog` - prints log path(s) of a process, `pstree` - shows currently running processes as a tree, `peekfd` - shows data travelling over a fildes)
+          - iotop
+          - powertop
+          - sysstat                       # `sar` (can be used 2 monitor Linux system’s resources like CPU usage, memory utilization, I/O devices consumption, etc.), `iostat`
+          - usbutils                      # `lsusb`
+        state: present
+    - name: Install monitoring tools (II)
+      ansible.builtin.apt:
+        name:
+          - smartmontools                 # `smartctl` & `smartd` 4 controlling & monitoring SMART storage
+          - hdparm                        # Allows setting & viewing ATA hd drive HW params & test performance
+          - nvme-cli
+      when: "'rpis' not in group_names"
   become: true
 
 - name: Install networking tools

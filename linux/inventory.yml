@@ -16,6 +16,12 @@ all:
     # -  "Headless" systems  -
     servers:
       hosts:
+        gg-rpi0:
+          swap_configure: true
+          swap_enable: true
+          swap_file_path: /swapfile
+          swap_file_size_mb: 4096
+          swappiness: 60
 
     dev_servers:
       hosts:
