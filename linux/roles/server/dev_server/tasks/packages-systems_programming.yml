@@ -25,6 +25,7 @@
           - bpftrace
           - strace
           - ltrace
+          - bpfcc-tools           # BPF Compiler Collection (BCC) is a toolkit 4 creating efficient kernel tracing & manipulation programs
           - valgrind
           - doxygen               # Generates documentation from annotated C++ sources
           # 'Performance' analysis
