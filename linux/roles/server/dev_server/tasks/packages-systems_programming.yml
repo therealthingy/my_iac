@@ -19,6 +19,7 @@
           - automake              # Automates parts of the compilation process
           - ninja-build
           # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
+          - doxygen               # Generates documentation from annotated C++ sources
           - poke                  # GNU poke: Extensible editor for structured binary data
           - binutils              # Contains `readelf`, `gprof`, ...
           - gdb
@@ -27,14 +28,15 @@
           - ltrace
           - bpfcc-tools           # BPF Compiler Collection (BCC) is a toolkit 4 creating efficient kernel tracing & manipulation programs
           - valgrind
-          - doxygen               # Generates documentation from annotated C++ sources
           # 'Performance' analysis
-          - linux-tools-common    # `perf`  (Performance analysis tools for Linux)
-          - linux-tools-generic   # Kernel modules required 4 `perf`
-          - hotspot               # UI (similar 2 KCachegrind 4 valgrind, BUT) around perf
           - kcachegrind           # KDE GUI 2 visualize profiling data (mainly used as visualization frontend for data measured by Cachegrind/Callgrind tools from the Valgrind package)
+          - linux-tools-generic   # Kernel modules required 4 `perf`
+          - linux-tools-common    # `perf`  (Performance analysis tools for Linux)
+          - hotspot               # UI (similar 2 KCachegrind 4 valgrind, BUT) around perf
+          - heaptrack             # Heap analysis tool (from KDE)
+          - heaptrack-gui
           - graphviz              # TODO: Apparently required by kcachegrind  ??
-          - time                  # NOTE: Usually implemented as shell builting  (hence must be called directly via `/usr/bin/time ...`)
+          - time                  # NOTE: Usually implemented as shell builtin  (hence must be called directly via `/usr/bin/time ...`)
           - pahole                # Shows & manipulates data structure layout
           # Utils
           - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
