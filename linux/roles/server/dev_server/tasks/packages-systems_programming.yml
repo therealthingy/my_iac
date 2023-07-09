@@ -28,6 +28,7 @@
           - ltrace
           - bpfcc-tools           # BPF Compiler Collection (BCC) is a toolkit 4 creating efficient kernel tracing & manipulation programs
           - valgrind
+          - massif-visualizer
           # 'Performance' analysis
           - kcachegrind           # KDE GUI 2 visualize profiling data (mainly used as visualization frontend for data measured by Cachegrind/Callgrind tools from the Valgrind package)
           - linux-tools-generic   # Kernel modules required 4 `perf`
