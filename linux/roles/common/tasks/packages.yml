@@ -104,7 +104,10 @@
           - smartmontools                 # `smartctl` & `smartd` 4 controlling & monitoring SMART storage
           - hdparm                        # Allows setting & viewing ATA hd drive HW params & test performance
           - nvme-cli
-      when: "'rpis' not in group_names"
+          - lm-sensors                    # `sensors`
+      when:
+        - "'rpis' not in group_names"
+        - "'vmware_vms' not in group_names"
   become: true
 
 - name: Install networking tools

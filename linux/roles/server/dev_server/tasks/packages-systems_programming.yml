@@ -32,7 +32,7 @@
           - kcachegrind           # KDE GUI 2 visualize profiling data (mainly used as visualization frontend for data measured by Cachegrind/Callgrind tools from the Valgrind package)
           - linux-tools-generic   # Kernel modules required 4 `perf`
           - linux-tools-common    # `perf`  (Performance analysis tools for Linux)
-          - hotspot               # UI (similar 2 KCachegrind 4 valgrind, BUT) around perf
+          - hotspot               # UI (similar 2 KCachegrind 4 valgrind, BUT) around `perf`  (SEE: https://github.com/KDAB/hotspot)
           - heaptrack             # Heap analysis tool (from KDE)
           - heaptrack-gui
           - graphviz              # TODO: Apparently required by kcachegrind  ??
