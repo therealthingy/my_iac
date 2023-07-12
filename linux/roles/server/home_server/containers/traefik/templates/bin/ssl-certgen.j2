@@ -61,7 +61,6 @@ authorityKeyIdentifier = keyid:always,issuer:always
 basicConstraints       = CA:true
 EOF
     openssl req \
-      -utf8 \
       -x509 \
       -new \
       -nodes \
@@ -126,7 +125,6 @@ DNS.1                  = $DIST_CERT_CN
 EOF
 
     openssl req \
-      -utf8 \
       -config $tmpcfg \
       -new \
       -nodes \
@@ -135,7 +133,6 @@ EOF
     # (3.) Create cert pk
     echo "(III) Generating cert pk \"$file_cert_pk\""
     openssl x509 -req \
-      -utf8 \
       -CA $root_ca_pk -CAkey $root_ca_sk -CAcreateserial \
       -extfile $tmpcfg -extensions v3_req \
       -in $file_cert_cr -out $file_cert_pk \
