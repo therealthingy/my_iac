@@ -9,7 +9,8 @@
           - manpages-dev
           - build-essential       # Includes GNU debugger, g++/GNU compiler collection, and some more tools (`make`) and libraries that are required to compile a program
           - clang
-          - nasm
+#          - nasm
+          - rustc
           # Build tools
           - pkg-config
           - cmake
