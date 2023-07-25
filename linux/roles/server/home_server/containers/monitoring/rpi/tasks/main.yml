@@ -51,8 +51,8 @@
         line: '{{ config_cred_item.line }}'
         state: present
       with_items:
-        - { regex: '^GF_SECURITY_ADMIN_USER=.+$', line: 'GF_SECURITY_ADMIN_USER={{monitoring_user_name}}' }
-        - { regex: '^GF_SECURITY_ADMIN_PASSWORD=.+$', line: 'GF_SECURITY_ADMIN_PASSWORD={{monitoring_user_pw}}' }
+        - { regex: '^GF_SECURITY_ADMIN_USER=.+$', line: 'GF_SECURITY_ADMIN_USER={{monitoring_rpi_user_name}}' }
+        - { regex: '^GF_SECURITY_ADMIN_PASSWORD=.+$', line: 'GF_SECURITY_ADMIN_PASSWORD={{monitoring_rpi_user_pw}}' }
       loop_control:
         loop_var: config_cred_item
 

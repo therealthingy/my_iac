@@ -1,8 +1,8 @@
 ---
-container_name: stats
-container_dir: /home/{{ user_name }}/monitoring/
-monitoring_user_name: gg
-monitoring_user_pw: !vault |
+container_name: rpi_monitoring
+container_dir: /home/{{ user_name }}/monitoring/rpi/
+monitoring_rpi_user_name: gg
+monitoring_rpi_user_pw: !vault |
         $ANSIBLE_VAULT;1.1;AES256
         35316432343662633234636163393933393234343861663866383663313564326163353963656632
         6534386138396561643065313536383662656330393831300a376439303163313230613564343938

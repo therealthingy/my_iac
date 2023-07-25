@@ -97,9 +97,9 @@
     - role: server/home_server/containers/portainer
       tags:
         - portainer
-    - role: server/home_server/containers/monitoring
+    - role: server/home_server/containers/monitoring/rpi
       tags:
-        - monitoring
+        - rpi_monitoring
 
 # KEEP IN MIND: Only run samba - OR - filebrowser (otherwise weird behavior when using simultaneously)
 #    - role: server/home_server/containers/filebrowser
