@@ -97,9 +97,6 @@
     - role: server/home_server/containers/portainer
       tags:
         - portainer
-    - role: server/home_server/containers/monitoring/rpi
-      tags:
-        - rpi_monitoring
     - role: 3rd-party/internet-pi
       tags:
         - inet_monitoring
