@@ -15,7 +15,7 @@ monitoring_grafana_admin_password: !vault |
         3965306236323831640a663739323735346336313939623835313930343564356331363930313633
         37356362626266353430646631333031353162363030313339313430366464353261393037636433
         6665666666376135663935303232663230633331383531366136
-monitoring_speedtest_interval: 480m
+monitoring_speedtest_interval: 360m
 monitoring_ping_interval: 30s
 monitoring_ping_hosts:  # [URL];[HUMAN_READABLE_NAME]
   - https://www.apple.com/;apple.com

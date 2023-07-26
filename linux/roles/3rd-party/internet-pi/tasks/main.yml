@@ -8,12 +8,13 @@
           ansible.builtin.stat:
             path: "./roles/3rd-party/internet-pi/.git/"
           register: git_already_cloned
-        - name: Clone it  (in a hacky way 2 avoid non-empty dir err)
+        - name: Clone it  (in a hacky way 2 avoid git non-empty dir err)
           ansible.builtin.shell: "{{item}}"
           with_items:
             - git init
             - git remote add origin https://github.com/geerlingguy/internet-pi.git
             - git pull origin master
+            - git branch --set-upstream-to=origin/master master
             - mkdir handlers/
             - mv tasks/handlers.yml handlers/main.yml
           args:
@@ -35,15 +36,15 @@
                     loop_var: grafana_docker_compose_item
                   with_items:
                     - { regex: '- front-tier$', line: '- {{ docker_default_network }}' }
-                    - { regex: '^    ports:\n      - 9090:9090', line: '' }
-                    - { regex: '^    ports:\n      - 3030:3000', line: '' }
-                    - { regex: '^    ports:\n      - 9115:9115', line: '' }
-                    - { regex: '^    ports:\n      - 9798:9798', line: '' }
-                    - { regex: '^    ports:\n      - 9100:9100', line: '' }
+                    - { regex: '^    ports:\n      - 9090:9090$\n', line: '' }
+                    - { regex: '^    ports:\n      - 3030:3000$\n', line: '' }
+                    - { regex: '^    ports:\n      - 9115:9115$\n', line: '' }
+                    - { regex: '^    ports:\n      - 9798:9798$\n', line: '' }
+                    - { regex: '^    ports:\n      - 9100:9100$\n', line: '' }
                 - name: 'globally'
                   ansible.builtin.replace:
                     path: './roles/3rd-party/internet-pi/templates/docker-compose.yml.j2'
-                    regexp: '^  front-tier:\n    name: internet-monitoring-front-tier$'
+                    regexp: '^  front-tier:\n    name: internet-monitoring-front-tier$\n'
                     replace: |2
                         {{ docker_default_network }}:
                           external: true
