@@ -1,0 +1,24 @@
+# {{ ansible_managed }}
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1		localhost
+255.255.255.255		broadcasthost
+::1       		localhost
+
+
+####################################################################################
+# WARNING: The file /etc/hosts is generated and will be periodically overwritten
+# To add persistent changes, add them to /etc/hblock.d/header
+####################################################################################
+
+
+# Custom host records are listed here.
+192.168.178.2 gg-rpi0 traefik.rpi.lan portainer.rpi.lan pihole.rpi.lan bitwarden.rpi.lan transmission.rpi.lan stats.rpi.lan
+
+192.168.178.1 fritz.box
+
+192.168.215.160 linux-dev-vm.local

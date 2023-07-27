@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# {{ ansible_managed }}
+
+###########################################
+# Updates all git-repos in passed folders #
+###########################################
+
+
+# base dir of repos 2 be updated
+base_dirs=$([[ -n "$@" ]] && echo $@ || echo `pwd`)            # requires double brackets otherwise 'expected binary expression' (see https://stackoverflow.com/a/26712360)
+
+
+for base_dir in $base_dirs; do
+  # Let the person running the script know what's going on.
+  echo -e "\n\033[1mPulling latest changes for repos under '$base_dir':\033[0m"
+  pushd . > /dev/null         # !! Otherwise update_git_repos .. . do the same !!
+  cd "$base_dir" || exit 1    # Exit if cd failed (when path contains space)
+
+
+  # Find all git repositories and update it to the master latest revision
+  for i in `find . -type d -name ".git"  -prune  2> /dev/null`; do
+      echo -e "\n\033[33m$(echo $i | sed 's/\/\.git$//')\033[0m:";
+
+      # We have to go to the .git parent directory to call the pull command
+      pushd . > /dev/null         # !! Must be pushd (user could've entered relative stuff like '.' or '..') !!
+      cd "$i"
+      cd ..
+
+      # finally pull
+      git pull # origin master;
+
+      # lets go back
+      popd  > /dev/null
+  done
+
+  echo -e "\n\033[32mFinished '$base_dir'!\033[0m\n"
+  popd > /dev/null
+done

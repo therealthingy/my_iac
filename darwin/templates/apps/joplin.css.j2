@@ -1,0 +1,406 @@
+/* {{ ansible_managed }} */
+
+/* --- Counter for headings --- */
+      /* Counter resets */
+body { counter-reset: part; }
+h2 { counter-reset: section; }
+h3 { counter-reset: sub-section; }
+h4 { counter-reset: composite; }
+h5 { counter-reset: detail; }
+
+      /* Counter increments + display format */
+h2:before {
+  counter-increment: part;
+  content: counter(part) " ";
+}
+h3:before {
+  counter-increment: section;
+  content: counter(part) "." counter(section) " ";
+}
+h4:before {
+  counter-increment: sub-section;
+  content: counter(part) "." counter(section) "." counter(sub-section) " ";
+}
+h5:before {
+  counter-increment: composite;
+  content: counter(part) "." counter(section) "." counter(sub-section) "." counter(composite) " ";
+}
+
+/* ????? ????? ????? */
+h6:before {
+  counter-increment: detail;
+  content: counter(part) "." counter(section) "." counter(sub-section) "." counter(composite) "." counter(detail) " ";
+}
+h6 {
+  color: black !important;
+}
+/* ????? ????? ????? */
+
+h1.nocount:before,
+h2.nocount:before,
+h3.nocount:before,
+h4.nocount:before,
+h5.nocount:before,
+h6.nocount:before {
+  counter-increment: none;
+  content: none !important;
+}
+
+/* Exclusion */
+h1.nocount,
+h2.nocount,
+h3.nocount,
+h4.nocount,
+h5.nocount,
+h6.nocount {
+  content: '';
+  counter-reset: none;
+}
+
+
+/* --- Positioning --- */
+.line-indent {
+  margin-left: 20px;
+}
+
+/* - Right floating images - */
+.float-right {
+  float: right;
+  margin-right: 30%;
+  border: 1px solid #ebebeb;
+
+  /* padding: 5px; */
+
+}
+
+@media screen and (max-width: 1152px) {
+  .float-right {
+    margin-right: 15%;
+  }
+}
+
+@media screen and (min-width: 1152px) {
+  .float-right {
+    margin-right: 5%;
+  }
+}
+
+/* - Horizontal centered - */
+.horizontal-centered {
+  margin: 0 auto;
+}
+
+.tablecell-valigned td {
+  vertical-align: baseline;   /* Align text in cell on top */
+}
+
+table td {
+  vertical-align: top;
+}
+
+
+/* --- Element-sizing --- */
+.ss-maxwidth { max-width: 20% !important; }
+img.ss-maxwidth { width: 20% !important; }
+.s-maxwidth { max-width: 20% !important; }
+img.s-maxwidth { width: 20% !important; }
+.sm-maxwidth { max-width: 30% !important; }
+img.sm-maxwidth { width: 30% !important; }
+.m-maxwidth { max-width: 40% !important; }
+img.m-maxwidth { width: 40% !important; }
+.ml-maxwidth { max-width: 50% !important; }
+img.ml-maxwidth { width: 50% !important; }
+.l-maxwidth { max-width: 60% !important; }
+img.l-maxwidth { width: 60% !important; }
+.lx-maxwidth { max-width: 70% !important; }
+img.lx-maxwidth { width: 70% !important; }
+.xl-maxwidth { max-width: 80% !important; }
+img.xl-maxwidth { width: 80% !important; }
+
+
+/* --- Annotations --- */
+/* underbrace (similar to latex's \underbrace); taken from https://stackoverflow.com/a/38164128
+  Usage example: <p>Uber-cool math formula: <span underbrace="Very hard math">2+2 = 1*4</span></p>
+*/
+[underbrace] {
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+}
+[underbrace]:after {
+  content: "";
+  display: block;
+  height: 6px;
+  border: 2px solid black;
+  border-top: none;
+}
+[underbrace]:before {
+  content: attr(underbrace);
+  position: absolute;
+  top: 100%;
+  font-size: 80%;
+  padding: 5px;
+  white-space: nowrap;
+  left: 50%;
+  transform: translateX(-50%)
+}
+
+
+/* --- Element styles --- */
+figure figcaption,
+.caption {
+  font-style: italic;
+  font-size: 95%;
+  text-align: center;
+}
+
+/* Fix alignment: <figcaption> should obey width of <img>;  ==> Container (figure) should only be as big as the image (img) it contains */
+figure { display: table !important;  }
+
+
+/* - Comparion list (advantages / disadvantages) - */
+ul.comparison {
+  list-style-type: none;
+
+  margin-left: 0 !important;
+}
+ul.comparison li.advantage::before,
+ul.comparison li.disadvantage::before {
+  margin-right: 3px;
+}
+ul.comparison li.advantage::before {
+  content: "⊕";   /* &oplus; */
+  color: green;
+}
+ul.comparison li.disadvantage::before {
+  content: "⊖";   /* &ominus; */
+  color: red;
+}
+
+
+.codesection {
+  font-family: monospace;
+  font-size: 85%;
+  white-space: pre;
+  background-color: #f3f4f4;
+  margin: 5px;
+
+  line-height: normal;
+
+  /* white-space: normal; */
+}
+
+/* - Code-block - */
+.code-block {
+  display: inline-block;  /* One solid block w/ continuous background-color */
+}
+
+/* - Notes - */
+table.sidenote td, table.sidenote th,
+tr.sidenote td, tr.sidenote th,
+.sidenote code,
+.sidenote strong,
+.sidenote {
+  color: gray;
+  font-size: 90%;
+}
+
+.sidenote /* img */ {               /* ??????????????????? Descendant Selector not working ???????????????????
+  -webkit-filter: grayscale(1); /* Webkit */
+  filter: gray; /* IE6-9 */
+  filter: grayscale(1); /* W3C */
+  max-width: 100%;
+
+  padding: 5px;
+}
+
+/* - Horizontal Image container - */
+.horizontal-container /* ,
+.vertical-container */ {
+  display: flex;
+
+  flex-wrap: wrap;
+  max-width: 100%;
+
+  /* justify-content: center; */
+
+  margin: 10px 0 20px;
+}
+
+/*
+.vertical-container {
+  flex-direction: column;
+}
+*/
+
+.horizontal-container > * /* ,
+.vertical-container figure > * */ {
+  margin: 15px;
+}
+
+.horizontal-container figure /* ,
+.vertical-container figure */ {
+  max-width: 20%;
+}
+
+
+/* --- Text-highlighter --- */
+.gray-highlighted {
+  background-color: Gainsboro;
+  color: black;
+}
+
+.green-highlighted {
+  background-color: LawnGreen;
+  color: black;
+}
+
+.blue-highlighted {
+  background-color: Aqua;
+  color: black;
+}
+
+.purple-highlighted {
+  background-color: DarkMagenta;
+  color: white;
+}
+
+.yellow-highlighted {
+  background-color: Yellow;
+  color: black;
+}
+
+.orange-highlighted {
+  background-color: Orange;
+  color: black;
+}
+
+.redish-highlighted {
+  background-color: LightSalmon;
+  color: black;
+}
+
+.red-highlighted {
+  background-color: Red;
+  color: black;
+}
+
+
+/* Markers */
+.questionable::before,
+.questionable::after {
+  content: "❓";
+}
+.questionable {
+  background-color: Yellow;
+  color: black;
+}
+
+.revise::before,
+.revise::after {
+  content: " 🚧 ";
+}
+
+.upper {
+  text-transform: uppercase;
+}
+
+.disproved {
+  text-decoration: line-through;
+}
+
+.important {
+  margin: 10px 0;
+  padding: 20px;
+
+  display: inline-block;
+
+  border: 3px dashed red;
+
+  text-align: center;
+
+  /* font-weight: bold; */
+}
+
+.primer {
+  border-left: 6px solid #ccc; /* .w3-leftbar */
+
+  /* ??? Prevent overlays ??? */
+  display: inline-block;
+  max-width: 100%;
+
+
+  padding: 10px;
+  /* padding: 0.01em 16px */ /* .w3-container */
+
+  border-color: #2196F3;       /* .w3-border-blue */
+  background-color: #ddffff;   /* .w3-pale-blue */
+}
+
+
+
+
+.deprecated::before {
+  content: "\2620 ";
+}
+
+.deprecated {
+  text-decoration: line-through;
+  color:  gray;
+}
+
+.apple-only::before {
+  content: "\1F34F ";
+}
+
+.gnu-only::before {
+  content: "\1F427 ";
+}
+
+.apple-only,
+.gnu-only {
+  display: inline-block;
+
+  border: 1px dotted gray;
+  color: DarkGrey;
+  font-size: 95%;
+}
+
+/* table */
+td.apple-only,
+td.gnu-only.table {
+  display: block;
+}
+
+
+
+/* --- Dark-mode fixes --- */
+@media (prefers-color-scheme: dark) {
+  h6 {
+    color: rgb(221, 221, 221) !important;
+  }
+
+  .codesection {
+    background-color: rgb(40, 44, 52);
+    color: rgb(171, 178, 191);
+  }
+
+  figure > figcaption,
+  figure.sidenote {
+    background-color: black !important;
+  }
+
+  .primer {
+    border-color: rgb(70, 70, 70);        /* .w3-border-blue */
+    background-color: rgb(40, 41, 42);    /* .w3-pale-blue */
+  }
+
+  .questionable, .questionable strong {
+    color: black;
+  }
+
+  [underbrace]:after {
+    border: 2px solid white;
+    border-top: none;    /* For some reason required (gets reset each time) */
+  }
+}

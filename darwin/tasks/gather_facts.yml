@@ -1,0 +1,35 @@
+---
+- name: Gather host data and set it as facts
+  block:
+    - name: Gather data
+      block:
+        # --  User data  --
+        - name: Get username of current user
+          ansible.builtin.shell: whoami                               # ALTERNATIVE 4 username: `id -u -n` OR ansible_user_id
+          register: result_username
+          changed_when: false
+
+        - name: Get uid of current user
+          ansible.builtin.shell: id -u
+          register: result_uid
+          changed_when: false
+
+        - name: Get gid of current user
+          ansible.builtin.shell: id -g
+          register: result_gid
+          changed_when: false
+
+
+    - name: Set variables (as facts)
+      ansible.builtin.set_fact:
+        user_name: '{{ result_username.stdout }}'
+        user_uid: '{{ result_uid.stdout }}'
+        user_gid: '{{ result_gid.stdout }}'
+        os_homedir: /Users/
+        gathered_host_facts: True
+  when: gathered_host_facts is not defined
+  become: false
+
+
+#-  ansible.builtin.debug:
+#    msg: user_name={{ user_name }}, user_uid={{ user_uid }}

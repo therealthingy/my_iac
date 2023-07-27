@@ -1,0 +1,16 @@
+---
+- name: Setup mac
+  hosts: setup_mac
+  become: true
+
+#  handlers:
+#    - name: Include handlers.
+#      ansible.builtin.import_tasks: tasks/handlers.yml
+
+  pre_tasks:
+    - name: Gather facts
+      ansible.builtin.import_tasks: tasks/gather_facts.yml
+
+  tasks:
+    - name: Install packages
+      ansible.builtin.import_tasks: tasks/packages.yml
