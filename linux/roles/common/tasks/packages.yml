@@ -26,46 +26,6 @@
     state: present
   become: true
 
-- name: nvim
-  block:
-    - name: nvim - Install
-      ansible.builtin.apt:
-        name:
-          - neovim
-      become: true
-    - name: Configure
-      block:
-        - name: "nvim - Set 'alternatives'"
-          community.general.alternatives:
-            name: '{{ common_nvim_alt.name }}'
-            link: '{{ common_nvim_alt.link }}'
-            path: '{{ common_nvim_alt.path }}'
-          with_items:
-            - { name: editor, link: /usr/bin/editor, path: /usr/bin/nvim }
-            - { name: vi,     link: /usr/bin/vi,     path: /usr/bin/nvim }
-          loop_control:
-            loop_var: common_nvim_alt
-          become: true
-        - name: Config
-          block:
-            - name: nvim - vim config
-              ansible.builtin.copy:
-                dest: '/home/{{ user_name }}/.vimrc'
-                content: |
-                  set nu
-            - name: Config (II)
-              block:
-                - name: nvim - Create config dir
-                  ansible.builtin.file:
-                    path: '/home/{{ user_name }}/.config/nvim'
-                    state: directory
-                - name: nvim - nvim config
-                  ansible.builtin.copy:
-                    dest: '/home/{{ user_name }}/.config/nvim/init.vim'
-                    content: |
-                      source ~/.vimrc
-          become: false
-
 - name: Install file archiving tools
   ansible.builtin.apt:
     name:
@@ -147,22 +107,6 @@
         state: present
       become: true
 
-    - name: Install + configure tmux
-      block:
-        - name: Install tmux
-          ansible.builtin.apt:
-            name: tmux
-            state: present
-          become: true
-        - name: Copy config file
-          ansible.builtin.copy:
-            src: tmux.conf
-            dest: '/home/{{ user_name }}/.tmux.conf'
-            owner: '{{ user_name }}'
-            group: '{{ user_name }}'
-            mode: 0644
-          become: false
-
 - name: Privacy tools
   block:
     - name: Install privacy tools
@@ -175,7 +119,7 @@
 
     - name: Install luks sparse file helper
       ansible.builtin.template:
-        src: luks-sparse_helper.j2
+        src: bin/luks-sparse_helper.j2
         dest: /usr/local/bin/luks-sparse_helper
         owner: root
         group: root
@@ -212,6 +156,6 @@
 
 - ansible.builtin.include_tasks: '{{ item }}'
   loop:
+    - package-SHARED.yml
     - package-python.yml
-    - package-zsh.yml
 #    - package-nala.yml
