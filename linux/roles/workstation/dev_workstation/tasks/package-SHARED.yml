@@ -1,0 +1,24 @@
+---
+# SHARED b/w darwin & linux
+- name: Install LaTeX
+  block:
+    - name: Install
+      block:
+#        - name: '[Linux] Install'
+#          ansible.builtin.apt:
+#            name:
+#              - texlive-full
+#            state: present
+#          when: ansible_facts['os_family'] != "Darwin"
+        - name: '[Darwin] Install'
+          ansible.builtin.debug:
+            msg: "!!!!!!!!!!!!!!!!                            TODO"
+          when: ansible_facts['os_family'] == "Darwin"
+      become: true
+    - name: Copy config
+      ansible.builtin.template:
+        src: 'latexmkrc.j2'
+        dest: '{{os_homedir}}/{{ user_name }}/.latexmkrc'
+        owner: '{{ user_name }}'
+        group: '{{ user_group_name }}'
+        mode: 0644

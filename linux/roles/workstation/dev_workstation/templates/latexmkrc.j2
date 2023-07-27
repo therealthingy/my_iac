@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+{% if ansible_facts.os_family == 'Darwin' %}
+$pdf_previewer = 'open -a Skim';
+{% else %}
+# !!!!!!!!!!!!!!!!                            TODO: LINUX
+{% endif %}
+$pdflatex = 'pdflatex -synctex=1 -interaction=nonstopmode';
+$bibtex_use = 2;                                  # Otherwise `latexmk` won't clean .bbl files  (see https://tex.stackexchange.com/a/83384)
+$clean_ext = ('fls', 'xdy', 'run.xml);
+@generated_exts = (@generated_exts, 'acn', 'glo', 'glsdefs', 'ist', 'lol', 'out.ps', 'syg', 'synctex.gz');

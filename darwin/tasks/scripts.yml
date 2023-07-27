@@ -1,0 +1,46 @@
+---
+- name: Scripts
+  block:
+    - name: Create dir
+      block:
+        - name: Create dir
+          ansible.builtin.file:
+            path: '/Users/{{ user_name }}/bin'
+            state: directory
+            owner: '{{ user_name }}'
+            group: '{{ user_group_name }}'
+            mode: 0755
+        - name: Hide dir
+          ansible.builtin.shell: chflags hidden '/Users/{{ user_name }}/bin'
+          changed_when: false       # !!!!!!!!!!!!!!!!                            TODO: REVISE
+    - name: Copy scripts
+      ansible.builtin.template:
+        src: '{{ config_file.src }}.j2'
+        dest: '{{ config_file.dest_file }}'
+        owner: '{{ config_file.owner }}'
+        group: '{{ config_file.group }}'
+        mode: 0755
+      with_items:
+        - { src: 'bin/home/git-update_repos', dest_file: '/Users/{{ user_name }}/bin/git-update_repos', owner: '{{ user_name }}', group: '{{ user_group_name }}' }
+        - { src: 'bin/usr/dd-obs_test', dest_file: '/usr/local/bin/dd-obs_test', owner: '{{ user_name }}', group: '{{ user_group_name }}' }  #owner: 'root', group: 'wheel'
+      loop_control:
+        loop_var: config_file
+      become: false
+
+
+- name: Finder services
+  ansible.builtin.copy:
+    src: 'finder-workflows/{{ workflow_file }}/'
+    dest: '/Users/{{user_name}}/Library/Services/{{ workflow_file }}'
+    owner: '{{ user_name }}'
+    group: '{{ user_group_name }}'
+    mode: 0755
+  with_items:
+    - 'Clean LaTeX Junk.workflow'
+    - 'Combine PDFs.workflow'
+    - 'Convert PDFs to images.workflow'
+    - 'MP4 to MP3.workflow'
+    - 'Video to GIF.workflow'
+  loop_control:
+    loop_var: workflow_file
+  become: false

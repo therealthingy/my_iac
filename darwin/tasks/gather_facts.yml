@@ -1,4 +1,5 @@
 ---
+# TODO: MERGE W/ linux
 - name: Gather host data and set it as facts
   block:
     - name: Gather data
@@ -19,10 +20,17 @@
           register: result_gid
           changed_when: false
 
+        - name: Get CPU arch
+          ansible.builtin.shell: uname -m
+          register: result_uname
+          changed_when: false
+
 
     - name: Set variables (as facts)
       ansible.builtin.set_fact:
+        cpu_arch: '{{ result_uname.stdout }}'
         user_name: '{{ result_username.stdout }}'
+        user_group_name: 'staff'
         user_uid: '{{ result_uid.stdout }}'
         user_gid: '{{ result_gid.stdout }}'
         os_homedir: /Users/

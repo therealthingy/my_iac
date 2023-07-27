@@ -1,6 +1,6 @@
 ---
 - name: Setup mac
-  hosts: setup_mac
+  hosts: macs
   become: true
 
 #  handlers:
@@ -14,3 +14,6 @@
   tasks:
     - name: Install packages
       ansible.builtin.import_tasks: tasks/packages.yml
+
+    - name: Install scripts/extensions
+      ansible.builtin.import_tasks: tasks/scripts.yml

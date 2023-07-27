@@ -78,6 +78,9 @@ zstyle ':omz:update' mode auto      # update automatically without asking
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+{% if ansible_facts.os_family == 'Darwin' %}
+    macos
+{% endif %}
     colored-man-pages
     git
     zsh-autosuggestions
@@ -129,6 +132,16 @@ fi
 ################################################################################################
 # --- Misc.
 ################################################################################################
+{% if ansible_facts.os_family == 'Darwin' and cpu_arch == "arm64" %}
+# -- homebrew (due 2 ARM) --
+export PATH=/opt/homebrew/bin:$PATH
+export PATH=/opt/homebrew/sbin:$PATH
+{% endif %}
+
+## - zsh-integrations
+#test -e "${ZDOTDIR}/.iterm2_shell_integration.zsh" && source "${ZDOTDIR}/.iterm2_shell_integration.zsh"
+#source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
 # -- !! TODO: SHOULD BE GLOBAL !! --
 export PATH="$HOME/.local/bin:$PATH"       # NOTE: ~/.local/bin contains Python pip stuff
 
@@ -143,4 +156,8 @@ ZSH_FUNC_FOLDER=$ZDOTDIR
 path-add "/usr/local/sbin"     "after"
 path-add "/usr/sbin"           "after"
 path-add "/sbin"               "after"
+{% else %}
+#path-add "/opt/homebrew/opt/sphinx-doc/bin" "before"
+#path-add "$HOME/.npm-global/bin" "before"
+path-add "$HOME/.gem/ruby/2.6.0/bin" "before"
 {% endif %}

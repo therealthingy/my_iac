@@ -11,7 +11,7 @@
     src: conkyrc
     dest: '/home/{{ user_name }}/.conkyrc'
     owner: '{{ user_name }}'
-    group: '{{ user_name }}'
+    group: '{{ user_group_name }}'
     mode: 0644
   become: false
 
@@ -21,7 +21,7 @@
     path: '/home/{{ user_name }}/.config/autostart/'
     state: directory
     owner: '{{ user_name }}'
-    group: '{{ user_name }}'
+    group: '{{ user_group_name }}'
     mode: 0755
   become: false
 
@@ -37,6 +37,6 @@
       Categories=Utility;
     dest: '/home/{{ user_name }}/.config/autostart/conky.desktop'
     owner: '{{ user_name }}'
-    group: '{{ user_name }}'
+    group: '{{ user_group_name }}'
     mode: 0644
   become: false

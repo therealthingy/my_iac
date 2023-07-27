@@ -42,10 +42,11 @@
     - name: Set variables (as facts)
       ansible.builtin.set_fact:
         user_name: '{{ result_username.stdout }}'
+        user_group_name: '{{ result_username.stdout }}'
         user_uid: '{{ result_uid.stdout }}'
         user_gid: '{{ result_gid.stdout }}'
         docker_gid: '{{ result_docker_gid.stdout }}'
-        deb_architecture: '{{ result_deb_architecture.stdout }}'
+        cpu_architecture: '{{ result_deb_architecture.stdout }}'
         kernel_release: '{{ result_kernel_release.stdout }}'
         gathered_host_facts: True
   when: gathered_host_facts is not defined
@@ -53,4 +54,4 @@
 
 
 #-  ansible.builtin.debug:
-#    msg: user_name={{ user_name }}, user_uid={{ user_uid }}, docker_gid={{ docker_gid }}, kernel_release={{ kernel_release }}, deb_architecture={{ deb_architecture }}
+#    msg: user_name={{ user_name }}, user_uid={{ user_uid }}, docker_gid={{ docker_gid }}, kernel_release={{ kernel_release }}, cpu_architecture={{ cpu_architecture }}

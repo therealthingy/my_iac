@@ -76,7 +76,7 @@
 
 ## RUN Playbook
 * Cache SSH passphrase: `eval `ssh-agent` && ssh-add ~/.ssh/<cert-file>`
-* Exec 4 specific client: **`ansible-playbook --vault-pass-file ~/.ansible-vault run.yml`**
+* Exec 4 specific client: **`ansible-playbook --vault-pass-file ~/.ansible-vault main.yml`**
   * Flags:
     * `--ask-vault-pass`  (when not using `--vault-pass-file <file>`)
     * **`--ask-become-pass`**  (may be required for 1st ansible run (if not set as host var '`ansible_sudo_pass`' in inventory), but not afterwards (due to passwordless sudo))
@@ -106,7 +106,7 @@
 
 ## Misc. commands
 ### Dev
-* Validate playbook: `ansible-playbook run.yml --syntax-check`
+* Validate playbook: `ansible-playbook main.yml --syntax-check`
 * Encrypt:
   * `ansible-vault encrypt <file>`   /   `ansible-vault decrypt <file>`
   * `ansible-vault encrypt_string <string>`

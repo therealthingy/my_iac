@@ -18,7 +18,7 @@
     src: settings.json
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/settings.json'
     owner: '{{ user_name }}'
-    group: '{{ user_name }}'
+    group: '{{ user_group_name }}'
     mode: 0644
   become: false
 

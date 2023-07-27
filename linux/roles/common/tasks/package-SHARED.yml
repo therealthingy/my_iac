@@ -1,31 +1,31 @@
 ---
 # SHARED b/w darwin & linux
-- name: Install zsh
+- name: zsh
   block:
     - name: Install
       block:
-        - name: zsh - Install
+        - name: '[Linux] Install'
           ansible.builtin.apt:
             name:
               - zsh
             state: present
           when: ansible_facts['os_family'] != "Darwin"
-        - name: zsh - Install
+        - name: '[Darwin] Install'
           ansible.builtin.debug:
-            msg: "TODO"
+            msg: "!!!!!!!!!!!!!!!!                            TODO"
           when: ansible_facts['os_family'] == "Darwin"
       become: true
 
-    - name: zsh - Create zsh config dir
+    - name: Create zsh config dir
       ansible.builtin.file:
         path: '{{os_homedir}}/{{ user_name }}/.config/zsh/'
         state: directory
         owner: '{{ user_name }}'
-        group: '{{ user_name }}'
+        group: '{{ user_group_name }}'
         mode: 0755
       become: false
 
-    - name: zsh - Install oh-my-zsh
+    - name: Install oh-my-zsh
       ansible.builtin.git:
         repo: https://github.com/ohmyzsh/ohmyzsh.git
         dest: '{{os_homedir}}/{{ user_name }}/.config/zsh/.oh-my-zsh/'
@@ -34,7 +34,7 @@
         update: true
       become: false
 
-    - name: zsh - Install oh-my-zsh plugins
+    - name: Install oh-my-zsh plugins
       ansible.builtin.git:
         repo: 'https://github.com/zsh-users/{{ plugin }}'
         dest: '{{os_homedir}}/{{ user_name }}/.config/zsh/.oh-my-zsh/custom/plugins/{{ plugin }}/'
@@ -48,7 +48,7 @@
         loop_var: plugin
       become: false
 
-    - name: zsh - Install fonts for Powerlevel10k theme (ONLY required when using Terminal Emulators in Desktop environments)
+    - name: '[Linux] Install fonts for Powerlevel10k theme (ONLY required when using Terminal Emulators in Desktop environments)'
       ansible.builtin.apt:
         name:
           - fonts-powerline
@@ -56,7 +56,7 @@
       when: ansible_facts['os_family'] != "Darwin"
       become: true
 
-    - name: zsh - Install Powerlevel10k theme
+    - name: Install Powerlevel10k theme
       ansible.builtin.git:
         repo: 'https://github.com/romkatv/powerlevel10k.git'
         dest: '{{os_homedir}}/{{ user_name }}/.config/zsh/.oh-my-zsh/custom/themes/powerlevel10k/'
@@ -65,12 +65,12 @@
         update: true
       become: false
 
-    - name: zsh - Copy config files I
+    - name: Copy config files I
       ansible.builtin.template:
         src: '{{ config_file.src }}'
         dest: '{{os_homedir}}/{{ user_name }}/.config/zsh/{{ config_file.dest_file }}'
         owner: '{{ user_name }}'
-        group: '{{ user_name }}'
+        group: '{{ user_group_name }}'
         mode: 0644
       with_items:
         - { src: 'zsh/zshenv.j2', dest_file: '.zshenv' }
@@ -79,7 +79,7 @@
         loop_var: config_file
       become: false
 
-    - name: zsh - Copy config files II
+    - name: Copy config files II
       ansible.builtin.template:
         src: '{{ config_file.src }}'
         dest: '{{os_homedir}}/{{ user_name }}/.config/zsh/{{ config_file.dest_file }}'
@@ -90,31 +90,31 @@
         loop_var: config_file
       become: false
 
-    - name: zsh - Set config dir
+    - name: Set config dir
       ansible.builtin.file:
         src: '{{os_homedir}}/{{ user_name }}/.config/zsh/.zshenv'
         dest: '{{os_homedir}}/{{ user_name }}/.zshenv'
         state: link
       become: false
 
-    - name: zsh - Change shell
+    - name: Change shell
       ansible.builtin.user:
         name: '{{ user_name }}'
         shell: /bin/zsh
       become: true
 
 
-- name: Install nvim
+- name: nvim
   block:
-    - name: nvim - Install
+    - name: '[Linux] Install'
       block:
         - name: Install
           ansible.builtin.apt:
             name: neovim
           when: ansible_facts['os_family'] != "Darwin"
-        - name: nvim - Install
+        - name: '[Darwin] Install'
           ansible.builtin.debug:
-            msg: "TODO"
+            msg: "!!!!!!!!!!!!!!!!                            TODO"
           when: ansible_facts['os_family'] == "Darwin"
       become: true
     - name: Configure
@@ -125,20 +125,21 @@
               ansible.builtin.template:
                 src: nvim.j2
                 dest: '{{os_homedir}}/{{ user_name }}/.vimrc'
-                mode: 0755
+                mode: 0644
             - name: Config (II)
               block:
-                - name: nvim - Create config dir
+                - name: Create config dir
                   ansible.builtin.file:
                     path: '{{os_homedir}}/{{ user_name }}/.config/nvim'
                     state: directory
-                - name: nvim - nvim config
+                - name: Copy config
                   ansible.builtin.copy:
                     dest: '{{os_homedir}}/{{ user_name }}/.config/nvim/init.vim'
                     content: |
                       source ~/.vimrc
+                    mode: 0644
           become: false
-        - name: "nvim - Set 'alternatives'"
+        - name: '[Linux] Set "alternatives"'
           community.general.alternatives:
             name: '{{ common_nvim_alt.name }}'
             link: '{{ common_nvim_alt.link }}'
@@ -152,18 +153,18 @@
           become: true
 
 
-- name: Install + configure tmux
+- name: tmux
   block:
     - name: Install
       block:
-        - name: Install tmux
+        - name: '[Linux] Install'
           ansible.builtin.apt:
             name: tmux
             state: present
           when: ansible_facts['os_family'] != "Darwin"
-        - name: Install tmux
+        - name: '[Darwin] Install'
           ansible.builtin.debug:
-            msg: "TODO"
+            msg: "!!!!!!!!!!!!!!!!                            TODO"
           when: ansible_facts['os_family'] == "Darwin"
       become: true
     - name: Copy config file
@@ -171,6 +172,31 @@
         src: tmux.conf.j2
         dest: '{{os_homedir}}/{{ user_name }}/.tmux.conf'
         owner: '{{ user_name }}'
-        group: '{{ user_name }}'
+        group: '{{ user_group_name }}'
+        mode: 0644
+      become: false
+
+
+- name: htop
+  block:
+    - name: Install
+      block:
+        - name: '[Linux] Install'
+          ansible.builtin.apt:
+            name:
+              - htop
+            state: present
+          when: ansible_facts['os_family'] != "Darwin"
+        - name: '[Darwin] Install'
+          ansible.builtin.debug:
+            msg: "!!!!!!!!!!!!!!!!                            TODO"
+          when: ansible_facts['os_family'] == "Darwin"
+      become: true
+    - name: Copy config
+      ansible.builtin.template:
+        src: htoprc.j2
+        dest: '{{os_homedir}}/{{ user_name }}/.htoprc'
+        owner: '{{ user_name }}'
+        group: '{{ user_group_name }}'
         mode: 0644
       become: false
