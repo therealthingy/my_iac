@@ -151,7 +151,7 @@ ZSH_FUNC_FOLDER=$ZDOTDIR
 
 # - PATH (! requires function from '.zshfunc' !)
 #path-add "$HOME/bin" "before"
-{% if ansible_facts.distribution == 'Debian' %}
+{% if ansible_facts.distribution != 'Darwin' %}
 # NOTE: 4 some inexplicable reason, those paths are already in $PATH on Ubuntu, but NOT on Debian
 path-add "/usr/local/sbin"     "after"
 path-add "/usr/sbin"           "after"

@@ -1,8 +1,9 @@
-# TODO
+# Playbook for Darwin machines
 
 RUN: `ansible-playbook main.yml`
 
 
+# TODO:
 ## THINGS 2 CONSIDER 4 Mac playbook
 - User should have name 'gg'
 - SW:

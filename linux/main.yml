@@ -36,6 +36,7 @@
     dock_favorite_apps:
       - "'org.gnome.Nautilus.desktop'"
       - "'{{ firefox_package_name }}.desktop'"
+      - "'brave-browser.desktop'"
       - "'codium.desktop'"
       - "'terminator.desktop'"
       - "'gnome-system-monitor.desktop'"
