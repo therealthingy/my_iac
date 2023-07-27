@@ -150,13 +150,13 @@ ZSH_FUNC_FOLDER=$ZDOTDIR
 [[ ! -f "$ZSH_FUNC_FOLDER/.zshfunc" ]] || source "$ZSH_FUNC_FOLDER/.zshfunc"
 
 # - PATH (! requires function from '.zshfunc' !)
-#path-add "$HOME/bin" "before"
-{% if ansible_facts.distribution != 'Darwin' %}
+{% if ansible_facts.os_family != 'Darwin' %}
 # NOTE: 4 some inexplicable reason, those paths are already in $PATH on Ubuntu, but NOT on Debian
 path-add "/usr/local/sbin"     "after"
 path-add "/usr/sbin"           "after"
 path-add "/sbin"               "after"
 {% else %}
+path-add "$HOME/bin" "before"
 #path-add "/opt/homebrew/opt/sphinx-doc/bin" "before"
 #path-add "$HOME/.npm-global/bin" "before"
 path-add "$HOME/.gem/ruby/2.6.0/bin" "before"
