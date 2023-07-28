@@ -157,7 +157,8 @@ path-add "/usr/sbin"           "after"
 path-add "/sbin"               "after"
 {% else %}
 path-add "$HOME/bin" "before"
+path-add "/Library/TeX/texbin/" "after"
 #path-add "/opt/homebrew/opt/sphinx-doc/bin" "before"
 #path-add "$HOME/.npm-global/bin" "before"
-path-add "$HOME/.gem/ruby/2.6.0/bin" "before"
+#path-add "$HOME/.gem/ruby/2.6.0/bin" "before"
 {% endif %}
