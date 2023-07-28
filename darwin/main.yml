@@ -12,6 +12,9 @@
       ansible.builtin.import_tasks: tasks/gather_facts.yml
 
   tasks:
+    - name: Config
+      ansible.builtin.import_tasks: tasks/config.yml
+
     - name: Install packages
       ansible.builtin.import_tasks: tasks/packages.yml
 

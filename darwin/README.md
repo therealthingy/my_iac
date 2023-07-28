@@ -37,12 +37,6 @@ RUN: `ansible-playbook main.yml`
     `defaults write com.apple.screencapture type JPG` (JPG, PNG, TIFF, PDF)
   * **Disable shadow for window Screenshots** (via `Command + Shift + 4` &rarr; `Space`):
     `defaults write com.apple.screencapture disable-shadow -bool TRUE; killall SystemUIServer`
-  * **Make apps hidden in Dock**
-    `defaults write com.apple.Dock showhidden -bool TRUE; killall Dock`
-  * **Eliminate Dock reveal delay**
-    * No animation: `defaults write com.apple.dock autohide-time-modifier -int 0;killall Dock`
-    * Super-fast animation: `defaults write com.apple.dock autohide-time-modifier -float 0.12;killall Dock`
-    * Revert to default: `defaults delete com.apple.dock autohide-time-modifier;killall Dock`
 
 
 ## Apps

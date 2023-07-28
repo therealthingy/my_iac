@@ -1,0 +1,12 @@
+---
+- name: 'Config (changes will take effect after logging in again)'
+  community.general.osx_defaults:
+    domain: '{{ item.domain }}'
+    key: '{{ item.key }}'
+    type: '{{ item.type }}'
+    value: '{{ item.value }}'
+    state: present
+  with_items:
+    - { domain: 'com.apple.Dock', key: 'showhidden', value: 'true', type: 'boolean' }       # Apps hidden in Dock
+    - { domain: 'com.apple.dock', key: 'autohide-time-modifier', value: '0', type: 'int' }  # Eliminate Dock reveal delay
+  become: false

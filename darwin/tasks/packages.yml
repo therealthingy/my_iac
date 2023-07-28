@@ -15,80 +15,99 @@
     loop_var: included_task
 
 
-- name: Joplin
+- name: Notes
+  block:
+    - name: Create dir
+      ansible.builtin.file:
+        path: /Applications/Notes
+        state: directory
+        owner: '{{ user_name }}'
+        group: '{{user_group_name}}'
+        mode: 0755
+    - name: Install
+      block:
+        - name: Joplin
+          block:
+            - name: Install
+              community.general.homebrew_cask:
+                name: joplin
+                state: latest
+                install_options: appdir=/Applications/Notes
+            - name: Config
+              block:
+                - name: Create dir
+                  ansible.builtin.file:
+                    path: '/Users/{{ user_name }}/.config/joplin-desktop'
+                    state: directory
+                    owner: '{{ user_name }}'
+                    group: '{{user_group_name}}'
+                    mode: 0755
+                - name: Copy config
+                  ansible.builtin.template:
+                    src: apps/joplin.css.j2
+                    dest: '/Users/{{ user_name }}/.config/joplin-desktop/basenotestyle.css'
+                    mode: 0755
+  become: false
+
+
+- name: Utilities
+  block:    # Install stuff …
+    - name: iTerm
+      block:
+        - name: Install
+          community.general.homebrew_cask:
+            name: iterm2
+            state: latest
+            install_options: appdir=/Applications/Utilities
+        - name: Config
+          block:
+            - name: Create dir
+              ansible.builtin.file:
+                path: '/Users/{{ user_name }}/.config/iterm2'
+                state: directory
+                owner: '{{ user_name }}'
+                group: '{{ user_group_name }}'
+                mode: 0755
+            - name: Copy config
+              ansible.builtin.copy:
+                src: apps/com.googlecode.iterm2.plist
+                dest: '/Users/{{ user_name }}/.config/iterm2/com.googlecode.iterm2.plist'
+                mode: 0755
+            - name: Set config
+              community.general.osx_defaults:
+                domain: com.googlecode.iterm2
+                key: '{{ item.key }}'
+                type: '{{ item.type }}'
+                value: '{{ item.value }}'
+                state: present
+              with_items:
+                - { key: 'PrefsCustomFolder', value: '/Users/{{ user_name }}/.config/iterm2/', type: 'string' }
+                - { key: 'LoadPrefsFromCustomFolder', value: 'true', type: 'bool' }
+  become: false
+
+
+- name: hblock
   block:
     - name: Install
-      ansible.builtin.debug:
-        msg: "!!!!!!!!!!!!!!!!                            TODO"
-    - name: Config
-      block:
-        - name: Create dir
-          ansible.builtin.file:
-            path: '/Users/{{ user_name }}/.config/joplin-desktop'
-            state: directory
-            owner: '{{ user_name }}'
-            group: '{{user_group_name}}'
-            mode: 0755
-        - name: Copy config
-          ansible.builtin.template:
-            src: apps/joplin.css.j2
-            dest: '/Users/{{ user_name }}/.config/joplin-desktop/basenotestyle.css'
-            mode: 0755
+      community.general.homebrew:
+        name: hblock
+        state: latest
       become: false
-
-
-- name: Install iTerm
-  block:
-    - name: Install
-      ansible.builtin.debug:
-        msg: "TODO"
     - name: Config
       block:
         - name: Create dir
           ansible.builtin.file:
-            path: '/Users/{{ user_name }}/.config/iterm2'
+            path: /etc/hblock.d
             state: directory
-            owner: '{{ user_name }}'
-            group: '{{ user_group_name }}'
-            mode: 0755
-        - name: Copy config
-          ansible.builtin.copy:
-            src: apps/com.googlecode.iterm2.plist
-            dest: '/Users/{{ user_name }}/.config/iterm2/com.googlecode.iterm2.plist'
-            mode: 0755
-        - name: Set config
-          community.general.osx_defaults:
-            domain: com.googlecode.iterm2
-            key: '{{ item.key }}'
-            type: '{{ item.type }}'
-            value: '{{ item.value }}'
-            state: present
-          with_items:
-            - { key: 'PrefsCustomFolder', value: '/Users/{{ user_name }}/.config/iterm2/', type: 'string' }
-            - { key: 'LoadPrefsFromCustomFolder', value: 'true', type: 'bool' }
-      become: false
-
-
-- name: Install hblock
-  block:
-    - name: Install
-      ansible.builtin.debug:
-        msg: "!!!!!!!!!!!!!!!!                            TODO"
-    - name: Config
-      block:
-        - name: Create dir
-          ansible.builtin.file:
-            path: '/etc/hblock.d'
-            state: directory
-            owner: 'root'
-            group: 'wheel'
+            owner: root
+            group: wheel
             mode: 0755
         - name: Copy config
           ansible.builtin.template:
             src: 'config/hblock/{{ config_file }}.j2'
             dest: '/etc/hblock.d/{{ config_file }}'
-            owner: 'root'
-            group: 'wheel'
+            owner: root
+            group: wheel
             mode: 0755
           with_items:
             - 'header'
@@ -97,6 +116,19 @@
           loop_control:
             loop_var: config_file
         - name: Setup cron job
-          ansible.builtin.debug:
-            msg: "!!!!!!!!!!!!!!!!                            TODO     (  `sudo crontab -l -u root | awk '!/hblock/' | { cat; echo \"${CRON_TIME}  ${HBLOCK_COMMAND}\"; } | sudo crontab -u root -`  )"
+          block:
+            - name: Get path of hblock exec
+              ansible.builtin.shell: which hblock
+              register: result_hblock
+              changed_when: false
+            - name: Add cron job
+              ansible.builtin.cron:
+                name: hblock autoupdate
+                minute: "0"
+                hour: "18"
+                dom: "*/3"
+                month: "*"
+                dow: "*"
+                user: root
+                job: '{{ result_hblock.stdout }} -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list -q'
       become: true
