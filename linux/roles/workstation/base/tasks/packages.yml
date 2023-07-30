@@ -80,6 +80,15 @@
       become: false
       when: ansible_facts['os_family'] == "Darwin"
 
+- name: '[Darwin / Debian/Ubuntu] Install "Office stuff"'
+  ansible.builtin.package:
+    name:
+      - pandoc                # Converts b/w doc formats
+      - aspell
+      - ispell
+      - hunspell
+  become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
+
 - ansible.builtin.include_tasks: '{{ item }}'
   loop:
 #    - package-kitty.yml
