@@ -8,6 +8,7 @@
       - openvpn
     state: present
   become: true
+  when: ansible_facts['os_family'] != "Darwin"
 
 #- name: Install db tools
 #  community.general.flatpak:
@@ -16,24 +17,34 @@
 #      - io.dbeaver.DBeaverCommunity
 #    state: present
 #  become: true
+#  when: ansible_facts['os_family'] != "Darwin"
 
 - name: Install misc tools
   block:
-    - community.general.flatpak:
+    - name: '[Debian/Ubuntu]'
+      block:
+        - community.general.flatpak:
+            name:
+              - com.github.tchx84.Flatseal             # Helps managing Flatpak permissions & file storage
+              - org.ghidra_sre.Ghidra
+#              - com.github.artemanufrij.graphui        # Graph visualization based on graphviz with included a text editor and a preview area
+#              - com.github.artemanufrij.regextester
+#              - com.syntevo.SmartGit
+#              - com.getpostman.Postman
+            state: present
+#        - ansible.builtin.apt:
+#          name:
+#            - timeshift
+#          state: present
+      become: true
+      when: ansible_facts['os_family'] != "Darwin"
+    - name: '[Darwin / Debian/Ubuntu]'
+      ansible.builtin.package:
         name:
-          - com.github.tchx84.Flatseal             # Helps managing Flatpak permissions & file storage
-          - org.ghidra_sre.Ghidra
-          #- com.github.artemanufrij.graphui        # Graph visualization based on graphviz with included a text editor and a preview area
-          #- com.github.artemanufrij.regextester
-          - com.syntevo.SmartGit
-          - com.getpostman.Postman
-        state: present
-    - ansible.builtin.apt:
-        name:
+          - flashrom
           - graphviz
-          #- timeshift
-        state: present
-  become: true
+          - jq
+      become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
 
 
 ## KEEP IN MIND: Logout is required for app to show up
@@ -44,7 +55,8 @@
 #      - com.jetbrains.PyCharm-Professional
 #    state: present
 #  become: true
+#  when: ansible_facts['os_family'] != "Darwin"
 
 
 - name: Install shared packages
-  ansible.builtin.import_tasks: ./package-SHARED.yml
+  ansible.builtin.import_tasks: ./package-latex.yml

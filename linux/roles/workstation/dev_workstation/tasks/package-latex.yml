@@ -1,5 +1,4 @@
 ---
-# SHARED b/w darwin & linux
 - name: Install LaTeX
   block:
     - name: Install

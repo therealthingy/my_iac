@@ -2,12 +2,21 @@
 - name: Install Python and tools
   block:
     - name: Python interpreter + pip
-      ansible.builtin.apt:
-        update_cache: true
-        name:
-          - python3-full
-          - python3-pip
-        state: present
+      block:
+        - name: '[Debian/Ubuntu]'
+          ansible.builtin.apt:
+            update_cache: true
+            name:
+              - python3-full
+              - python3-pip
+            state: present
+          when: ansible_facts['os_family'] != "Darwin"
+        - name: '[Darwin]'
+          community.general.homebrew:
+            name:
+              - python
+          become: false
+          when: ansible_facts['os_family'] == "Darwin"
     - name: Misc.
       ansible.builtin.apt:
         update_cache: true
@@ -16,6 +25,7 @@
           - python3-psutil      # Required for `dconf` module
           - python3-apt         # Required by Ansible modules
         state: present
+      when: ansible_facts['os_family'] != "Darwin"
   become: true
 
 
@@ -33,6 +43,7 @@
         link: /usr/bin/pip
         path: /usr/bin/pip3
   become: true
+  when: ansible_facts['os_family'] != "Darwin"
 
 
 - name: Install pip packages

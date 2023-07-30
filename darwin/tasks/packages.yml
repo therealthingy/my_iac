@@ -1,196 +1,185 @@
 ---
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  TODO: ADD ACTUAL BREW INSTALLATION STEPS  (https://docs.ansible.com/ansible/latest/collections/community/general/homebrew_module.html)  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#- community.general.homebrew:
-#    name: foo
-#    state: latest
-#    update_homebrew: true
 
-
-- name: Install shared packages
+- name: Install packages
   ansible.builtin.include_tasks: '{{ included_task }}'
   loop:
-    - ../../linux/roles/common/tasks/package-SHARED.yml
-    - ../../linux/roles/workstation/dev_workstation/tasks/package-SHARED.yml
+    - ../../linux/roles/common/tasks/packages.yml
+    - ../../linux/roles/server/dev_server/tasks/packages.yml
+    - ../../linux/roles/workstation/base/tasks/packages.yml
+    - ../../linux/roles/workstation/dev_workstation/tasks/packages.yml
+    - ../../linux/roles/workstation/il_workstation/tasks/packages.yml
   loop_control:
     loop_var: included_task
 
 
-- name: UI apps
+- name: 'UI apps: Install'
   block:
-    - name: Install
+    - name: App Store
+      ansible.builtin.debug:
+        msg: "!!!!!!!!!!!!!!!!                            TODO"
+    - name: homebrew
       block:
-        - name: App Store
-          ansible.builtin.debug:
-            msg: "!!!!!!!!!!!!!!!!                            TODO"
-        - name: homebrew
-          block:
-            - name: Create dir
-              ansible.builtin.file:
-                path: '/Applications/{{ item.dir }}'
-                state: directory
-                owner: '{{ user_name }}'
-                group: '{{user_group_name}}'
-                mode: 0755
-              with_items: '{{ packages }}'
-            - name: Install packages
-              community.general.homebrew_cask:
-                name: '{{ item.1 }}'
-                state: latest
-                install_options: 'appdir=/Applications/{{ item.0.dir }}'
-              with_subelements:
-                - "{{ packages }}"
-                - packages
-          vars:
-            packages:
-              - dir: Audio
-                packages: ['mediahuman-audio-converter', 'ocenaudio']
-              - dir: Benchmark
-                packages: ['amorphousdiskmark']
-              - dir: Design
-                packages: ['inkscape', 'paintbrush']
-              - dir: Development
-                packages: ['sourcetree', 'iterm2']
-              - dir: Development/API
-                packages: ['postman']
-              - dir: Development/DB
-                packages: ['db-browser-for-sqlite', 'mysqlworkbench', 'sequel-ace']
-              - dir: Development/Editors
-                packages: ['hex-fiend', 'sublime-text', 'vscodium']
-              - dir: Development/IDEs
-                packages: ['clion']
-              - dir: Education
-                packages: []
-              - dir: Internet/Browsers
-                packages: ['brave-browser', 'librewolf', 'tor-browser']
-              - dir: Internet/Conferencing
-                packages: ['discord']
-              - dir: Internet/Tools
-                packages: ['cyberduck', 'netnewswire', 'syncthing', 'transmission']
-              - dir: Maintenance
-                packages: ['aldente', 'appcleaner', 'omnidisksweeper', 'onyx']
-              - dir: Misc
-                packages: ['apparency', 'istat-menus', 'qlmarkdown', 'raycast']
-              - dir: Music
-                packages: []      # TODO: Spotify
-              - dir: Network
-                packages: ['angry-ip-scanner', 'wireshark']
-              - dir: Notes
-                packages: ['fsnotes', 'joplin']
-              - dir: Office
-                packages: ['drawio', 'pdf-expert', 'slidepilot']
-              - dir: Office/Misc
-                packages: []        # TODO: SoftMaker FreeOffice
-              - dir: Package
-                packages: ['keka', 'pacifist']
-              - dir: Security
-                packages: ['blockblock', 'dhs', 'kextviewr', 'knockknock', 'suspicious-package', 'taskexplorer', 'whatsyoursign']
-              - dir: Social
-                packages: ['signal']
-              - dir: Tools
-                packages: ['betterdisplay', 'imageoptim', 'keycastr']
-              - dir: Tools/Virtualization
-                packages: ['vmware-fusion']
-              - dir: Video
-                packages: ['iina', 'vlc']
-          become: false
-
-    - name: App config
-      block:
-        - name: TODO
-          ansible.builtin.debug:
-            msg: "!!!!!!!!!!!!!!!!                            TODO"
-    
-        - name: Config Joplin
-          block:
-            - name: Create dir
-              ansible.builtin.file:
-                path: '/Users/{{ user_name }}/.config/joplin-desktop'
-                state: directory
-                owner: '{{ user_name }}'
-                group: '{{user_group_name}}'
-                mode: 0755
-            - name: Copy config
-              ansible.builtin.template:
-                src: apps/joplin.css.j2
-                dest: '/Users/{{ user_name }}/.config/joplin-desktop/basenotestyle.css'
-                mode: 0755
-    
-        - name: Config iTerm
-          block:
-            - name: Create dir
-              ansible.builtin.file:
-                path: '/Users/{{ user_name }}/.config/iterm2'
-                state: directory
-                owner: '{{ user_name }}'
-                group: '{{ user_group_name }}'
-                mode: 0755
-            - name: Copy config
-              ansible.builtin.copy:
-                src: apps/com.googlecode.iterm2.plist
-                dest: '/Users/{{ user_name }}/.config/iterm2/com.googlecode.iterm2.plist'
-                mode: 0755
-            - name: Set config
-              community.general.osx_defaults:
-                domain: com.googlecode.iterm2
-                key: '{{ item.key }}'
-                type: '{{ item.type }}'
-                value: '{{ item.value }}'
-                state: present
-              with_items:
-                - { key: 'PrefsCustomFolder', value: '/Users/{{ user_name }}/.config/iterm2/', type: 'string' }
-                - { key: 'LoadPrefsFromCustomFolder', value: 'true', type: 'bool' }
+        - name: Create dir
+          ansible.builtin.file:
+            path: '/Applications/{{ item.dir }}'
+            state: directory
+            owner: '{{ user_name }}'
+            group: '{{user_group_name}}'
+            mode: 0755
+          with_items: '{{ packages }}'
+        - name: Install packages
+          community.general.homebrew_cask:
+            name: '{{ item.1 }}'
+            state: latest
+            install_options: 'appdir=/Applications/{{ item.0.dir }}'
+          with_subelements:
+            - "{{ packages }}"
+            - packages
+      vars:
+        packages:         # TODO: little-snitch
+          - dir: Audio
+            packages: ['mediahuman-audio-converter', 'ocenaudio']
+          - dir: Benchmark
+            packages: ['amorphousdiskmark']
+          - dir: Design
+            packages: ['inkscape', 'paintbrush']
+          - dir: Development
+            packages: ['sourcetree', 'iterm2']
+          - dir: Development/API
+            packages: ['postman']
+          - dir: Development/DB
+            packages: ['db-browser-for-sqlite', 'mysqlworkbench', 'sequel-ace']
+          - dir: Development/Editors
+            packages: ['hex-fiend', 'sublime-text', 'vscodium']
+          - dir: Development/IDEs
+            packages: ['clion']
+          - dir: Education
+            packages: []
+          - dir: Internet/Browsers
+            packages: ['brave-browser', 'librewolf', 'tor-browser']
+          - dir: Internet/Conferencing
+            packages: ['discord']
+          - dir: Internet/Services
+            packages: ['eddie', 'maestral']
+          - dir: Internet/Tools
+            packages: ['cyberduck', 'netnewswire', 'syncthing', 'transmission']
+          - dir: Maintenance
+            packages: ['aldente', 'appcleaner', 'omnidisksweeper', 'onyx']
+          - dir: Misc
+            packages: ['apparency', 'istat-menus', 'qlmarkdown', 'raycast']
+          - dir: Music
+            packages: []      # TODO: Spotify
+          - dir: Network
+            packages: ['angry-ip-scanner', 'wireshark']
+          - dir: Notes
+            packages: ['fsnotes', 'joplin']
+          - dir: Office
+            packages: ['drawio', 'pdf-expert', 'slidepilot']
+          - dir: Office/Misc
+            packages: []        # TODO: SoftMaker FreeOffice
+          - dir: Package
+            packages: ['keka', 'pacifist']
+          - dir: Security
+            packages: ['blockblock', 'dhs', 'kextviewr', 'knockknock', 'suspicious-package', 'taskexplorer', 'whatsyoursign']
+          - dir: Social
+            packages: ['signal']
+          - dir: Tools
+            packages: ['betterdisplay', 'imageoptim', 'keycastr']
+          - dir: Tools/Virtualization
+            packages: ['vmware-fusion']
+          - dir: Video
+            packages: ['iina', 'vlc']
       become: false
 
 
-- name: CLI apps
+- name: hblock
   block:
-    - name: TODO
-      ansible.builtin.debug:
-        msg: "!!!!!!!!!!!!!!!!                            TODO"
-
-    - name: hblock
+    - name: Install
+      community.general.homebrew:
+        name:
+          - hblock
+      become: false
+    - name: Config hblock
       block:
-        - name: Install
-          community.general.homebrew:
-            name: hblock
-            state: latest
-          become: false
-        - name: Config
+        - name: Create dir
+          ansible.builtin.file:
+            path: /etc/hblock.d
+            state: directory
+            owner: root
+            group: wheel
+            mode: 0755
+        - name: Copy config
+          ansible.builtin.template:
+            src: 'config/hblock/{{ config_file }}.j2'
+            dest: '/etc/hblock.d/{{ config_file }}'
+            owner: root
+            group: wheel
+            mode: 0755
+          with_items:
+            - 'header'
+            - 'blacklist.list'
+            - 'whitelist.list'
+          loop_control:
+            loop_var: config_file
+        - name: Setup cron job
           block:
-            - name: Create dir
-              ansible.builtin.file:
-                path: /etc/hblock.d
-                state: directory
-                owner: root
-                group: wheel
-                mode: 0755
-            - name: Copy config
-              ansible.builtin.template:
-                src: 'config/hblock/{{ config_file }}.j2'
-                dest: '/etc/hblock.d/{{ config_file }}'
-                owner: root
-                group: wheel
-                mode: 0755
-              with_items:
-                - 'header'
-                - 'blacklist.list'
-                - 'whitelist.list'
-              loop_control:
-                loop_var: config_file
-            - name: Setup cron job
-              block:
-                - name: Get path of hblock exec
-                  ansible.builtin.shell: which hblock
-                  register: result_hblock
-                  changed_when: false
-                - name: Add cron job
-                  ansible.builtin.cron:
-                    name: hblock autoupdate
-                    minute: "0"
-                    hour: "18"
-                    dom: "*/3"
-                    month: "*"
-                    dow: "*"
-                    user: root
-                    job: '{{ result_hblock.stdout }} -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list -q'
+            - name: Get path of hblock exec
+              ansible.builtin.shell: which hblock
+              register: result_hblock
+              changed_when: false
+            - name: Add cron job
+              ansible.builtin.cron:
+                name: hblock autoupdate
+                minute: "0"
+                hour: "18"
+                dom: "*/3"
+                month: "*"
+                dow: "*"
+                user: root
+                job: '{{ result_hblock.stdout }} -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list -q'
           become: true
+
+
+- name: 'Apps: config'
+  block:
+    - name: Config Joplin
+      block:
+        - name: Create dir
+          ansible.builtin.file:
+            path: '/Users/{{ user_name }}/.config/joplin-desktop'
+            state: directory
+            owner: '{{ user_name }}'
+            group: '{{user_group_name}}'
+            mode: 0755
+        - name: Copy config
+          ansible.builtin.template:
+            src: apps/joplin.css.j2
+            dest: '/Users/{{ user_name }}/.config/joplin-desktop/basenotestyle.css'
+            mode: 0755
+
+    - name: Config iTerm
+      block:
+        - name: Create dir
+          ansible.builtin.file:
+            path: '/Users/{{ user_name }}/.config/iterm2'
+            state: directory
+            owner: '{{ user_name }}'
+            group: '{{ user_group_name }}'
+            mode: 0755
+        - name: Copy config
+          ansible.builtin.copy:
+            src: apps/com.googlecode.iterm2.plist
+            dest: '/Users/{{ user_name }}/.config/iterm2/com.googlecode.iterm2.plist'
+            mode: 0755
+        - name: Set config
+          community.general.osx_defaults:
+            domain: com.googlecode.iterm2
+            key: '{{ item.key }}'
+            type: '{{ item.type }}'
+            value: '{{ item.value }}'
+            state: present
+          with_items:
+            - { key: 'PrefsCustomFolder', value: '/Users/{{ user_name }}/.config/iterm2/', type: 'string' }
+            - { key: 'LoadPrefsFromCustomFolder', value: 'true', type: 'bool' }
+  become: false
