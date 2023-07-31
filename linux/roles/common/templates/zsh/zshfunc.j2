@@ -124,9 +124,8 @@ alias-add vid-download vid-download-workaround_fname="vid-download  -o '%(title)
 {% endif %}
 
 {% if ansible_facts.os_family == 'Darwin' %}
-# - Orginal alias-name: update_hosts
-# Note: npm install -g --prefix /usr/local hblock
-alias-add hblock hblock-up="sudo hblock -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list"
+alias-add hblock hblock-up="hblock -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list"
+alias-add hblock hblock-down="hblock -S none -D none"
 {% endif %}
 
 # - Replace existing commands -

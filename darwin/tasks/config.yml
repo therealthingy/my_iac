@@ -7,6 +7,6 @@
     value: '{{ item.value }}'
     state: present
   with_items:
-    - { domain: 'com.apple.Dock', key: 'showhidden', value: 'true', type: 'boolean' }       # Apps hidden in Dock
+    - { domain: 'com.apple.Dock', key: 'showhidden', value: 'true', type: 'boolean' }       # Apps hidden in Dock;          TODO: `killall Dock`
     - { domain: 'com.apple.dock', key: 'autohide-time-modifier', value: '0', type: 'int' }  # Eliminate Dock reveal delay
   become: false
