@@ -2,7 +2,7 @@
 # Config (refer to https://wiki.archlinux.org/title/locale):
 #   - Files:
 #     - `/etc/locale.gen`: Locales to generate
-#     - `/etc/default/locale`: Set by update-locale
+#     - `/etc/default/locale`: Set by `update-locale`
 #     - ~~`/etc/environment`~~
 #   - Commands:
 #     - `locale -a`: Display a list of all available locales
