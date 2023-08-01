@@ -18,16 +18,6 @@
 
 
 
-- name: Ensure data dir exists
-  ansible.builtin.file:
-    path: '{{ pihole_data_dir }}/{{ item }}'
-    state: directory
-    mode: 0755
-  with_items:
-    - hole
-    - dns
-#  become: true             # REQUIRED since container runs as root
-
 - name: Create config dir
   ansible.builtin.file:
     path: '{{ pihole_config_dir }}'

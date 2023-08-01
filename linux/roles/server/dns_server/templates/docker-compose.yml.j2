@@ -31,11 +31,6 @@ services:
     environment:
       TZ: {{ timezone }}
 
-      PIHOLE_UID: {{ user_uid }}
-      WEB_UID: {{ user_gid }}
-      PIHOLE_GID: {{ user_uid }}
-      WEB_GID: {{ user_gid }}
-
       PIHOLE_DNS_: {{ dns_server1_ipv4 }};{{ dns_server1_ipv6 }}
       WEBPASSWORD: {{ pihole_web_pw }}
 
@@ -52,11 +47,6 @@ services:
 
     networks:
       - {{ docker_default_network }}
-
-    dns:
-      - {{ dns_server1_ipv4 }}
-      - {{ dns_server1_ipv6 }}
-      #- 127.0.0.1
 
     # Recommended but not required (DHCP needs NET_ADMIN)
     #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities

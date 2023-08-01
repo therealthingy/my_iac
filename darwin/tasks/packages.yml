@@ -65,7 +65,7 @@
           - dir: Internet/Tools
             packages: ['cyberduck', 'netnewswire', 'syncthing', 'transmission']
           - dir: Maintenance
-            packages: ['aldente', 'appcleaner', 'omnidisksweeper', 'onyx']
+            packages: ['appcleaner', 'omnidisksweeper', 'onyx']     # TODO: 'aldente'
           - dir: Misc
             packages: ['apparency', 'istat-menus', 'qlmarkdown', 'raycast']
           - dir: Music
