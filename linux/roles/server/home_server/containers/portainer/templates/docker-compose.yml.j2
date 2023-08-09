@@ -13,14 +13,13 @@ services:
     restart: always
 
     user: {{ user_uid }}:{{ docker_gid }}
+    security_opt:
+      - no-new-privileges:true
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - {{ docker_container_data_basedir }}/{{ container_name }}/:/data
       - /etc/localtime:/etc/localtime:ro
-
-#    environment:
-#      - TZ='{{ timezone }}'
 
     networks:
       - {{ docker_default_network }}

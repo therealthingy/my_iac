@@ -17,5 +17,6 @@ services:
       - '{{ host_port }}:80'
 
     labels:
-      - com.centurylinklabs.watchtower.enable=false
+      - com.centurylinklabs.watchtower.enable=true
+      - com.centurylinklabs.watchtower.monitor-only=true
       - traefik.enable=false

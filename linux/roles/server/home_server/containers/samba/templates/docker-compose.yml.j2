@@ -10,8 +10,10 @@ services:
     restart: "no"
     hostname: {{ hostname }}
 
-    # $$$  DOESN'T WORK  $$$
-    #user: {{ user_uid }}:{{ docker_gid }}
+# $$$  DOESN'T WORK  $$$
+#    user: {{ user_uid }}:{{ docker_gid }}
+#    security_opt:
+#      - no-new-privileges:true
 
     network_mode: bridge
     ports:

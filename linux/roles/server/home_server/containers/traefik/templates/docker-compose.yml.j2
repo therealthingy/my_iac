@@ -14,6 +14,8 @@ services:
     hostname: {{ container_name }}
 
     user: {{ user_uid }}:{{ docker_gid }}
+    security_opt:
+      - no-new-privileges:true
     sysctls:                                                                # Required for binding to a privliged port (ports which are lower than 1024)
       - net.ipv4.ip_unprivileged_port_start=0
 
@@ -21,10 +23,6 @@ services:
 
     networks:
       - {{ docker_default_network }}
-
-    # dns:
-    #   - 192.168.178.2
-    #   - 192.168.178.1
 
     ports:
       - 80:80
@@ -64,6 +62,6 @@ services:
     labels:
       - com.centurylinklabs.watchtower.enable=true
        #  traefik -- REFERENCE: https://docs.traefik.io/configuration/backends/docker/#on-containers
-      - traefik.enable=true
-      - traefik.http.services.{{ container_name }}_service.loadbalancer.server.port=8080
-      - traefik.http.routers.{{ container_name }}_router.rule=Host(`{{ container_name }}.{{ domainname }}`)
+      - traefik.enable=false
+#      - traefik.http.services.{{ container_name }}_service.loadbalancer.server.port=8080
+#      - traefik.http.routers.{{ container_name }}_router.rule=Host(`{{ container_name }}.{{ domainname }}`)

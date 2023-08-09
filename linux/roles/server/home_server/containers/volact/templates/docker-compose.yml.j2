@@ -11,6 +11,8 @@ services:
     restart: always
 
     user: {{ user_uid }}:{{ docker_gid }}
+    security_opt:
+      - no-new-privileges:true
 
     network_mode: bridge
 
