@@ -35,7 +35,7 @@ services:
 ##      - 8389:8389/tcp   # Gluetun-Shadowsocks?
 ##      - 8889:8889/tcp   # Gluetun
     volumes:
-      - {{ docker_container_config_basedir }}/dl_media/gluetun/:/gluetun    # When using openvpn: REPLACE W/ `/mnt/storage/dl_media/config/`  ($$$$$$$   TODO: ONCE FULL DISK ENC.)
+      - {{ docker_container_config_basedir }}/dl_media/gluetun/:/gluetun
     environment:
       - TZ={{ timezone }}
       - VPNSP={{ dl_media_gluetun_vpnsp }}
@@ -65,6 +65,7 @@ services:
       - traefik.http.routers.qbittorrent.rule=Host(`qbit.{{ domainname }}`)
       - traefik.http.routers.qbittorrent.service=qbittorrent
 
+  # Important: Set in advanced settings network adapter 2 `tun0`
   qbittorrent:
     image: linuxserver/qbittorrent:latest
     restart: "{{ dl_media_restart_policy }}"
@@ -76,8 +77,8 @@ services:
       - UMASK=022
       - WEBUI_PORT=8090
     volumes:
-      - {{ docker_container_config_basedir }}/dl_media/qbittorrent/:/config/
-      - {{ dl_media_storage_dir }}/:/downloads/
+      - {{ dl_media_base_dir }}/qbittorrent/:/config/   # $$$$$$$$$$$$$$$$$$$$$$$$$$$    TODO: Change ALL 2 `docker_container_data_basedir` (once full disk enc.)
+      - {{ dl_media_base_dir }}/downloads/:/downloads/
     network_mode: service:gluetun
     labels:
       - autoheal=true
@@ -99,7 +100,7 @@ services:
       - PUID={{ user_uid }}
       - PGID={{ docker_gid }}
     volumes:
-      - {{ docker_container_config_basedir }}/dl_media/prowlarr/:/config/
+      - {{ dl_media_base_dir }}/prowlarr/:/config/
     network_mode: service:gluetun
     depends_on:
       - gluetun
