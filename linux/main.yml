@@ -98,9 +98,9 @@
     - role: server/home_server/containers/portainer
       tags:
         - portainer
-    - role: 3rd-party/internet-pi
-      tags:
-        - inet_monitoring
+#    - role: 3rd-party/internet-pi
+#      tags:
+#        - inet_monitoring
 
 # KEEP IN MIND: Only run samba - OR - filebrowser (otherwise weird behavior when using simultaneously)
 #    - role: server/home_server/containers/filebrowser
@@ -116,9 +116,12 @@
     - role: server/home_server/containers/traefik
       tags:
         - traefik
-    - role: server/home_server/containers/transmission
+#    - role: server/home_server/containers/dl/transmission
+#      tags:
+#        - dl_transmission
+    - role: server/home_server/containers/dl_media
       tags:
-        - transmission
+        - dl_media
 #    - role: server/home_server/containers/volact
 #      tags:
 #        - volact

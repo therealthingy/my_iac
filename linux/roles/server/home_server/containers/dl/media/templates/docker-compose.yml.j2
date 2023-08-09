@@ -1,0 +1,109 @@
+# {{ ansible_managed }}
+
+version: "3.7"
+
+networks:
+  {{ docker_default_network }}:
+    external: true
+
+services:
+  gluetun:
+    image: qmcgaw/gluetun
+    restart: "{{ dl_media_restart_policy }}"
+    container_name: gluetun
+    networks:
+      - {{ docker_default_network }}
+    sysctls:
+        - net.ipv6.conf.all.disable_ipv6=0
+#    security_opt:
+#      - no-new-privileges:true          # Prevents application processes (inside container) from gaining new privileges during execution
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+#    ports:
+#      # - Web-UIs of containers
+#      - 8090:8090        # qbittorrent Web UI
+#      - 6881:6881        # qbittorrent
+#      - 6881:6881/udp    # qbittorrent
+#      - 9696:9696        # prowlarr
+##      # -  LAN proxy stuff  -
+##      - 8888:8888/tcp   # HTTP proxy
+##      - 8388:8388/tcp   # Shadowsocks
+##      - 8388:8388/udp   # Shadowsocks
+##      - 8389:8389/udp   # Gluetun-Shadowsocks?
+##      - 8389:8389/tcp   # Gluetun-Shadowsocks?
+##      - 8889:8889/tcp   # Gluetun
+    volumes:
+      - {{ docker_container_config_basedir }}/dl_media/gluetun/:/gluetun    # When using openvpn: REPLACE W/ `/mnt/storage/dl_media/config/`  ($$$$$$$   TODO: ONCE FULL DISK ENC.)
+    environment:
+      - TZ={{ timezone }}
+      - VPNSP={{ dl_media_gluetun_vpnsp }}
+      - VPN_TYPE=wireguard #openvpn
+#      # -  openvpn specific stuff  -
+#      - PROTOCOL=udp        # Only 4 openvpn required
+#      - SERVER_COUNTRIES={{ dl_media_gluetun_ovpn_country }}
+#      - OPENVPN_CIPHERS=AES-256-GCM
+      # -  wireguard specific stuff  -
+      - WIREGUARD_ADDRESSES={{ dl_media_gluetun_wireguard_addresses }}
+#      - DNS_ADDRESS=xxx.xxx.xxx.xxx
+      - FIREWALL_VPN_INPUT_PORTS={{ dl_media_gluetun_forward_port }}      # Port forwarding ~~(must be also mentioned as port ???!)~~  -> validate w/ (run in container): `nc -l -p <port>`
+#      - WIREGUARD_PUBLIC_KEY={{ dl_media_gluetun_wireguard_pk }}
+      - WIREGUARD_PRIVATE_KEY={{ dl_media_gluetun_wireguard_sk }}
+      - WIREGUARD_PRESHARED_KEY={{ dl_media_gluetun_wireguard_preshared_key }}
+      # -  LAN proxy stuff  -
+      - HTTPPROXY=off         # NOTE: MAY require `FIREWALL_OUTBOUND_SUBNETS="192.168.1.0/24"`
+      - SHADOWSOCKS=off
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+      - com.centurylinklabs.watchtower.monitor-only=true
+      - traefik.enable=true
+      - traefik.http.services.prowlarr.loadbalancer.server.port=9696
+      - traefik.http.routers.prowlarr.rule=Host(`prowlarr.{{ domainname }}`)
+      - traefik.http.routers.prowlarr.service=prowlarr
+      - traefik.http.services.qbittorrent.loadbalancer.server.port=8090
+      - traefik.http.routers.qbittorrent.rule=Host(`qbit.{{ domainname }}`)
+      - traefik.http.routers.qbittorrent.service=qbittorrent
+
+  qbittorrent:
+    image: linuxserver/qbittorrent:latest
+    restart: "{{ dl_media_restart_policy }}"
+    container_name: qbittorrent
+    environment:
+      - TZ={{ timezone }}
+      - PUID={{ user_uid }}
+      - PGID={{ docker_gid }}
+      - UMASK=022
+      - WEBUI_PORT=8090
+    volumes:
+      - {{ docker_container_config_basedir }}/dl_media/qbittorrent/:/config/
+      - {{ dl_media_storage_dir }}/:/downloads/
+    network_mode: service:gluetun
+    labels:
+      - autoheal=true
+    healthcheck:
+      test: curl {{ dl_media_healthcheck_url }} || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+      - com.centurylinklabs.watchtower.monitor-only=true
+
+  prowlarr:
+    image: hotio/prowlarr:testing
+    restart: "{{ dl_media_restart_policy }}"
+    container_name: prowlarr
+    environment:
+      - TZ={{ timezone }}
+      - PUID={{ user_uid }}
+      - PGID={{ docker_gid }}
+    volumes:
+      - {{ docker_container_config_basedir }}/dl_media/prowlarr/:/config/
+    network_mode: service:gluetun
+    depends_on:
+      - gluetun
+      - qbittorrent
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+      - com.centurylinklabs.watchtower.monitor-only=true
