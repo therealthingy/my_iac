@@ -76,6 +76,8 @@ services:
       - PGID={{ docker_gid }}
       - UMASK=022
       - WEBUI_PORT=8090
+    security_opt:
+      - no-new-privileges:true
     volumes:
       - {{ dl_media_base_dir }}/qbittorrent/:/config/   # $$$$$$$$$$$$$$$$$$$$$$$$$$$    TODO: Change ALL 2 `docker_container_data_basedir` (once full disk enc.)
       - {{ dl_media_base_dir }}/downloads/:/downloads/
@@ -99,6 +101,8 @@ services:
       - TZ={{ timezone }}
       - PUID={{ user_uid }}
       - PGID={{ docker_gid }}
+    security_opt:
+      - no-new-privileges:true
     volumes:
       - {{ dl_media_base_dir }}/prowlarr/:/config/
     network_mode: service:gluetun

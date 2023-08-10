@@ -27,6 +27,12 @@
   - Change docker-containers (which rely on encrypted-data, e.g., traefik SSL certs) 2 **`unless_stopped`**
 
 ### *home_server*
+- Check hosting DS-LITE (IPv6 only):
+  ```
+  -> fritzbox permit ports
+  /usr/bin/nc -6 -l <port>      # on mac
+  http://www.ipv6scanner.com/cgi-bin/main.py
+  ```
 - **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/)
 
 - Containers:

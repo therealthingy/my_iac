@@ -8,13 +8,13 @@ services:
     restart: "{{ syncthing_restart_policy }}"
     hostname: {{ container_name }}
     container_name: {{ container_name }}
-    security_opt:
-      - no-new-privileges:true
     environment:
       - PUID={{ user_uid }}
       - PGID={{ docker_gid }}
       # Access GUI via: `ssh -L 8385:127.0.0.1:8384 gg-rpi0`
       - STGUIADDRESS=                      # Empty = Fallback 2 localhost   (change address from `0.0.0.0:<port>` 2 `127.0.0.1:<port>` 4 added security)
+    security_opt:
+      - no-new-privileges:true
     volumes:
       - {{ syncthing_storage_path }}/:/var/syncthing/
 #    ports:                                # Not relevant when using `network_mode=host`
