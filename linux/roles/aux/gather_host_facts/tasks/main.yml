@@ -46,6 +46,8 @@
         user_uid: '{{ result_uid.stdout }}'
         user_gid: '{{ result_gid.stdout }}'
         docker_gid: '{{ result_docker_gid.stdout }}'
+        www_user_uid: '{{ result_uid.stdout }}'           # $$$$$$$$$$$$$$$$$$$$$  TODO: CREATE EXTRA USER …  $$$$$$$$$$$$$$$$$$$$$
+        www_user_gid: '{{ result_docker_gid.stdout }}'
         cpu_architecture: '{{ result_deb_architecture.stdout }}'
         kernel_release: '{{ result_kernel_release.stdout }}'
         gathered_host_facts: True

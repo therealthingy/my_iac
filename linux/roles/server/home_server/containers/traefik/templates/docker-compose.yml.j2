@@ -13,7 +13,7 @@ services:
     container_name: {{ container_name }}
     hostname: {{ container_name }}
 
-    user: {{ user_uid }}:{{ docker_gid }}
+    user: {{ www_user_uid }}:{{ www_user_gid }}
     security_opt:
       - no-new-privileges:true
     sysctls:                                                                # Required for binding to a privliged port (ports which are lower than 1024)

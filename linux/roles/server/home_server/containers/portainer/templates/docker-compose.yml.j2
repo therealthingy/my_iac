@@ -12,7 +12,7 @@ services:
     container_name: portainer
     restart: always
 
-    user: {{ user_uid }}:{{ docker_gid }}
+    user: {{ www_user_uid }}:{{ www_user_gid }}
     security_opt:
       - no-new-privileges:true
 

@@ -1,4 +1,6 @@
 # {{ ansible_managed }}
+# $$$$$$$$$$$$$$$$$$$$$$$   TODO: Rootless support 4 linuxserver images    (https://github.com/just-containers/s6-overlay#user-directive)   $$$$$$$$$$$$$$$$$$$$$$$
+#      --> SEE WIP: https://docs.linuxserver.io/general/understanding-puid-and-pgid
 
 version: "3.7"
 
@@ -15,8 +17,9 @@ services:
       - {{ docker_default_network }}
     sysctls:
         - net.ipv6.conf.all.disable_ipv6=0
+#    user: {{ www_user_uid }}:{{ www_user_gid }}
 #    security_opt:
-#      - no-new-privileges:true          # Prevents application processes (inside container) from gaining new privileges during execution
+#      - no-new-privileges:true          # Prevents application processes (inside container) from gaining new privileges during execution (via setuid execs)
     cap_add:
       - NET_ADMIN
     devices:
@@ -64,6 +67,9 @@ services:
       - traefik.http.services.qbittorrent.loadbalancer.server.port=8090
       - traefik.http.routers.qbittorrent.rule=Host(`qbit.{{ domainname }}`)
       - traefik.http.routers.qbittorrent.service=qbittorrent
+#      - traefik.http.services.nzbget.loadbalancer.server.port=6789
+#      - traefik.http.routers.nzbget.rule=Host(`nzb.{{ domainname }}`)
+#      - traefik.http.routers.nzbget.service=nzbget
 
   # Important: Set in advanced settings network adapter 2 `tun0`
   qbittorrent:
@@ -72,15 +78,16 @@ services:
     container_name: qbittorrent
     environment:
       - TZ={{ timezone }}
-      - PUID={{ user_uid }}
-      - PGID={{ docker_gid }}
+      - PUID={{ www_user_uid }}
+      - PGID={{ www_user_gid }}
       - UMASK=022
       - WEBUI_PORT=8090
-    security_opt:
-      - no-new-privileges:true
+#    user: {{ www_user_uid }}:{{ www_user_gid }}
+#    security_opt:
+#      - no-new-privileges:true
     volumes:
       - {{ dl_media_base_dir }}/qbittorrent/:/config/   # $$$$$$$$$$$$$$$$$$$$$$$$$$$    TODO: Change ALL 2 `docker_container_data_basedir` (once full disk enc.)
-      - {{ dl_media_base_dir }}/downloads/:/downloads/
+      - {{ dl_media_base_dir }}/downloads/torrents/:/downloads/
     network_mode: service:gluetun
     labels:
       - autoheal=true
@@ -93,22 +100,54 @@ services:
       - com.centurylinklabs.watchtower.enable=true
       - com.centurylinklabs.watchtower.monitor-only=true
 
+#  nzbget:
+#    image: linuxserver/nzbget:latest
+#    restart: "{{ dl_media_restart_policy }}"
+#    container_name: nzbget
+#    environment:
+#      - TZ={{ timezone }}
+#      - PUID={{ www_user_uid }}
+#      - PGID={{ www_user_gid }}
+#      - NZBGET_USER={{ dl_media_web_username }}
+#      - NZBGET_PASS={{ dl_media_web_password }}
+##    user: {{ www_user_uid }}:{{ www_user_gid }}
+##    security_opt:
+##      - no-new-privileges:true
+#    volumes:
+#      - {{ dl_media_base_dir }}/nzbget/:/config/
+#      - {{ dl_media_base_dir }}/downloads/nzb/:/downloads/
+##    ports:
+##      - 6789:6789
+#    network_mode: service:gluetun
+#    labels:
+#      - autoheal=true
+#    healthcheck:
+#      test: curl {{ dl_media_healthcheck_url }} || exit 1
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#    labels:
+#      - com.centurylinklabs.watchtower.enable=true
+#      - com.centurylinklabs.watchtower.monitor-only=true
+
   prowlarr:
     image: hotio/prowlarr:testing
     restart: "{{ dl_media_restart_policy }}"
     container_name: prowlarr
     environment:
       - TZ={{ timezone }}
-      - PUID={{ user_uid }}
-      - PGID={{ docker_gid }}
-    security_opt:
-      - no-new-privileges:true
+      - PUID={{ www_user_uid }}
+      - PGID={{ www_user_gid }}
+#    user: {{ www_user_uid }}:{{ www_user_gid }}
+#    security_opt:
+#      - no-new-privileges:true
     volumes:
       - {{ dl_media_base_dir }}/prowlarr/:/config/
     network_mode: service:gluetun
     depends_on:
       - gluetun
       - qbittorrent
+#      - nzbget
     labels:
       - com.centurylinklabs.watchtower.enable=true
       - com.centurylinklabs.watchtower.monitor-only=true
