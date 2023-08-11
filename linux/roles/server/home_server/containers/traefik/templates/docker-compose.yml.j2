@@ -54,7 +54,7 @@ services:
 
       # config
       - ./dynamic-conf.yml:/config/dynamic-conf.yml
-      - {{ reverse_proxy_certs_dir }}/:/config/certs
+      - {{ reverse_proxy_certs_dir }}/:/config/certs/
 
     environment:
        - TZ={{ timezone }}

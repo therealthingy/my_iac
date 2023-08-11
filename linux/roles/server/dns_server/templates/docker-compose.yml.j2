@@ -32,6 +32,10 @@ services:
       TZ: {{ timezone }}
 
       PIHOLE_DNS_: {{ dns_server1_ipv4 }};{{ dns_server1_ipv6 }}
+
+      DNSMASQ_LISTENING: "single"
+      INTERFACE: "eth0"
+
       WEBPASSWORD: {{ pihole_web_pw }}
 
       IPv6: "true"
@@ -39,6 +43,13 @@ services:
       PROXY_LOCATION: {{ container_name }}
       VIRTUAL_HOST: {{ container_name }}.{{ domainname }}
       VIRTUAL_PORT: 80
+
+{% if pihole_use_conditional_forwarding is defined and pihole_use_conditional_forwarding %}
+      REV_SERVER: "true"                              # Makes only sense when pihole isn't acting as DHCP server
+      REV_SERVER_TARGET: {{ pihole_router_ip }}
+      REV_SERVER_DOMAIN: {{ pihole_router_domain }}
+      REV_SERVER_CIDR: {{ pihole_router_reverse_dns_zone }}
+{% endif %}
 
     # Volumes store your data between container upgrades
     volumes:
