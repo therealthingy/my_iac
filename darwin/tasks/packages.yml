@@ -67,7 +67,7 @@
           - dir: Maintenance
             packages: ['appcleaner', 'omnidisksweeper', 'onyx']     # TODO: 'aldente'
           - dir: Misc
-            packages: ['apparency', 'istat-menus', 'qlmarkdown', 'raycast']
+            packages: ['apparency', 'istat-menus', 'prefs-editor', 'qlmarkdown', 'raycast']
           - dir: Music
             packages: []      # TODO: Spotify
           - dir: Network
