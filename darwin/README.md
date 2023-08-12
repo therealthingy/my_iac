@@ -3,7 +3,8 @@
 RUN: `ansible-playbook main.yml`
 
 
-# TODO:
+
+# TODO
 ## THINGS 2 CONSIDER 4 Mac playbook
 - User should have name 'gg'
 - SW:
@@ -11,9 +12,15 @@ RUN: `ansible-playbook main.yml`
   - Android emulator 4 Whatsapp  (BlueStacks ??)
 
 
-
 ## References (Ex.s)
-* https://github.com/geerlingguy/mac-dev-playbook
+* EX.s: https://github.com/geerlingguy/mac-dev-playbook
+* `defaults` command:
+  * List all the domains available: `defaults domains > domainslist.txt`
+  * List all its current key-value pairs: `defaults read com.apple.finder > finderdefaults.txt`
+  * Write setting: `defaults write com.apple.finder AppleShowAllFiles true`
+  * Delete setting: &mldr;
+* ALTERNATIVELY: `prefs-editor` cask
+
 
 ## OS setup
 * SYSTEM:
@@ -60,10 +67,10 @@ RUN: `ansible-playbook main.yml`
 #### Record
 * Record System Audio (Blackhole) only:
   * System Preferences: *Sound* &rarr; *Output* &rarr; *bh + built-in output*
-  * Cmd + Shift + 5 (in Screen capture utilty): *Options* &rarr; *BlackHole 16ch*
+  * Cmd + Shift + 5 (in Screen capture utility): *Options* &rarr; *BlackHole 16ch*
 * Record System Audio (Blackhole) + mic:
   * System Preferences: *Sound* &rarr; *Output* &rarr; *bh + built-in output*
-  * Cmd + Shift + 5 (in Screen capture utilty): *Options* &rarr; *bh + internal mic*
+  * Cmd + Shift + 5 (in Screen capture utility): *Options* &rarr; *bh + internal mic*
 
 
 

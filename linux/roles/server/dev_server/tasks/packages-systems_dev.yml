@@ -201,7 +201,6 @@
 #  when: ansible_architecture == "x86_64"
 #  become: false
 
-
 # Installation steps: https://www.intel.com/content/www/us/en/develop/documentation/vtune-install-guide/top/linux/package-managers.html
 #- name: Install VTune
 #  block:
