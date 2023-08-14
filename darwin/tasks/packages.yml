@@ -39,7 +39,7 @@
       vars:
         packages:         # TODO: little-snitch
           - dir: Audio
-            packages: ['mediahuman-audio-converter', 'ocenaudio']
+            packages: ['mediahuman-audio-converter', 'ocenaudio']     # TODO: xld, mediainfo
           - dir: Benchmark
             packages: ['amorphousdiskmark']
           - dir: Design
