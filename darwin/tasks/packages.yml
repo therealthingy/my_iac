@@ -63,7 +63,7 @@
           - dir: Internet/Services
             packages: ['eddie', 'maestral']
           - dir: Internet/Tools
-            packages: ['cyberduck', 'netnewswire', 'syncthing', 'transmission']
+            packages: ['cyberduck', 'netnewswire', 'syncthing', 'qbittorrent']
           - dir: Maintenance
             packages: ['appcleaner', 'omnidisksweeper', 'onyx']     # TODO: 'aldente'
           - dir: Misc
