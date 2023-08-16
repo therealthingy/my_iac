@@ -122,9 +122,9 @@
     - role: server/home_server/containers/dl_media
       tags:
         - dl_media
-#    - role: server/home_server/containers/volact
-#      tags:
-#        - volact
+    - role: server/home_server/containers/volact
+      tags:
+        - volact
     - role: server/home_server/containers/watchtower
       tags:
         - watchtower

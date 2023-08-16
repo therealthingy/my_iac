@@ -12,22 +12,39 @@
     - rpi-fan-pwm.yml
 
 
-- name: "Disable LEDs  (NOTE: WILL TAKE EFFECT AFTER SYSTEM REBOOT !!)"
-  ansible.builtin.blockinfile:
-    insertafter: '^[pi4]$'
-    block: |
-      # Disable Activity LED
-      dtparam=act_led_trigger=none
-      dtparam=act_led_activelow=off
+# SEE: https://www.raspberrypi.com/documentation/computers/config_txt.html
+- name: "Update boot config  (NOTE: WILL TAKE EFFECT AFTER SYSTEM REBOOT !!)"
+  block:
+    - name: Disable LEDs
+      ansible.builtin.blockinfile:
+        insertafter: '^[pi4]$'
+        block: |
+          # Disable Activity LED
+          dtparam=act_led_trigger=none
+          dtparam=act_led_activelow=off
 
-      # Disable PWR LED  (currently not working properly  ??, see: https://stackoverflow.com/a/71492090)
-      dtparam=pwr_led_trigger=default-on
-      dtparam=pwr_led_activelow=off
+          # Disable PWR LED  (currently not working properly  ??, see: https://stackoverflow.com/a/71492090)
+          dtparam=pwr_led_trigger=default-on
+          dtparam=pwr_led_activelow=off
 
-      # Disable ethernet port (ACT & LNK) LEDs
-      dtparam=eth_led0=4
-      dtparam=eth_led1=4
-    path: /boot/config.txt
+          # Disable ethernet port (ACT & LNK) LEDs
+          dtparam=eth_led0=4
+          dtparam=eth_led1=4
+        path: /boot/config.txt
+    - name: Optimize
+      lineinfile:
+        regexp: '{{ item.regexp }}'
+        line: '{{ item.line }}'
+        path: /boot/config.txt
+      with_items:
+        - { regexp: '^(#)?over_voltage=', line: 'over_voltage=4' }      # Optimize HW: Over Voltage
+        - { regexp: '^(#)?arm_freq=', line: 'arm_freq=1800' }           # Optimize HW: CPU freq
+        #- { regexp: '^(#)?core_freq=', line: 'core_freq=550' }          # Optimize HW: GPU freq
+        #- { regexp: '^gpu_mem=', line: 'gpu_mem=16' }               # Optimize HW: GPU Memory Split
+        - { regexp: '^(#)?boot_delay=', line: 'boot_delay=0' }          # Optimize boot: Disable boot delay
+        - { regexp: '^(#)?initial_turbo=', line: 'initial_turbo=60' }   # Optimize boot: OC CPU 4 first secs
+#    - name: Reboot system
+#      ansible.builtin.reboot:
   become: true
 
 
