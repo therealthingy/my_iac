@@ -26,10 +26,10 @@ services:
       - /dev/net/tun
 #    ports:
 #      # - Web-UIs of containers
-#      - 8090:8090        # qbittorrent Web UI
-#      - 6881:6881        # qbittorrent
-#      - 6881:6881/udp    # qbittorrent
-#      - 9696:9696        # prowlarr
+#      - 8090:8090        # qbittorrent: Web ui
+#      - 6881:6881        # qbittorrent: Forwarded port
+#      - 6881:6881/udp    # qbittorrent: Forwarded port
+#      - 9696:9696        # prowlarr: Web ui
 ##      # -  LAN proxy stuff  -
 ##      - 8888:8888/tcp   # HTTP proxy
 ##      - 8388:8388/tcp   # Shadowsocks
@@ -68,6 +68,32 @@ services:
 #      - traefik.http.services.nzbget.loadbalancer.server.port=6789
 #      - traefik.http.routers.nzbget.rule=Host(`nzb.{{ domainname }}`)
 #      - traefik.http.routers.nzbget.service=nzbget
+
+
+
+
+
+  # ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------
+  # ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------
+  # $$$$$$$$$  TODO: WORKAROUND: https://github.com/qdm12/gluetun/issues/1407  $$$$$$$$$
+  portcheck:
+    image: eiqnepm/portcheck:latest
+    restart: "{{ dl_media_restart_policy }}"
+    container_name: portchecker
+    environment:
+      QBITTORRENT_PORT: "{{ dl_media_gluetun_forward_port }}"
+      QBITTORRENT_WEBUI_PORT: "8090"
+      QBITTORRENT_USERNAME: "{{ dl_media_web_username }}"
+      QBITTORRENT_PASSWORD: "{{ dl_media_web_password }}"
+    network_mode: service:gluetun
+    depends_on:
+      - qbittorrent
+  # ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------
+  # ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------
+
+
+
+
 
   # Important: Set in advanced settings network adapter 2 `tun0`
   qbittorrent:
