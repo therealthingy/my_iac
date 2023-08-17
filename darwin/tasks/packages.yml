@@ -59,7 +59,7 @@
           - dir: Internet/Browsers
             packages: ['brave-browser', 'librewolf', 'tor-browser']
           - dir: Internet/Conferencing
-            packages: ['discord']
+            packages: ['discord']     # textual  (IRC client)
           - dir: Internet/Services
             packages: ['eddie', 'maestral']
           - dir: Internet/Tools
