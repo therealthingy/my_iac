@@ -3,35 +3,35 @@
 /* --- Counter for headings --- */
       /* Counter resets */
 body { counter-reset: part; }
-h2 { counter-reset: section; }
-h3 { counter-reset: sub-section; }
-h4 { counter-reset: composite; }
-h5 { counter-reset: detail; }
+h1 { counter-reset: section; }
+h2 { counter-reset: sub-section; }
+h3 { counter-reset: composite; }
+h4 { counter-reset: detail; }
 
       /* Counter increments + display format */
-h2:before {
+h1:before {
   counter-increment: part;
   content: counter(part) " ";
 }
-h3:before {
+h2:before {
   counter-increment: section;
   content: counter(part) "." counter(section) " ";
 }
-h4:before {
+h3:before {
   counter-increment: sub-section;
   content: counter(part) "." counter(section) "." counter(sub-section) " ";
 }
-h5:before {
+h4:before {
   counter-increment: composite;
   content: counter(part) "." counter(section) "." counter(sub-section) "." counter(composite) " ";
 }
 
 /* ????? ????? ????? */
-h6:before {
+h5:before {
   counter-increment: detail;
   content: counter(part) "." counter(section) "." counter(sub-section) "." counter(composite) "." counter(detail) " ";
 }
-h6 {
+h5 {
   color: black !important;
 }
 /* ????? ????? ????? */
