@@ -2,7 +2,7 @@
 # !!  IMPORTANT: We cannot simply check for the image and skipt this step since we need the compose file  !!
 - name: Clone repo
   ansible.builtin.git:
-    repo: https://github.com/therealthingy/rpi-pwm.git
+    repo: https://github.com/therealthingy/rpi_fan_controller
     dest: '{{ rpi_fan_pwm_container_dir }}'
     clone: true
     depth: 1
@@ -16,8 +16,8 @@
 - name: Change config
   ansible.builtin.lineinfile:
     dest: '{{ rpi_fan_pwm_container_dir }}/.env'
-    regexp: '^UPDATE_INTERVAL_SEC=3$'
-    line: 'UPDATE_INTERVAL=6'
+    regexp: '^INVERTED_PWM_SIGNAL=False$'
+    line: 'INVERTED_PWM_SIGNAL=True'
   become: false
 
 - name: Ensure container is running
