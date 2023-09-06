@@ -167,6 +167,7 @@
           - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
           - needrestart                   # NOTE: 2 check whether reboot is pending: `sudo needrestart -r i`
           - ssh
+          #- initramfs-tools
           #- stow                          # See https://www.gnu.org/software/stow/
           # FS stuff
           #- btrfs-progs
