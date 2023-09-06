@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>492</string>
+	<string>521.1</string>
 	<key>AMApplicationVersion</key>
 	<string>2.10</string>
 	<key>AMDocumentVersion</key>
@@ -77,7 +77,13 @@
 				</array>
 				<key>arguments</key>
 				<dict/>
+				<key>isViewVisible</key>
+				<integer>1</integer>
+				<key>location</key>
+				<string>207.000000:68.000000</string>
 			</dict>
+			<key>isViewVisible</key>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>action</key>
@@ -94,7 +100,7 @@
 					</array>
 				</dict>
 				<key>AMActionVersion</key>
-				<string>608.1</string>
+				<string>686.2</string>
 				<key>AMApplication</key>
 				<array>
 					<string>PDF</string>
@@ -137,7 +143,7 @@
 				<key>BundleIdentifier</key>
 				<string>com.apple.action.imagepdf</string>
 				<key>CFBundleVersion</key>
-				<string>608.1</string>
+				<string>686.2</string>
 				<key>CanShowSelectedItemsWhenRun</key>
 				<false/>
 				<key>CanShowWhenRun</key>
@@ -221,7 +227,7 @@
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>461.000000:388.000000</string>
+				<string>309.000000:386.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Render PDF Pages as Images.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -231,7 +237,7 @@
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>85361B9A-AA75-4813-AC4B-0E51D18C0E7D</key>
+		<key>55759324-CE18-42EF-B9C7-805ED2F918CD</key>
 		<dict>
 			<key>from</key>
 			<string>80FEEE8F-64E2-4790-B7C9-FE35D334D1C5 - 80FEEE8F-64E2-4790-B7C9-FE35D334D1C5</string>
@@ -252,17 +258,17 @@
 		<key>presentationMode</key>
 		<integer>15</integer>
 		<key>processesInput</key>
-		<integer>0</integer>
+		<false/>
 		<key>serviceInputTypeIdentifier</key>
 		<string>com.apple.Automator.fileSystemObject.PDF</string>
 		<key>serviceOutputTypeIdentifier</key>
 		<string>com.apple.Automator.nothing</string>
 		<key>serviceProcessesInput</key>
-		<integer>0</integer>
+		<false/>
 		<key>systemImageName</key>
-		<string>NSActionTemplate</string>
+		<string>NSTouchBarDocuments</string>
 		<key>useAutomaticInputType</key>
-		<integer>0</integer>
+		<false/>
 		<key>workflowTypeIdentifier</key>
 		<string>com.apple.Automator.servicesMenu</string>
 	</dict>

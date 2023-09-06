@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>492</string>
+	<string>521.1</string>
 	<key>AMApplicationVersion</key>
 	<string>2.10</string>
 	<key>AMDocumentVersion</key>
@@ -77,9 +77,13 @@
 				</array>
 				<key>arguments</key>
 				<dict/>
-				<key>conversionLabel</key>
-				<integer>0</integer>
+				<key>isViewVisible</key>
+				<integer>1</integer>
+				<key>location</key>
+				<string>207.000000:68.000000</string>
 			</dict>
+			<key>isViewVisible</key>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>action</key>
@@ -96,7 +100,7 @@
 					</array>
 				</dict>
 				<key>AMActionVersion</key>
-				<string>608.1</string>
+				<string>686.2</string>
 				<key>AMApplication</key>
 				<array>
 					<string>PDF</string>
@@ -127,7 +131,7 @@
 				<key>BundleIdentifier</key>
 				<string>com.apple.action.joinpdf</string>
 				<key>CFBundleVersion</key>
-				<string>608.1</string>
+				<string>686.2</string>
 				<key>CanShowSelectedItemsWhenRun</key>
 				<false/>
 				<key>CanShowWhenRun</key>
@@ -169,12 +173,10 @@
 						<string>0</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>461.000000:310.000000</string>
+				<string>309.000000:304.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Combine PDF Pages.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -184,7 +186,7 @@
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>C3D1B7BB-7253-4F27-8CA3-21ACE97436B5</key>
+		<key>E05572C5-2C23-42B8-B214-37211933D608</key>
 		<dict>
 			<key>from</key>
 			<string>ABD0D73D-13F5-48B1-A258-98E85F52FC9D - ABD0D73D-13F5-48B1-A258-98E85F52FC9D</string>
@@ -214,7 +216,7 @@
 		<key>presentationMode</key>
 		<integer>15</integer>
 		<key>processesInput</key>
-		<integer>0</integer>
+		<false/>
 		<key>serviceApplicationBundleID</key>
 		<string>com.apple.finder</string>
 		<key>serviceApplicationPath</key>
@@ -224,11 +226,11 @@
 		<key>serviceOutputTypeIdentifier</key>
 		<string>com.apple.Automator.nothing</string>
 		<key>serviceProcessesInput</key>
-		<integer>0</integer>
+		<false/>
 		<key>systemImageName</key>
-		<string>NSActionTemplate</string>
+		<string>NSTouchBarDocuments</string>
 		<key>useAutomaticInputType</key>
-		<integer>0</integer>
+		<false/>
 		<key>workflowTypeIdentifier</key>
 		<string>com.apple.Automator.servicesMenu</string>
 	</dict>

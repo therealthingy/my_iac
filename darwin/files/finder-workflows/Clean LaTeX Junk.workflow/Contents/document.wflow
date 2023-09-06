@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>509</string>
+	<string>521.1</string>
 	<key>AMApplicationVersion</key>
 	<string>2.10</string>
 	<key>AMDocumentVersion</key>
@@ -103,7 +103,7 @@
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>453.500000:224.000000</string>
+				<string>309.000000:224.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Get Folder Contents.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -378,7 +378,7 @@
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>453.500000:1197.000000</string>
+				<string>309.000000:1197.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Filter Finder Items 2.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -410,7 +410,7 @@
 				<key>ActionBundlePath</key>
 				<string>/System/Library/Automator/Move Finder Items to Trash.action</string>
 				<key>ActionName</key>
-				<string>Move Finder Items to Bin</string>
+				<string>Move Finder Items to Trash</string>
 				<key>ActionParameters</key>
 				<dict/>
 				<key>BundleIdentifier</key>
@@ -435,7 +435,7 @@
 					<string>File</string>
 					<string>Folder</string>
 					<string>Move</string>
-					<string>Delete</string>
+					<string>Trash</string>
 					<string>Delete</string>
 				</array>
 				<key>UUID</key>
@@ -457,19 +457,19 @@
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>56EF0DDD-EE50-4B75-8374-AB2D7EBE4D52</key>
-		<dict>
-			<key>from</key>
-			<string>A9FEF562-BCD8-446C-B1A8-3043D489F6A3 - A9FEF562-BCD8-446C-B1A8-3043D489F6A3</string>
-			<key>to</key>
-			<string>2D8A7D33-BE57-4BCD-B9B8-952BB16C0410 - 2D8A7D33-BE57-4BCD-B9B8-952BB16C0410</string>
-		</dict>
-		<key>AB0074E5-D5AC-4CAF-ADB8-E404485E9471</key>
+		<key>637D54BE-D5FA-4EAE-BABB-C18170AFECD5</key>
 		<dict>
 			<key>from</key>
 			<string>6866452D-3608-4D73-B6C8-C68718DA43DD - 6866452D-3608-4D73-B6C8-C68718DA43DD</string>
 			<key>to</key>
 			<string>A9FEF562-BCD8-446C-B1A8-3043D489F6A3 - A9FEF562-BCD8-446C-B1A8-3043D489F6A3</string>
+		</dict>
+		<key>E2EAFA70-07FD-422E-8F3A-9CBD28FA3FC9</key>
+		<dict>
+			<key>from</key>
+			<string>A9FEF562-BCD8-446C-B1A8-3043D489F6A3 - A9FEF562-BCD8-446C-B1A8-3043D489F6A3</string>
+			<key>to</key>
+			<string>2D8A7D33-BE57-4BCD-B9B8-952BB16C0410 - 2D8A7D33-BE57-4BCD-B9B8-952BB16C0410</string>
 		</dict>
 	</dict>
 	<key>workflowMetaData</key>
@@ -494,7 +494,7 @@
 		<key>presentationMode</key>
 		<integer>15</integer>
 		<key>processesInput</key>
-		<integer>0</integer>
+		<false/>
 		<key>serviceApplicationBundleID</key>
 		<string>com.apple.finder</string>
 		<key>serviceApplicationPath</key>
@@ -504,11 +504,11 @@
 		<key>serviceOutputTypeIdentifier</key>
 		<string>com.apple.Automator.nothing</string>
 		<key>serviceProcessesInput</key>
-		<integer>0</integer>
+		<false/>
 		<key>systemImageName</key>
-		<string>NSActionTemplate</string>
+		<string>NSTouchBarClose</string>
 		<key>useAutomaticInputType</key>
-		<integer>0</integer>
+		<false/>
 		<key>workflowTypeIdentifier</key>
 		<string>com.apple.Automator.servicesMenu</string>
 	</dict>

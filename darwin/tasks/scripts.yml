@@ -27,6 +27,7 @@
       become: false
 
 
+# Must be enabled via: System Settings -> Privacy & Security -> Extensions -> Finder
 - name: Finder services
   ansible.builtin.copy:
     src: 'finder-workflows/{{ workflow_file }}/'

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>509</string>
+	<string>521.1</string>
 	<key>AMApplicationVersion</key>
 	<string>2.10</string>
 	<key>AMDocumentVersion</key>
@@ -59,9 +59,10 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>for f in "$@"
+					<string>PATH="${PATH}:/usr/local/bin:/opt/homebrew/bin/"
+for f in "$@"
 do
-	/usr/local/bin/ffmpeg -i "$f" -pix_fmt rgb8 -r 10 -f gif - | /usr/local/bin/gifsicle -O3 -o "${f}.gif"
+	ffmpeg -i "$f" -pix_fmt rgb8 -r 10 -f gif - | gifsicle -O3 -o "${f}.gif"
 done</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
@@ -207,7 +208,7 @@ done</string>
 		<key>presentationMode</key>
 		<integer>15</integer>
 		<key>processesInput</key>
-		<integer>0</integer>
+		<false/>
 		<key>serviceApplicationBundleID</key>
 		<string>com.apple.finder</string>
 		<key>serviceApplicationPath</key>
@@ -217,11 +218,11 @@ done</string>
 		<key>serviceOutputTypeIdentifier</key>
 		<string>com.apple.Automator.nothing</string>
 		<key>serviceProcessesInput</key>
-		<integer>0</integer>
+		<false/>
 		<key>systemImageName</key>
-		<string>NSActionTemplate</string>
+		<string>NSTouchBarCommunicationVideo</string>
 		<key>useAutomaticInputType</key>
-		<integer>0</integer>
+		<false/>
 		<key>workflowTypeIdentifier</key>
 		<string>com.apple.Automator.servicesMenu</string>
 	</dict>
