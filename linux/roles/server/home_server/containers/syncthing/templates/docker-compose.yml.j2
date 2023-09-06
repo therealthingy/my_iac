@@ -11,14 +11,14 @@ services:
     environment:
       - PUID={{ www_user_uid }}
       - PGID={{ www_user_gid }}
-      # Access GUI via: `ssh -L 8385:127.0.0.1:8384 gg-rpi0`
+      # Access GUI via: `ssh -L 8385:127.0.0.1:{{ webui_port }} gg-rpi0`
       - STGUIADDRESS=                      # Empty = Fallback 2 localhost   (change address from `0.0.0.0:<port>` 2 `127.0.0.1:<port>` 4 added security)
     security_opt:
       - no-new-privileges:true
     volumes:
       - {{ syncthing_storage_path }}/:/var/syncthing/
 #    ports:                                # Not relevant when using `network_mode=host`
-#      - 8384:8384                         # Web UI
+#      - {{ webui_port }}:8384                         # Web UI
 #      - 22000:22000/tcp                   # TCP file transfers
 #      - 22000:22000/udp                   # QUIC file transfers
 #      - 21027:21027/udp                   # Receive local discovery broadcasts

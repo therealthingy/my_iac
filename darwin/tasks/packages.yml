@@ -143,6 +143,18 @@
 
 - name: 'Apps: config'
   block:
+    - name: Config syncthing
+      block:
+        - name: Set variables (as facts)
+          ansible.builtin.set_fact:
+            syncthing_global_conf_file_target_dir: '/Users/{{ user_name }}/'
+        - name: Copy config file
+          ansible.builtin.template:
+            src: stglobalignore.j2
+            dest: '{{ syncthing_global_conf_file_target_dir }}/.stglobalignore'
+            mode: 0640
+          become: false
+
     - name: Config Joplin
       block:
         - name: Create dir

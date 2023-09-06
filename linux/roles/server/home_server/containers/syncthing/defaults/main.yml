@@ -4,3 +4,7 @@ container_name: syncthing
 
 syncthing_restart_policy: "no"
 syncthing_storage_path: /mnt/storage/syncthing
+
+syncthing_global_conf_file_target_dir: /var/syncthing/
+
+webui_port: 8384
