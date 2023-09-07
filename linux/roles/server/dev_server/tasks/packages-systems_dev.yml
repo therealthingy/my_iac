@@ -34,6 +34,7 @@
               - clang
 #              - nasm
               - rustc
+              - cargo
               # Build tools
               - cmake-curses-gui
               - autotools-dev
