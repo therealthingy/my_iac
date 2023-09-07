@@ -52,8 +52,6 @@
             packages: ['db-browser-for-sqlite', 'mysqlworkbench', 'sequel-ace']
           - dir: Development/Editors
             packages: ['hex-fiend', 'sublime-text', 'vscodium']
-          - dir: Development/IDEs
-            packages: ['clion']
           - dir: Education
             packages: []
           - dir: Internet/Browsers

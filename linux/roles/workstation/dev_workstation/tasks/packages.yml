@@ -47,16 +47,5 @@
       become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
 
 
-## KEEP IN MIND: Logout is required for app to show up
-#- name: Install IntelliJ IDEs
-#  community.general.flatpak:
-#    name:
-#      - com.jetbrains.CLion
-#      - com.jetbrains.PyCharm-Professional
-#    state: present
-#  become: true
-#  when: ansible_facts['os_family'] != "Darwin"
-
-
 - name: Install shared packages
   ansible.builtin.import_tasks: ./package-latex.yml
