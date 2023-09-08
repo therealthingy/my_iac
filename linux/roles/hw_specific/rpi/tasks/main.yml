@@ -15,6 +15,16 @@
 # SEE: https://www.raspberrypi.com/documentation/computers/config_txt.html
 - name: "Update boot config  (NOTE: WILL TAKE EFFECT AFTER SYSTEM REBOOT !!)"
   block:
+    - name: Determine path of config file
+      block:
+        - name: '[Ubuntu]'
+          ansible.builtin.set_fact:
+            firmware_config_file: /boot/firmware/config.txt
+          when: ansible_facts.distribution == 'Ubuntu'
+        - name: '[Raspberry Pi OS]'
+          ansible.builtin.set_fact:
+            firmware_config_file: /boot/config.txt
+          when: ansible_facts.distribution != 'Ubuntu'
     - name: Disable LEDs
       ansible.builtin.blockinfile:
         insertafter: '^[pi4]$'
@@ -30,12 +40,12 @@
           # Disable ethernet port (ACT & LNK) LEDs
           dtparam=eth_led0=4
           dtparam=eth_led1=4
-        path: /boot/config.txt
+        path: '{{ firmware_config_file }}'
     - name: Optimize
       lineinfile:
         regexp: '{{ item.regexp }}'
         line: '{{ item.line }}'
-        path: /boot/config.txt
+        path: '{{ firmware_config_file }}'
       with_items:
         - { regexp: '^(#)?over_voltage=', line: 'over_voltage=4' }      # Optimize HW: Over Voltage
         - { regexp: '^(#)?arm_freq=', line: 'arm_freq=1800' }           # Optimize HW: CPU freq
@@ -64,6 +74,6 @@
     - name: Misc.
       ansible.builtin.apt:
         name:
-          - rpi-eeprom                                      # TODO: not tested yet  (see https://askubuntu.com/questions/1253070/raspberry-pi-4-firmware-upgrade-eeprom-over-ubuntu-20-04)
+          - rpi-eeprom               # TODO: not tested yet  (see https://askubuntu.com/questions/1253070/raspberry-pi-4-firmware-upgrade-eeprom-over-ubuntu-20-04)
         state: present
   become: true
