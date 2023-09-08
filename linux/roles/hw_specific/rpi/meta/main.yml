@@ -1,4 +1,4 @@
 ---
 dependencies:
   - role: aux/gather_host_facts
-  - role: docker                            # required by rpi-fan-pwm
+  - role: docker                            # required by rpi_fan_controller
