@@ -48,10 +48,22 @@
   become: true
 
 
-- name: '[Ubuntu] Pi specific SW'
-  ansible.builtin.apt:
-    name:
-      - rpi-eeprom                                      # TODO: not tested yet  (see https://askubuntu.com/questions/1253070/raspberry-pi-4-firmware-upgrade-eeprom-over-ubuntu-20-04)
-    state: present
-  when: ansible_facts.distribution == 'Ubuntu'
+- name: Pi specific SW
+  block:
+    - name: '`vcgencmd`'
+      block:
+        - name: Install
+          ansible.builtin.apt:
+            name: libraspberrypi-bin
+            state: present
+        - name: Add necessary groups
+          ansible.builtin.user:
+            name: '{{ user_name }}'
+            groups: video
+            append: true
+    - name: Misc.
+      ansible.builtin.apt:
+        name:
+          - rpi-eeprom                                      # TODO: not tested yet  (see https://askubuntu.com/questions/1253070/raspberry-pi-4-firmware-upgrade-eeprom-over-ubuntu-20-04)
+        state: present
   become: true
