@@ -4,16 +4,38 @@
 #  - DNS entries here affect name resolution captabilities of docker containers !!  (containers 'inherit' config from host)
 # dhcpcd5 config reference: https://manpages.ubuntu.com/manpages/trusty/man5/dhcpcd.conf.5.html
 # Monitor logs (what dhcpcd does): `journalctl -u dhcpcd`
-- name: "[dhcpcd5] Add static DNS entries + static IPv6 ULA addr"
-  # Equivalent command (for adding IPv6 address): `sudo ip addr add {{ dns_ipv6_ula }} dev {{ dns_iface }}`
-  # Validate (show ip addresses): `ip -6 address show dev eth0`
-  ansible.builtin.blockinfile:
-    block: |
-      interface {{ dns_iface }}
-      static domain_name_servers={{ dns_server1_ipv4 }} {{ dns_server1_ipv6 }} {{ dns_server2_ipv4 }} {{ dns_server2_ipv6 }}
-      static ip6_address={{ dns_ipv6_ula }}
-    path: /etc/dhcpcd.conf
-  notify: restart dhcpcd service
+- name: Add static DNS entries + static IPv6 ULA addr
+  block:
+    # Equivalent command (for adding IPv6 address): `sudo ip addr add {{ dns_ipv6_ula }} dev {{ dns_iface }}`
+    # Validate (show ip addresses): `ip -6 address show dev eth0`
+    - name: '[dhcpcd5]'             # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ TODO: RETIRE & REMOVE (as it's deprecated soon) $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+      ansible.builtin.blockinfile:
+        block: |
+          interface {{ dns_iface }}
+          static domain_name_servers={{ dns_server1_ipv4 }} {{ dns_server1_ipv6 }} {{ dns_server2_ipv4 }} {{ dns_server2_ipv6 }}
+          static ip6_address={{ dns_ipv6_ula }}
+        path: /etc/dhcpcd.conf
+        mode: '0644'
+      notify: restart dhcpcd service
+      when: ansible_facts.distribution != 'Ubuntu'
+    - name: '[netplan]'
+      ansible.builtin.copy:
+        content: |
+          network:
+            version: 2
+            renderer: networkd
+            ethernets:
+              {{ dns_iface }}:
+                  dhcp4: yes
+                  dhcp6: yes
+                  addresses:
+                    - {{ dns_ipv6_ula }}
+                  nameservers:
+                    addresses: [{{ dns_server1_ipv4 }}, {{ dns_server1_ipv6 }}, {{ dns_server2_ipv4 }}, {{ dns_server2_ipv6 }}]
+        dest: /etc/netplan/01-netcfg.yaml
+        mode: '0644'
+      notify: Applying Netplan Configuration
+      when: ansible_facts.distribution == 'Ubuntu'
   become: true
 
 

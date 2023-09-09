@@ -15,11 +15,11 @@
         state: restarted
       when: ansible_facts.os_family == 'Debian'
 
-    - name: restart networking daemon
-      ansible.builtin.service:
-        name: NetworkManager
-        state: restarted
-      when: ansible_facts.distribution == 'Ubuntu'
+#    - name: restart networking daemon           # TODO: NOT WORKING IN UBUNTU ?=?!?!?!??!?!?!?!?!?!
+#      ansible.builtin.service:
+#        name: NetworkManager
+#        state: restarted
+#      when: ansible_facts.distribution == 'Ubuntu'
   become: true
 
 

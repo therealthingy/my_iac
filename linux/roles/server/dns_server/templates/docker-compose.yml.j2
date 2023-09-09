@@ -17,10 +17,13 @@ services:
     restart: always
 
     ports:
-      - 53:53/tcp
-      - 53:53/udp
+      - '{{ dns_ipv4 }}53:53/upd'         # IP addr is required as Ubuntu uses the local DNS-server systemd-resolve  (SEE: https://github.com/sameersbn/docker-bind/issues/65)
+      - '{{ dns_ipv4 }}53:53/tcp'
+      - '{{ dns_ipv6_ula }}53:53/upd'
+      - '{{ dns_ipv6_ula }}53:53/tcp'
       # 67 = DHCP  (-> TODO: could be uncommented  ???)
-      - 67:67/udp
+      - '{{ dns_ipv4 }}67:67/upd'
+      - '{{ dns_ipv6_ula }}67:67/upd'
 {% if 'home_servers' not in group_names %}
       # Admin-interface  (ports not necessary since we use reverse proxy)
       - 80:80/tcp
