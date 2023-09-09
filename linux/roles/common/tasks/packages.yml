@@ -169,12 +169,13 @@
           - needrestart                   # NOTE: 2 check whether reboot is pending: `sudo needrestart -r i`
           - ssh
           #- initramfs-tools
-          #- stow                          # See https://www.gnu.org/software/stow/
+          #- stow                         # See https://www.gnu.org/software/stow/
           # FS stuff
           - btrfs-progs
+          - cloud-guest-utils             # `growpart`
           #- fuse
-          #- ntfs-3g                        # Read/write NTFS driver 4 FUSE
-          #- libapfs-utils                  # Contains `fsapfsinfo`, an APFS information retrieval utility, & `fpafsmount`, a FUSE-based APFS filesystem implementation
+          #- ntfs-3g                       # Read/write NTFS driver 4 FUSE
+          #- libapfs-utils                 # Contains `fsapfsinfo`, an APFS information retrieval utility, & `fpafsmount`, a FUSE-based APFS filesystem implementation
         state: present
       become: true
       when: ansible_facts['os_family'] != "Darwin"
