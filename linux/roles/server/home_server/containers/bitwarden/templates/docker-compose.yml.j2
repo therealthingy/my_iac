@@ -10,7 +10,7 @@ services:
   {{ container_name }}:
     image: vaultwarden/server
     container_name: {{ container_name }}
-    restart: always
+    restart: unless-stopped
 
     user: {{ www_user_uid }}:{{ www_user_gid }}
     security_opt:

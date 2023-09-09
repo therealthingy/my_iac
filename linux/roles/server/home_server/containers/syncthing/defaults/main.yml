@@ -2,7 +2,7 @@
 container_name: syncthing
 
 
-syncthing_restart_policy: "no"
+syncthing_restart_policy: "unless-stopped"
 syncthing_storage_path: '{{docker_container_data_basedir}}/syncthing'
 
 syncthing_global_conf_file_target_dir: /var/syncthing/

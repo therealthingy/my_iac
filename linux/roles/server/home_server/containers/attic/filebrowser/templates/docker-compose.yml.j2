@@ -10,7 +10,7 @@ services:
   {{ container_name }}:
     image: filebrowser/filebrowser
     container_name: {{ container_name }}
-    #restart: unless-stopped          # (Since the sparse file has to be mounted manually ...)
+    restart: unless-stopped
     user: {{ www_user_uid }}:{{ www_user_gid }}
     security_opt:
       - no-new-privileges:true

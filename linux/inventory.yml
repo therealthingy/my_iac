@@ -73,7 +73,7 @@ all:
           autoupdate_reboot_enabled: false
           docker_default_network: reverse_proxy
           reverse_proxy_certs_dir: '{{docker_container_data_basedir}}/traefik'          # TODO: REVISE & MV EVERYTHING TO ENCRYPTED ROOT PARTITION
-          reverse_proxy_restart_policy: 'no'
+          reverse_proxy_restart_policy: 'unless-stopped'
           reverse_proxy_sslgen_country: DE
           reverse_proxy_sslgen_state: !vault |
                     $ANSIBLE_VAULT;1.1;AES256
@@ -115,7 +115,7 @@ all:
                     3761396463323237390a653639366561353363636332616232323030326162333965626232313665
                     65646534373261373236353431313633653065323932616533303835653464643264
           dl_media_healthcheck_url: apple.com
-          dl_media_restart_policy: 'no'
+          dl_media_restart_policy: 'unless-stopped'
           dl_media_web_username: choel
           dl_media_web_password: !vault |
                     $ANSIBLE_VAULT;1.1;AES256

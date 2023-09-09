@@ -7,7 +7,7 @@ services:
   {{ container_name }}:
     image: {{ container_image }}
     container_name: {{ container_name }}
-    restart: "no"
+    restart: unless-stopped
     hostname: {{ hostname }}
 
     network_mode: bridge
