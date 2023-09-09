@@ -30,6 +30,7 @@ all:
       hosts:
         gg-rpi0:
           dns_iface: eth0
+          dns_ipv4: 192.168.178.2
           dns_ipv6_ula: fd00::40b3:8c93:9122:52c7/64
 
     home_servers:
@@ -71,7 +72,7 @@ all:
           hostname: gg-rpi0
           autoupdate_reboot_enabled: false
           docker_default_network: reverse_proxy
-          reverse_proxy_certs_dir: /mnt/storage/traefik          # TODO: REVISE & MV EVERYTHING TO ENCRYPTED ROOT PARTITION
+          reverse_proxy_certs_dir: '{{docker_container_data_basedir}}/traefik'          # TODO: REVISE & MV EVERYTHING TO ENCRYPTED ROOT PARTITION
           reverse_proxy_restart_policy: 'no'
           reverse_proxy_sslgen_country: DE
           reverse_proxy_sslgen_state: !vault |
@@ -123,7 +124,7 @@ all:
                     61336439653164313365623630323038363837303463376665353463353435373964383962326166
                     3963363062653538620a313363353531353531356637346233393132643931643833623034333866
                     3965
-          dl_media_base_dir: /mnt/storage/dl_media/
+          dl_media_base_dir: '{{docker_container_data_basedir}}/dl_media/'
           dl_media_gluetun_forward_port: !vault |
                     $ANSIBLE_VAULT;1.1;AES256
                     63333636303466323962643533393139363964656466623537363561306462356630353839626134
@@ -185,10 +186,10 @@ all:
                     6661613835636666660a613738336232343333306663363637396464613335323430666431353234
                     34313566376230306363613332366334353334366263373062666537343530653930393561646266
                     6337316139376432626438323636623765616333663033626135
-          filebrowser_container_share_dir: /mnt/storage/share
-          samba_path_own_share: /mnt/storage/share/private
-          samba_path_shared_share: /mnt/storage/share/public
-          samba_dl_media_downloads_dir: /mnt/storage/dl_media
+          filebrowser_container_share_dir: '{{docker_container_data_basedir}}/samba-filebrowser/share'
+          samba_path_own_share: '{{docker_container_data_basedir}}/samba-filebrowser/share/private'
+          samba_path_shared_share: '{{docker_container_data_basedir}}/samba-filebrowser/share/public'
+          samba_dl_media_downloads_dir: '{{docker_container_data_basedir}}/samba-filebrowser/dl_media'
           samba_own_user_name: gtg
           samba_own_user_pw: !vault |
                     $ANSIBLE_VAULT;1.1;AES256

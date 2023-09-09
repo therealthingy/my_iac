@@ -37,13 +37,6 @@
 
 - Containers:
   - **NETWORKING**  (DEBUG DOCKER images: https://github.com/nicolaka/netshoot):
-    - ISSUE: pihole -- **DESTINATION ipv6 addresses (of request) != SOURCE ipv6 address (of response)**
-        ```
-        > dig wikipedia.com @fd00::40b3:8c93:9122:52c7
-        ;; reply from unexpected source: fd00::8656:3dd3:f10e:116d#53, expected fd00::40b3:8c93:9122:52c7#53
-        ```
-      - SOLUTION: iptables MASQUERADE picks random IPv6 address -- either allow only 1 address OR ~~use SNAT instead w/ to-addr~~ (doesn't work since public IP addr will be overwritten !!) ...
-
     - Convert *iptables* 2 *nftables*  (https://www.unixtutorial.org/migrate-iptables-to-nftables-in-centos-8/;           VALIDATION: `nft list ruleset`; SERVICE-NAME: nftables)
 
   - filebrowser: restart container iff config file has changed AND container is ALREADY RUNNING  ( see traefik, BUT ONLY IF CONFIG FILE HAS CHANGED )
