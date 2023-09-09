@@ -79,6 +79,7 @@
   ansible.builtin.apt:
     name:
       - borgbackup
+      - timeshift
     state: present
   become: true
   when: ansible_facts['os_family'] != "Darwin"
