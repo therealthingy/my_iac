@@ -6,15 +6,12 @@
     mode: 0755
   become: false
 
-- name: Copy config files
+- name: Copy config file
   ansible.builtin.template:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
+    src: docker-compose.yml.j2
+    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
     mode: 0640
   become: false
-  with_items:
-    - { src: 'docker-compose.yml.j2', dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml' }
-    - { src: 'stglobalignore.j2', dest: '{{ syncthing_storage_path }}/.stglobalignore' }
 
 - name: Ensure container is running
   community.docker.docker_compose:

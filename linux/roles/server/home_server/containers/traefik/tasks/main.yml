@@ -1,23 +1,18 @@
 ---
+- name: Ensure dirs exist
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    mode: 0755
+  become: false
+  with_items:
+    - '{{ docker_container_data_basedir }}/{{ container_name }}'                # Will only contain certs …
+    - '{{ docker_container_config_basedir }}/{{ container_name }}'
+
 - name: Install cert-gen script
   ansible.builtin.template:
     src: bin/ssl-certgen.j2
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/ssl-certgen'
-    mode: 0755
-  become: false
-
-
-#- name: Ensure data dir exists                # Will only contain certs ..
-#  ansible.builtin.file:
-#    path: '{{ docker_container_data_basedir }}/{{ container_name }}'
-#    state: directory
-#    mode: 0755
-#  become: false
-
-- name: Create config dir
-  ansible.builtin.file:
-    path: '{{ docker_container_config_basedir }}/{{ container_name }}'
-    state: directory
     mode: 0755
   become: false
 
