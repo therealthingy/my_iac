@@ -14,7 +14,8 @@
 
 # NOTE: To debug, use `sudo unattended-upgrade --debug --dry-run`
 #       Log file: `cat /var/log/unattended-upgrades/unattended-upgrades.log`
-- name: Copy unattended-upgrades configuration files in place
+#       Service: `sudo systemctl status unattended-upgrades.service`
+- name: Copy unattended-upgrades config files
   ansible.builtin.template:
     src: 'unattended-upgrades/{{ unattended_update_config_file }}.j2'
     dest: '/etc/apt/apt.conf.d/{{ unattended_update_config_file }}'
@@ -27,4 +28,5 @@
     - 50unattended-upgrades
   loop_control:
     loop_var: unattended_update_config_file
+  notify: restart unattended-upgrades service
   become: true

@@ -26,7 +26,7 @@ Unattended-Upgrade::Origins-Pattern {
         "origin=Debian,codename=${distro_codename}-updates";
         "origin=Debian Backports,codename=${distro_codename}-backports,label=Debian Backports";
 {% endif %}
-{% if 'rpis' in group_names %}
+{% if 'rpis' in group_names and ansible_facts.distribution == 'Debian' %}
         // --  Raspberry Pi OS origins  --
         "origin=Raspbian,codename=${distro_codename},label=Raspbian";
         "origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
@@ -37,6 +37,12 @@ Unattended-Upgrade::Origins-Pattern {
 {% endif %}};
 
 Unattended-Upgrade::Allowed-Origins {
+{% if ansible_facts.distribution == 'Ubuntu' %}
+    "${distro_id} stable";
+    "${distro_id} ${distro_codename}-security";
+    "${distro_id} ${distro_codename}-updates";
+//  "${distro_id} ${distro_codename}-proposed-updates";
+{% endif %}
 {% if 'home_servers' in group_names %}
         "Docker:${distro_codename}";
 {% endif %}};
