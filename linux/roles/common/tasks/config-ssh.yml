@@ -37,6 +37,7 @@
           with_items:
             - { regex: '^#?PasswordAuthentication', line: 'PasswordAuthentication no' }
             - { regex: '^#?ChallengeResponseAuthentication', line: 'ChallengeResponseAuthentication no' }
+            - { regex: '^#?X11Forwarding', line: "X11Forwarding {{ ssh_x11_enabled | default('yes', true) }}" }
         - name: Rmv contradicting conf file (Ubuntu Server)
           ansible.builtin.file:
             path: /etc/ssh/sshd_config.d/50-cloud-init.conf
