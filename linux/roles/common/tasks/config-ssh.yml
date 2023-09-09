@@ -25,16 +25,23 @@
         validate: '/usr/sbin/sshd -T -f %s'
 
     - name: Disable password login
-      ansible.builtin.lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '{{ common_ssh_item.regex }}'
-        line: '{{ common_ssh_item.line }}'
-        validate: '/usr/sbin/sshd -T -f %s'
-      loop_control:
-        loop_var: common_ssh_item
-      with_items:
-        - { regex: '^#?PasswordAuthentication', line: 'PasswordAuthentication no' }
-        - { regex: '^#?ChallengeResponseAuthentication', line: 'ChallengeResponseAuthentication no' }
+      block:
+        - name: Update conf file
+          ansible.builtin.lineinfile:
+            dest: /etc/ssh/sshd_config
+            regexp: '{{ common_ssh_item.regex }}'
+            line: '{{ common_ssh_item.line }}'
+            validate: '/usr/sbin/sshd -T -f %s'
+          loop_control:
+            loop_var: common_ssh_item
+          with_items:
+            - { regex: '^#?PasswordAuthentication', line: 'PasswordAuthentication no' }
+            - { regex: '^#?ChallengeResponseAuthentication', line: 'ChallengeResponseAuthentication no' }
+        - name: Rmv contradicting conf file (Ubuntu Server)
+          ansible.builtin.file:
+            path: /etc/ssh/sshd_config.d/50-cloud-init.conf
+            state: absent
+          when: ansible_facts.distribution == 'Ubuntu'
 
     - name: Change ssh port
       ansible.builtin.lineinfile:
