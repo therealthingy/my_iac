@@ -203,16 +203,15 @@
             state: present
           become: true
           when: ansible_facts['os_family'] != "Darwin"
-
-    - name: Install luks sparse file helper
-      ansible.builtin.template:
-        src: bin/luks-sparse_helper.j2
-        dest: /usr/local/bin/luks-sparse_helper
-        owner: root
-        group: root
-        mode: 0755
-      become: true
-      when: ansible_facts['os_family'] != "Darwin"
+#    - name: Install luks sparse file helper
+#      ansible.builtin.template:
+#        src: bin/luks-sparse_helper.j2
+#        dest: /usr/local/bin/luks-sparse_helper
+#        owner: root
+#        group: root
+#        mode: 0755
+#      become: true
+#      when: ansible_facts['os_family'] != "Darwin"
 
 
 - name: Install shell related tools
