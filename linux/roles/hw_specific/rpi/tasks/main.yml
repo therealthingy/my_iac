@@ -13,7 +13,7 @@
 
 
 # SEE: https://www.raspberrypi.com/documentation/computers/config_txt.html
-- name: "Update boot config  (NOTE: WILL TAKE EFFECT AFTER SYSTEM REBOOT !!)"
+- name: "Change firmware settings  (NOTE: WILL TAKE EFFECT AFTER SYSTEM REBOOT !!)"
   block:
     - name: Determine path of config file
       block:
@@ -41,7 +41,7 @@
           dtparam=eth_led0=4
           dtparam=eth_led1=4
         path: '{{ firmware_config_file }}'
-    - name: Optimize
+    - name: Optimize 4 more speed
       lineinfile:
         regexp: '{{ item.regexp }}'
         line: '{{ item.line }}'
@@ -49,8 +49,8 @@
       with_items:
         - { regexp: '^(#)?over_voltage=', line: 'over_voltage=4' }      # Optimize HW: Over Voltage
         - { regexp: '^(#)?arm_freq=', line: 'arm_freq=1800' }           # Optimize HW: CPU freq
-        #- { regexp: '^(#)?core_freq=', line: 'core_freq=550' }          # Optimize HW: GPU freq
-        #- { regexp: '^gpu_mem=', line: 'gpu_mem=16' }                   # Optimize HW: GPU Memory Split
+#        - { regexp: '^(#)?core_freq=', line: 'core_freq=550' }          # Optimize HW: GPU freq
+#        - { regexp: '^gpu_mem=', line: 'gpu_mem=16' }                   # Optimize HW: GPU Memory Split
         - { regexp: '^(#)?boot_delay=', line: 'boot_delay=0' }          # Optimize boot: Disable boot delay
         - { regexp: '^(#)?initial_turbo=', line: 'initial_turbo=60' }   # Optimize boot: OC CPU 4 first secs
 #    - name: Reboot system
@@ -58,7 +58,7 @@
   become: true
 
 
-- name: Pi specific SW
+- name: Install SW
   block:
     - name: '`vcgencmd`'
       block:
