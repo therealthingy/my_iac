@@ -71,8 +71,8 @@
 
 
 - name: "Enable password-less sudo for '{{ user_name }}'"
-  ansible.builtin.copy:
-    content: '{{ user_name }} ALL=(ALL) NOPASSWD: ALL'
+  ansible.builtin.template:
+    src: passwordless_sudo.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
     dest: '/etc/sudoers.d/010_{{ user_name }}-nopasswd'
     owner: root
     group: root

@@ -12,11 +12,8 @@
 
     # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
     - name: Pin apt repo
-      ansible.builtin.copy:
-        content: |
-          Package: *
-          Pin: release o=LP-PPA-mozillateam
-          Pin-Priority: 1001
+      ansible.builtin.template:
+        src: snapd-exclude-firefox.pref.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
         dest: /etc/apt/preferences.d/snapd-exclude-firefox.pref
         owner: root
         group: root

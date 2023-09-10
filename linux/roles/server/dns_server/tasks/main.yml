@@ -19,19 +19,8 @@
       notify: restart dhcpcd service
       when: ansible_facts.distribution != 'Ubuntu'
     - name: '[netplan]'
-      ansible.builtin.copy:
-        content: |
-          network:
-            version: 2
-            renderer: networkd
-            ethernets:
-              {{ dns_iface }}:
-                  dhcp4: yes
-                  dhcp6: yes
-                  addresses:
-                    - {{ dns_ipv6_ula }}
-                  nameservers:
-                    addresses: [{{ dns_server1_ipv4 }}, {{ dns_server1_ipv6 }}, {{ dns_server2_ipv4 }}, {{ dns_server2_ipv6 }}]
+      ansible.builtin.template:
+        src: 01-netcfg.yaml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
         dest: /etc/netplan/01-netcfg.yaml
         mode: '0644'
       notify: Applying Netplan Configuration

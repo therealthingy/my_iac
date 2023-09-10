@@ -1,6 +1,6 @@
 ---
 - name: Copy docker daemon IPv6 config file
-  ansible.builtin.copy:
+  ansible.builtin.copy:       # TODO: ADD {{ ansible_managed }} in template
     content: |
       {
         "ipv6": true,
@@ -44,16 +44,8 @@
     #   Whether 'correct' response ip address is used  (otherwise request- & response ip won't match): `ip route get <dst-in-network>`
     #   Docker container connectivity: `docker run --network=reverse_proxy --rm -t busybox ping6 -c 4 google.com`
     - name: Copy iptable config tables
-      ansible.builtin.copy:
-        content: |
-          *nat
-          :PREROUTING ACCEPT [3537:366712]
-          :INPUT ACCEPT [1428:179948]
-          :OUTPUT ACCEPT [51:5820]
-          :POSTROUTING ACCEPT [46:5420]
-          -A POSTROUTING -s 2001:db8:1::/64 ! -o docker0 -j MASQUERADE
-          -A POSTROUTING -s 2001:db8:abc1::/64 ! -o docker0 -j MASQUERADE
-          COMMIT
+      ansible.builtin.template:
+        src: rules.v6.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
         dest: /etc/iptables/rules.v6
         owner: root
         group: root

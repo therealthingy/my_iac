@@ -18,11 +18,8 @@
 
 # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
 - name: VSCodium - Pin apt repo
-  ansible.builtin.copy:
-    content: |
-      Package: *
-      Pin: origin download.vscodium.com
-      Pin-Priority: 100
+  ansible.builtin.template:
+    src: vscodium.pref.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
     dest: /etc/apt/preferences.d/vscodium.pref
     owner: root
     group: root

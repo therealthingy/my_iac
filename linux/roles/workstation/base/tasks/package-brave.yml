@@ -21,11 +21,8 @@
 
 # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
 - name: Brave - Pin apt repo
-  ansible.builtin.copy:
-    content: |
-      Package: *
-      Pin: origin brave-browser-apt-release.s3.brave.com
-      Pin-Priority: 100
+  ansible.builtin.template:
+    src: brave-browser.pref.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
     dest: /etc/apt/preferences.d/brave-browser.pref
     owner: root
     group: root

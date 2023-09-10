@@ -26,15 +26,8 @@
   become: false
 
 - name: conky - Create autostart entry
-  ansible.builtin.copy:
-    content: |
-      [Desktop Entry]
-      Name=conky
-      Type=Application
-      Exec=sh -c "sleep 10; conky;"
-      Name=Conky
-      Comment=Autostart conky (system monitoring tool) at login
-      Categories=Utility;
+  ansible.builtin.template:
+    src: conky.desktop.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
     dest: '/home/{{ user_name }}/.config/autostart/conky.desktop'
     owner: '{{ user_name }}'
     group: '{{ user_group_name }}'

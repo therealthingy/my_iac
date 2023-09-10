@@ -281,10 +281,9 @@
                     path: '{{os_homedir}}/{{ user_name }}/.config/nvim'
                     state: directory
                 - name: Copy config
-                  ansible.builtin.copy:
+                  ansible.builtin.template:
+                    src: init.vim.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
                     dest: '{{os_homedir}}/{{ user_name }}/.config/nvim/init.vim'
-                    content: |
-                      source ~/.vimrc
                     mode: 0644
           become: false
         - name: '[Linux] Set "alternatives"'
