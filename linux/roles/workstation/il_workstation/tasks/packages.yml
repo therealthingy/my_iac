@@ -16,7 +16,7 @@
           - vlc
         state: present
       become: true
-      when: ansible_facts['os_family'] != "Darwin"
+      when: ansible_facts.os_family != 'Darwin'
 
 - name: Install yt-dlp
   ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)

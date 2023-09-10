@@ -8,7 +8,7 @@
       - openvpn
     state: present
   become: true
-  when: ansible_facts['os_family'] != "Darwin"
+  when: ansible_facts.os_family != 'Darwin'
 
 #- name: Install db tools
 #  community.general.flatpak:
@@ -17,7 +17,7 @@
 #      - io.dbeaver.DBeaverCommunity
 #    state: present
 #  become: true
-#  when: ansible_facts['os_family'] != "Darwin"
+#  when: ansible_facts.os_family != 'Darwin'
 
 - name: Install misc tools
   block:
@@ -33,7 +33,7 @@
 #              - com.getpostman.Postman
             state: present
       become: true
-      when: ansible_facts['os_family'] != "Darwin"
+      when: ansible_facts.os_family != 'Darwin'
     - name: '[Darwin / Debian/Ubuntu]'
       ansible.builtin.package:
         name:

@@ -11,7 +11,7 @@
               - texlive-fonts-recommended
               - latexmk
             state: present
-          when: ansible_facts['os_family'] != "Darwin"
+          when: ansible_facts.os_family != 'Darwin'
           become: true
         - name: '[Darwin] Setup'
           block:
@@ -57,7 +57,7 @@
                 - { key: 'SKAutoReloadFileUpdate', value: 'true', type: 'boolean' }      # Auto reload file when changed  (in case it doesn't work: Skim -> Preferences -> Sync -> Check 4 file changes + Reload automatically)
                 - { key: 'SKInvertColorsInDarkMode', value: 'true', type: 'bool' }       # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
                 # OPTIONAL: View -> Hide Contents Pane + Hide Notes Pane
-          when: ansible_facts['os_family'] == "Darwin"
+          when: ansible_facts.os_family == 'Darwin'
     - name: Copy config
       ansible.builtin.template:
         src: 'latexmkrc.j2'

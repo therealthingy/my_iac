@@ -88,7 +88,7 @@
               - fakeroot              # Gives a fake root environment (2 remove the need 2 become root 4 a package build)
               - checksec              # Used 2 check properties of executables (like PIE, RELRO, PaX, Canaries, ASLR, Fortify Source) & kernel security options (like  GRSecurity & SELinux)
             state: present
-          when: ansible_facts['os_family'] != "Darwin"
+          when: ansible_facts.os_family != 'Darwin'
         - name: '[Darwin]'
           community.general.homebrew:
             name:
@@ -98,13 +98,13 @@
               # Build tools
               - ninja
           become: false
-          when: ansible_facts['os_family'] == "Darwin"
+          when: ansible_facts.os_family == 'Darwin'
         - name: '[Debian/Ubuntu x64]'
           ansible.builtin.apt:
             name:
               - gcc-multilib          # Useful for cross-compiling
             state: present
-          when: ansible_architecture == "x86_64" and ansible_facts['os_family'] != "Darwin"
+          when: ansible_architecture == "x86_64" and ansible_facts.os_family != 'Darwin'
         - name: '[Ubuntu]'
           ansible.builtin.apt:
             name: glibc-tools                   # Contains ’libSigSegv’ library (SEE: https://lemire.me/blog/2023/05/01/under-linux-libsegfault-and-addr2line-are-underrated/)
@@ -130,7 +130,7 @@
             cmd: 'bash -c "$(curl -fsSL https://gef.blah.cat/sh)"'
           become: false
           when: (gef_find_output.files | length == 0)
-      when: ansible_facts['os_family'] != "Darwin"
+      when: ansible_facts.os_family != 'Darwin'
   become: true
 
 

@@ -47,7 +47,7 @@
     clean: true
     autoremove: true
   become: true
-  when: ansible_facts['os_family'] != "Darwin" and ansible_facts.os_family == 'Debian'
+  when: ansible_facts.os_family != 'Darwin' and ansible_facts.os_family == 'Debian'
 # ---------------------------------------------------------
 
 
@@ -59,7 +59,7 @@
     clean: true
     autoremove: true
   become: true
-  when: ansible_facts['os_family'] != "Darwin"
+  when: ansible_facts.os_family != 'Darwin'
 
 - name: Install CLI tools
   block:
@@ -71,14 +71,14 @@
           #- pdfgrep
         state: present
       become: true
-      when: ansible_facts['os_family'] != "Darwin"
+      when: ansible_facts.os_family != 'Darwin'
     - name: '[Darwin]'
       community.general.homebrew:
         name:
           - ddcctl                 # DDC monitor controls for the OSX command line
           - trash
       become: false
-      when: ansible_facts['os_family'] == "Darwin"
+      when: ansible_facts.os_family == 'Darwin'
 
 - name: '[Darwin / Debian/Ubuntu] Install "Office stuff"'
   ansible.builtin.package:
@@ -97,7 +97,7 @@
     - package-codium.yml
     - package-conky.yml
     - package-flatpak.yml
-  when: ansible_facts['os_family'] != "Darwin"
+  when: ansible_facts.os_family != 'Darwin'
 
 
 # TODO: BAD IDEA  --> Context menu item 'Open in Terminal' will disappear
@@ -113,11 +113,11 @@
     name: terminator
     state: present
   become: true
-  when: ansible_facts['os_family'] != "Darwin"
+  when: ansible_facts.os_family != 'Darwin'
 
 
 
-- name: "[Ubuntu] Install packages"
+- name: '[Ubuntu] Install packages'
   block:
     - name: Install mainline                  # Repo: https://github.com/bkw777/mainline  (tool 4 downloading & installing pre-compiled kernels)
       block:
@@ -131,4 +131,4 @@
           ansible.builtin.apt:
             name: mainline
   become: true
-  when: ansible_facts['os_family'] != "Darwin" and ansible_facts.distribution == 'Ubuntu'
+  when: ansible_facts.os_family != 'Darwin' and ansible_facts.distribution == 'Ubuntu'

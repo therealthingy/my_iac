@@ -9,13 +9,13 @@
         clean: true
         autoremove: true
         allow_downgrade: true
-      when: ansible_facts['os_family'] != "Darwin"
+      when: ansible_facts.os_family != 'Darwin'
       become: true
     - name: '[Darwin]'
       community.general.homebrew:
         update_homebrew: true
       become: false
-      when: ansible_facts['os_family'] == "Darwin"
+      when: ansible_facts.os_family == 'Darwin'
 
 
 - name: Install file general purpose tools
@@ -40,7 +40,7 @@
           - lsof
         state: present
       become: true
-      when: ansible_facts['os_family'] != "Darwin"
+      when: ansible_facts.os_family != 'Darwin'
     - name: '[Darwin]'
       community.general.homebrew:
         name:
@@ -48,7 +48,7 @@
         - gawk
         - grep
       become: false
-      when: ansible_facts['os_family'] == "Darwin"
+      when: ansible_facts.os_family == 'Darwin'
 
 - name: Install file archiving tools
   block:
@@ -65,7 +65,7 @@
           - unzip
         state: present
       become: true
-      when: ansible_facts['os_family'] != "Darwin"
+      when: ansible_facts.os_family != 'Darwin'
     - name: '[Darwin]'
       community.general.homebrew:
         name:
@@ -73,7 +73,7 @@
           - gnu-tar
           - gnu-time
       become: false
-      when: ansible_facts['os_family'] == "Darwin"
+      when: ansible_facts.os_family == 'Darwin'
 
 - name: Install backup tools
   ansible.builtin.apt:
@@ -82,7 +82,7 @@
       - timeshift
     state: present
   become: true
-  when: ansible_facts['os_family'] != "Darwin"
+  when: ansible_facts.os_family != 'Darwin'
 
 - name: Monitoring tools
   block:
@@ -105,7 +105,7 @@
               - sysstat                       # `sar` (can be used 2 monitor Linux system’s resources like CPU usage, memory utilization, I/O devices consumption, etc.), `iostat`
               - usbutils                      # `lsusb`
             state: present
-          when: ansible_facts['os_family'] != "Darwin"
+          when: ansible_facts.os_family != 'Darwin'
         - name: '[Darwin]'
           community.general.homebrew:
             name:
@@ -113,7 +113,7 @@
               - pidof
               - smartmontools
           become: false
-          when: ansible_facts['os_family'] == "Darwin"
+          when: ansible_facts.os_family == 'Darwin'
     - name: Install monitoring tools (II)
       ansible.builtin.apt:
         name:
@@ -122,7 +122,7 @@
           - nvme-cli
           - lm-sensors                    # `sensors`
       when:
-        - ansible_facts['os_family'] != "Darwin"
+        - ansible_facts.os_family != 'Darwin'
         - "'rpis' not in group_names"
         - "'vmware_vms' not in group_names"
   become: true
@@ -138,7 +138,8 @@
           - netcat
           - socat
           - wget
-      become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
+          - aria2                         # Download tool  (SEE: https://aria2.github.io/); cmd: `aria2c``
+      become: "{{ 'true' if ansible_facts.os_family != \"Darwin\" else 'false' }}"
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
@@ -149,7 +150,7 @@
           - tcpdump
         state: present
       become: true
-      when: ansible_facts['os_family'] != "Darwin"
+      when: ansible_facts.os_family != 'Darwin'
 
 - name: Administration tools
   block:
@@ -178,13 +179,13 @@
           #- libapfs-utils                 # Contains `fsapfsinfo`, an APFS information retrieval utility, & `fpafsmount`, a FUSE-based APFS filesystem implementation
         state: present
       become: true
-      when: ansible_facts['os_family'] != "Darwin"
+      when: ansible_facts.os_family != 'Darwin'
     - name: '[Darwin]'
       community.general.homebrew:
         name:
           - terminal-notifier
       become: false
-      when: ansible_facts['os_family'] == "Darwin"
+      when: ansible_facts.os_family == 'Darwin'
 
 
 - name: Privacy tools
@@ -203,7 +204,7 @@
               - zerofree
             state: present
           become: true
-          when: ansible_facts['os_family'] != "Darwin"
+          when: ansible_facts.os_family != 'Darwin'
 #    - name: Install luks sparse file helper
 #      ansible.builtin.template:
 #        src: bin/luks-sparse_helper.j2
@@ -212,7 +213,7 @@
 #        group: root
 #        mode: 0755
 #      become: true
-#      when: ansible_facts['os_family'] != "Darwin"
+#      when: ansible_facts.os_family != 'Darwin'
 
 
 - name: Install shell related tools
@@ -231,13 +232,13 @@
           - uuid
         state: present
       become: true
-      when: ansible_facts['os_family'] != "Darwin"
+      when: ansible_facts.os_family != 'Darwin'
     - name: '[Darwin]'
       community.general.homebrew:
         name:
           - watch
       become: false
-      when: ansible_facts['os_family'] == "Darwin"
+      when: ansible_facts.os_family == 'Darwin'
 
 
 # (!!  ALSO REQUIRED FOR ZSH  !!)
@@ -296,7 +297,7 @@
             - { name: vi,     link: /usr/bin/vi,     path: /usr/bin/nvim }
           loop_control:
             loop_var: common_nvim_alt
-          when: ansible_facts['os_family'] != "Darwin"
+          when: ansible_facts.os_family != 'Darwin'
           become: true
 
     - name: tmux
