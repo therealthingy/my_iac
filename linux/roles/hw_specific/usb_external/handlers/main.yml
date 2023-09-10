@@ -1,6 +1,6 @@
 ---
 # SEE: https://unix.stackexchange.com/questions/39370/how-to-reload-udev-rules-without-reboot
-- name: apply udev rules          # TODO: CHECK WHETHER ACTUALLY WORKS  (claims it always works w/ luks)
+- name: apply udev rules
   ansible.builtin.shell: |
     udevadm control --reload-rules  &&  udevadm trigger
   become: true
