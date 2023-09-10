@@ -12,7 +12,7 @@ Unattended-Upgrade::Automatic-Reboot "false";
 
 Unattended-Upgrade::InstallOnShutdown "false";
 
-{% if notifications_mail_config is defined %}
+{% if notifications_mail is defined %}
 Unattended-Upgrade::Mail "root";                                                                 // Alias (see `/etc/aliases`) who should receive mail
 Unattended-Upgrade::MailReport "on-change";                                                      // Possible values: "always", "only-on-error" or "on-change"
 {% endif %}

@@ -9,7 +9,7 @@ networks:
 services:
   {{ container_name }}:
     image: traefik
-    restart: "{{ reverse_proxy_restart_policy | default('always', true) }}"
+    restart: unless-stopped
     container_name: {{ container_name }}
     hostname: {{ container_name }}
 
@@ -54,7 +54,7 @@ services:
 
       # config
       - ./dynamic-conf.yml:/config/dynamic-conf.yml
-      - {{ reverse_proxy_certs_dir }}/:/config/certs/
+      - '{{docker_container_data_basedir}}/traefik/:/config/certs/'
 
     environment:
        - TZ={{ timezone }}

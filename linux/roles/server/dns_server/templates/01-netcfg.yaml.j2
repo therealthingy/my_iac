@@ -3,10 +3,10 @@ network:
   version: 2
   renderer: networkd
   ethernets:
-    {{ dns_iface }}:
+    {{ dns.iface }}:
         dhcp4: yes
         dhcp6: yes
         addresses:
-          - {{ dns_ipv6_ula }}
+          - {{ dns.ipv6_ula }}
         nameservers:
           addresses: [{{ dns_server1_ipv4 }}, {{ dns_server1_ipv6 }}, {{ dns_server2_ipv4 }}, {{ dns_server2_ipv6 }}]

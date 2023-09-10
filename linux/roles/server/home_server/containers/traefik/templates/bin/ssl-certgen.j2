@@ -7,11 +7,11 @@
 
 # --------------------- ADAPT 2 OWN NEEDS ---------------------
 # --  DISTINGUISHED NAME OF CERTs  --
-DIST_NAME_C="{{ reverse_proxy_sslgen_country }}"
-DIST_NAME_ST="{{ reverse_proxy_sslgen_state }}"
-DIST_NAME_L="{{ reverse_proxy_sslgen_locality }}"
-DIST_NAME_O="{{ reverse_proxy_sslgen_orga }}"
-DIST_NAME_EMAIL="{{ reverse_proxy_sslgen_mail }}"
+DIST_NAME_C="{{ reverse_proxy.ssl_ca_country }}"
+DIST_NAME_ST="{{ reverse_proxy.ssl_ca_state }}"
+DIST_NAME_L="{{ reverse_proxy.ssl_ca_locality }}"
+DIST_NAME_O="{{ reverse_proxy.ssl_ca_orga }}"
+DIST_NAME_EMAIL="{{ reverse_proxy.ssl_ca_mail }}"
 DIST_CA_CN="${DIST_NAME_O} CA"
 DIST_CERT_CN="*.{{ domainname }}"
 

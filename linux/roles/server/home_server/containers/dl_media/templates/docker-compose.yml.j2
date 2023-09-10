@@ -11,7 +11,7 @@ networks:
 services:
   gluetun:
     image: qmcgaw/gluetun
-    restart: "{{ dl_media_restart_policy }}"
+    restart: "{{ dl_media.restart_policy }}"
     container_name: gluetun
     networks:
       - {{ docker_default_network }}
@@ -42,19 +42,19 @@ services:
     # SEE: https://github.com/qdm12/gluetun-wiki/tree/main/setup/options
     environment:
       - TZ={{ timezone }}
-      - VPN_SERVICE_PROVIDER={{ dl_media_gluetun_vpnsp }}
-      - SERVER_COUNTRIES={{ dl_media_gluetun_ovpn_country }}              # Optional
+      - VPN_SERVICE_PROVIDER={{ dl_media.gluetun.vpnsp }}
+      - SERVER_COUNTRIES={{ dl_media.gluetun.ovpn_country }}              # Optional
       - VPN_TYPE=wireguard #openvpn
 #      # -  openvpn specific stuff  -
 #      - PROTOCOL=udp        # Only 4 openvpn required
 #      - OPENVPN_CIPHERS=AES-256-GCM
       # -  wireguard specific stuff  -
-      - WIREGUARD_ADDRESSES={{ dl_media_gluetun_wireguard_addresses }}
+      - WIREGUARD_ADDRESSES={{ dl_media.gluetun.wireguard.addresses }}
 #      - DNS_ADDRESS=xxx.xxx.xxx.xxx
-      - FIREWALL_VPN_INPUT_PORTS={{ dl_media_gluetun_forward_port }}      # Port forwarding ~~(must be also mentioned as port ???!)~~  -> validate w/ (run in container): `nc -l -p <port>`
-#      - WIREGUARD_PUBLIC_KEY={{ dl_media_gluetun_wireguard_pk }}
-      - WIREGUARD_PRIVATE_KEY={{ dl_media_gluetun_wireguard_sk }}
-      - WIREGUARD_PRESHARED_KEY={{ dl_media_gluetun_wireguard_preshared_key }}
+      - FIREWALL_VPN_INPUT_PORTS={{ dl_media.gluetun.forward_port }}      # Port forwarding ~~(must be also mentioned as port ???!)~~  -> validate w/ (run in container): `nc -l -p <port>`
+#      - WIREGUARD_PUBLIC_KEY={{ dl_media.gluetun.wireguard.pk }}
+      - WIREGUARD_PRIVATE_KEY={{ dl_media.gluetun.wireguard.sk }}
+      - WIREGUARD_PRESHARED_KEY={{ dl_media.gluetun.wireguard.preshared_key }}
     labels:
       - com.centurylinklabs.watchtower.enable=true
       - com.centurylinklabs.watchtower.monitor-only=true
@@ -78,13 +78,13 @@ services:
   # $$$$$$$$$  TODO: WORKAROUND: https://github.com/qdm12/gluetun/issues/1407  $$$$$$$$$
   portcheck:
     image: eiqnepm/portcheck:latest
-    restart: "{{ dl_media_restart_policy }}"
+    restart: "{{ dl_media.restart_policy }}"
     container_name: portchecker
     environment:
-      QBITTORRENT_PORT: "{{ dl_media_gluetun_forward_port }}"
+      QBITTORRENT_PORT: "{{ dl_media.gluetun.forward_port }}"
       QBITTORRENT_WEBUI_PORT: "8090"
-      QBITTORRENT_USERNAME: "{{ dl_media_web_username }}"
-      QBITTORRENT_PASSWORD: "{{ dl_media_web_password }}"
+      QBITTORRENT_USERNAME: "{{ dl_media.web_username }}"
+      QBITTORRENT_PASSWORD: "{{ dl_media.web_password }}"
     network_mode: service:gluetun
     depends_on:
       - qbittorrent
@@ -98,7 +98,7 @@ services:
   # Important: Set in advanced settings network adapter 2 `tun0`
   qbittorrent:
     image: linuxserver/qbittorrent:latest
-    restart: "{{ dl_media_restart_policy }}"
+    restart: "{{ dl_media.restart_policy }}"
     container_name: qbittorrent
     environment:
       - TZ={{ timezone }}
@@ -110,13 +110,13 @@ services:
 #    security_opt:
 #      - no-new-privileges:true
     volumes:
-      - {{ dl_media_base_dir }}/qbittorrent/:/config/   # $$$$$$$$$$$$$$$$$$$$$$$$$$$    TODO: Change ALL 2 `docker_container_data_basedir` (once full disk enc.)
-      - {{ dl_media_base_dir }}/downloads/torrents/:/downloads/
+      - {{ dl_media.base_dir }}/qbittorrent/:/config/   # $$$$$$$$$$$$$$$$$$$$$$$$$$$    TODO: Change ALL 2 `docker_container_data_basedir` (once full disk enc.)
+      - {{ dl_media.base_dir }}/downloads/torrents/:/downloads/
     network_mode: service:gluetun
     labels:
       - autoheal=true
     healthcheck:
-      test: curl {{ dl_media_healthcheck_url }} || exit 1
+      test: curl {{ dl_media.healthcheck_url }} || exit 1
       interval: 30s
       timeout: 10s
       retries: 3
@@ -126,27 +126,27 @@ services:
 
 #  nzbget:
 #    image: linuxserver/nzbget:latest
-#    restart: "{{ dl_media_restart_policy }}"
+#    restart: "{{ dl_media.restart_policy }}"
 #    container_name: nzbget
 #    environment:
 #      - TZ={{ timezone }}
 #      - PUID={{ www_user_uid }}
 #      - PGID={{ www_user_gid }}
-#      - NZBGET_USER={{ dl_media_web_username }}
-#      - NZBGET_PASS={{ dl_media_web_password }}
+#      - NZBGET_USER={{ dl_media.web_username }}
+#      - NZBGET_PASS={{ dl_media.web_password }}
 ##    user: {{ www_user_uid }}:{{ www_user_gid }}
 ##    security_opt:
 ##      - no-new-privileges:true
 #    volumes:
-#      - {{ dl_media_base_dir }}/nzbget/:/config/
-#      - {{ dl_media_base_dir }}/downloads/nzb/:/downloads/
+#      - {{ dl_media.base_dir }}/nzbget/:/config/
+#      - {{ dl_media.base_dir }}/downloads/nzb/:/downloads/
 ##    ports:
 ##      - 6789:6789
 #    network_mode: service:gluetun
 #    labels:
 #      - autoheal=true
 #    healthcheck:
-#      test: curl {{ dl_media_healthcheck_url }} || exit 1
+#      test: curl {{ dl_media.healthcheck_url }} || exit 1
 #      interval: 30s
 #      timeout: 10s
 #      retries: 3
@@ -156,7 +156,7 @@ services:
 
   prowlarr:
     image: hotio/prowlarr:testing
-    restart: "{{ dl_media_restart_policy }}"
+    restart: "{{ dl_media.restart_policy }}"
     container_name: prowlarr
     environment:
       - TZ={{ timezone }}
@@ -166,7 +166,7 @@ services:
 #    security_opt:
 #      - no-new-privileges:true
     volumes:
-      - {{ dl_media_base_dir }}/prowlarr/:/config/
+      - {{ dl_media.base_dir }}/prowlarr/:/config/
     network_mode: service:gluetun
     depends_on:
       - gluetun

@@ -31,16 +31,16 @@ services:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_LABEL_ENABLE=true                            # Filter by enable label
 
-{% if notifications_mail_config is defined %}
+{% if notifications_mail is defined %}
       - WATCHTOWER_NO_STARTUP_MESSAGE=true
       # - Emailing
       - WATCHTOWER_NOTIFICATIONS=email
-      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ notifications_mail_config.smtp_host }}
-      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT={{ notifications_mail_config.smtp_port }}
-      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER={{ notifications_mail_config.smtp_username }}
-      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD={{ notifications_mail_config.smtp_password }}
-      - WATCHTOWER_NOTIFICATION_EMAIL_FROM={{ notifications_mail_config.smtp_username }}
-      - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail_config.system_admin_mail }}
+      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ notifications_mail.smtp_host }}
+      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT={{ notifications_mail.smtp_port }}
+      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER={{ notifications_mail.smtp_username }}
+      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD={{ notifications_mail.smtp_password }}
+      - WATCHTOWER_NOTIFICATION_EMAIL_FROM={{ notifications_mail.smtp_username }}
+      - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail.system_admin_mail }}
       #- WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG={{ inventory_hostname }}
 {% endif %}
 

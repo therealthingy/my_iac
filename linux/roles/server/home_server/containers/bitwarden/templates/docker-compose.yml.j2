@@ -31,18 +31,18 @@ services:
       - DATABASE_URL=/data/db.sqlite3
       - WEBSOCKET_ENABLED=true
       - SIGNUPS_ALLOWED={{ bitwarden_signups_allowed | default('false', true) }}
-      - SIGNUPS_VERIFY={{ 'true' if notifications_mail_config is defined else 'false' }}
+      - SIGNUPS_VERIFY={{ 'true' if notifications_mail is defined else 'false' }}
       - DOMAIN=https://{{ container_name }}.{{ domainname }}
 
-{% if notifications_mail_config is defined %}
+{% if notifications_mail is defined %}
       # --- Emailing
-      - SMTP_HOST={{ notifications_mail_config.smtp_host }}
-      - SMTP_FROM={{ notifications_mail_config.smtp_username }}
+      - SMTP_HOST={{ notifications_mail.smtp_host }}
+      - SMTP_FROM={{ notifications_mail.smtp_username }}
       - SMTP_FROM_NAME=Bitwarden_RS
-      - SMTP_PORT={{ notifications_mail_config.smtp_port }}
+      - SMTP_PORT={{ notifications_mail.smtp_port }}
       - SMTP_SECURITY=starttls                # NOTE: ("starttls", "force_tls", "off") Enable a secure connection. Default is "starttls" (Explicit - ports 587 or 25), "force_tls" (Implicit - port 465) or "off", no encryption (port 25)
-      - SMTP_USERNAME={{ notifications_mail_config.smtp_username }}
-      - SMTP_PASSWORD={{ notifications_mail_config.smtp_password }}
+      - SMTP_USERNAME={{ notifications_mail.smtp_username }}
+      - SMTP_PASSWORD={{ notifications_mail.smtp_password }}
       - SMTP_TIMEOUT=15
 {% endif %}
 

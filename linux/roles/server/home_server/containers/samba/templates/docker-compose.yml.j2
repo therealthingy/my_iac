@@ -24,9 +24,11 @@ services:
       - 445:445/tcp
 
     volumes:
-      - {{ samba_path_shared_share }}/:/mnt/share/public/
-      - {{ samba_path_own_share }}/:/mnt/share/private/
-      - {{ dl_media_base_dir }}/downloads/:/mnt/share/private/storage/downloads/
+{% for share in samba_shares %}
+{% for bind_mount in share.bind_mounts %}
+      - {{ bind_mount }}
+{% endfor %}
+{% endfor %}
 
     # `-r` = Disable recycle bin for shares
     # `-n` = Start the 'nmbd' daemon to advertise the shares
@@ -37,10 +39,12 @@ services:
       -n
 {% endif %}
       -w "{{ domainname }}"
-      -u "{{ samba_own_user_name }};{{ samba_own_user_pw }}"
-      -u "{{ samba_shared_user_name }};{{ samba_shared_user_pw }}"
-      -s "shared;/mnt/share/public;yes;no;no;all;none;;Public share"
-      -s "private;/mnt/share/private;no;no;no;{{ samba_own_user_name }};none;;Private share"
+{% for user in samba_users %}
+      -u "{{ user.name }};{{ user.pass }}"
+{% endfor %}
+{% for share in samba_shares %}
+      -s "{{ share.name }};{{ share.path }};{{ share.browsable }};{{ share.readonly }};{{ share.guest }};{{ share.users|join(',') }};none;;"
+{% endfor %}
 
     environment:
       - TZ={{ timezone }}
