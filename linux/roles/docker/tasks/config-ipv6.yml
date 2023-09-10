@@ -41,7 +41,7 @@
     #   Persist rules: `sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"`
     # Validation:
     #   Whether rule was applied: `sudo ip6tables -t nat -n -L`
-    #   Whether 'correct' response ip address is used  (otherwise request- & reponse ip won't match): `ip route get <dst-in-network>`
+    #   Whether 'correct' response ip address is used  (otherwise request- & response ip won't match): `ip route get <dst-in-network>`
     #   Docker container connectivity: `docker run --network=reverse_proxy --rm -t busybox ping6 -c 4 google.com`
     - name: Copy iptable config tables
       ansible.builtin.copy:

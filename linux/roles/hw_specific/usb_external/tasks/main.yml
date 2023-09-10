@@ -9,7 +9,7 @@
     mode: 0644
   become: true
 
-- name: Enable fstrimmer service
+- name: Enable systemd fstrim timer
   ansible.builtin.service:
     name: fstrim.timer
     enabled: true

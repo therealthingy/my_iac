@@ -6,7 +6,7 @@
 #    key: {{ user_ssh_key }}
 
 
-- name: Change SSH settings
+- name: Change sshd settings
   block:
     - name: Disable root login
       ansible.builtin.lineinfile:
@@ -38,7 +38,7 @@
             - { regex: '^#?PasswordAuthentication', line: 'PasswordAuthentication no' }
             - { regex: '^#?ChallengeResponseAuthentication', line: 'ChallengeResponseAuthentication no' }
             - { regex: '^#?X11Forwarding', line: "X11Forwarding {{ ssh_x11_enabled | default('yes', true) }}" }
-        - name: Rmv contradicting conf file (Ubuntu Server)
+        - name: Rmv contradicting conf file (Ubuntu Server)       # Would overwrite overwrite `PasswordAuthentication` 2 `yes`
           ansible.builtin.file:
             path: /etc/ssh/sshd_config.d/50-cloud-init.conf
             state: absent
@@ -51,7 +51,6 @@
         line: 'Port {{ ssh_port }}'
         validate: '/usr/sbin/sshd -T -f %s'
       when: ssh_port is defined
-
 
     - name: Allow client to pass locale environment variables
       ansible.builtin.lineinfile:
