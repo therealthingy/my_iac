@@ -1,4 +1,16 @@
 ---
+- name: Determine path of config file
+  block:
+    - name: '[Raspberry Pi OS]'
+      ansible.builtin.set_fact:
+        firmware_config_file: /boot/config.txt
+      when: ansible_facts.distribution != 'Ubuntu'
+    - name: '[Ubuntu]'
+      ansible.builtin.set_fact:
+        firmware_config_file: /boot/firmware/config.txt
+      when: ansible_facts.distribution == 'Ubuntu'
+
+
 - name: '[Raspberry Pi OS] Delete default pi user passwordless file  (TODO: Check whether newer versions still use username "pi" in filename)'
   ansible.builtin.file:
     state: absent
@@ -15,16 +27,6 @@
 # SEE: https://www.raspberrypi.com/documentation/computers/config_txt.html
 - name: "Change firmware settings  (NOTE: WILL TAKE EFFECT AFTER SYSTEM REBOOT !!)"
   block:
-    - name: Determine path of config file
-      block:
-        - name: '[Ubuntu]'
-          ansible.builtin.set_fact:
-            firmware_config_file: /boot/firmware/config.txt
-          when: ansible_facts.distribution == 'Ubuntu'
-        - name: '[Raspberry Pi OS]'
-          ansible.builtin.set_fact:
-            firmware_config_file: /boot/config.txt
-          when: ansible_facts.distribution != 'Ubuntu'
     - name: Disable LEDs
       ansible.builtin.blockinfile:
         insertafter: '^[pi4]$'
