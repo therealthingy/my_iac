@@ -15,14 +15,14 @@
           static domain_name_servers={{ dns_server1_ipv4 }} {{ dns_server1_ipv6 }} {{ dns_server2_ipv4 }} {{ dns_server2_ipv6 }}
           static ip6_address={{ dns_ipv6_ula }}
         path: /etc/dhcpcd.conf
-        mode: '0644'
+        mode: 0644
       notify: restart dhcpcd service
       when: ansible_facts.distribution != 'Ubuntu'
     - name: '[netplan]'
       ansible.builtin.template:
         src: 01-netcfg.yaml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
         dest: /etc/netplan/01-netcfg.yaml
-        mode: '0644'
+        mode: 0644
       notify: Applying Netplan Configuration
       when: ansible_facts.distribution == 'Ubuntu'
   become: true

@@ -138,6 +138,11 @@ export PATH=/opt/homebrew/bin:$PATH
 export PATH=/opt/homebrew/sbin:$PATH
 {% endif %}
 
+{% if ansible_facts.os_family != 'Darwin' %}
+# Fix annoying "bug": "X11 connection rejected because of wrong authentication.\n(timeshift-gtk:50030): Gtk-WARNING **: 14:33:10.933: cannot open display:"  (SEE: https://unix.stackexchange.com/a/742448)
+export XAUTHORITY=$HOME/.Xauthority
+{% endif %}
+
 ## - zsh-integrations
 #test -e "${ZDOTDIR}/.iterm2_shell_integration.zsh" && source "${ZDOTDIR}/.iterm2_shell_integration.zsh"
 #source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
