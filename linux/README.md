@@ -46,7 +46,6 @@
   - **Switch Notifications to a service**  (e.g., by using https://github.com/caronc/apprise)
   - Services:
     - **https://academy.pointtosource.com/containers/ebooks-calibre-readarr/**
-    - https://hub.docker.com/r/hurlenko/aria2-ariang
     - Heimdall
     - Add traefik allowed ip range 4 vault (https://doc.traefik.io/traefik/middlewares/http/forwardauth/)
     - **SSO service** 4 which allows authenticating all services   (https://goauthentik.io/, https://github.com/authelia/authelia)

@@ -65,6 +65,9 @@ services:
       - traefik.http.services.qbittorrent.loadbalancer.server.port=8090
       - traefik.http.routers.qbittorrent.rule=Host(`qbit.{{ domainname }}`)
       - traefik.http.routers.qbittorrent.service=qbittorrent
+#      - traefik.http.services.ariang.loadbalancer.server.port=8080
+#      - traefik.http.routers.ariang.rule=Host(`ariang.{{ domainname }}`)
+#      - traefik.http.routers.ariang.service=ariang
 #      - traefik.http.services.nzbget.loadbalancer.server.port=6789
 #      - traefik.http.routers.nzbget.rule=Host(`nzb.{{ domainname }}`)
 #      - traefik.http.routers.nzbget.service=nzbget
@@ -113,16 +116,43 @@ services:
       - {{ dl_media.base_dir }}/qbittorrent/:/config/   # $$$$$$$$$$$$$$$$$$$$$$$$$$$    TODO: Change ALL 2 `docker_container_data_basedir` (once full disk enc.)
       - {{ dl_media.base_dir }}/downloads/torrents/:/downloads/
     network_mode: service:gluetun
-    labels:
-      - autoheal=true
     healthcheck:
       test: curl {{ dl_media.healthcheck_url }} || exit 1
       interval: 30s
       timeout: 10s
       retries: 3
     labels:
+      - autoheal=true
       - com.centurylinklabs.watchtower.enable=true
       - com.centurylinklabs.watchtower.monitor-only=true
+
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$   TODO: RPC NOT WORKING   $$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+#  ariang:
+#    image: hurlenko/aria2-ariang
+#    restart: {{ dl_media.restart_policy }}
+#    container_name: ariang
+#    environment:
+#      - PUID={{ www_user_uid }}
+#      - PGID={{ www_user_gid }}
+#      - BASIC_AUTH_USERNAME={{ dl_media.web_username }}
+#      - BASIC_AUTH_PASSWORD={{ dl_media.web_password }}
+##      - RPC_SECRET=secret
+#      - ARIA2RPCPORT=443
+#    volumes:
+#      - {{ dl_media.base_dir }}/ariang/:/aria2/conf
+#      - {{ dl_media.base_dir }}/downloads/ariang/:/aria2/data
+##    ports:
+##      - 443:8080
+#    network_mode: service:gluetun
+#    healthcheck:
+#      test: curl {{ dl_media.healthcheck_url }} || exit 1
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#    labels:
+#      - autoheal=true
+#      - com.centurylinklabs.watchtower.enable=true
+#      - com.centurylinklabs.watchtower.monitor-only=true
 
 #  nzbget:
 #    image: linuxserver/nzbget:latest
@@ -143,14 +173,13 @@ services:
 ##    ports:
 ##      - 6789:6789
 #    network_mode: service:gluetun
-#    labels:
-#      - autoheal=true
 #    healthcheck:
 #      test: curl {{ dl_media.healthcheck_url }} || exit 1
 #      interval: 30s
 #      timeout: 10s
 #      retries: 3
 #    labels:
+#      - autoheal=true
 #      - com.centurylinklabs.watchtower.enable=true
 #      - com.centurylinklabs.watchtower.monitor-only=true
 

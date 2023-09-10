@@ -5,6 +5,8 @@ RUN: `ansible-playbook main.yml`
 
 
 # TODO
+* Install apps from Mac App Store
+
 ## THINGS 2 CONSIDER 4 Mac playbook
 - User should have name 'gg'
 - SW:

@@ -1,5 +1,6 @@
 ---
 # SEE HERE: https://github.com/Pioreactor/rpi_hardware_pwm  //  https://github.com/dotnet/iot/blob/main/Documentation/raspi-pwm.md#enabling-hardware-pwm
+# Validate via: `lsmod | grep pwm`
 - name: Enable HW pwm
   block:
     - name: Update firmware config
