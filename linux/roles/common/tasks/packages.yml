@@ -308,11 +308,11 @@
         mode: 0644
       become: false
 
-    - name: htop
-      ansible.builtin.template:
-        src: htoprc.j2
-        dest: '{{os_homedir}}/{{ user_name }}/.htoprc'
-        owner: '{{ user_name }}'
-        group: '{{ user_group_name }}'
-        mode: 0644
-      become: false
+#    - name: htop                         # Config file which changes when using the UI
+#      ansible.builtin.template:
+#        src: htoprc.j2
+#        dest: '{{os_homedir}}/{{ user_name }}/.htoprc'
+#        owner: '{{ user_name }}'
+#        group: '{{ user_group_name }}'
+#        mode: 0644
+#      become: false
