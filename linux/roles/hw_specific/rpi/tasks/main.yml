@@ -1,4 +1,29 @@
 ---
+- name: '[Raspberry Pi OS] Delete default pi user passwordless file  (TODO: Check whether newer versions still use username "pi" in filename)'
+  ansible.builtin.file:
+    state: absent
+    path: /etc/sudoers.d/010_pi-nopasswd
+  when: ansible_facts.distribution == 'Debian'
+  become: true
+
+
+- name: SW
+  block:
+    - name: Install
+      ansible.builtin.apt:
+        name:
+          - libraspberrypi-bin       # '`vcgencmd`'
+          - rpi-eeprom               # TODO: not tested yet  (see https://askubuntu.com/questions/1253070/raspberry-pi-4-firmware-upgrade-eeprom-over-ubuntu-20-04)
+        state: present
+    - name: Add necessary groups
+      ansible.builtin.user:
+        name: '{{ user_name }}'
+        groups: video
+        append: true
+  become: true
+
+
+# FIRMWARE SETTINGS: https://www.raspberrypi.com/documentation/computers/config_txt.html
 - name: Determine path of config file
   block:
     - name: '[Raspberry Pi OS]'
@@ -10,72 +35,65 @@
         firmware_config_file: /boot/firmware/config.txt
       when: ansible_facts.distribution == 'Ubuntu'
 
-
-- name: '[Raspberry Pi OS] Delete default pi user passwordless file  (TODO: Check whether newer versions still use username "pi" in filename)'
-  ansible.builtin.file:
-    state: absent
-    path: /etc/sudoers.d/010_pi-nopasswd
-  when: ansible_facts.distribution == 'Debian'
-  become: true
-
-
-- ansible.builtin.include_tasks: '{{ item }}'
-  loop:
-    - rpi-fan-controller.yml
-
-
-# SEE: https://www.raspberrypi.com/documentation/computers/config_txt.html
-- name: "Change firmware settings  (NOTE: WILL TAKE EFFECT AFTER SYSTEM REBOOT !!)"
+- name: Disable HW
   block:
-    - name: Disable LEDs
-      ansible.builtin.blockinfile:
-        insertafter: '^[pi4]$'
-        block: |
-          # Disable Activity LED
-          dtparam=act_led_trigger=none
-          dtparam=act_led_activelow=off
-
-          # Disable PWR LED  (currently not working properly  ??, see: https://stackoverflow.com/a/71492090)
-          dtparam=pwr_led_trigger=default-on
-          dtparam=pwr_led_activelow=off
-
-          # Disable ethernet port (ACT & LNK) LEDs
-          dtparam=eth_led0=4
-          dtparam=eth_led1=4
-        path: '{{ firmware_config_file }}'
-    - name: Optimize 4 more speed
-      lineinfile:
-        regexp: '{{ item.regexp }}'
-        line: '{{ item.line }}'
-        path: '{{ firmware_config_file }}'
-      with_items:
-        - { regexp: '^(#)?over_voltage=', line: 'over_voltage=4' }      # Optimize HW: Over Voltage
-        - { regexp: '^(#)?arm_freq=', line: 'arm_freq=1800' }           # Optimize HW: CPU freq
-#        - { regexp: '^(#)?core_freq=', line: 'core_freq=550' }          # Optimize HW: GPU freq
-#        - { regexp: '^gpu_mem=', line: 'gpu_mem=16' }                   # Optimize HW: GPU Memory Split
-        - { regexp: '^(#)?boot_delay=', line: 'boot_delay=0' }          # Optimize boot: Disable boot delay
-        - { regexp: '^(#)?initial_turbo=', line: 'initial_turbo=60' }   # Optimize boot: OC CPU 4 first secs
-#    - name: Reboot system
-#      ansible.builtin.reboot:
-  become: true
-
-
-- name: Install SW
-  block:
-    - name: '`vcgencmd`'
+    # VALIDATE:
+    #   - BT: `hcitool dev` OR `hciconfig -a`           ( OR `bluetoothctl scan on`  (https://www.makeuseof.com/manage-bluetooth-linux-with-bluetoothctl/) )
+    #   - WIFI: `ip a show wlan0`
+    - name: … radios (WiFi & Bluetooth)
       block:
-        - name: Install
-          ansible.builtin.apt:
-            name: libraspberrypi-bin
-            state: present
-        - name: Add necessary groups
-          ansible.builtin.user:
-            name: '{{ user_name }}'
-            groups: video
-            append: true
-    - name: Misc.
-      ansible.builtin.apt:
-        name:
-          - rpi-eeprom               # TODO: not tested yet  (see https://askubuntu.com/questions/1253070/raspberry-pi-4-firmware-upgrade-eeprom-over-ubuntu-20-04)
-        state: present
+        # Alternative: Uninstall package `bluez`
+        - name: Disable BT services
+          ansible.builtin.service:
+            name: '{{ item }}'
+            state: stopped
+            enabled: false
+          failed_when: false
+          with_items:
+            - hciuart.service
+#            - bluealsa.service
+            - bluetooth.service
+        - name: Disable HW                        # AGAIN: REQUIRES reboot
+          ansible.builtin.lineinfile:
+            dest: '{{ firmware_config_file }}'
+            regexp: '^(#)?dtoverlay={{ item }}'
+            line: 'dtoverlay={{ item }}'
+          with_items:
+            - disable-bt
+            - disable-wifi
+
+    - name: … LEDs
+      ansible.builtin.lineinfile:
+        dest: '{{ firmware_config_file }}'
+        regexp: '^(#)?dtparam={{ item.key }}={{ item.value }}'
+        line: 'dtparam={{ item.key }}={{ item.value }}'
+      with_items:
+        # Disable activity LED
+        - { key: 'act_led_trigger', value: 'none' }
+        - { key: 'act_led_activelow', value: 'off' }
+        # Disable PWR LED  (currently not working properly  ??, see: https://stackoverflow.com/a/71492090)
+        - { key: 'pwr_led_trigger', value: 'default-on' }
+        - { key: 'pwr_led_activelow', value: 'off' }
+        # Disable ethernet port (ACT & LNK) LEDs
+        - { key: 'eth_led0', value: '4' }
+        - { key: 'eth_led1', value: '4' }
   become: true
+
+- name: Optimize 4 more speed
+  ansible.builtin.lineinfile:
+    dest: '{{ firmware_config_file }}'
+    regexp: '^(#)?{{ item.key }}='
+    line: '{{ item.key }}={{ item.value }}'
+  with_items:
+    - { key: 'over_voltage', value: '4' }     # Optimize HW: Over Voltage
+    - { key: 'arm_freq', value: '1800' }      # Optimize HW: CPU freq
+#    - { key: 'core_freq', value: '550' }      # Optimize HW: GPU freq
+#    - { key: 'gpu_mem', value: '16' }         # Optimize HW: GPU Memory Split
+    - { key: 'boot_delay', value: '0' }       # Optimize boot: Disable boot delay
+    - { key: 'initial_turbo', value: '60' }   # Optimize boot: OC CPU 4 first secs
+  become: true
+
+- ansible.builtin.include_tasks: rpi-fan-controller.yml
+
+#  - name: Reboot system        # $$$$$$$$$$$$$$$$$$$   TODO (would require `when` - `changed_when`)
+#    ansible.builtin.reboot:

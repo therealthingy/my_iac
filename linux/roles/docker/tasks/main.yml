@@ -80,9 +80,8 @@
 # ------------------------------------------------------------------------------------------------------
 - name: "[dhcpcd5] FIX: Docker related issue  (https://github.com/raspberrypi/linux/issues/4092; TODO: CHECK WHETHER ISSUE STILL PERSISTS)"
   ansible.builtin.lineinfile:
-    state: present
-    line: "denyinterfaces veth*               # Temporary workaround for issue: https://github.com/raspberrypi/linux/issues/4092"
-    path: /etc/dhcpcd.conf
+    dest: /etc/dhcpcd.conf
+    line: 'denyinterfaces veth'               # Temporary workaround for issue: https://github.com/raspberrypi/linux/issues/4092"
     insertbefore: BOF                         # Necessary, otherwise inserted after e.g., config for interface
   notify: restart dhcpcd service
   when: "'rpis' in group_names  and  ansible_facts.distribution == 'Debian'"

@@ -196,7 +196,6 @@
 #              if [[ "$PATH" != *"{{ intel_pin_tools_dir }}/{{ intel_pin_tool_version }}"* ]]; then
 #                  export PATH="$PATH:{{ intel_pin_tools_dir }}/{{ intel_pin_tool_version }}"
 #              fi
-#            state: present
 #      when: result_pin_command.rc == 1
 #      become: true
 #  when: ansible_architecture == "x86_64"

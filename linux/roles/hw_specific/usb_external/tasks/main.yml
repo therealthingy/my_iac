@@ -1,5 +1,11 @@
 ---
-# Enables TRIM support via UASP    (validate: `lsusb -t` -> check whether "Driver" is equal to "uas"  //  `sudo fstrim -v /`)
+# Enables TRIM support via UASP
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$        TODO: LUKS BUG: `sudo cryptsetup refresh --allow-discards crypt_raspi`
+# VERIFY via:
+#   - `lsusb -t` -> check whether "Driver" is equal to "uas"
+#   - `sudo fstrim -va`
+#   - ACTUAL MEDIA `lsblk --discard /dev/sda`
+#   - LUKS (if enc.): `sudo cryptsetup luksDump /dev/sda3
 - name: Copy udev rule
   ansible.builtin.template:
     src: 10-trim_umap.rules.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
@@ -13,6 +19,6 @@
 - name: Enable systemd fstrim timer
   ansible.builtin.service:
     name: fstrim.timer
-    enabled: true
     state: started
+    enabled: true
   become: true

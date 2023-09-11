@@ -5,9 +5,9 @@
   block:
     - name: Update firmware config
       ansible.builtin.lineinfile:
+        dest: '{{ firmware_config_file }}'
         regexp: '^(#)?dtoverlay=pwm-2chan(.+)?'
         line: 'dtoverlay=pwm-2chan'
-        dest: '{{ firmware_config_file }}'
     - name: Add user to the permission group                  # NOTE: newer Raspberry Pi OS releases already have these rules; No notify as we need a restart anyways …
       block:
         - name: Check already exists

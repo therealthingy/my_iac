@@ -16,18 +16,16 @@
         dest: /etc/default/grub
         regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=\".*\"$'
         line: 'GRUB_CMDLINE_LINUX_DEFAULT=""'
-        state: present
       register: result_grub_verbose_updated
 
     - name: Change config file and set no boot timeout
       ansible.builtin.lineinfile:
         dest: /etc/default/grub
-        regexp: '{{ item.regexp }}'
-        line: '{{ item.line }}'
-        state: present
+        regexp: '^#?{{ item.key }}=[0-9]+$'
+        line: '{{ item.key }}={{ item.value }}'
       with_items:
-        - { regexp: '^GRUB_TIMEOUT=[0-9]+$', line: 'GRUB_TIMEOUT=0' }
-        - { regexp: '^GRUB_RECORDFAIL_TIMEOUT=[0-9]+$', line: 'GRUB_RECORDFAIL_TIMEOUT=0' }   # when using btrfs  (SEE: https://askubuntu.com/a/1123295)
+        - { key: 'GRUB_TIMEOUT', value: '0' }
+        - { key: 'GRUB_RECORDFAIL_TIMEOUT', value: '0' }   # when using btrfs  (SEE: https://askubuntu.com/a/1123295)
       register: result_grub_timeout_updated
 
     - name: grub makeconfig

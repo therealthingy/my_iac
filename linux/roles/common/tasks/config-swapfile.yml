@@ -3,10 +3,9 @@
   block:
     - name: Disable in config
       ansible.builtin.lineinfile:
-        dest:  /etc/dphys-swapfile
+        dest: /etc/dphys-swapfile
         regexp: '^CONF_SWAPSIZE=[0-9]+$'
         line: 'CONF_SWAPSIZE=0'
-        state: present
     - name: Disable service
       ansible.builtin.service:
         name: dphys-swapfile

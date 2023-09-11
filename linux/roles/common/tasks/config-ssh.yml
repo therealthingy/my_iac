@@ -8,49 +8,33 @@
 
 - name: Change sshd settings
   block:
-    - name: Disable root login
-      ansible.builtin.lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '^#?PermitRootLogin'
-        line: 'PermitRootLogin no'
-        state: present
-        validate: '/usr/sbin/sshd -T -f %s'
-
-    - name: Enable public key authentication
-      ansible.builtin.lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '^#?PubkeyAuthentication'
-        line: 'PubkeyAuthentication yes'
-        state: present
-        validate: '/usr/sbin/sshd -T -f %s'
-
-    - name: Disable password login
+    - name: Harden
       block:
-        - name: Update conf file
+        - name: Update config file
           ansible.builtin.lineinfile:
             dest: /etc/ssh/sshd_config
-            regexp: '{{ common_ssh_item.regex }}'
-            line: '{{ common_ssh_item.line }}'
+            regexp: '^#?{{ common_ssh_item.key }}'
+            line: '{{ common_ssh_item.key }} {{ common_ssh_item.value }}'
             validate: '/usr/sbin/sshd -T -f %s'
+          with_items:
+            # Disable root login
+            - { key: 'PermitRootLogin', value: 'no' }
+            # Enable public key authentication
+            - { key: 'PubkeyAuthentication', value: 'yes' }
+            # Disable password login
+            - { key: 'PasswordAuthentication', value: 'no' }
+            - { key: 'ChallengeResponseAuthentication', value: 'no' }
+            # Enable/Disable X11 forwarding
+            - { key: 'X11Forwarding', value: "{{ ssh.x11_enabled|default('no', true) }}" }
+            # Change ssh port
+            - { key: 'Port', value: "{{ ssh.port|default('22', true) }}" }
           loop_control:
             loop_var: common_ssh_item
-          with_items:
-            - { regex: '^#?PasswordAuthentication', line: 'PasswordAuthentication no' }
-            - { regex: '^#?ChallengeResponseAuthentication', line: 'ChallengeResponseAuthentication no' }
-            - { regex: '^#?X11Forwarding', line: "X11Forwarding {{ ssh.x11_enabled|default('no', true) }}" }
         - name: Rmv contradicting conf file (Ubuntu Server)       # Would overwrite overwrite `PasswordAuthentication` 2 `yes`
           ansible.builtin.file:
             path: /etc/ssh/sshd_config.d/50-cloud-init.conf
             state: absent
           when: ansible_facts.distribution == 'Ubuntu'
-
-    - name: Change ssh port
-      ansible.builtin.lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '^#?Port'
-        line: 'Port {{ ssh.port }}'
-        validate: '/usr/sbin/sshd -T -f %s'
-      when: ssh is defined and ssh.port is defined
 
     - name: Allow client to pass locale environment variables
       ansible.builtin.lineinfile:
