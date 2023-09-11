@@ -37,7 +37,7 @@
           with_items:
             - { regex: '^#?PasswordAuthentication', line: 'PasswordAuthentication no' }
             - { regex: '^#?ChallengeResponseAuthentication', line: 'ChallengeResponseAuthentication no' }
-            - { regex: '^#?X11Forwarding', line: "X11Forwarding {{ ssh_x11_enabled | default('yes', true) }}" }
+            - { regex: '^#?X11Forwarding', line: "X11Forwarding {{ ssh.x11_enabled|default('no', true) }}" }
         - name: Rmv contradicting conf file (Ubuntu Server)       # Would overwrite overwrite `PasswordAuthentication` 2 `yes`
           ansible.builtin.file:
             path: /etc/ssh/sshd_config.d/50-cloud-init.conf
@@ -48,9 +48,9 @@
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: '^#?Port'
-        line: 'Port {{ ssh_port }}'
+        line: 'Port {{ ssh.port }}'
         validate: '/usr/sbin/sshd -T -f %s'
-      when: ssh_port is defined
+      when: ssh is defined and ssh.port is defined
 
     - name: Allow client to pass locale environment variables
       ansible.builtin.lineinfile:
