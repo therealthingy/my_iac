@@ -11,7 +11,7 @@ networks:
 services:
   gluetun:
     image: qmcgaw/gluetun
-    restart: "{{ dl_media.restart_policy }}"
+    restart: '{{ dl_media.restart_policy }}'
     container_name: gluetun
     networks:
       - {{ docker_default_network }}
@@ -37,8 +37,8 @@ services:
 ##      - 8389:8389/udp   # Gluetun-Shadowsocks?
 ##      - 8389:8389/tcp   # Gluetun-Shadowsocks?
 ##      - 8889:8889/tcp   # Gluetun
-    volumes:
-      - {{ docker_container_config_basedir }}/dl_media/gluetun/:/gluetun
+#    volumes:
+#      - '{{ docker_container_config_basedir }}/dl_media/gluetun/:/gluetun'
     # SEE: https://github.com/qdm12/gluetun-wiki/tree/main/setup/options
     environment:
       - TZ={{ timezone }}
@@ -195,7 +195,7 @@ services:
 #    security_opt:
 #      - no-new-privileges:true
     volumes:
-      - {{ dl_media.base_dir }}/prowlarr/:/config/
+      - '{{ dl_media.base_dir }}/prowlarr/:/config/'
     network_mode: service:gluetun
     depends_on:
       - gluetun

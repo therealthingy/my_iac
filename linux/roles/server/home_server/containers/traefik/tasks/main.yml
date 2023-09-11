@@ -1,12 +1,12 @@
 ---
-- name: Ensure dirs exist
+- name: Create dirs
   ansible.builtin.file:
     path: '{{ item }}'
     state: directory
     mode: 0755
   become: false
   with_items:
-    - '{{ docker_container_data_basedir }}/{{ container_name }}'                # Will only contain certs …
+    - '{{ docker_container_data_basedir }}/{{ container_name }}'                # Contain certs …
     - '{{ docker_container_config_basedir }}/{{ container_name }}'
 
 - name: Install cert-gen script

@@ -1,17 +1,13 @@
 ---
-- name: Ensure data dir exists
+- name: Create dirs
   ansible.builtin.file:
-    path: '{{ docker_container_data_basedir }}/{{ container_name }}'
+    path: '{{ item }}'
     state: directory
     mode: 0755
   become: false
-
-- name: Create config dir
-  ansible.builtin.file:
-    path: '{{ docker_container_config_basedir }}/{{ container_name }}'
-    state: directory
-    mode: 0755
-  become: false
+  with_items:
+    - '{{ docker_container_config_basedir }}/{{ container_name }}'
+    - '{{ docker_container_data_basedir }}/{{ container_name }}'
 
 - name: Copy config file
   ansible.builtin.copy:
