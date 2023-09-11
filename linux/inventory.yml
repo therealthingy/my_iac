@@ -34,7 +34,7 @@ all:
     home_servers:
       hosts:
         gg-rpi0:
-          timezone: Europe/Berlin
+#          timezone: Europe/Berlin
           domainname: rpi.lan
           hostname: gg-rpi0
 

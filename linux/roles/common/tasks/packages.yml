@@ -129,13 +129,19 @@
 
 - name: Install networking tools
   block:
+    - name: '[Darwin]'
+      ansible.builtin.package:
+        name:
+          - netcat
+        state: present
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
     - name: '[Darwin / Debian/Ubuntu]'
       ansible.builtin.package:
         name:
           - iperf
           - speedtest-cli
           - nmap
-          - netcat
           - socat
           - wget
           - aria2                         # Download tool  (SEE: https://aria2.github.io/); cmd: `aria2c``
@@ -143,6 +149,7 @@
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
+          - netcat-openbsd
           - curl
           - dnsutils                      # `dig`
           - iproute2                      # `ip`;   NOTE: package 'net-tools' has been deprecated
