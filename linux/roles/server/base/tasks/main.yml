@@ -16,7 +16,7 @@
           - account: notifications
             host: '{{ notifications_mail.smtp_host }}'
             port: '{{ notifications_mail.smtp_port }}'
-            auth: "on"
+            auth: 'on'
             from: '{{ notifications_mail.smtp_username }}'
             user: '{{ notifications_mail.smtp_username }}'
             password: '{{ notifications_mail.smtp_password }}'
@@ -25,13 +25,10 @@
         msmtp_remove_mtas: true
         msmtp_default_account: notifications
         msmtp_domain: '{{ domainname }}'
-      become: false
-
-    - block:
-      - name: "Run 'chriswayg.msmtp-mailer ' role"
-        ansible.builtin.include_role:
-          name: chriswayg.msmtp-mailer
-      become: true                               # UGLY workaround since `become` isn't allowed in `include_role`
+    - name: "Run 'chriswayg.msmtp-mailer ' role"
+      ansible.builtin.include_role:
+        name: chriswayg.msmtp-mailer
+  become: true                               # UGLY workaround since `become` isn't allowed in `include_role`
   when: notifications_mail is defined
 
 

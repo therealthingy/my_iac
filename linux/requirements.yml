@@ -4,6 +4,7 @@ collections:
   - name: community.docker
 
 roles:
+  - name: geerlingguy.docker
   - name: chriswayg.msmtp-mailer            # Required 4 mail notifications
   - name: staticdev.firefox
   - name: petermosmans.customize-gnome
