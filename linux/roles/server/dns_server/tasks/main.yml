@@ -12,7 +12,7 @@
       ansible.builtin.blockinfile:
         block: |
           interface {{ dns.iface }}
-          static domain_name_servers={{ dns_server1_ipv4 }} {{ dns_server1_ipv6 }} {{ dns_server2_ipv4 }} {{ dns_server2_ipv6 }}
+          static domain_name_servers={{ dns_servers|join(' ') }}
           static ip6_address={{ dns.ipv6_ula }}
         path: /etc/dhcpcd.conf
         mode: 0644
@@ -20,8 +20,8 @@
       when: ansible_facts.distribution != 'Ubuntu'
     - name: '[netplan]'
       ansible.builtin.template:
-        src: 01-netcfg.yaml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
-        dest: /etc/netplan/01-netcfg.yaml
+        src: 01-pihole.yaml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
+        dest: /etc/netplan/01-pihole.yaml
         mode: 0644
       notify: Applying Netplan Configuration
       when: ansible_facts.distribution == 'Ubuntu'

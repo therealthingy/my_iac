@@ -5,10 +5,10 @@ pihole_config_dir: '/home/{{ user_name }}/pihole/'
 pihole_data_dir:   '/home/{{ user_name }}/pihole/data'
 
 
-# DNS server 1: https://www.quad9.net/service/service-addresses-and-features
-dns_server1_ipv4: 9.9.9.10
-dns_server1_ipv6: 2620:fe::10
-
-# DNS server 2
-dns_server2_ipv4: 149.112.112.10
-dns_server2_ipv6: 2620:fe::fe:10
+dns_servers:
+  # DNS server 1: https://www.quad9.net/service/service-addresses-and-features
+  - 9.9.9.10
+  - 2620:fe::10
+  # DNS server 2
+  - 149.112.112.10
+  - 2620:fe::fe:10

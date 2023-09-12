@@ -78,3 +78,19 @@
     validate: visudo -cf %s
   become: true
   when: passwordless_sudo_enabled is defined and passwordless_sudo_enabled
+
+
+
+
+## NOTE: Via netplan definitions: `ipv6-privacy: true`
+## Will only take effect after reboot
+## VERIFY: `ip -6 a show eth0 |grep ip6-privacy`
+#- name: Enable IPv6 Privacy Extensions  (4 better privacy)
+#  ansible.posix.sysctl:
+#    name: 'net.ipv6.conf.{{ item }}.use_tempaddr'
+#    value: 2
+#    state: present
+#  become: true
+#  with_items:
+#    - 'all'
+#    - 'default'

@@ -34,7 +34,7 @@ services:
     environment:
       TZ: {{ timezone }}
 
-      PIHOLE_DNS_: {{ dns_server1_ipv4 }};{{ dns_server1_ipv6 }}
+      PIHOLE_DNS_: {{ dns_servers|join(';') }}
 
       DNSMASQ_LISTENING: "single"
       INTERFACE: "eth0"

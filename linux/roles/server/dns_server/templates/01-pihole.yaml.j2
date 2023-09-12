@@ -6,7 +6,8 @@ network:
     {{ dns.iface }}:
         dhcp4: yes
         dhcp6: yes
+        # Add "static" IPv6 address
         addresses:
           - {{ dns.ipv6_ula }}
         nameservers:
-          addresses: [{{ dns_server1_ipv4 }}, {{ dns_server1_ipv6 }}, {{ dns_server2_ipv4 }}, {{ dns_server2_ipv6 }}]
+          addresses: [{{ dns_servers|join(',') }}]
