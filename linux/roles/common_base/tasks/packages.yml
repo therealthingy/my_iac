@@ -1,0 +1,129 @@
+---
+- name: Update packages
+  block:
+    - name: '[Debian/Ubuntu]'
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+        upgrade: dist
+        clean: true
+        autoremove: true
+        allow_downgrade: true
+      when: ansible_facts.os_family != 'Darwin'
+      become: true
+    - name: '[Darwin]'
+      community.general.homebrew:
+        update_homebrew: true
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
+
+- name: 'Install packages'
+  block:
+    - name: '[Darwin]'
+      community.general.homebrew:
+        name:
+          # File archiving tools
+          - xz
+          - gnu-tar
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
+    - name: '[Debian/Ubuntu]'
+      ansible.builtin.apt:
+        name:
+          # Administration
+          - sudo
+          - ssh
+          - needrestart                   # NOTE: 2 check whether reboot is pending: `sudo needrestart -r i`   (required 4 login motd)
+          # Backup
+          - timeshift
+          # Files
+          - lsof
+          - nano
+          - neovim
+          # File archiving
+          - pbzip2
+          # FS stuff
+          - btrfs-progs
+          # Privacy
+          - cryptsetup
+        state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+    - name: '[Darwin / Debian/Ubuntu]'
+      ansible.builtin.package:
+        name:
+          # Administration
+          - htop
+          - neofetch                      #   (required 4 login motd)
+          # File archiving
+          - pigz
+          # git    (!!  ALSO REQUIRED FOR ZSH  !!)
+          - git
+          - git-lfs
+          # Networking
+          - curl
+      become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
+#    - name: Install luks sparse file helper
+#      ansible.builtin.template:
+#        src: bin/luks-sparse_helper.j2
+#        dest: /usr/local/bin/luks-sparse_helper
+#        owner: root
+#        group: root
+#        mode: 0755
+#      become: true
+#      when: ansible_facts.os_family != 'Darwin'
+
+
+- ansible.builtin.include_tasks: '{{ item }}'
+  loop:
+    - package-zsh.yml
+    - package-python.yml
+#    - package-nala.yml
+
+
+- name: Config
+  block:
+    - name: nvim
+      block:
+        - name: Copy config
+          block:
+            - name: Create config dir
+              ansible.builtin.file:
+                path: '{{ os_homedir }}/{{ user_name }}/.config/nvim'
+                state: directory
+            - name: Copy config files
+              ansible.builtin.template:
+                src: '{{ common_nvim_conf_file.src }}.j2'
+                dest: '{{ os_homedir }}/{{ user_name }}/{{ common_nvim_conf_file.dest }}'
+                mode: 0644
+              with_items:
+                - { src: 'nvim', dest: '.vimrc' }
+                - { src: 'init.vim', dest: '.config/nvim/init.vim' }       # TODO: INLINE ONCE SUPPORTED BY MODULE
+              loop_control:
+                loop_var: common_nvim_conf_file
+          become: false
+        - name: '[Linux] Set "alternatives"'
+          community.general.alternatives:
+            name: '{{ common_nvim_alt.name }}'
+            link: '{{ common_nvim_alt.link }}'
+            path: '{{ common_nvim_alt.path }}'
+          with_items:
+            - { name: editor, link: /usr/bin/editor, path: /usr/bin/nvim }
+            - { name: vi,     link: /usr/bin/vi,     path: /usr/bin/nvim }
+          loop_control:
+            loop_var: common_nvim_alt
+          when: ansible_facts.os_family != 'Darwin'
+          become: true
+#    - name: Other packages
+#      ansible.builtin.template:
+#        src: '{{ common_package_file.src }}.j2'
+#        dest: '{{ common_package_file.dest }}'
+#        owner: '{{ user_name }}'
+#        group: '{{ user_group_name }}'
+#        mode: 0644
+#      become: false
+#      with_items:
+#        # htop
+#        - { src: 'htoprc', dest: '{{os_homedir}}/{{ user_name }}/.htoprc' }   # Config file which changes when using the UI
+#      loop_control:
+#        loop_var: common_package_file

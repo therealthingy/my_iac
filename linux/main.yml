@@ -2,9 +2,9 @@
 ---
 - hosts: all
   roles:
-    - role: common
+    - role: common_base
       tags:
-        - common
+        - common_base
 
 
 # --  "HW specific"  --
@@ -30,6 +30,7 @@
 # --  "System specific"  --
 - hosts: workstations, dev_workstations, il_workstations
   roles:
+    - role: common_extended
     - role: workstation/base
   tags: workstation
   vars:
@@ -73,6 +74,7 @@
 
 - hosts: dev_servers
   roles:
+    - role: common_extended
     - role: server/dev_server
   tags:
     - dev_server

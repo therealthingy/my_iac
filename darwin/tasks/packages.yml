@@ -4,7 +4,8 @@
 - name: Install packages
   ansible.builtin.include_tasks: '{{ included_task }}'
   loop:
-    - ../../linux/roles/common/tasks/packages.yml
+    - ../../linux/roles/common_base/tasks/packages.yml
+    - ../../linux/roles/common_extended/tasks/main.yml
     - ../../linux/roles/server/dev_server/tasks/packages.yml
     - ../../linux/roles/workstation/base/tasks/packages.yml
     - ../../linux/roles/workstation/dev_workstation/tasks/packages.yml

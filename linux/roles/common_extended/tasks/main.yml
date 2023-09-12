@@ -1,34 +1,14 @@
 ---
-- name: Update packages
-  block:
-    - name: '[Debian/Ubuntu]'
-      ansible.builtin.apt:
-        update_cache: true
-        cache_valid_time: 3600
-        upgrade: dist
-        clean: true
-        autoremove: true
-        allow_downgrade: true
-      when: ansible_facts.os_family != 'Darwin'
-      become: true
-    - name: '[Darwin]'
-      community.general.homebrew:
-        update_homebrew: true
-      become: false
-      when: ansible_facts.os_family == 'Darwin'
-
-
 - name: Install file general purpose tools
   block:
     - name: '[Darwin / Debian/Ubuntu]'
       ansible.builtin.package:
         name:
-          - neovim
           - detox                         # Renames files to make them easier to work w/ under Unix & related OSes
           - tree
           - rename
-          - fdupes
           - dos2unix
+          - fdupes
           - rsync
           - rclone                        # Cloud storage management software
       become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
@@ -37,7 +17,6 @@
         name:
           - libc-bin                      # Collection of helper programs, so called binary tools, that work in conjunction with libc  (`iconv`, ..)
           - file
-          - lsof
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
@@ -50,36 +29,19 @@
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
-- name: Install file archiving tools
-  block:
-    - name: '[Darwin / Debian/Ubuntu]'
-      ansible.builtin.package:
-        name:
-          - pigz
-      become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
-    - name: '[Debian/Ubuntu]'
-      ansible.builtin.apt:
-        name:
-          - pbzip2
-          - zip
-          - unzip
-        state: present
-      become: true
-      when: ansible_facts.os_family != 'Darwin'
-    - name: '[Darwin]'
-      community.general.homebrew:
-        name:
-          - xz
-          - gnu-tar
-          - gnu-time
-      become: false
-      when: ansible_facts.os_family == 'Darwin'
+- name: '[Debian/Ubuntu] Install file archiving tools'
+  ansible.builtin.apt:
+    name:
+      - zip
+      - unzip
+    state: present
+  become: true
+  when: ansible_facts.os_family != 'Darwin'
 
 - name: Install backup tools
   ansible.builtin.apt:
     name:
       - borgbackup
-      - timeshift
     state: present
   become: true
   when: ansible_facts.os_family != 'Darwin'
@@ -88,12 +50,6 @@
   block:
     - name: Install monitoring tools (I)
       block:
-        - name: '[Darwin / Debian/Ubuntu]'
-          ansible.builtin.package:
-            name:
-              - htop
-              - neofetch
-          become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
         - name: '[Debian/Ubuntu]'
           ansible.builtin.apt:
             name:
@@ -143,7 +99,6 @@
       ansible.builtin.apt:
         name:
           - netcat-openbsd
-          - curl
           - dnsutils                      # `dig`
           - iproute2                      # `ip`;   NOTE: package 'net-tools' has been deprecated
           - traceroute
@@ -163,16 +118,12 @@
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
-          - sudo
-          - aptitude
-          - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu``, `lspci``, ...)
+#          - aptitude
+          - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu`, `lspci`, …)
           - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
-          - needrestart                   # NOTE: 2 check whether reboot is pending: `sudo needrestart -r i`
-          - ssh
           #- initramfs-tools
           #- stow                         # See https://www.gnu.org/software/stow/
           # FS stuff
-          - btrfs-progs
           - cloud-guest-utils             # `growpart`
           #- fuse
           #- ntfs-3g                       # Read/write NTFS driver 4 FUSE
@@ -188,32 +139,20 @@
       when: ansible_facts.os_family == 'Darwin'
 
 
-- name: Privacy tools
+- name: Install privacy tools
   block:
-    - name: Install privacy tools
-      block:
-        - name: '[Darwin / Debian/Ubuntu]'
-          ansible.builtin.package:
-            name:
-              - ccrypt
-          become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
-        - name: '[Debian/Ubuntu]'
-          ansible.builtin.apt:
-            name:
-              - cryptsetup
-              - zerofree
-            state: present
-          become: true
-          when: ansible_facts.os_family != 'Darwin'
-#    - name: Install luks sparse file helper
-#      ansible.builtin.template:
-#        src: bin/luks-sparse_helper.j2
-#        dest: /usr/local/bin/luks-sparse_helper
-#        owner: root
-#        group: root
-#        mode: 0755
-#      become: true
-#      when: ansible_facts.os_family != 'Darwin'
+    - name: '[Darwin / Debian/Ubuntu]'
+      ansible.builtin.package:
+        name:
+          - ccrypt
+      become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
+    - name: '[Debian/Ubuntu]'
+      ansible.builtin.apt:
+        name:
+          - zerofree
+        state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
 
 
 - name: Install shell related tools
@@ -237,83 +176,22 @@
       community.general.homebrew:
         name:
           - watch
+          - gnu-time
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
 
-# (!!  ALSO REQUIRED FOR ZSH  !!)
-- name: git
-  block:
-    - name: Install git
-      ansible.builtin.package:
-        name:
-          - git
-          - git-lfs
-        state: present
-      become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
-#    - name: Init git LFS for current user        # TODO: NOT  IDEMPOTENT ???
-#      ansible.builtin.command: git lfs install
-#      become: false
 
-
-- ansible.builtin.include_tasks: '{{ item }}'
-  loop:
-    - package-zsh.yml
-    - package-python.yml
-#    - package-nala.yml
-
-
-
-- name: Config
-  block:
-    - name: nvim
-      block:
-        - name: Copy config
-          block:
-            - name: Config (I)
-              ansible.builtin.template:
-                src: nvim.j2
-                dest: '{{os_homedir}}/{{ user_name }}/.vimrc'
-                mode: 0644
-            - name: Config (II)
-              block:
-                - name: Create config dir
-                  ansible.builtin.file:
-                    path: '{{os_homedir}}/{{ user_name }}/.config/nvim'
-                    state: directory
-                - name: Copy config
-                  ansible.builtin.template:
-                    src: init.vim.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
-                    dest: '{{os_homedir}}/{{ user_name }}/.config/nvim/init.vim'
-                    mode: 0644
-          become: false
-        - name: '[Linux] Set "alternatives"'
-          community.general.alternatives:
-            name: '{{ common_nvim_alt.name }}'
-            link: '{{ common_nvim_alt.link }}'
-            path: '{{ common_nvim_alt.path }}'
-          with_items:
-            - { name: editor, link: /usr/bin/editor, path: /usr/bin/nvim }
-            - { name: vi,     link: /usr/bin/vi,     path: /usr/bin/nvim }
-          loop_control:
-            loop_var: common_nvim_alt
-          when: ansible_facts.os_family != 'Darwin'
-          become: true
-
-    - name: tmux
-      ansible.builtin.template:
-        src: tmux.conf.j2
-        dest: '{{os_homedir}}/{{ user_name }}/.tmux.conf'
-        owner: '{{ user_name }}'
-        group: '{{ user_group_name }}'
-        mode: 0644
-      become: false
-
-#    - name: htop                         # Config file which changes when using the UI
-#      ansible.builtin.template:
-#        src: htoprc.j2
-#        dest: '{{os_homedir}}/{{ user_name }}/.htoprc'
-#        owner: '{{ user_name }}'
-#        group: '{{ user_group_name }}'
-#        mode: 0644
-#      become: false
+- name: Copy config for packages
+  ansible.builtin.template:
+    src: '{{ common_package_file.src }}.j2'
+    dest: '{{ common_package_file.dest }}'
+    owner: '{{ user_name }}'
+    group: '{{ user_group_name }}'
+    mode: 0644
+  become: false
+  with_items:
+    # tmux
+    - { src: 'tmux.conf', dest: '{{os_homedir}}/{{ user_name }}/.tmux.conf' }
+  loop_control:
+    loop_var: common_package_file

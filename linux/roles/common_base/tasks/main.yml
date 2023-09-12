@@ -1,6 +1,6 @@
 ---
 # ---------------------------------- PRE-packages - Distro specific stuff ----------------------------------
-- name: Debian pre packages - apt sources
+- name: '[Debian] Pre packages - apt sources'
   block:
     - name: Remove CD/DVD install as apt source
       ansible.builtin.replace:
@@ -21,7 +21,7 @@
 
 # WORKAROUND FOR "[...] cannot remove '/var/snap/firefox/common/host-hunspell/en_US.aff': Read-only file system\r\nr":
 #  --> `sudo systemctl stop var-snap-firefox-common-host\\x2dhunspell.mount  &&  sudo systemctl disable var-snap-firefox-common-host\\x2dhunspell.mount`
-- name: Ubuntu pre packages - Snaps
+- name: '[Ubuntu] Pre packages - Snaps'
   block:
     - name: Shutdown services, sockets and timers
       ansible.builtin.service:
@@ -89,11 +89,12 @@
 
 # ---------------------------------- POST packages - Distro specific stuff ----------------------------------
 # See https://vitux.com/how-to-disable-enable-automatic-error-reporting-in-ubuntu/
-- name: Ubuntu post packages - Uninstall Telemetry/error reporting services
+- name: '[Ubuntu] Post packages - Uninstall Telemetry/error reporting services'
   ansible.builtin.apt:
     name:
       - apport
       - ubuntu-report
+      - ubuntu-advantage-tools
       - whoopsie
     state: absent
     purge: true
