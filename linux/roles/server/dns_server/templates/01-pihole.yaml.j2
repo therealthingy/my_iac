@@ -3,11 +3,10 @@ network:
   version: 2
   renderer: networkd
   ethernets:
-    {{ dns.iface }}:
-        dhcp4: yes
+    {{ dns.if }}:
+        dhcp4: yes                  # NOTE: MUST be static address
         dhcp6: yes
-        # Add "static" IPv6 address
         addresses:
-          - {{ dns.ipv6_ula }}
+          - {{ dns.ipv6_ula }}      # Add unique local IPv6 addresses  (equivalent command (for adding IPv6 address): `sudo ip addr add {{ dns.ipv6_ula }} dev {{ dns.if }}`)
         nameservers:
           addresses: [{{ dns_servers|join(',') }}]

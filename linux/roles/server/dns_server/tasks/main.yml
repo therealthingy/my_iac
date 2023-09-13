@@ -6,12 +6,12 @@
 # Monitor logs (what dhcpcd does): `journalctl -u dhcpcd`
 - name: Add static DNS entries + static IPv6 ULA addr
   block:
-    # Equivalent command (for adding IPv6 address): `sudo ip addr add {{ dns.ipv6_ula }} dev {{ dns.iface }}`
+    # Equivalent command (for adding IPv6 address): `sudo ip addr add {{ dns.ipv6_ula }} dev {{ dns.if }}`
     # Validate (show ip addresses): `ip -6 address show dev eth0`
     - name: '[dhcpcd5]'             # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ TODO: RETIRE & REMOVE (as it's deprecated soon) $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
       ansible.builtin.blockinfile:
         block: |
-          interface {{ dns.iface }}
+          interface {{ dns.if }}
           static domain_name_servers={{ dns_servers|join(' ') }}
           static ip6_address={{ dns.ipv6_ula }}
         path: /etc/dhcpcd.conf

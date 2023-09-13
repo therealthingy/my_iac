@@ -27,7 +27,7 @@ all:
       hosts:
         gg-rpi0:
           dns:
-            iface: eth0
+            if: eth0
             ipv4: 192.168.178.2
             ipv6_ula: fd00::40b3:8c93:9122:52c7/64
 
