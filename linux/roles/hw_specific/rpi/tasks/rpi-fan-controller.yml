@@ -37,16 +37,26 @@
     - not 'Local modifications exist in the destination' in repo_clone.msg
   become: false
 
+- name: Adapt service file
+  ansible.builtin.blockinfile:
+    marker: '# {mark} ENN VARS'
+    path: '{{ rpi_fan_pwm_container_dir }}/fan_control.service'
+    insertafter: '^\[Service\]$'
+    block: |2
+      Environment="INVERT_PWM_SIGNAL=True"
+      Environment="DC_MIN=30"
+  become: false
+
 - name: Install
   block:
     - name: Install dependencies
       ansible.builtin.pip:
-        requirements: '{{ rpi_fan_pwm_container_dir }}/testing/requirements.txt'
+        requirements: '{{ rpi_fan_pwm_container_dir }}/requirements.txt'
         executable: pip3
       become: false
     - name: Setup script
       ansible.builtin.copy:
-        src: '{{ rpi_fan_pwm_container_dir }}/testing/{{ rpi_fan_file.file }}'
+        src: '{{ rpi_fan_pwm_container_dir }}/{{ rpi_fan_file.file }}'
         dest: '{{ rpi_fan_file.dest_dir }}/{{ rpi_fan_file.file }}'
         owner: 'root'
         group: 'root'
