@@ -1,0 +1,13 @@
+---
+# TAKEN FROM: https://github.com/mrlesmithjr/ansible-netplan/blob/master/handlers/main.yml
+- name: Generating Netplan Configuration
+  command: netplan generate
+  listen: netplan generate config
+  notify: netplan apply config
+  become: true
+
+- name: Applying Netplan Configuration
+  command: netplan apply
+#  listen: netplan apply config
+  become: true
+#  when: netplan_apply

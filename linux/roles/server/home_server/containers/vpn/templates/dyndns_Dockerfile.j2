@@ -1,0 +1,16 @@
+# {{ ansible_managed }}
+
+FROM python:3.9
+
+
+# - Intall the rpi.gpio python module
+RUN pip install --no-cache-dir wheel netifaces requests
+
+
+# - Copy Python script
+WORKDIR /usr/local/bin
+COPY dyndns_update .
+
+
+# - Run python script ('-u' -> unbuffered output => output both stderr & stdout during runtime)
+CMD ["python", "-u", "dyndns_update"]

@@ -4,8 +4,9 @@ network:
   renderer: networkd
   ethernets:
     {{ pihole.if }}:
-        dhcp4: true                 # NOTE: MUST be static address
+        dhcp4: false
         addresses:
+          - {{ pihole.ipv4 }}
           - {{ pihole.ipv6_ula }}   # Add unique local IPv6 addresses  (equivalent command (for adding IPv6 address): `sudo ip addr add {{ pihole.ipv6_ula }} dev {{ pihole.if }}`)
         nameservers:
           addresses: [{{ dns_servers|join(',') }}]
