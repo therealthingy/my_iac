@@ -18,6 +18,9 @@
         mode: 0644
       notify: restart dhcpcd service
       when: ansible_facts.distribution != 'Ubuntu'
+
+    # REFERENCE: https://netplan.readthedocs.io/en/latest/netplan-yaml/
+    # VERIFY: `networkctl status`
     - name: '[netplan]'
       ansible.builtin.template:
         src: 01-pihole.yaml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
