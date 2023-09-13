@@ -111,6 +111,12 @@
                 - /etc/cloud/
                 - /var/lib/cloud/
                 - /etc/netplan/50-cloud-init.yaml
+
+    - name: Disable other services
+      ansible.builtin.service:
+        name: iscsid.service
+        state: stopped
+        enabled: false
   when: ansible_facts.distribution == 'Ubuntu'
   become: true
 # ----------------------------------------------------------------------------------------------------------
