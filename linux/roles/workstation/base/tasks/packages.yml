@@ -121,12 +121,12 @@
   block:
     - name: Install mainline                  # Repo: https://github.com/bkw777/mainline  (tool 4 downloading & installing pre-compiled kernels)
       block:
-        - name: Add apt Repo
+        - name: Add apt repo
           # NOTE: Equivalent command: `sudo add-apt-repository ppa:cappelikan/ppa`
           ansible.builtin.apt_repository:
             repo: ppa:cappelikan/ppa
             state: present
-            update_cache: yes
+            update_cache: true
         - name: Install mainline
           ansible.builtin.apt:
             name: mainline

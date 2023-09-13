@@ -17,13 +17,13 @@ services:
     restart: always
 
     ports:
-      - "{{ dns.ipv4 }}:53:53/udp"         # IP addr is required as Ubuntu uses the local DNS-server systemd-resolve  (SEE: https://github.com/sameersbn/docker-bind/issues/65)
-      - "{{ dns.ipv4 }}:53:53/tcp"
-      - "{{ dns.ipv6_ula[:-3] }}:53:53/udp"
-      - "{{ dns.ipv6_ula[:-3] }}:53:53/tcp"
+      - "{{ pihole.ipv4 }}:53:53/udp"         # IP addr is required as Ubuntu uses the local DNS-server systemd-resolve  (SEE: https://github.com/sameersbn/docker-bind/issues/65)
+      - "{{ pihole.ipv4 }}:53:53/tcp"
+      - "{{ pihole.ipv6_ula[:-3] }}:53:53/udp"
+      - "{{ pihole.ipv6_ula[:-3] }}:53:53/tcp"
       # 67 = DHCP  (-> TODO: could be uncommented  ???)
-      - "{{ dns.ipv4 }}:67:67/udp"
-      - "{{ dns.ipv6_ula[:-3] }}:67:67/udp"
+      - "{{ pihole.ipv4 }}:67:67/udp"
+      - "{{ pihole.ipv6_ula[:-3] }}:67:67/udp"
 {% if 'home_servers' not in group_names %}
       # Admin-interface  (ports not necessary since we use reverse proxy)
       - 80:80/tcp

@@ -49,12 +49,12 @@ services:
 #      - PROTOCOL=udp        # Only 4 openvpn required
 #      - OPENVPN_CIPHERS=AES-256-GCM
       # -  wireguard specific stuff  -
-      - WIREGUARD_ADDRESSES={{ dl_media.gluetun.wireguard.addresses }}
+      - WIREGUARD_ADDRESSES={{ dl_media.gluetun.wireguard_vpn_service.addresses }}
 #      - DNS_ADDRESS=xxx.xxx.xxx.xxx
       - FIREWALL_VPN_INPUT_PORTS={{ dl_media.gluetun.forward_port }}      # Port forwarding ~~(must be also mentioned as port ???!)~~  -> validate w/ (run in container): `nc -l -p <port>`
-#      - WIREGUARD_PUBLIC_KEY={{ dl_media.gluetun.wireguard.pk }}
-      - WIREGUARD_PRIVATE_KEY={{ dl_media.gluetun.wireguard.sk }}
-      - WIREGUARD_PRESHARED_KEY={{ dl_media.gluetun.wireguard.preshared_key }}
+#      - WIREGUARD_PUBLIC_KEY={{ dl_media.gluetun.wireguard_vpn_service.pk }}
+      - WIREGUARD_PRIVATE_KEY={{ dl_media.gluetun.wireguard_vpn_service.sk }}
+      - WIREGUARD_PRESHARED_KEY={{ dl_media.gluetun.wireguard_vpn_service.preshared_key }}
     labels:
       - com.centurylinklabs.watchtower.enable=true
       - com.centurylinklabs.watchtower.monitor-only=true

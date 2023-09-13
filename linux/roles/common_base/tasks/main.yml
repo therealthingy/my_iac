@@ -14,7 +14,7 @@
         repo: deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main
         state: present
         filename: backports
-        update_cache: yes
+        update_cache: true
   when: ansible_facts.distribution == 'Debian'
   become: true
 

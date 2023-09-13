@@ -21,7 +21,7 @@
             user: '{{ notifications_mail.smtp_username }}'
             password: '{{ notifications_mail.smtp_password }}'
         msmtp_alias_default: '{{ notifications_mail.system_admin_mail }}'                # Affects aliases in `/etc/aliases`
-        msmtp_log: no
+        msmtp_log: false
         msmtp_remove_mtas: true
         msmtp_default_account: notifications
         msmtp_domain: '{{ domainname }}'

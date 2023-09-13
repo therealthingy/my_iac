@@ -1,19 +1,18 @@
 ---
-# KEEP IN MIND:
-#  - PACKAGE NAMES: 'isc-dhcp-client' (`dhclient`)   !=   'dhcpcd5'    (see: https://superuser.com/questions/393887/dhclient-and-dhcpcd-the-real-difference)
-#  - DNS entries here affect name resolution captabilities of docker containers !!  (containers 'inherit' config from host)
-# dhcpcd5 config reference: https://manpages.ubuntu.com/manpages/trusty/man5/dhcpcd.conf.5.html
-# Monitor logs (what dhcpcd does): `journalctl -u dhcpcd`
+# Equivalent command (for adding IPv6 address): `sudo ip addr add {{ pihole.ipv6_ula }} dev {{ pihole.if }}`
+# VALIDATE (show ip addresses): `ip -6 address show dev eth0`
+# NOTE: DNS entries here affect name resolution capabilities of docker containers !!  (containers 'inherit' config from host)
 - name: Add static DNS entries + static IPv6 ULA addr
   block:
-    # Equivalent command (for adding IPv6 address): `sudo ip addr add {{ dns.ipv6_ula }} dev {{ dns.if }}`
-    # Validate (show ip addresses): `ip -6 address show dev eth0`
+    # NOTE: PACKAGE NAMES: 'isc-dhcp-client' (`dhclient`)   !=   'dhcpcd5'    (see: https://superuser.com/questions/393887/dhclient-and-dhcpcd-the-real-difference)
+    # dhcpcd5 reference: https://manpages.ubuntu.com/manpages/trusty/man5/dhcpcd.conf.5.html
+    # Monitor logs (what dhcpcd does): `journalctl -u dhcpcd`
     - name: '[dhcpcd5]'             # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ TODO: RETIRE & REMOVE (as it's deprecated soon) $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
       ansible.builtin.blockinfile:
         block: |
-          interface {{ dns.if }}
+          interface {{ pihole.if }}
           static domain_name_servers={{ dns_servers|join(' ') }}
-          static ip6_address={{ dns.ipv6_ula }}
+          static ip6_address={{ pihole.ipv6_ula }}
         path: /etc/dhcpcd.conf
         mode: 0644
       notify: restart dhcpcd service
