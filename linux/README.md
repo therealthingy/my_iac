@@ -3,7 +3,7 @@
 
 ## TODOs
 ### General
-- **Change** all **networking** to *NetworkManager*  (packages: network-manager, nmcli)  using ***[netplan](https://netplan.io/)***
+- **Merge mac- & linux** playbooks
 
 
 
