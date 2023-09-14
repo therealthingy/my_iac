@@ -90,7 +90,9 @@
 #    - { key: 'core_freq', value: '550' }      # Optimize HW: GPU freq
 #    - { key: 'gpu_mem', value: '16' }         # Optimize HW: GPU Memory Split
     - { key: 'boot_delay', value: '0' }       # Optimize boot: Disable boot delay
+    - { key: 'disable_poe_fan', value: '1' }  # Optimize boot: Turn off PoE hat
     - { key: 'initial_turbo', value: '60' }   # Optimize boot: OC CPU 4 first secs
+    - { key: 'disable_splash', value: '1' }   # UNRELATED …
   become: true
 
 - ansible.builtin.include_tasks: rpi-fan-controller.yml
