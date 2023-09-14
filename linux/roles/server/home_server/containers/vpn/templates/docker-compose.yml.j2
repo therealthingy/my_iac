@@ -12,7 +12,7 @@ services:
     image: ddclient
     build:
       context: .
-      dockerfile: dyndns_Dockerfile
+      dockerfile: dyndns-Dockerfile
     restart: unless-stopped
     container_name: ddclient
     user: {{ www_user_uid }}:{{ www_user_gid }}
@@ -29,6 +29,7 @@ services:
 
   wireguard:
     image: linuxserver/wireguard:latest
+    restart: unless-stopped
     container_name: wireguard
     hostname: wireguard
 #    user: {{ www_user_uid }}:{{ www_user_gid }}
@@ -39,7 +40,7 @@ services:
 #      - SYS_MODULE
     ports:
       # Port of the wireguard server
-      - {{ vpn.port }}:51820/udp
+      - {{ vpn.port }}:{{ vpn.port }}/udp        # DEFAULT PORT: 51820
     networks:
       - {{ docker_default_network }}
     environment:
@@ -75,10 +76,11 @@ services:
 
   wireguard-ui:
     image: ngoduykhanh/wireguard-ui:latest
+    restart: unless-stopped
     container_name: wireguard-ui
 #    user: {{ www_user_uid }}:{{ www_user_gid }}
-#    security_opt:
-#      - no-new-privileges:true
+    security_opt:
+      - no-new-privileges:true
     cap_add:
       - NET_ADMIN
     # Use network of 'wireguard' service  (allows showing active clients in the status page)
@@ -101,11 +103,11 @@ services:
       - WGUI_ENDPOINT_ADDRESS={{ vpn.dyndns.domain }}:{{ vpn.port }}
       - WGUI_SERVER_INTERFACE_ADDRESSES={{ vpn.networks|map(attribute='server')|join(',') }}
       - WGUI_DNS={{ vpn.networks|map(attribute='dns')|join(',') }}
-      # Don't route inet traffic (by default) through tunnel  --  this would require 0.0.0.0/0 / ::/0
-      - WGUI_DEFAULT_CLIENT_ALLOWED_IPS={% for network in vpn.networks %}{{ network.subnet }},{{ "%s0/%s"|format(network.server[:-4], network.server.split("/")[1]) }}{{ "" if loop.last else "," }}{% endfor %}
+      # ( Don't route inet traffic (by default) through tunnel   --> `{% for network in vpn.networks %}{{ network.subnet }},{{ "%s0/%s"|format(network.server[:-4], network.server.split("/")[1]) }}{{ "" if loop.last else "," }}{% endfor %}` )
+      - WGUI_DEFAULT_CLIENT_ALLOWED_IPS=0.0.0.0/0,::/0
       # Rules 4 forwarding from VPN subnet 2 actual network
-      - WGUI_SERVER_POST_UP_SCRIPT=iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE; ip6tables -A FORWARD -i wg0 -j ACCEPT; ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-      - WGUI_SERVER_POST_DOWN_SCRIPT=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE; ip6tables -D FORWARD -i wg0 -j ACCEPT; ip6tables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+      - WGUI_SERVER_POST_UP_SCRIPT=iptables -A FORWARD -i wg0 -j ACCEPT; ip6tables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE; ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+      - WGUI_SERVER_POST_DOWN_SCRIPT=iptables -D FORWARD -i wg0 -j ACCEPT; ip6tables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE; ip6tables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 {% if notifications_mail is defined %}
       # MAILING
       - SMTP_HOSTNAME={{ notifications_mail.smtp_host }}

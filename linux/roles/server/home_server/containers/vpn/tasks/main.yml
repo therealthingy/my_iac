@@ -35,10 +35,10 @@
     dest: '{{ docker_container_config_basedir }}/{{ container_name }}/{{ item.dir }}/{{ item.file }}'
     mode: '{{ item.mode }}'
   with_items:
-    - { file: 'docker-compose.yml', dir: '.', mode: '0640' }
-#    - { file: 'ddclient.conf', dir: 'ddclient', mode: '0640' }
-    - { file: 'dyndns_update', dir: '.', mode: '0755' }
-    - { file: 'dyndns_Dockerfile', dir: '.', mode: '0750' }
+    - { file: 'docker-compose.yml', dir: '.', mode: '0644' }
+#    - { file: 'ddclient.conf', dir: 'ddclient', mode: '0644' }
+    - { file: 'dyndns-update', dir: '.', mode: '0755' }
+    - { file: 'dyndns-Dockerfile', dir: '.', mode: '0755' }
   become: false
 
 ## VERIFY
@@ -47,5 +47,5 @@
 #- name: Ensure container is running
 #  community.docker.docker_compose:
 #    project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'
-#    build: false
+#    build: true
 #  become: false
