@@ -7,19 +7,10 @@
 
 
 
-- name: restart networking service
-  block:
-    - name: restart networking daemon
-      ansible.builtin.service:
-        name: networking
-        state: restarted
-      when: ansible_facts.os_family == 'Debian'
-
-    - name: restart networking daemon
-      ansible.builtin.service:
-        name: systemd-networkd
-        state: restarted
-      when: ansible_facts.distribution == 'Ubuntu'
+- name: restart networking daemon
+  ansible.builtin.service:
+    name: '{{ networking_service }}'
+    state: restarted
   become: true
 
 

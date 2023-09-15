@@ -38,6 +38,19 @@
           register: result_kernel_release
           changed_when: false
 
+        - name: '[Ubuntu] Check whether NetworkManager is used'        # Ubuntu Desktop = NetworkManager, Server = systemd-networkd
+          block:
+            - name: Check for nmcli
+              ansible.builtin.command: which nmcli
+              failed_when: false
+              changed_when: false
+              check_mode: false
+              register: result_ubuntu_nmcli
+            - name: Set networking service name
+              ansible.builtin.set_fact:
+                ubuntu_networking_service: "{% if result_ubuntu_nmcli == 0 %}NetworkManager{% else %}systemd-networkd{% endif %}'"
+          when: ansible_facts.distribution == 'Ubuntu'
+
 
     - name: Set variables (as facts)
       ansible.builtin.set_fact:
@@ -50,6 +63,7 @@
         www_user_gid: '{{ result_docker_gid.stdout }}'
         cpu_architecture: '{{ result_deb_architecture.stdout }}'
         kernel_release: '{{ result_kernel_release.stdout }}'
+        networking_service: "{% if ansible_facts.distribution == 'Debian' %}networking{% else %}{{ ubuntu_networking_service }}{% endif %}"
         gathered_host_facts: True
   when: gathered_host_facts is not defined
   become: false
