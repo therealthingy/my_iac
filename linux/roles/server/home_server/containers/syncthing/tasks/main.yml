@@ -1,7 +1,7 @@
 ---
 - name: Create config dir
   ansible.builtin.file:
-    path: '{{ docker_container_config_basedir }}/{{ container_name }}'
+    path: '{{ docker_container.config_basedir }}/{{ container_name }}'
     state: directory
     mode: 0755
   become: false
@@ -9,12 +9,12 @@
 - name: Copy config file
   ansible.builtin.template:
     src: docker-compose.yml.j2
-    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
+    dest: '{{ docker_container.config_basedir }}/{{ container_name }}/docker-compose.yml'
     mode: 0640
   become: false
 
 - name: Ensure container is running
   community.docker.docker_compose:
-    project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'
+    project_src: '{{ docker_container.config_basedir }}/{{ container_name }}/'
     build: false
   become: false

@@ -30,7 +30,7 @@ all:
             if: eth0
             ipv4: 192.168.178.2/24
             router_reverse_dns_zone: 192.168.178.0/24
-            ipv6_ula: fd00::40b3:8c93:9122:52c7/64
+            ipv6_ula: fd00::40b3:8c93:9122:52c7/64      # $$$$$$$$$$$$$$$$  TODO: IF-ID MUST overlap atm w/ `vpn.ipv6_if_id`  $$$$$$$$$$$$$$$$
             conditional_forwarding_enabled: true
             router_ip: 192.168.178.1
             router_domain: fritz.box
@@ -122,17 +122,18 @@ all:
                       63373339353265646330376336383335646366366134303433386231393737356436
 
           dl_media:
-            base_dir: '{{docker_container_data_basedir}}/dl_media/'
+            base_dir: '{{docker_container.data_basedir}}/dl_media/'
             restart_policy: 'unless-stopped'
             healthcheck_url: apple.com
-            web_username: choel
-            web_password: !vault |
-                      $ANSIBLE_VAULT;1.1;AES256
-                      30383434616136376135336635613366616261663134653238376235303337333834653764363462
-                      3062373034623261333537656238303536646464383437620a666662613066626330333561386132
-                      61336439653164313365623630323038363837303463376665353463353435373964383962326166
-                      3963363062653538620a313363353531353531356637346233393132643931643833623034333866
-                      3965
+            web_ui:
+              username: choel
+              password: !vault |
+                        $ANSIBLE_VAULT;1.1;AES256
+                        30383434616136376135336635613366616261663134653238376235303337333834653764363462
+                        3062373034623261333537656238303536646464383437620a666662613066626330333561386132
+                        61336439653164313365623630323038363837303463376665353463353435373964383962326166
+                        3963363062653538620a313363353531353531356637346233393132643931643833623034333866
+                        3965
             gluetun:
               forward_port: !vault |
                         $ANSIBLE_VAULT;1.1;AES256
@@ -148,7 +149,7 @@ all:
                         63616137636139303036313962656366373131356434626365333831336133353238616439346361
                         3362653337373132650a366265656430363965353832313464313438643738666136613330643836
                         6230
-              ovpn_country: !vault |
+              server_country: !vault |
                         $ANSIBLE_VAULT;1.1;AES256
                         36383933366361666135616565303865643561393332666163366134373634633033323666303462
                         3265643137346439393536333965626561646163636166300a326635613465633831663965383235
@@ -206,7 +207,7 @@ all:
                 dns: 192.168.178.2
                 server: 10.0.0.1/24
               - subnet: fd00::/64
-                dns: fd00::40b3:8c93:9122:52c7      # $$$$$$$$$$$$$$$$  TODO: IF-ID MUST overlap atm w/ `pihole.ipv6_if_id`  $$$$$$$$$$$$$$$$
+                dns: fd00::40b3:8c93:9122:52c7
                 server: fdf0::1/64
             dyndns:
               update_interval_sec: 300
@@ -263,12 +264,12 @@ all:
                       38666236393536633661346133353363326663386535393336396230383831343637393331356162
                       3331623634363762316531613931313162393630353032333837
 
-#          filebrowser_container_share_dir: '{{docker_container_data_basedir}}/samba-filebrowser/share'
+#          filebrowser_container_share_dir: '{{docker_container.data_basedir}}/samba-filebrowser/share'
 
           samba_shares:
             - name: private
               bind_mounts:
-                - '{{docker_container_data_basedir}}/samba-filebrowser/share/private:/mnt/share/private/'
+                - '{{docker_container.data_basedir}}/samba-filebrowser/share/private:/mnt/share/private/'
                 - '{{ dl_media.base_dir }}/downloads/:/mnt/share/private/storage/downloads/'
               path: /mnt/share/private
               browsable: 'no'
@@ -278,7 +279,7 @@ all:
                 - 'gtg'
             - name: shared
               bind_mounts:
-                - '{{docker_container_data_basedir}}/samba-filebrowser/share/public:/mnt/share/public/'
+                - '{{docker_container.data_basedir}}/samba-filebrowser/share/public:/mnt/share/public/'
               path: /mnt/share/public
               browsable: 'yes'
               readonly: 'no'

@@ -54,7 +54,7 @@ services:
 
       # config
       - ./dynamic-conf.yml:/config/dynamic-conf.yml
-      - '{{docker_container_data_basedir}}/traefik/:/config/certs/'
+      - '{{docker_container.data_basedir}}/traefik/:/config/certs/'
 
     environment:
        - TZ={{ timezone }}

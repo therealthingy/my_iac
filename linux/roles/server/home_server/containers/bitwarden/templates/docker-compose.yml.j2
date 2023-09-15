@@ -47,7 +47,7 @@ services:
 {% endif %}
 
     volumes:
-      - {{ docker_container_data_basedir }}/{{ container_name }}/:/data
+      - {{ docker_container.data_basedir }}/{{ container_name }}/:/data
 
     networks:
       - {{ docker_default_network }}

@@ -16,7 +16,7 @@ services:
       - no-new-privileges:true
     volumes:
       - ./settings.json:/.filebrowser.json
-      - {{ docker_container_data_basedir }}/{{ container_name }}/:/var/filebrowser-data
+      - {{ docker_container.data_basedir }}/{{ container_name }}/:/var/filebrowser-data
       - {{ filebrowser_container_share_dir }}/:/srv/
     networks:
       - {{ docker_default_network }}

@@ -25,14 +25,14 @@
     state: directory
     mode: 0755
   with_items:
-    - '{{ docker_container_config_basedir }}/{{ container_name }}/'
-#    - '{{ docker_container_config_basedir }}/{{ container_name }}/ddclient/'
+    - '{{ docker_container.config_basedir }}/{{ container_name }}/'
+#    - '{{ docker_container.config_basedir }}/{{ container_name }}/ddclient/'
   become: false
 
 - name: Copy config files
   ansible.builtin.template:
     src: '{{ item.file }}.j2'
-    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/{{ item.dir }}/{{ item.file }}'
+    dest: '{{ docker_container.config_basedir }}/{{ container_name }}/{{ item.dir }}/{{ item.file }}'
     mode: '{{ item.mode }}'
   with_items:
     - { file: 'docker-compose.yml', dir: '.', mode: '0644' }
@@ -46,6 +46,6 @@
 ##   - … on different network (whether port open + service running): `ncat -uvz <public-ip> <udp-port>`
 #- name: Ensure container is running
 #  community.docker.docker_compose:
-#    project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'
+#    project_src: '{{ docker_container.config_basedir }}/{{ container_name }}/'
 #    build: true
 #  become: false

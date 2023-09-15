@@ -23,7 +23,7 @@ services:
     environment:
       - TZ={{ timezone }}
 #    volumes:
-#      - '{{ docker_container_config_basedir }}/{{ container_name }}/ddclient/:/config/'
+#      - '{{ docker_container.config_basedir }}/{{ container_name }}/ddclient/:/config/'
 #    labels:
 #      - com.centurylinklabs.watchtower.enable=true
 
@@ -66,7 +66,7 @@ services:
         - net.ipv6.conf.default.addr_gen_mode=0
         - net.ipv6.conf.eth0.addr_gen_mode=0
     volumes:
-      - '{{ docker_container_data_basedir }}/{{ container_name }}/wireguard/:/config/'
+      - '{{ docker_container.data_basedir }}/{{ container_name }}/wireguard/:/config/'
     labels:
       - com.centurylinklabs.watchtower.enable=true
 #      - com.centurylinklabs.watchtower.monitor-only=true
@@ -120,8 +120,8 @@ services:
 #      - EMAIL_FROM_NAME="WireGuard UI"
 {% endif %}
     volumes:
-      - {{ docker_container_data_basedir }}/{{ container_name }}/wireguard/:/etc/wireguard/
-      - {{ docker_container_data_basedir }}/{{ container_name }}/wireguard-ui/:/app/db/
+      - {{ docker_container.data_basedir }}/{{ container_name }}/wireguard/:/etc/wireguard/
+      - {{ docker_container.data_basedir }}/{{ container_name }}/wireguard-ui/:/app/db/
 #    logging:
 #      driver: json-file
 #      options:

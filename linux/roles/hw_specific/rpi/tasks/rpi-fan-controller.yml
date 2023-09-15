@@ -74,6 +74,7 @@
     #  rm /etc/systemd/system/[servicename] # and symlinks that might be related
     #  rm /usr/lib/systemd/system/[servicename]
     #  rm /usr/lib/systemd/system/[servicename] # and symlinks that might be related
+    #  rm /etc/init.d/[servicename]
     #  systemctl daemon-reload
     #  systemctl reset-failed
     - name: Enable service

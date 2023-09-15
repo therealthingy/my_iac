@@ -6,13 +6,13 @@
     mode: 0755
   become: false
   with_items:
-    - '{{ docker_container_data_basedir }}/{{ container_name }}'                # Contain certs …
-    - '{{ docker_container_config_basedir }}/{{ container_name }}'
+    - '{{ docker_container.data_basedir }}/{{ container_name }}'                # Contain certs …
+    - '{{ docker_container.config_basedir }}/{{ container_name }}'
 
 - name: Install cert-gen script
   ansible.builtin.template:
     src: bin/ssl-certgen.j2
-    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/ssl-certgen'
+    dest: '{{ docker_container.config_basedir }}/{{ container_name }}/ssl-certgen'
     mode: 0755
   become: false
 
@@ -21,7 +21,7 @@
     - name: Copy config file
       ansible.builtin.template:
         src: dynamic-conf.yml.j2
-        dest: '{{ docker_container_config_basedir }}/{{ container_name }}/dynamic-conf.yml'
+        dest: '{{ docker_container.config_basedir }}/{{ container_name }}/dynamic-conf.yml'
       register: result_config_file
 
     - name: Set updated config flag
@@ -32,13 +32,13 @@
 - name: Copy docker-compose file
   ansible.builtin.template:
     src: docker-compose.yml.j2
-    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
+    dest: '{{ docker_container.config_basedir }}/{{ container_name }}/docker-compose.yml'
     mode: 0640
   become: false
 
 - name: Ensure container is running
   community.docker.docker_compose:
-    project_src: '{{ docker_container_config_basedir }}/{{ container_name }}/'
+    project_src: '{{ docker_container.config_basedir }}/{{ container_name }}/'
     build: false
     restarted: '{{ config_has_been_updated }}'
   become: false

@@ -6,13 +6,13 @@
     mode: 0755
   become: false
   with_items:
-    - '{{ docker_container_config_basedir }}/{{ container_name }}'
-    - '{{ docker_container_data_basedir }}/{{ container_name }}'
+    - '{{ docker_container.config_basedir }}/{{ container_name }}'
+    - '{{ docker_container.data_basedir }}/{{ container_name }}'
 
 - name: Copy config file
   ansible.builtin.copy:
     src: settings.json
-    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/settings.json'
+    dest: '{{ docker_container.config_basedir }}/{{ container_name }}/settings.json'
     owner: '{{ user_name }}'
     group: '{{ user_group_name }}'
     mode: 0644
@@ -21,7 +21,7 @@
 - name: Copy docker-compose file
   ansible.builtin.template:
     src: docker-compose.yml.j2
-    dest: '{{ docker_container_config_basedir }}/{{ container_name }}/docker-compose.yml'
+    dest: '{{ docker_container.config_basedir }}/{{ container_name }}/docker-compose.yml'
     mode: 0640
   #notify: Restart pi-hole
   become: false

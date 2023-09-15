@@ -87,8 +87,9 @@
 
 - hosts: home_servers
   vars:
-    docker_container_data_basedir: /home/{{ user_name }}/homeserver_data/container_data
-    docker_container_config_basedir: /home/{{ user_name }}/homeserver_config/container_config
+    docker_container:
+      data_basedir: /home/{{ user_name }}/homeserver_data/container_data
+      config_basedir: /home/{{ user_name }}/homeserver_config/container_config
   roles:
   # -- Docker containers --
     - role: server/home_server/containers/bitwarden
@@ -118,9 +119,6 @@
     - role: server/home_server/containers/traefik
       tags:
         - traefik
-#    - role: server/home_server/containers/dl/transmission
-#      tags:
-#        - dl_transmission
     - role: server/home_server/containers/dl_media
       tags:
         - dl_media
