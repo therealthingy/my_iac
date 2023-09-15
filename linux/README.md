@@ -18,21 +18,10 @@
 ### *server*
 - **SECURITY**: https://christitus.com/linux-security-mistakes/  (Fail2ban)
 
-- **Switch to btrfs** (https://mutschler.dev/linux/raspi-btrfs/, btrfs maintenance: https://mutschler.dev/linux/raspi-post-install/,  https://raspberrypi.stackexchange.com/questions/8265/btrfs-root-filesystem-on-raspbian) + encrypted root fs
-  - DEBIAN: Switch from swapfile to swap partition
-    - Switch off the swapfile + remove dphys-swapfile: `sudo apt-get purge dphys-swapfile`
-    - Activate the swap partition: `sudo swapon /dev/sdaX`
-    - REMOVE sparse file + add subvolume QUOTA 4 samba share
-- Support for **headless system** w/ **encrypted root partition**  (https://linuxconfig.org/how-to-unlock-a-luks-volume-on-boot-on-raspberry-pi-os, https://github.com/ViRb3/pi-encrypted-boot-ssh, https://docs.ansible.com/ansible/latest/collections/community/crypto/luks_device_module.html)
-  - Change docker-containers (which rely on encrypted-data, e.g., traefik SSL certs) 2 **`unless_stopped`**
+- !!!!!!!!!!!!!!!!!!!     Add restricted www user     !!!!!!!!!!!!!!!!!!!
+
 
 ### *home_server*
-- Check hosting DS-LITE (IPv6 only):
-  ```
-  -> fritzbox permit ports
-  /usr/bin/nc -6 -l <port>      # on mac
-  http://www.ipv6scanner.com/cgi-bin/main.py
-  ```
 - **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/)
 
 - Containers:
@@ -40,7 +29,6 @@
     - Convert *iptables* 2 *nftables*  (https://www.unixtutorial.org/migrate-iptables-to-nftables-in-centos-8/;           VALIDATION: `nft list ruleset`; SERVICE-NAME: nftables)
 
   - filebrowser: restart container iff config file has changed AND container is ALREADY RUNNING  ( see traefik, BUT ONLY IF CONFIG FILE HAS CHANGED )
-  - pihole idempotent data dir
 
 - FUTURE WORK:
   - **Switch Notifications to a service**  (e.g., by using https://github.com/caronc/apprise)
@@ -52,7 +40,6 @@
       - REQUIREMENT: [oauth2, etc. support (also for protected application necessary)](https://www.reddit.com/r/selfhosted/comments/s9ky8f/pass_credentials_from_authelia_to_protected/)
       - [Guide: 2 Factor Auth and Single Sign On with Authelia](https://piped.kavin.rocks/watch?v=u6H-Qwf4nZA)
     - ( Each container role should have role docker als dependency )
-  - dyndns: Setup https://dynv6.com
 ---
 
 

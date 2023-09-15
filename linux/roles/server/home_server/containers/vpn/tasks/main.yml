@@ -10,6 +10,14 @@
   when: ansible_facts.distribution == 'Ubuntu'
   become: true
 
+- name: Create separate docker network
+  community.docker.docker_network:
+    name: '{{ vpn_network }}'
+    enable_ipv6: true
+    ipam_config:
+      - subnet: '{{ ipv6_conf.prefix }}:2::/{{ (ipv6_conf.prefix_cidr + 16)|int }}'
+  become: false
+
 # VERIFY: `sudo lsmod |grep ip6table_filter`
 # EQUIVALENT COMMAND: `sudo modprobe <module>` & adding entry in `/etc/modules` (or `/etc/modprobe.d/`)
 - name: Add kernel module 4 IPv6 connectivity

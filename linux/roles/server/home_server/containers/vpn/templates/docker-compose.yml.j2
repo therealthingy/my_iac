@@ -3,7 +3,7 @@
 version: "3.7"
 
 networks:
-  {{ docker_default_network }}:
+  {{ vpn_network }}:
     external: true
 
 services:
@@ -41,8 +41,12 @@ services:
     ports:
       # Port of the wireguard server
       - {{ vpn.port }}:{{ vpn.port }}/udp        # DEFAULT PORT: 51820
+{% if vpn.wireguard_ui.user is not defined %}
+      # Wireguard UI   -->  Access GUI via: `ssh -L 8080:127.0.0.1:8080 gg-rpi0`  (ALTERNATIVE: use traefik ––––––––  WHICH DOESN't WORK aS LONG AS We DON'T USE ITS NETWORK)
+      - 127.0.0.1:{{ wireguard_ui_local_port }}:5000/tcp
+{% endif %}
     networks:
-      - {{ docker_default_network }}
+      - {{ vpn_network }}
     environment:
       - TZ={{ timezone }}
       - PUID={{ www_user_uid }}
@@ -70,9 +74,9 @@ services:
     labels:
       - com.centurylinklabs.watchtower.enable=true
 #      - com.centurylinklabs.watchtower.monitor-only=true
-      - traefik.enable=true
-      - traefik.http.services.wireguard_ui.loadbalancer.server.port=5000
-      - traefik.http.routers.wireguard_ui.rule=Host(`{{ container_name }}.{{ domainname }}`)
+#      - traefik.enable=true
+#      - traefik.http.services.wireguard_ui.loadbalancer.server.port=5000
+#      - traefik.http.routers.wireguard_ui.rule=Host(`{{ container_name }}.{{ domainname }}`)
 
   wireguard-ui:
     image: ngoduykhanh/wireguard-ui:latest
@@ -88,10 +92,12 @@ services:
     # REFERENCE: https://github.com/ngoduykhanh/wireguard-ui#environment-variables
     environment:
       # UI
-      - 'WGUI_USERNAME={{ vpn.wireguard_ui.user }}'
-      - 'WGUI_PASSWORD={{ vpn.wireguard_ui.pass }}'
-      - 'WGUI_LOG_LEVEL={{ vpn.wireguard_ui.log_level }}'
+      - 'WGUI_USERNAME={{ vpn.wireguard_ui.user if vpn.wireguard_ui.user is defined else "gg" }}'
+      - 'WGUI_PASSWORD={{ vpn.wireguard_ui.pass if vpn.wireguard_ui.user is defined else "1" }}'
+{% if vpn.wireguard_ui.session_secret is defined %}
       - 'SESSION_SECRET={{ vpn.wireguard_ui.session_secret }}'
+{% endif %}
+      - 'WGUI_LOG_LEVEL={{ vpn.wireguard_ui.log_level }}'
       # Start / restart wireguard container w/ this container
       # $$  TODO: WORKAROUND  (https://github.com/ngoduykhanh/wireguard-ui/issues/381#issuecomment-1582258804)  $$
       - WGUI_MANAGE_START=false
