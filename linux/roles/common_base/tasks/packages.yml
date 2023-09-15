@@ -77,7 +77,7 @@
 - ansible.builtin.include_tasks: '{{ item }}'
   loop:
     - package-zsh.yml
-    - package-python.yml
+    - packages-python.yml
 #    - package-nala.yml
 
 

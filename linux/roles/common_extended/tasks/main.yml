@@ -1,4 +1,10 @@
 ---
+- ansible.builtin.include_tasks: '{{ item }}'
+  loop:
+    - packages-python.yml
+
+
+
 - name: Install file general purpose tools
   block:
     - name: '[Darwin / Debian/Ubuntu]'

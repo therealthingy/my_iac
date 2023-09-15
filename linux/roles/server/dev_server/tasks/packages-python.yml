@@ -1,12 +1,16 @@
 ---
 - name: Install Python dev packages
-  ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
-    name:
-      - ansible
-      - pdm
-    #extra_args: --break-system-packages   # TODO: Workaround 4 now
+  community.general.pipx:
+    name: '{{ pip_package }}'
+    install_deps: true
+    executable: pipx
+  with_items:
+    - ansible
+    - pdm            # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
+  loop_control:
+    loop_var: pip_package
   become: false
-# TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
+
 
 - name: Install Python scientific packages
   ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
@@ -15,5 +19,6 @@
       - pandas
       - matplotlib
 #      - scipy
-    #extra_args: --break-system-packages   # TODO: Workaround 4 now
+#    virtualenv: '{{ os_homedir }}/.venvs/science'
+#    extra_args: --break-system-packages   # TODO: Workaround 4 now
   become: false

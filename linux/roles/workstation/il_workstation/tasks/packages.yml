@@ -19,7 +19,8 @@
       when: ansible_facts.os_family != 'Darwin'
 
 - name: Install yt-dlp
-  ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
+  community.general.pipx:
     name: yt-dlp
-    #extra_args: --break-system-packages   # TODO: Workaround 4 now
+    install_deps: true
+    executable: pipx
   become: false
