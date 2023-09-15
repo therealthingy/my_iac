@@ -8,7 +8,6 @@ Workaround, as we use Privacy Extensions, but Fritzbox allows only fixed IF-ID
 
 import os
 import sys
-import socket
 import netifaces as ni
 import requests
 import time
@@ -20,7 +19,7 @@ LOG_DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 if __name__ == "__main__":
     print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Running as user '{os.path.split(os.path.expanduser('~'))[-1]}' on '{os.uname()[1]}'")
 
-    last_updated_ip = socket.getaddrinfo("{{ vpn.dyndns.domain }}", 0, socket.AF_INET6)[0][4][0]
+    last_updated_ip = None
     while True:
         print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Checking …")
         for ip in ni.ifaddresses('{{ vpn.if }}')[ni.AF_INET6]:
