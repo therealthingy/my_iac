@@ -28,9 +28,9 @@ all:
         gg-rpi0:
           pihole:
             if: eth0
-            ipv4: 192.168.178.2/24
-            router_reverse_dns_zone: 192.168.178.0/24
-            ipv6_ula: fd00::40b3:8c93:9122:52c7/64      # $$$$$$$$$$$$$$$$  TODO: IF-ID MUST overlap atm w/ `vpn.ipv6_if_id`  $$$$$$$$$$$$$$$$
+            ipv4: 10.38.170.2/24
+            router_reverse_dns_zone: 10.38.170.0/24
+            ipv6_ula: fd4b:49fb:a80c:29ba:40b3:8c93:9122:52c7/64      # $$$$$$$$$$$$$$$$  TODO: IF-ID MUST overlap atm w/ `vpn.ipv6_if_id`  $$$$$$$$$$$$$$$$
             conditional_forwarding_enabled: true
             router_ip: 192.168.178.1
             router_domain: fritz.box
@@ -201,14 +201,14 @@ all:
           vpn:
             if: eth0
             port: 123      # NTP port    (default: 51820)
-            ipv6_if_id: ::40b3:8c93:9122:52c7      # ATM derived from `pihole.ipv6_ula`  (2 ensure it will match)
+            ipv6_if_id: ::40b3:8c93:9122:52c7                 # ATM derived from `pihole.ipv6_ula`  (2 ensure it will match)
             networks:
-              - subnet: 192.168.178.0/24
-                dns: 192.168.178.2
-                server: 10.0.0.1/24
-              - subnet: fd00::/64
-                dns: fd00::40b3:8c93:9122:52c7
-                server: fdf0::1/64
+              - subnet: 10.38.170.0/24
+                dns: 10.38.170.2                              # ATM `pihole.ipv4`
+                server: 10.196.92.48/24
+              - subnet: fa93:eb85:93cd:56be::/64
+                dns: fd4b:49fb:a80c:29ba:40b3:8c93:9122:52c7  # ATM `pihole.ipv6_ula`
+                server: fa93:eb85:93cd:56be::1/64
             dyndns:
               update_interval_sec: 300
               server: !vault |
