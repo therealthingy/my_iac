@@ -21,6 +21,7 @@
 - name: Install yt-dlp
   community.general.pipx:
     name: yt-dlp
+    state: latest
     install_deps: true
     executable: pipx
   become: false

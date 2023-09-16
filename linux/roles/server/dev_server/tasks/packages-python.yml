@@ -1,22 +1,36 @@
 ---
-- name: Install Python dev packages
-  community.general.pipx:
-    name: '{{ pip_package }}'
-    install_deps: true
-    executable: pipx
-  with_items:
-    - ansible
-    - pdm            # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
-  loop_control:
-    loop_var: pip_package
+- name: Python dev
+  block:
+    - name: Install packages
+      community.general.pipx:
+        name: '{{ pip_package }}'
+        state: latest
+        install_deps: true
+        executable: pipx
+      with_items:
+        - ansible
+        - pdm            # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
+      loop_control:
+        loop_var: pip_package
+    - name: Inject packages
+      community.general.pipx:
+        name: '{{ package.name }}'
+        state: inject
+        inject_packages: '{{ package.packages }}'
+        executable: pipx
+      with_items:
+        - { name: 'ansible', packages: ['ansible-lint[yamllint]'] }
+      loop_control:
+        loop_var: package
   become: false
 
 
 # USAGE:
 #   - `source ~/.venvs/science/bin/activate`
 #   - `deactivate`
+#   - ( `python3 -m venv --upgrade ~/.venvs/science` )
 - name: Install Python scientific packages
-  ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
+  ansible.builtin.pip:
     name:
       - numpy
       - pandas
@@ -24,4 +38,4 @@
 #      - scipy
     virtualenv: '{{ os_homedir }}/{{ user_name }}/.venvs/science'
     virtualenv_command: python -m venv
-  become: false
+  become: false               # NOTE: sudo installs it for ALL users (otherwise only local user)

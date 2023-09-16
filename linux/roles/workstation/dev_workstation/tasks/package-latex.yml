@@ -3,7 +3,7 @@
   block:
     - name: Install
       block:
-        - name: '[Linux] Install'
+        - name: '[Linux]'
           ansible.builtin.apt:
             name:
               - texlive-base #ORIGINALLY: `texlive-full` (too large)
@@ -13,7 +13,7 @@
             state: present
           when: ansible_facts.os_family != 'Darwin'
           become: true
-        - name: '[Darwin] Setup'
+        - name: '[Darwin]'
           block:
             - name: '[Darwin] Create dir'
               ansible.builtin.file:
@@ -58,7 +58,11 @@
                 - { key: 'SKInvertColorsInDarkMode', value: 'true', type: 'bool' }       # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
                 # OPTIONAL: View -> Hide Contents Pane + Hide Notes Pane
           when: ansible_facts.os_family == 'Darwin'
-    - name: Copy config
+
+    # USAGE:
+    #   `latexmk -pvc -pdf <tex_file>`
+    #   `latexmk -C`
+    - name: Copy latexmk config
       ansible.builtin.template:
         src: 'latexmkrc.j2'
         dest: '{{os_homedir}}/{{ user_name }}/.latexmkrc'

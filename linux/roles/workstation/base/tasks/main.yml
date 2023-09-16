@@ -1,13 +1,23 @@
 ---
-- name: '[Ubuntu Server] Install Desktop environment'
-  ansible.builtin.apt:
-    name:
-      - gdm3            # Display Manager
-      - ubuntu-desktop
-      # TODO: vanilla-gnome-desktop vanilla-gnome-default-settings
-    state: present
+- name: Install Desktop environment
+  block:
+    - name: '[Debian]'
+      ansible.builtin.apt:
+        name:
+#          - tasksel
+          - gdm3
+          - gnome-session
+        state: present
+      when: ansible_facts.distribution == 'Debian'
+    - name: '[Ubuntu Server]'
+      ansible.builtin.apt:
+        name:
+          - gdm3            # Display Manager
+          - ubuntu-desktop
+          # TODO: vanilla-gnome-desktop vanilla-gnome-default-settings
+        state: present
+      when: ansible_facts.distribution == 'Ubuntu'
   become: true
-  when: ansible_facts.distribution == 'Ubuntu'
 
 - ansible.builtin.include_tasks: '{{ included_workstation_task }}'
   loop:

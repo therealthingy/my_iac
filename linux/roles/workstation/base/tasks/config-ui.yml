@@ -211,11 +211,21 @@
       ansible.builtin.stat:
         path: '/home/{{ user_name }}/.ansible_first_run_completed'
       register: first_run_completed
+
     - name: Perform ACTUAL tasks
       block:
         - name: Mute audio (requires PulseAudio)
-          ansible.builtin.command: pactl set-sink-mute @DEFAULT_SINK@ true
+          block:
+            - name: Install PulseAudio
+              ansible.builtin.apt:
+                name:
+                  - pulseaudio-utils
+                state: present
+              become: true
+            - name: Mute audio
+              ansible.builtin.command: pactl set-sink-mute @DEFAULT_SINK@ true
           when: "'vmware_vms' in group_names"
+
         - name: Set GNOME settings
           community.general.dconf:
             key: '{{ gnome_setting.key }}'
@@ -227,6 +237,7 @@
             loop_var: gnome_setting
           when: "'GNOME' in desktop_envs"
       when: first_run_completed.stat.exists == False
+
     - name: Store initial-run completed
       ansible.builtin.file:
         path: '/home/{{ user_name }}/.ansible_first_run_completed'

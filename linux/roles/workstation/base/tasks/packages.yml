@@ -61,6 +61,22 @@
   become: true
   when: ansible_facts.os_family != 'Darwin'
 
+
+
+- name: Install required ansible-related packages
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      - python3-psutil      # Required for `dconf` module
+      - python3-apt         # Required by Ansible modules
+      - dconf-cli
+      - dconf-editor
+    state: present
+  become: true
+  when: ansible_facts.os_family != 'Darwin'
+
+
+
 - name: Install CLI tools
   block:
     - name: '[Debian/Ubuntu]'
