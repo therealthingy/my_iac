@@ -35,7 +35,7 @@
 
 
 
-- name: Install Docker Compose using Pip.       # $$$$$$$$$$$$$$$$$$$$   Still required (docker-compose plugin relies on it)  => TODO: CHANGE ONCE RESOLVED: https://github.com/ansible-collections/community.docker/issues/216
+- name: Install docker-compose v1 (deprecated) using pip       # $$$$$$$$$$$$$$$$$$$$   Still required (docker-compose plugin relies on it)  => TODO: CHANGE ONCE RESOLVED: https://github.com/ansible-collections/community.docker/issues/216
   ansible.builtin.pip:
     name: docker-compose
     state: present

@@ -12,6 +12,9 @@
   become: false
 
 
+# USAGE:
+#   - `source ~/.venvs/science/bin/activate`
+#   - `deactivate`
 - name: Install Python scientific packages
   ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
     name:
@@ -19,6 +22,6 @@
       - pandas
       - matplotlib
 #      - scipy
-#    virtualenv: '{{ os_homedir }}/.venvs/science'
-#    extra_args: --break-system-packages   # TODO: Workaround 4 now
+    virtualenv: '{{ os_homedir }}/{{ user_name }}/.venvs/science'
+    virtualenv_command: python -m venv
   become: false
