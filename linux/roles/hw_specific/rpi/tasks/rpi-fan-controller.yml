@@ -8,7 +8,7 @@
         dest: '{{ firmware_config_file }}'
         regexp: '^(#)?dtoverlay=pwm-2chan(.+)?'
         line: 'dtoverlay=pwm-2chan'
-    - name: Add user to the permission group                  # NOTE: newer Raspberry Pi OS releases already have these rules; No notify as we need a restart anyways …
+    - name: Add user to the permission group        # NOTE: newer Raspberry Pi OS releases already have these rules  //  No notify as we need a restart anyways …
       block:
         - name: Check already exists
           ansible.builtin.stat:
@@ -16,7 +16,7 @@
           register: udev_rule_file
         - name: Copy udev rule
           ansible.builtin.template:
-            src: 99-com.rules.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
+            src: 99-com.rules.j2                    # TODO: INLINE ONCE SUPPORTED BY MODULE
             dest: /etc/udev/rules.d/99-com.rules
             owner: root
             group: root
@@ -37,50 +37,63 @@
     - not 'Local modifications exist in the destination' in repo_clone.msg
   become: false
 
-- name: Adapt service file
-  ansible.builtin.blockinfile:
-    marker: '# {mark} ENN VARS'
-    path: '{{ rpi_fan_pwm_container_dir }}/fan_control.service'
-    insertafter: '^\[Service\]$'
-    block: |2
-      Environment="INVERT_PWM_SIGNAL=True"
-      Environment="DC_MIN=30"
+
+- name: Setup as docker container
+  block:
+    - name: Adapt config
+      ansible.builtin.lineinfile:
+        dest: '{{ rpi_fan_pwm_container_dir }}/.env'
+        regexp: '^INVERT_PWM_SIGNAL=False$'
+        line: 'INVERT_PWM_SIGNAL=True'
+    - name: Ensure container is running
+      community.docker.docker_compose:
+        project_src: '{{ rpi_fan_pwm_container_dir }}'
+        build: true
   become: false
 
-- name: Install
-  block:
-    - name: Install dependencies
-      ansible.builtin.pip:
-        requirements: '{{ rpi_fan_pwm_container_dir }}/requirements.txt'
-        executable: pip3
-      become: false
-    - name: Setup script
-      ansible.builtin.copy:
-        src: '{{ rpi_fan_pwm_container_dir }}/{{ rpi_fan_file.file }}'
-        dest: '{{ rpi_fan_file.dest_dir }}/{{ rpi_fan_file.file }}'
-        owner: 'root'
-        group: 'root'
-        mode: 0755
-        remote_src: true
-      with_items:
-        - { 'dest_dir': '/usr/local/bin', 'file': 'fan_control' }
-        - { 'dest_dir': '/etc/systemd/system', 'file': 'fan_control.service' }
-      loop_control:
-        loop_var: rpi_fan_file
-    # REMOVAL of SERVICE later:
-    #  systemctl stop [servicename]
-    #  systemctl disable [servicename]
-    #  rm /etc/systemd/system/[servicename]
-    #  rm /etc/systemd/system/[servicename] # and symlinks that might be related
-    #  rm /usr/lib/systemd/system/[servicename]
-    #  rm /usr/lib/systemd/system/[servicename] # and symlinks that might be related
-    #  rm /etc/init.d/[servicename]
-    #  systemctl daemon-reload
-    #  systemctl reset-failed
-    - name: Enable service
-      ansible.builtin.systemd:
-        state: started
-        enabled: true
-        daemon_reload: true
-        name: fan_control
-  become: true
+#- name: Setup as systemd service
+#  block:
+#    - name: Adapt service file
+#      ansible.builtin.blockinfile:
+#        marker: '# {mark} ENN VARS'
+#        path: '{{ rpi_fan_pwm_container_dir }}/fan_control.service'
+#        insertafter: '^\[Service\]$'
+#        block: |2
+#          Environment="INVERT_PWM_SIGNAL=True"
+#          Environment="DC_MIN=30"
+#      become: false
+#    - name: Install dependencies
+#      ansible.builtin.pip:
+#        requirements: '{{ rpi_fan_pwm_container_dir }}/requirements.txt'
+#        executable: pip3
+#      become: false
+#    - name: Setup script
+#      ansible.builtin.copy:
+#        src: '{{ rpi_fan_pwm_container_dir }}/{{ rpi_fan_file.file }}'
+#        dest: '{{ rpi_fan_file.dest_dir }}/{{ rpi_fan_file.file }}'
+#        owner: 'root'
+#        group: 'root'
+#        mode: 0755
+#        remote_src: true
+#      with_items:
+#        - { 'dest_dir': '/usr/local/bin', 'file': 'fan_control' }
+#        - { 'dest_dir': '/etc/systemd/system', 'file': 'fan_control.service' }
+#      loop_control:
+#        loop_var: rpi_fan_file
+#    # REMOVAL of SERVICE later:
+#    #  systemctl stop [servicename]
+#    #  systemctl disable [servicename]
+#    #  rm /etc/systemd/system/[servicename]
+#    #  rm /etc/systemd/system/[servicename] # and symlinks that might be related
+#    #  rm /usr/lib/systemd/system/[servicename]
+#    #  rm /usr/lib/systemd/system/[servicename] # and symlinks that might be related
+#    #  rm /etc/init.d/[servicename]
+#    #  systemctl daemon-reload
+#    #  systemctl reset-failed
+#    - name: Enable service
+#      ansible.builtin.systemd:
+#        state: started
+#        enabled: true
+#        daemon_reload: true
+#        name: fan_control
+#  become: true

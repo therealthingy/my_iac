@@ -1,3 +1,2 @@
 ---
-rpi_fan_pwm_container_name: rpi-fan-pwm
 rpi_fan_pwm_container_dir: /home/{{ user_name }}/rpi_fan_controller
