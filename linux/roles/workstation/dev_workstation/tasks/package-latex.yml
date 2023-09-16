@@ -49,14 +49,16 @@
             - name: '[Darwin] Config'
               community.general.osx_defaults:
                 domain: net.sourceforge.skim-app.skim
-                key: '{{ item.key }}'
-                type: '{{ item.type }}'
-                value: '{{ item.value }}'
+                key: '{{ skin_conf_item.key }}'
+                type: '{{ skin_conf_item.type }}'
+                value: '{{ skin_conf_item.value }}'
                 state: present
               with_items:
                 - { key: 'SKAutoReloadFileUpdate', value: 'true', type: 'boolean' }      # Auto reload file when changed  (in case it doesn't work: Skim -> Preferences -> Sync -> Check 4 file changes + Reload automatically)
                 - { key: 'SKInvertColorsInDarkMode', value: 'true', type: 'bool' }       # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
                 # OPTIONAL: View -> Hide Contents Pane + Hide Notes Pane
+              loop_control:
+                loop_var: skin_conf_item
           when: ansible_facts.os_family == 'Darwin'
 
     # USAGE:
