@@ -1,57 +1,63 @@
 ---
 # apt -- show installed packages: `apt list --installed`
 # ---------------------------------------------------------
-- name: '[Debian/Ubuntu] Uninstall unnecessary apt packages (mostly Gnome stuff)'
-  ansible.builtin.apt:
-    name:
-    # --  Games  --
-      - aisleriot
-      - gnome-mahjongg
-      - gnome-mines
-      - gnome-sudoku
-      - gnome-2048
-      - gnome-chess
-      - five-or-more
-      - four-in-a-row
-      - hitori
-      - gnome-klotski
-      - lightsoff
-      - gnome-nibbles
-      - quadrapassel
-      - gnome-robots
-      - swell-foop
-      - iagno
-      - tali
-      - gnome-taquin
-      - gnome-tetravex
-    # --  Apps  --
-      - gnome-clocks
-      - gnome-calendar
-      - gnome-contacts
-      - gnome-documents
-      - '*gnome-todo*'
-      - gnome-maps
-      - gnome-music
-      - '*rhythmbox*'
-      - gnome-weather
-      - transmission*
-      - libreoffice*
-      - totem                     # Media player
-      - evolution                 # Mail
-      - thunderbird*
-      - simple-scan
-      - cheese                    # NOTE: 'cheese-common', 'libcheese-gtk25' & 'libcheese8' are required by the Settings app (package 'unity-control-center')
-      - 'shotwell*'
-    state: absent
-    purge: true
-    clean: true
-    autoremove: true
+- name: Cleanup
+  block:
+    - name: '[Debian/Ubuntu] Uninstall unnecessary apt packages (mostly Gnome stuff)'
+      ansible.builtin.apt:
+        name:
+        # --  Games  --
+          - aisleriot
+          - gnome-mahjongg
+          - gnome-mines
+          - gnome-sudoku
+          - gnome-2048
+          - gnome-chess
+          - five-or-more
+          - four-in-a-row
+          - hitori
+          - gnome-klotski
+          - lightsoff
+          - gnome-nibbles
+          - quadrapassel
+          - gnome-robots
+          - swell-foop
+          - iagno
+          - tali
+          - gnome-taquin
+          - gnome-tetravex
+        # --  Apps  --
+          - gnome-clocks
+          - gnome-calendar
+          - gnome-contacts
+          - gnome-documents
+          - '*gnome-todo*'
+          - gnome-maps
+          - gnome-music
+          - '*rhythmbox*'
+          - gnome-weather
+          - transmission*
+          - libreoffice*
+          - totem                     # Media player
+          - evolution                 # Mail
+          - thunderbird*
+          - simple-scan
+          - cheese                    # NOTE: 'cheese-common', 'libcheese-gtk25' & 'libcheese8' are required by the Settings app (package 'unity-control-center')
+          - 'shotwell*'
+        state: absent
+        purge: true
+        clean: true
+        autoremove: true
+    - name: '[Debian/Ubuntu] (Re)Install nautilus'        # Gets rmved mysteriously …
+      ansible.builtin.apt:
+        name: nautilus
+        state: present
   become: true
   when: ansible_facts.os_family != 'Darwin' and ansible_facts.os_family == 'Debian'
 # ---------------------------------------------------------
 
 
-- name: Update and upgrade apt packages
+- name: Update & upgrade packages
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600

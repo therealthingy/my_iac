@@ -13,7 +13,7 @@
 - name: Set variables (as facts)
   ansible.builtin.set_fact:
     desktop_envs: "{{ ['GNOME' if result_gnome_command.rc == 0] }}"
-    firefox_package_name: firefox #"{{ 'firefox-esr' if ansible_facts.distribution == 'Debian' else 'firefox' }}"
+    firefox_package_name: "{{ 'firefox-esr' if ansible_facts.distribution == 'Debian' else 'firefox' }}"
     gather_workstation_facts: True
   when: gather_workstation_facts is not defined
   become: false
