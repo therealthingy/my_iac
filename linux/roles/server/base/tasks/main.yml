@@ -25,7 +25,7 @@
         msmtp_remove_mtas: true
         msmtp_default_account: notifications
         msmtp_domain: '{{ domainname }}'
-    - name: "Run 'chriswayg.msmtp-mailer ' role"
+    - name: "Run 'chriswayg.msmtp-mailer' role"
       ansible.builtin.include_role:
         name: chriswayg.msmtp-mailer
   become: true                               # UGLY workaround since `become` isn't allowed in `include_role`
@@ -33,6 +33,25 @@
 
 
 - ansible.builtin.include_tasks: config-unattended_updates.yml
+
+
+- name: Firewall
+  block:
+    - name: Uninstall other 'firewalls'
+      ansible.builtin.apt:
+        name:
+          - ufw
+          - firewalld
+        state: absent
+    - name: Install iptables / nftables
+      ansible.builtin.apt:
+        name:
+          - iptables
+          - iptables-persistent
+          - iptables-nftables-compat  # Conversion tool
+          - nftables
+        state: present
+  become: true
 
 
 - name: Install login system stats script
