@@ -5,7 +5,7 @@
 version: "3.7"
 
 networks:
-  {{ docker_default_network }}:
+  {{ reverse_proxy_docker_network }}:
     external: true
 
 services:
@@ -14,7 +14,7 @@ services:
     restart: '{{ dl_media.restart_policy }}'
     container_name: gluetun
     networks:
-      - {{ docker_default_network }}
+      - {{ reverse_proxy_docker_network }}
     sysctls:
         - net.ipv6.conf.all.disable_ipv6=0
 #    user: {{ www_user_uid }}:{{ www_user_gid }}

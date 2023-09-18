@@ -88,7 +88,7 @@ all:
                       3938633264333561300a633762303464643962313839383737356635353134356532646665356538
                       30383835383664633736303534303162353834356562666133343138386339306230
 
-          docker_default_network: reverse_proxy
+          reverse_proxy_docker_network: reverse_proxy
 
           reverse_proxy:
             ssl_ca_country: DE

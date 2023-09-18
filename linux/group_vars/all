@@ -1,3 +1,8 @@
 locale: en_US.UTF-8
 timezone: Europe/Berlin
 os_homedir: /home
+
+
+ipv6_conf:
+  prefix: 2001:db8
+  prefix_cidr: 32

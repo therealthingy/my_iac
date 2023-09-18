@@ -5,7 +5,11 @@
     state: restarted
   become: true
 
-
+- name: restart nftables
+  ansible.builtin.service:
+    name: nftables
+    state: restarted
+  become: true
 
 - name: restart networking daemon
   ansible.builtin.service:

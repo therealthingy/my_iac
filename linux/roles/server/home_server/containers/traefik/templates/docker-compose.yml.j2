@@ -3,7 +3,7 @@
 version: "3.7"
 
 networks:
-  {{ docker_default_network }}:
+  {{ reverse_proxy_docker_network }}:
     external: true
 
 services:
@@ -22,7 +22,7 @@ services:
     domainname: {{ domainname }}
 
     networks:
-      - {{ docker_default_network }}
+      - {{ reverse_proxy_docker_network }}
 
     ports:
       - 80:80
@@ -43,7 +43,7 @@ services:
       - "--entrypoints.websecure.http.middlewares=securityHeaders@file"
       - "--providers.docker=true"
       - "--providers.docker.exposedByDefault=false"
-      - "--providers.docker.network={{ docker_default_network }}"
+      - "--providers.docker.network={{ reverse_proxy_docker_network }}"
       - "--providers.file.directory=/config/"
       - "--providers.file.watch=true"
       # Disalbes ping healthcheck (entryPoint treafik on port 8080) ???

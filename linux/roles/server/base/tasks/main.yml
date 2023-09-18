@@ -43,15 +43,22 @@
           - ufw
           - firewalld
         state: absent
-    - name: Install iptables / nftables
+    - name: Install nftables
       ansible.builtin.apt:
-        name:
-          - iptables
-          - iptables-persistent
-#          - iptables-nftables-compat  # Conversion tool  (TODO: not available on Ubuntu ??!)
-          - nftables
+        name: nftables
         state: present
   become: true
+
+
+# Equivalent command: `docker network create --subnet="2001:db8:1::/48" --ipv6 {{ reverse_proxy_docker_network }}`
+- name: 'Docker: Create a network w/ IPv6 IPAM config'
+  community.docker.docker_network:
+    name: '{{ reverse_proxy_docker_network }}'
+    enable_ipv6: true
+    ipam_config:
+      - subnet: '{{ ipv6_conf.prefix }}:1::/{{ (ipv6_conf.prefix_cidr + 16)|int }}'
+  become: false
+  when: "'home_servers' in group_names  or  'dns_servers' in group_names "
 
 
 - name: Install login system stats script

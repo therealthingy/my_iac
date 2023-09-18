@@ -12,7 +12,7 @@
 
 - name: Create separate docker network
   community.docker.docker_network:
-    name: '{{ vpn_network }}'
+    name: '{{ vpn_docker_network }}'
     enable_ipv6: true
     ipam_config:
       - subnet: '{{ ipv6_conf.prefix }}:2::/{{ (ipv6_conf.prefix_cidr + 16)|int }}'

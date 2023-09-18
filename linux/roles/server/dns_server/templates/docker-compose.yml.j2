@@ -3,7 +3,7 @@
 version: "3.7"
 
 networks:
-  {{ docker_default_network }}:
+  {{ reverse_proxy_docker_network }}:
     external: true
 
 # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
@@ -60,7 +60,7 @@ services:
        - {{ pihole_data_dir }}/dns/:/etc/dnsmasq.d/
 
     networks:
-      - {{ docker_default_network }}
+      - {{ reverse_proxy_docker_network }}
 
     # Recommended but not required (DHCP needs NET_ADMIN)
     #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities

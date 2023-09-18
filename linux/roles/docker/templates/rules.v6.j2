@@ -1,9 +1,0 @@
-# {{ ansible_managed }}
-*nat
-:PREROUTING ACCEPT [3537:366712]
-:INPUT ACCEPT [1428:179948]
-:OUTPUT ACCEPT [51:5820]
-:POSTROUTING ACCEPT [46:5420]
-# Docker subnet 'forwarding'
--A POSTROUTING -s 2001:db8::/32 ! -o docker0 -j MASQUERADE
-COMMIT

@@ -1,4 +1,4 @@
 ---
-vpn_network: vpn
+vpn_docker_network: vpn
 wireguard_ui_local_port: 8080
 container_name: vpn

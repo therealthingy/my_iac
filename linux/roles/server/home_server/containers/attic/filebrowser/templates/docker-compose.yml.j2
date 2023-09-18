@@ -3,7 +3,7 @@
 version: "3.7"
 
 networks:
-  {{ docker_default_network }}:
+  {{ reverse_proxy_docker_network }}:
     external: true
 
 services:
@@ -19,7 +19,7 @@ services:
       - {{ docker_container.data_basedir }}/{{ container_name }}/:/var/filebrowser-data
       - {{ filebrowser_container_share_dir }}/:/srv/
     networks:
-      - {{ docker_default_network }}
+      - {{ reverse_proxy_docker_network }}
     labels:
       - com.centurylinklabs.watchtower.enable=true
       - traefik.enable=true

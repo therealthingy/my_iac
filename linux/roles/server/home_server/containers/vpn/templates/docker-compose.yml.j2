@@ -3,7 +3,7 @@
 version: "3.7"
 
 networks:
-  {{ vpn_network }}:
+  {{ vpn_docker_network }}:
     external: true
 
 services:
@@ -46,7 +46,7 @@ services:
       - 127.0.0.1:{{ wireguard_ui_local_port }}:5000/tcp
 {% endif %}
     networks:
-      - {{ vpn_network }}
+      - {{ vpn_docker_network }}
     environment:
       - TZ={{ timezone }}
       - PUID={{ www_user_uid }}

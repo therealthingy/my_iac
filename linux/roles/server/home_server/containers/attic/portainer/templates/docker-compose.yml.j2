@@ -3,7 +3,7 @@
 version: "3.7"
 
 networks:
-  {{ docker_default_network }}:
+  {{ reverse_proxy_docker_network }}:
     external: true
 
 services:
@@ -22,7 +22,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
 
     networks:
-      - {{ docker_default_network }}
+      - {{ reverse_proxy_docker_network }}
 
     labels:
       - com.centurylinklabs.watchtower.enable=true

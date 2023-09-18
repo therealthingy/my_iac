@@ -67,7 +67,7 @@
         - il_workstation
 
 
-- hosts: servers, dev_servers, home_servers
+- hosts: servers, dev_servers, home_servers, dns_servers
   roles:
     - role: server/base
       tags: server

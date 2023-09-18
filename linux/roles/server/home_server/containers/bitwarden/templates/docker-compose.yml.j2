@@ -3,7 +3,7 @@
 version: '3.7'
 
 networks:
-  {{ docker_default_network }}:
+  {{ reverse_proxy_docker_network }}:
     external: true
 
 services:
@@ -50,12 +50,12 @@ services:
       - {{ docker_container.data_basedir }}/{{ container_name }}/:/data
 
     networks:
-      - {{ docker_default_network }}
+      - {{ reverse_proxy_docker_network }}
 
     labels:
       - com.centurylinklabs.watchtower.enable=true
       - traefik.enable=true
-      - traefik.docker.network={{ docker_default_network }}
+      - traefik.docker.network={{ reverse_proxy_docker_network }}
       - traefik.http.routers.bitwarden-ui-http.rule=Host(`{{ container_name }}.{{ domainname }}`)
       - traefik.http.routers.bitwarden-ui-http.service=bitwarden-ui
       - traefik.http.services.bitwarden-ui.loadbalancer.server.port=80

@@ -1,13 +1,4 @@
 ---
-- name: Set IPv6 prefix
-  ansible.builtin.set_fact:
-    ipv6_conf:
-      prefix: 2001:db8
-      prefix_cidr: 32
-  when: ipv6_conf is not defined
-
-
-
 - name: Install it
   block:
     - name: Set config as vars for role
@@ -47,46 +38,48 @@
 
 # --------------------------------------------------  IPv6 support  --------------------------------------------------
 # TODO: WORKAROUND -- Fix routing:  Currently IPv6 w/ NAT (https://blog.widodh.nl/2017/04/docker-containers-with-ipv6-behind-nat/) since network prefix (provided by ISP) changes constantly :/
-- name: Add + configure IPv6 network
+- name: Configure IPv6 NAT
   block:
-    # Equivalent command: `docker network create --subnet="2001:db8:1::/48" --ipv6 {{ docker_default_network }}`
-    - name: Create a network w/ IPv6 IPAM config
-      community.docker.docker_network:
-        name: '{{ docker_default_network }}'
-        enable_ipv6: true
-        ipam_config:
-          - subnet: '{{ ipv6_conf.prefix }}:1::/{{ (ipv6_conf.prefix_cidr + 16)|int }}'
-      become: false
+    - name: Install nftables
+      ansible.builtin.apt:
+        name: nftables
+        state: present
+      become: true
 
-    - name: "Configure IPv6 NAT  (TODO: REVISE)"
-      block:
-        - name: Install iptables
-          ansible.builtin.apt:
-            name:
-              - iptables
-              - iptables-persistent
-            state: present
-          become: true
+    # VERIFY:
+    #   - `sudo nft list ruleset`
+    #   - Docker container connectivity: `docker run -it --rm nicolaka/netshoot ping6 -c 3 google.com`
+    - name: Add nftables rules
+      ansible.builtin.blockinfile:
+        path: /etc/nftables.conf
+        block: |
+          table ip6 nat {
+          	chain PREROUTING {
+          		type nat hook prerouting priority dstnat; policy accept;
+          	}
 
-        # Equivalent command  (+ persist):
-        #   Apply rules:`ip6tables -t nat -A POSTROUTING  -s 2001:db8:1::/64 ! -o docker0     -j MASQUERADE`   (reference: https://linux.die.net/man/8/ip6tables)
-        #                           table  Append <chain>  Source               Out-Interface  Jump  (target, i.e., what to do if the packet matches it ??)
-        #   Persist rules: `sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"`
-        #   RESTORE manually: `sudo ip6tables-restore < /etc/iptables/rules.v6`
-        # Validation:
-        #   Whether rule was applied: `sudo ip6tables -t nat -n -v -L`
-        #   Whether 'correct' response ip address is used  (otherwise request- & response ip won't match): `ip route get <dst-in-network>`
-        #   Docker container connectivity: `docker run -it --rm --net ipv6 nicolaka/netshoot ping6 -c 3 google.com`
-        - name: Copy iptables rules
-          ansible.builtin.template:
-            src: rules.v6.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
-            dest: /etc/iptables/rules.v6
-            owner: root
-            group: root
-            mode: 0644
-          notify: restart networking daemon
-          become: true
-      when: ipv6_conf.prefix == '2001:db8'
+          	chain INPUT {
+          		type nat hook input priority 100; policy accept;
+          	}
+
+           	chain OUTPUT {
+           		type nat hook output priority -100; policy accept;
+           	}
+
+          	# Docker IPv6 NAT
+          	chain POSTROUTING {
+          		type nat hook postrouting priority srcnat; policy accept;
+          		oifname != "docker0" ip6 saddr 2001:db8::/32 counter packets 1 bytes 166 masquerade
+          	}
+          }
+      notify: restart nftables
+
+    - name: Enable nftables
+      ansible.builtin.service:
+        name: nftables
+        enabled: true
+  become: true
+  when: ipv6_conf.prefix == '2001:db8'
 
 
 # ------------------------------------------------------------------------------------------------------
