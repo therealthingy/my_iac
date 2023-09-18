@@ -48,7 +48,7 @@
         name:
           - iptables
           - iptables-persistent
-          - iptables-nftables-compat  # Conversion tool
+#          - iptables-nftables-compat  # Conversion tool  (TODO: not available on Ubuntu ??!)
           - nftables
         state: present
   become: true

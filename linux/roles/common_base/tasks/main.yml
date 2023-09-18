@@ -44,7 +44,7 @@
 
         - name: Set package names
           ansible.builtin.set_fact:
-            snapd_packages:
+            blocked_pkgs:
               #- gir1.2-snapd-1
               #- libsnapd-glib1
               - snapd
@@ -54,12 +54,12 @@
             name: '{{ item }}'
             state: absent
             purge: true
-          with_items: '{{ snapd_packages }}'
+          with_items: '{{ blocked_pkgs }}'
 
         - name: Block snapd from installing again
-          # NOTE: ALTERNATIVE command  ??: `sudo apt-mark hold snapd`
+          # EQUIVALENT command  ??: `sudo apt-mark hold snapd`
           ansible.builtin.template:
-            src: apt-snapd-block.pref.j2
+            src: apt-block-package.pref.j2
             dest: /etc/apt/preferences.d/snapd-block.pref
             mode: 0644
 
@@ -134,16 +134,30 @@
 # ---------------------------------- POST packages - Distro specific stuff ----------------------------------
 # See https://vitux.com/how-to-disable-enable-automatic-error-reporting-in-ubuntu/
 - name: '[Ubuntu] Post packages - Uninstall Telemetry/error reporting services'
-  ansible.builtin.apt:
-    name:
-      - apport
-      - ubuntu-report
-      - ubuntu-advantage-tools
-      - whoopsie
-    state: absent
-    purge: true
-    clean: true
-    autoremove: true
+  block:
+    - name: Set package names
+      ansible.builtin.set_fact:
+        blocked_pkgs:
+          - apport
+          - ubuntu-report
+          - ubuntu-advantage-tools
+          - whoopsie
+          - whoopsie-preferences
+
+    - name: Uninstall
+      ansible.builtin.apt:
+        name: '{{ item }}'
+        state: absent
+        purge: true
+        clean: true
+        autoremove: true
+      with_items: '{{ blocked_pkgs }}'
+
+    - name: Block packages
+      ansible.builtin.template:
+        src: apt-block-package.pref.j2
+        dest: /etc/apt/preferences.d/ubuntu-telemetry-block.pref
+        mode: 0644
   when: ansible_facts.distribution == 'Ubuntu'
   become: true
 # -----------------------------------------------------------------------------------------------------------

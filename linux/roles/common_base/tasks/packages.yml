@@ -43,7 +43,7 @@
           # File archiving
           - pbzip2
           # FS stuff
-          - btrfs-progs
+          - btrfs-progs                   # btrfs maintenance
           # Privacy
           - cryptsetup
         state: present

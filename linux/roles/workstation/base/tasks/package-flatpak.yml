@@ -11,11 +11,11 @@
         name: flatpak
         state: present
 
-    - name: 'Install GNOME Software "store"'
-      ansible.builtin.apt:
-        name: gnome-software-plugin-flatpak
-        state: present
-        install_recommends: true
+#    - name: 'Install GNOME Software "store"'           #   DOESN'T WORK ON UBUNTU (depends on `ubuntu-advantage-tools` (SEE: https://packages.ubuntu.com/focal-updates/software-properties-gtk))
+#      ansible.builtin.apt:
+#        name: gnome-software-plugin-flatpak
+#        state: present
+#        install_recommends: true
   when: ansible_os_family == 'Debian'
   become: true
 

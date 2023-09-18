@@ -1,12 +1,11 @@
 ---
-#- name: Install dependencies required for Firefox config                                               # ??!!!    ALREADY INSTALLED   (if not: use pipx inject)    ??!!!
-#  ansible.builtin.pip:   # NOTE: sudo installs it for ALL users (otherwise only local user)
-#    name:
-#      - requests
-#  become: false
-
 - name: Configure
   block:
+    - name: Install dependencies required for Firefox config
+      ansible.builtin.apt:
+        name: python3-requests
+      become: true
+
     - name: Set config as vars
       ansible.builtin.set_fact:
         firefox_profiles:

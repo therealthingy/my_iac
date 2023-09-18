@@ -201,13 +201,11 @@ all:
           vpn:
             if: eth0
             port: 123      # NTP port    (default: 51820)
-            ipv6_if_id: ::40b3:8c93:9122:52c7                 # ATM derived from `pihole.ipv6_ula`  (2 ensure it will match)
+            ipv6_if_id: '::{{ pihole.ipv6_ula[20:-3] }}'
             networks:
-              - subnet: 10.38.170.0/24
-                dns: 10.38.170.2                              # ATM `pihole.ipv4`
+              - dns: '{{ pihole.ipv4[:-3] }}'
                 server: 10.196.92.48/24
-              - subnet: fa93:eb85:93cd:56be::/64
-                dns: fd4b:49fb:a80c:29ba:40b3:8c93:9122:52c7  # ATM `pihole.ipv6_ula`
+              - dns: '{{ pihole.ipv6_ula[:-3] }}'
                 server: fa93:eb85:93cd:56be::1/64
             dyndns:
               update_interval_sec: 300

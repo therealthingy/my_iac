@@ -181,7 +181,7 @@
 
 - name: gdm3 - Enable Autologin
   block:
-    - name: Check whether gdm3 is used
+    - name: Gather package facts
       ansible.builtin.package_facts:
         manager: auto
 

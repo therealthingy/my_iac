@@ -14,7 +14,7 @@
           - tree
           - rename
           - dos2unix
-          - fdupes
+          - jdupes                        # OG: `fdupes`
           - rsync
           - rclone                        # Cloud storage management software
       become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
@@ -131,6 +131,7 @@
           #- stow                         # See https://www.gnu.org/software/stow/
           # FS stuff
           - cloud-guest-utils             # `growpart`
+          - btrfs-compsize                # `compsize <file>` -> Compare size of files (2 see effect of compression)
           #- fuse
           #- ntfs-3g                       # Read/write NTFS driver 4 FUSE
           #- libapfs-utils                 # Contains `fsapfsinfo`, an APFS information retrieval utility, & `fpafsmount`, a FUSE-based APFS filesystem implementation

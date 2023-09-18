@@ -63,7 +63,7 @@
         www_user_gid: '{{ result_docker_gid.stdout }}'
         cpu_architecture: '{{ result_deb_architecture.stdout }}'
         kernel_release: '{{ result_kernel_release.stdout }}'
-        networking_service: "{% if ansible_facts.distribution == 'Debian' %}networking{% else %}{{ ubuntu_networking_service }}{% endif %}"
+        networking_service: "{% if ansible_facts.distribution == 'Debian' %}networking{% else %}'{{ ubuntu_networking_service }}'{% endif %}"
         gathered_host_facts: True
   when: gathered_host_facts is not defined
   become: false

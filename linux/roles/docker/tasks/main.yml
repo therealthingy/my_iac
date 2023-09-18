@@ -76,7 +76,7 @@
         # Validation:
         #   Whether rule was applied: `sudo ip6tables -t nat -n -v -L`
         #   Whether 'correct' response ip address is used  (otherwise request- & response ip won't match): `ip route get <dst-in-network>`
-        #   Docker container connectivity: `docker run --network=reverse_proxy --rm -t busybox ping6 -c 4 google.com`
+        #   Docker container connectivity: `docker run -it --rm --net ipv6 nicolaka/netshoot ping6 -c 3 google.com`
         - name: Copy iptables rules
           ansible.builtin.template:
             src: rules.v6.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE

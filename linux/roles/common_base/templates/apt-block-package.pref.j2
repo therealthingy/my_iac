@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 
-{% for p in snapd_packages %}
+{% for p in blocked_pkgs %}
 Package: {{ p }}
 Pin: release *
 Pin-Priority: -1

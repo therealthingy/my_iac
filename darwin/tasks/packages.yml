@@ -38,17 +38,17 @@
             - "{{ packages }}"
             - packages
       vars:
-        packages:         # TODO: little-snitch
+        packages:                                                   # TODO: little-snitch
           - dir: Audio
-            packages: ['mediahuman-audio-converter', 'ocenaudio']     # TODO: xld, mediainfo
+            packages: ['mediahuman-audio-converter', 'ocenaudio']   # TODO: 'xld', 'mediainfo'
           - dir: Benchmark
             packages: ['amorphousdiskmark']
           - dir: Design
             packages: ['inkscape', 'paintbrush']
           - dir: Development
             packages: ['sourcetree', 'iterm2']
-          - dir: Development/API
-            packages: ['postman']
+#          - dir: Development/API
+#            packages: ['postman']
           - dir: Development/DB
             packages: ['db-browser-for-sqlite', 'mysqlworkbench', 'sequel-ace']
           - dir: Development/Editors
@@ -58,7 +58,7 @@
           - dir: Internet/Browsers
             packages: ['brave-browser', 'librewolf', 'tor-browser']
           - dir: Internet/Conferencing
-            packages: ['discord']     # textual  (IRC client)
+            packages: ['discord']                                   # 'textual'  (IRC client)
           - dir: Internet/Services
             packages: ['eddie', 'maestral']
           - dir: Internet/Tools
@@ -67,8 +67,8 @@
             packages: ['appcleaner', 'omnidisksweeper', 'onyx']     # TODO: 'aldente'
           - dir: Misc
             packages: ['apparency', 'istat-menus', 'prefs-editor', 'qlmarkdown', 'raycast']
-          - dir: Music
-            packages: []      # TODO: Spotify
+#          - dir: Music
+#            packages: []                                            # TODO: Spotify
           - dir: Network
             packages: ['angry-ip-scanner', 'wireshark']
           - dir: Notes
@@ -76,7 +76,7 @@
           - dir: Office
             packages: ['drawio', 'pdf-expert', 'slidepilot']
           - dir: Office/Misc
-            packages: []        # TODO: SoftMaker FreeOffice
+            packages: []                                            # TODO: SoftMaker FreeOffice
           - dir: Package
             packages: ['keka', 'pacifist']
           - dir: Security
