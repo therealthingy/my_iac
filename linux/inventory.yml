@@ -204,7 +204,7 @@ all:
             ipv6_if_id: '::{{ pihole.ipv6_ula[20:-3] }}'
             networks:
               - dns: '{{ pihole.ipv4[:-3] }}'
-                server: 10.196.92.48/24
+                server: 10.196.92.1/24
               - dns: '{{ pihole.ipv6_ula[:-3] }}'
                 server: fa93:eb85:93cd:56be::1/64
             dyndns:
