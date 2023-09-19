@@ -121,8 +121,8 @@ all:
                       6331343661306436360a663938663231323037623662336365303461333161663165303836353335
                       63373339353265646330376336383335646366366134303433386231393737356436
 
-          dl_media:
-            base_dir: '{{docker_container.data_basedir}}/dl_media/'
+          dl_services:
+            base_dir: '{{docker_container.data_basedir}}/dl_services/'
             restart_policy: 'unless-stopped'
             healthcheck_url: apple.com
             web_ui:
@@ -268,7 +268,7 @@ all:
             - name: private
               bind_mounts:
                 - '{{docker_container.data_basedir}}/samba-filebrowser/share/private:/mnt/share/private/'
-                - '{{ dl_media.base_dir }}/downloads/:/mnt/share/private/storage/downloads/'
+                - '{{ dl_services.base_dir }}/downloads/:/mnt/share/private/storage/downloads/'
               path: /mnt/share/private
               browsable: 'no'
               readonly: 'no'

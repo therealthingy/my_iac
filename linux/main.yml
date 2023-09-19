@@ -119,9 +119,9 @@
     - role: server/home_server/containers/traefik
       tags:
         - traefik
-    - role: server/home_server/containers/dl_media
+    - role: server/home_server/containers/dl_services
       tags:
-        - dl_media
+        - dl_services
     - role: server/home_server/containers/volact
       tags:
         - volact
