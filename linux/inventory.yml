@@ -28,11 +28,11 @@ all:
         gg-rpi0:
           pihole:
             if: eth0
+            ipv6_ula: fd4b:49fb:a80c:29ba:40b3:8c93:9122:52c7/64      # $$$$$$$$$$$$$$$$  TODO: IF-ID MUST overlap atm w/ `vpn.ipv6_if_id`  $$$$$$$$$$$$$$$$
             ipv4: 10.38.170.2/24
             router_reverse_dns_zone: 10.38.170.0/24
-            ipv6_ula: fd4b:49fb:a80c:29ba:40b3:8c93:9122:52c7/64      # $$$$$$$$$$$$$$$$  TODO: IF-ID MUST overlap atm w/ `vpn.ipv6_if_id`  $$$$$$$$$$$$$$$$
+            router_ip: 10.38.170.1
             conditional_forwarding_enabled: true
-            router_ip: 192.168.178.1
             router_domain: fritz.box
             web_pw: !vault |
                       $ANSIBLE_VAULT;1.1;AES256
