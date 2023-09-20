@@ -1,6 +1,21 @@
 # Playbook for GNU/Linux (currently only Debian based) machines
 
 
+
+## GUIDELINEs
+* SECURE SERVER:
+  * (1.) Use secure & encrypted communication
+  * (2.) Disable root login & use `sudo`
+  * (3.) Remove unused software, open only required ports
+  * (4.) Use the principle of least privilege
+  * (5.) Update the OS & installed software
+  * (6.) Use a properly-configured firewall
+  * (7.) Make sure log files are populated & rotated
+  * (8.) Monitor logins & block suspect IP addresses
+
+
+
+
 ## TODOs
 ### General
 - **Merge mac- & linux** playbooks
