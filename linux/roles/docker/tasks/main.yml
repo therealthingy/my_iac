@@ -66,10 +66,10 @@
            		type nat hook output priority -100; policy accept;
            	}
 
-          	# Docker IPv6 NAT
           	chain POSTROUTING {
           		type nat hook postrouting priority srcnat; policy accept;
-          		oifname != "docker0" ip6 saddr 2001:db8::/32 counter packets 1 bytes 166 masquerade
+          		# Docker IPv6 sNAT
+          		oifname != "docker0" ip6 saddr 2001:db8::/32 masquerade
           	}
           }
       notify: restart nftables
