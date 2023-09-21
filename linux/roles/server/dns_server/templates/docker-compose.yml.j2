@@ -42,6 +42,8 @@ services:
 
       WEBPASSWORD: {{ pihole.web_pw }}
 
+      RATE_LIMIT: 0/0             # $$$$$$$$$$$$$$$$$$$$$$   TODO: Workaround as all IPv6 requests arrive w/ same saddr (due 2 sNAT)   $$$$$$$$$$$$$$$$$$$$$$
+
       IPv6: "true"
 
       PROXY_LOCATION: {{ container_name }}
