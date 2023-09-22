@@ -88,13 +88,16 @@
 - hosts: home_servers
   vars:
     docker_container:
-      data_basedir: /home/{{ user_name }}/homeserver_data/container_data
-      config_basedir: /home/{{ user_name }}/homeserver_config/container_config
+      data_basedir: /home/{{ user_name }}/homeserver/data/
+      config_basedir: /home/{{ user_name }}/homeserver/config/
   roles:
   # -- Docker containers --
     - role: server/home_server/containers/bitwarden
       tags:
         - bitwarden
+    - role: server/home_server/containers/baikal
+      tags:
+        - baikal
     - role: server/home_server/containers/nginx-helloworld
       tags:
         - testing
