@@ -1,2 +1,4 @@
 # {{ ansible_managed }}
-superimad.com
+{% for domain in hblock.block %}
+{{ domain }}
+{% endfor %}

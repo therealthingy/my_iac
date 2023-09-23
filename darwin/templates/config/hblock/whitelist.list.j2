@@ -1,3 +1,4 @@
 # {{ ansible_managed }}
-exe.io
-wl.spotify.com
+{% for domain in hblock.allow %}
+{{ domain }}
+{% endfor %}
