@@ -1,0 +1,33 @@
+---
+# SEE: https://github.com/geerlingguy/internet-pi/blob/master/example.config.yml
+container_name: inet_monitoring
+
+config_dir: /home/{{ user_name }}/monitoring/
+
+domain_name_enable: false
+pihole_enable: false
+monitoring_enable: true
+monitoring_grafana_admin_password: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        35316432343662633234636163393933393234343861663866383663313564326163353963656632
+        6534386138396561643065313536383662656330393831300a376439303163313230613564343938
+        38353331633265393736343565626438613766636337376635663635616164616533303836386631
+        3965306236323831640a663739323735346336313939623835313930343564356331363930313633
+        37356362626266353430646631333031353162363030313339313430366464353261393037636433
+        6665666666376135663935303232663230633331383531366136
+monitoring_speedtest_interval: 360m
+monitoring_ping_interval: 30s
+monitoring_ping_hosts:  # [URL];[HUMAN_READABLE_NAME]
+  - https://www.cloudflare.com/;cloudflare.com
+  - https://www.apple.com/;apple.com
+  - http://www.google.com/;google.com
+
+prometheus_monitor_prometheus: false
+prometheus_node_exporter_targets:
+  - 'nodeexp:9100'
+prometheus_extra_scrape_configs: ''
+prometheus_tsdb_retention_time: 90d
+
+shelly_plug_enable: false
+airgradient_enable: false
+starlink_enable: false
