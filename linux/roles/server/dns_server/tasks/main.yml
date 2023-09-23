@@ -22,7 +22,7 @@
     # VERIFY: `networkctl status`
     - name: '[netplan]'
       ansible.builtin.template:
-        src: 01-pihole.yaml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
+        src: netplan--01-pihole.yaml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
         dest: /etc/netplan/01-pihole.yaml
         mode: 0644
       notify: Applying Netplan Configuration
