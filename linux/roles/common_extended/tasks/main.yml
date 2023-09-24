@@ -184,6 +184,7 @@
         name:
           - watch
           - gnu-time
+          - duti                          # Set default app 4 opening file
       become: false
       when: ansible_facts.os_family == 'Darwin'
 

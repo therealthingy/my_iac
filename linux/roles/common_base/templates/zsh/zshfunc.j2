@@ -3,7 +3,7 @@
 # {{ ansible_managed }}
 
 # =================================================================================================================
-# ================================== Function/Alias defintions (on ALL machines) ==================================
+# =========================================   Function/Alias defintions   =========================================
 # =================================================================================================================
 
 
@@ -83,19 +83,24 @@ alias-add() {
 
 
 # =========================== Aliases  (which SHOULD be in '.zshenv') ===========================
+# - 'Default' commands -
 # Only 1st word of command is checked for aliases by shell, any following aren't checked
 #  -> E.g. in 'sudo ll', only the first word ('sudo') is checked for alias, 'll' isn't checked
 #  => Can be fixed by telling shell to check next word after the alias (i.e 'sudo') by adding a space to the end of the alias value
 alias sudo='sudo '
 
-# alias update_zsh="source ~/.zshrc"
+alias ls='ls -G'
+
+{% if ansible_facts.os_family == 'Darwin' %}
+alias stat='stat -x'
+{% endif %}
+
+# - 'Shortcuts' -
+#alias zsh-update="source ~/.zshrc"
 
 alias d='dirs -v | head -10'    # To use: cd ~<number> -or- enter <number> directly
 
-alias ls='ls -G'
 {% if ansible_facts.os_family == 'Darwin' %}
-alias stat='stat -x'
-
 alias l='ls -lah --color=auto'
 alias ll='ls -lh --color=auto'
 
@@ -168,7 +173,7 @@ alias-add objdump obj="objdump -M intel -C --visualize-jumps -d "               
 {%   endif %}
 
 {%   if ansible_facts.os_family == 'Debian' %}
-# - apt-get aliases
+# - apt aliases -
 alias agi='sudo apt-get install' #<packages>
 alias agu='sudo apt-get update'
 alias ags='sudo apt-cache search' #<string-in-package-name-or-descr>
@@ -251,6 +256,9 @@ if command -v ssh-keygen > /dev/null; then
 fi
 
 {% if ansible_facts.os_family == 'Darwin' %}
+{% set DEFAULT_OUTPUT_FNAME = "output-$(date +'%F-%H_%m_%S')" %}
+{% set FILE_NOT_FOUND_MSG = "File(s) not found" %}
+
 # - ffmpeg stuff -
 if command -v ffmpeg > /dev/null; then
 
@@ -258,13 +266,27 @@ if command -v ffmpeg > /dev/null; then
     local video_stream=${1:?"The 'video_stream' may be specified."}
     local audio_stream=${2:?"The 'audio_stream' may be specified."}
 
-    local output=${3:=output.mp4}
+    local output_file=${3:="{{ DEFAULT_OUTPUT_FNAME }}.mp4"}
 
 
     if [[ -f "$video_stream" && -f "$audio_stream" ]]; then
-      ffmpeg -i "$video_stream" -i "$audio_stream" -c:v copy -c:a copy "$output"
+      ffmpeg -i "$video_stream" -i "$audio_stream" -c:v copy -c:a copy "$output_file"
     else
-      echo "Provided files don't exist!"
+      echo "{{ FILE_NOT_FOUND_MSG }}"
+    fi
+  }
+
+  video-speedup_by_multiplier () {
+    local video_file=${1:?"The 'video_file' may be specified."}                             # USE CASE: Speed up screen recording 4 gif creation ;TODO: Discards audio currently  ??!?!?!?!?!?!?
+    local multiplier=${2:?"The 'multiplier' may be specified."}
+
+    local output_file=${3:="{{ DEFAULT_OUTPUT_FNAME }}.$video_file:t:e"}
+
+
+    if [[ -f "$video_file" ]]; then
+      ffmpeg -i "$video_file" -filter:v "setpts=PTS/${multiplier}" -an "$output_file"       # Taken from: https://superuser.com/a/1261681
+    else
+      echo "{{ FILE_NOT_FOUND_MSG }}"
     fi
   }
 
@@ -272,13 +294,13 @@ if command -v ffmpeg > /dev/null; then
 #  mp4-from_m2ts () {
 #
 #    local input=${1:?"The 'M2TS'-file may be specified."}
-#    local output=${2:=output.mp4}
+#    local output=${2:="{{ DEFAULT_OUTPUT_FNAME }}.mp4"}
 #
 #
 #    if [[ -f "$input" ]]; then
 #      ffmpeg -i "$input" -vcodec libx264 -crf 20 -acodec ac3 -vf "yadif" "$output"
 #    else
-#      echo "Provided files don't exist!"
+#      echo "{{ FILE_NOT_FOUND_MSG }}"
 #    fi
 #  }
 
@@ -290,7 +312,7 @@ if command -v ffmpeg > /dev/null; then
 
   flac-convert_to_aiff () {
     for f in "$@"; do
-      ffmpeg -i "$f" -write_id3v2 1 -c:v copy "${f%.*}.aiff"    # Replace any file extension w/ .mp3
+      ffmpeg -i "$f" -write_id3v2 1 -c:v copy "${f%.*}.aiff"     # Replace any file extension w/ .mp3
     done
   }
 
@@ -305,7 +327,7 @@ if command -v gifsicle > /dev/null; then
       if [[ -f "$video_file" ]]; then
         ffmpeg -i "$video_file" -pix_fmt rgb8 -r 10 -f gif - | gifsicle -O3 -o "${video_file}.gif"
       else
-        echo "Provided file doesn't exist!"
+        echo "{{ FILE_NOT_FOUND_MSG }}"
       fi
     }
 
@@ -313,17 +335,8 @@ fi
 
 
 # =========================== Aliases  (which SHOULD be in '.zshenv') ===========================
-alias poweroff='/sbin/shutdown -h now'
-alias reboot='/sbin/shutdown -r now'
-
-
 alias-add brew brew-up="brew update && brew upgrade ; brew cleanup ; brew doctor"
 
-
-# alias delete_ds="find . -type f -name '.DS_Store' -delete"
-
-# alias finder-show_hiddenfiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
-# alias finder-hide_hiddenfiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
 
 alias dns-flush="sudo dscacheutil -flushcache ; sudo killall -HUP mDNSResponder"
 alias network-disable_packet_filter="sudo pfctl -d"    # Disable Eddie network lock
@@ -331,19 +344,28 @@ alias network-disable_packet_filter="sudo pfctl -d"    # Disable Eddie network l
 
 alias backup_poweroff="sudo sh -c 'tmutil startbackup --block && shutdown -h +1'"
 
-alias app-open_all="find /Applications ~/Applications -type d -name '*.app' -prune -exec open -a {} \;"
 
 alias clipbrd-text_2_lower='echo $(pbpaste) | tr "[A-Z]" "[a-z]" | pbcopy'
 alias clipbrd-text_2_upper='echo $(pbpaste) | tr "[a-z]" "[A-Z]" | pbcopy'
 
+#alias app-open_all="find /Applications ~/Applications -type d -name '*.app' -prune -exec open -a {} \;"
 
+#alias finder-show_hiddenfiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
+#alias finder-hide_hiddenfiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+
+
+{% if ansible_architecture != "arm64" %}
 # - Hackintosh specific -
-if [[ "$(uname -m)" == "x86_64" ]]; then
-  if command -v mountefi > /dev/null; then
-    # alias esp-mount_open='sudo mkdir /Volumes/EFI ; sudo mount -t msdos /dev/disk1s1 /Volumes/EFI && open /Volumes/EFI'
-    alias-add mountefi esp-mount_open='mountefi / && open /Volumes/EFI'
-  fi
+if command -v mountefi > /dev/null; then
+  # alias esp-mount_open='sudo mkdir /Volumes/EFI ; sudo mount -t msdos /dev/disk1s1 /Volumes/EFI && open /Volumes/EFI'
+  alias-add mountefi esp-mount_open='mountefi / && open /Volumes/EFI'
 fi
+{% endif %}
+
+
+# - GNU/Linux commands -
+alias poweroff='/sbin/shutdown -h now'
+alias reboot='/sbin/shutdown -r now'
 
 
 
