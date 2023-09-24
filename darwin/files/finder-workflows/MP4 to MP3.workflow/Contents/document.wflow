@@ -59,10 +59,9 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>PATH="${PATH}:/usr/local/bin:/opt/homebrew/bin/"
-for f in "$@"
-do
-    /usr/local/bin/ffmpeg -i "$f" -acodec libmp3lame -ab 320k "${f%.mp4}.mp3"
+					<string>PATH="${PATH}:/usr/local/bin/:/opt/homebrew/bin/"
+for f in "$@"; do
+    ffmpeg -i "$f" -acodec libmp3lame -ab 320k "${f%.mp4}.mp3"
 done</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>

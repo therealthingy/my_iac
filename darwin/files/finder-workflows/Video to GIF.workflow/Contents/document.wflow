@@ -59,9 +59,8 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>PATH="${PATH}:/usr/local/bin:/opt/homebrew/bin/"
-for f in "$@"
-do
+					<string>PATH="${PATH}:/usr/local/bin/:/opt/homebrew/bin/"
+for f in "$@"; do
 	ffmpeg -i "$f" -pix_fmt rgb8 -r 10 -f gif - | gifsicle -O3 -o "${f}.gif"
 done</string>
 					<key>CheckedForUserDefaultShell</key>
