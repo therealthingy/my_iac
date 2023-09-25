@@ -1,7 +1,9 @@
 ---
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  TODO: ADD ACTUAL BREW INSTALLATION STEPS  (https://docs.ansible.com/ansible/latest/collections/community/general/homebrew_module.html)  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!!  TODOs:  !!!
+#   - ADD ACTUAL BREW INSTALLATION STEPS  (https://docs.ansible.com/ansible/latest/collections/community/general/homebrew_module.html)
+#   - Mac app store packages
 
-- name: Install packages
+- name: Install packages                                        # TODO: 2 be rmv'ed once both playbooks (linux & darwin) have been merged …
   ansible.builtin.include_tasks: '{{ included_task }}'
   loop:
     - ../../linux/roles/common_base/tasks/packages.yml
@@ -16,9 +18,9 @@
 
 - name: 'UI apps: Install'
   block:
-    - name: App Store
-      ansible.builtin.debug:
-        msg: "!!!!!!!!!!!!!!!!                            TODO"
+#    - name: App Store
+#      ansible.builtin.debug:
+#        msg: "!!!!!!!!!!!!!!!!                            TODO"
     - name: homebrew
       block:
         - name: Create dir
@@ -28,67 +30,121 @@
             owner: '{{ user_name }}'
             group: '{{user_group_name}}'
             mode: 0755
-          with_items: '{{ packages }}'
+          with_items: '{{ packages_homebrew_casks }}'
+
         - name: Install packages
           community.general.homebrew_cask:
             name: '{{ item.1 }}'
             state: latest
             install_options: 'appdir=/Applications/{{ item.0.dir }}'
           with_subelements:
-            - "{{ packages }}"
+            - '{{ packages_homebrew_casks }}'
             - packages
       vars:
-        packages:                                                   # TODO: little-snitch
+        packages_homebrew_casks:                                                   # TODO: little-snitch
           - dir: Audio
-            packages: ['mediahuman-audio-converter', 'ocenaudio']   # TODO: 'xld', 'mediainfo'
+            packages:
+              - 'mediahuman-audio-converter'
+              - 'ocenaudio'
+#              - 'xld'                                              # TODO
+#              - 'mediainfo'
           - dir: Benchmark
             packages: ['amorphousdiskmark']
           - dir: Design
-            packages: ['inkscape', 'paintbrush']
+            packages:
+              - 'inkscape'
+              - 'paintbrush'
           - dir: Development
-            packages: ['sourcetree', 'iterm2']
+            packages:
+              - 'sourcetree'
+              - 'iterm2'
 #          - dir: Development/API
 #            packages: ['postman']
           - dir: Development/DB
-            packages: ['db-browser-for-sqlite', 'mysqlworkbench', 'sequel-ace']
+            packages:
+              - 'db-browser-for-sqlite'
+              - 'mysqlworkbench'
+              - 'sequel-ace'
           - dir: Development/Editors
-            packages: ['hex-fiend', 'sublime-text', 'vscodium']
+            packages:
+              - 'hex-fiend'
+              - 'sublime-text'
+              - 'vscodium'
           - dir: Education
             packages: []
           - dir: Internet/Browsers
-            packages: ['brave-browser', 'librewolf', 'tor-browser']
+            packages:
+              - 'brave-browser'
+              - 'librewolf'
+              - 'tor-browser'
           - dir: Internet/Conferencing
             packages: ['discord']                                   # 'textual'  (IRC client)
           - dir: Internet/Services
-            packages: ['eddie', 'maestral']
+            packages:
+              - 'eddie'
+              - 'maestral'
           - dir: Internet/Tools
-            packages: ['cyberduck', 'netnewswire', 'syncthing', 'qbittorrent']
+            packages:
+              - 'cyberduck'
+              - 'netnewswire'
+              - 'syncthing'
+              - 'qbittorrent'
           - dir: Maintenance
-            packages: ['appcleaner', 'omnidisksweeper', 'onyx']     # TODO: 'aldente'
+            packages:
+              - 'appcleaner'
+              - 'omnidisksweeper'
+              - 'onyx'
+#              - 'aldente'                                          # TODO
           - dir: Misc
-            packages: ['apparency', 'istat-menus', 'prefs-editor', 'qlmarkdown', 'raycast']
+            packages:
+              - 'apparency'
+              - 'istat-menus'
+              - 'prefs-editor'
+              - 'qlmarkdown'
+              - 'raycast'
 #          - dir: Music
-#            packages: []                                            # TODO: Spotify
+#            packages: ['spotify']                                  # TODO:
           - dir: Network
-            packages: ['angry-ip-scanner', 'wireshark']
+            packages:
+              - 'angry-ip-scanner'
+              - 'wireshark'
           - dir: Notes
-            packages: ['fsnotes', 'joplin']
+            packages:
+              - 'fsnotes'
+              - 'joplin'
           - dir: Office
-            packages: ['drawio', 'pdf-expert', 'slidepilot']
+            packages:
+              - 'drawio'
+              - 'pdf-expert'
+              - 'slidepilot'
           - dir: Office/Misc
-            packages: []                                            # TODO: SoftMaker FreeOffice
+            packages: []                                            # TODO: `softmaker-freeoffice`
           - dir: Package
-            packages: ['keka', 'pacifist']
+            packages:
+              - 'keka'
+              - 'pacifist'
           - dir: Security
-            packages: ['blockblock', 'dhs', 'kextviewr', 'knockknock', 'suspicious-package', 'taskexplorer', 'whatsyoursign']
+            packages:
+              - 'blockblock'
+              - 'dhs'
+              - 'kextviewr'
+              - 'knockknock'
+              - 'suspicious-package'
+              - 'taskexplorer'
+              - 'whatsyoursign'
           - dir: Social
             packages: ['signal']
           - dir: Tools
-            packages: ['betterdisplay', 'imageoptim', 'keycastr']
+            packages:
+              - 'betterdisplay'
+              - 'imageoptim'
+              - 'keycastr'
           - dir: Tools/Virtualization
-            packages: ['vmware-fusion']
+            packages: ['vmware-fusion']     # TODO: Install w/ option `--no-quarantine`, otherwise: '“vmware-id” is an app downloaded from the Internet. Are you sure you want to open it?'
           - dir: Video
-            packages: ['iina', 'vlc']
+            packages:
+              - 'iina'
+              - 'vlc'
       become: false
 
 
