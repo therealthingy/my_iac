@@ -102,13 +102,31 @@
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
-- name: '[Darwin / Debian/Ubuntu] Install "Office stuff"'
-  ansible.builtin.package:
-    name:
-      - pandoc                # Converts b/w doc formats
-      - aspell
-      - ispell
-      - hunspell
+- name: 'Install "Office stuff"'
+  block:
+    - name: '[Darwin / Debian/Ubuntu]'
+      ansible.builtin.package:
+        name:
+          - pandoc                # Converts b/w doc formats
+          - aspell
+          - ispell
+          - hunspell
+          - ocrmypdf              # NOTE: Based on tesseract (and itsl lang packs)
+    - name: Install tesseract + language packs
+      block:
+        - name: '[Darwin]'
+          community.general.homebrew:
+            name:
+              - tesseract
+              - tesseract-lang
+          when: ansible_facts.os_family == 'Darwin'
+        - name: '[Debian/Ubuntu]'
+          ansible.builtin.apt:
+            name:
+              - tesseract-ocr
+              - tesseract-ocr-deu
+            state: present
+          when: ansible_facts.os_family != 'Darwin' and ansible_facts.os_family == 'Debian'
   become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
 
 - ansible.builtin.include_tasks: '{{ item }}'
