@@ -25,7 +25,7 @@
 * not indempotent ISSUE:
    * Firefox settings after restart
    * TASK [petermosmans.customize-gnome : Download GNOME Shell extensions]
-* Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
+* Consider switching all apps to flatpak  (Brave, EVENTUALLY firefox,      vlc & celluloid)
 
 ### *server*
 * **SECURITY**: https://christitus.com/linux-security-mistakes/  (Fail2ban)

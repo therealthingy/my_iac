@@ -134,11 +134,17 @@
 #    - package-kitty.yml
     - package-firefox.yml
     - package-brave.yml
-    - package-codium.yml
     - package-conky.yml
     - package-flatpak.yml
   when: ansible_facts.os_family != 'Darwin'
 
+- name: Install VSCodium
+  community.general.flatpak:
+    name:
+      - com.vscodium.codium
+    state: present
+  become: true
+  when: ansible_facts.os_family != 'Darwin'
 
 # TODO: BAD IDEA  --> Context menu item 'Open in Terminal' will disappear
 #- name: Uninstall GNOME Terminal (got replaced by Kitty)
