@@ -64,6 +64,17 @@
     # HOW2: gesettings tool  (e.g., `gsettings get org.gnome.desktop.input-sources sources`); example: https://gist.github.com/carlwgeorge/c560a532b6929f49d9c0df52f75a68ae
     - name: GNOME
       block:
+        - name: Set config
+          block:
+            - name: '[Ubuntu]'
+              ansible.builtin.set_fact:
+                gnome_button_layout: 'close,minimize,maximize:'
+              when: ansible_facts.distribution == 'Ubuntu'
+            - name: '[Debian]'
+              ansible.builtin.set_fact:
+                gnome_button_layout: 'close:'
+              when: ansible_facts.distribution == 'Debian'
+
         - name: GNOME - Set settings
           community.general.dconf:
             key: '{{ gnome_setting.key }}'
@@ -90,6 +101,7 @@
             - { key: '/org/gnome/desktop/media-handling/automount-open', value: 'false', state: present }
 
             # --  General UI  --
+            - { key: '/org/gnome/desktop/wm/preferences/button-layout', value: "'{{ gnome_button_layout }}'", state: present }
             - { key: '/org/gnome/desktop/interface/clock-format', value: "'12h'", state: present }
             - { key: '/org/gtk/settings/file-chooser/clock-format', value: "'12h'", state: present }
             - { key: '/org/gnome/shell/favorite-apps', value: "[{{ dock_favorite_apps|join(', ') }}]", state: present }  # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
@@ -127,17 +139,6 @@
             - { key: '/ca/desrt/dconf-editor/show-warning', value: 'false', state: present }
           loop_control:
             loop_var: gnome_setting
-
-        - name: '[Ubuntu] GNOME - Set settings'
-          community.general.dconf:
-            key: '{{ gnome_setting.key }}'
-            value: '{{ gnome_setting.value }}'
-            state: '{{ gnome_setting.state }}'
-          with_items:
-            - { key: '/org/gnome/desktop/wm/preferences/button-layout', value: "'close,minimize,maximize:'", state: present }
-          loop_control:
-            loop_var: gnome_setting
-          when: ansible_facts.distribution == 'Ubuntu'
 
         - name: GNOME - Set settings [BARE-METAL]
           community.general.dconf:
