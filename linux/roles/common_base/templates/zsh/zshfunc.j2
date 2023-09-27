@@ -114,8 +114,8 @@ alias decolorize='sed -r "s/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"'
 
 alias dusage='du -h -d1'
 
-alias inet-pg="echo 'Pinging Google' && ping google.com"
-alias inet-public_ip="curl -4 icanhazip.com && curl -6 icanhazip.com; echo"
+alias inet-pg="echo 'Pinging Google' && ping 8.8.8.8"
+alias inet-pip="echo 'Public IP:' && curl -4 icanhazip.com && curl -6 icanhazip.com; echo"
 
 
 # --- Installed tools  ---
@@ -149,13 +149,13 @@ alias pmake='time nice make -j$(nproc) --load-average=$(nproc)'               # 
 # ---------------------- ------ Environment variables  (which SHOULD be in '.zshenv') ------ ----------------------
 {% if ansible_facts.os_family == 'Darwin' %}
 export LSCOLORS=ExFxCxDxBxegedabagacad  # Default (only brighter)
-# export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx  # Black background
-# export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd  # Linux terminal
+#export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx  # Black background
+#export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd  # Linux terminal
 {% else %}
 {%   if 'dev_workstations' in group_names or 'dev_servers' in group_names %}
 #export MAKEFLAGS="-j$(nproc)"
 {%   endif %}
-# ...
+#...
 {% endif %}
 
 
