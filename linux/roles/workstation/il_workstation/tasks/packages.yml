@@ -10,10 +10,10 @@
           - imagemagick
       become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
     - name: '[Debian/Ubuntu]'
-      ansible.builtin.apt:
+      community.general.flatpak:
         name:
-          - celluloid
-          - vlc
+          - org.videolan.VLC
+          - io.github.celluloid_player.Celluloid
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
