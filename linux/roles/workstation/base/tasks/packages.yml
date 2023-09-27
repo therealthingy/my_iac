@@ -82,6 +82,14 @@
   when: ansible_facts.os_family != 'Darwin'
 
 
+- ansible.builtin.include_tasks: '{{ item }}'
+  loop:
+    - package-flatpak.yml
+#    - package-kitty.yml
+    - package-firefox.yml
+    - package-conky.yml
+  when: ansible_facts.os_family != 'Darwin'
+
 
 - name: Install CLI tools
   block:
@@ -129,19 +137,11 @@
           when: ansible_facts.os_family != 'Darwin' and ansible_facts.os_family == 'Debian'
   become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
 
-- ansible.builtin.include_tasks: '{{ item }}'
-  loop:
-#    - package-kitty.yml
-    - package-firefox.yml
-    - package-brave.yml
-    - package-conky.yml
-    - package-flatpak.yml
-  when: ansible_facts.os_family != 'Darwin'
-
-- name: Install VSCodium
+- name: Install flatpak packages
   community.general.flatpak:
     name:
       - com.vscodium.codium
+      - com.brave.Browser
     state: present
   become: true
   when: ansible_facts.os_family != 'Darwin'
