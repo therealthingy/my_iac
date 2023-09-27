@@ -20,41 +20,29 @@
 ### General
 - **Merge mac- & linux** playbooks
 
-
-
-
 ### *dev-workstation*
-- initial setup: Muting audio doesn't work  (4 some reason ??!)
-- not indempotent ISSUE:
-   - Firefox settings after restart
-   - TASK [petermosmans.customize-gnome : Download GNOME Shell extensions]
-- Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
+* initial setup: Muting audio doesn't work  (4 some reason ??!)
+* not indempotent ISSUE:
+   * Firefox settings after restart
+   * TASK [petermosmans.customize-gnome : Download GNOME Shell extensions]
+* Consider switching all apps to flatpak  (Brave, Codium, EVENTUALLY firefox, vlc & celluloid)
 
 ### *server*
-- **SECURITY**: https://christitus.com/linux-security-mistakes/  (Fail2ban)
-
-- !!!!!!!!!!!!!!!!!!!     Add restricted www user     !!!!!!!!!!!!!!!!!!!
-
+* **SECURITY**: https://christitus.com/linux-security-mistakes/  (Fail2ban)
+* !!!!!!!!!!!!!!!!!!!     Add restricted www user     !!!!!!!!!!!!!!!!!!!
 
 ### *home_server*
-- **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/)
-
-- Containers:
-  - **NETWORKING**  (DEBUG DOCKER images: https://github.com/nicolaka/netshoot):
-    - Convert *iptables* 2 *nftables*  (https://www.unixtutorial.org/migrate-iptables-to-nftables-in-centos-8/;           VALIDATION: `nft list ruleset`; SERVICE-NAME: nftables)
-
-  - filebrowser: restart container iff config file has changed AND container is ALREADY RUNNING  ( see traefik, BUT ONLY IF CONFIG FILE HAS CHANGED )
-
-- FUTURE WORK:
-  - **Switch Notifications to a service**  (e.g., by using https://github.com/caronc/apprise)
-  - Services:
-    - **https://academy.pointtosource.com/containers/ebooks-calibre-readarr/**
-    - Heimdall
-    - Add traefik allowed ip range 4 vault (https://doc.traefik.io/traefik/middlewares/http/forwardauth/)
-    - **SSO service** 4 which allows authenticating all services   (https://goauthentik.io/, https://github.com/authelia/authelia)
-      - REQUIREMENT: [oauth2, etc. support (also for protected application necessary)](https://www.reddit.com/r/selfhosted/comments/s9ky8f/pass_credentials_from_authelia_to_protected/)
-      - [Guide: 2 Factor Auth and Single Sign On with Authelia](https://piped.kavin.rocks/watch?v=u6H-Qwf4nZA)
-    - ( Each container role should have role docker als dependency )
+* **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/
+* Containers:
+  * ( filebrowser: restart container iff config file has changed AND container is ALREADY RUNNING  ( see traefik, BUT ONLY IF CONFIG FILE HAS CHANGED ) )
+* FUTURE WORK:
+  * **SSO service** 4 which allows authenticating all services   (https://goauthentik.io/, https://github.com/authelia/authelia)
+    * REQUIREMENT: [oauth2, etc. support (also for protected application necessary)](https://www.reddit.com/r/selfhosted/comments/s9ky8f/pass_credentials_from_authelia_to_protected/)
+    * [Guide: 2 Factor Auth and Single Sign On with Authelia](https://piped.kavin.rocks/watch?v=u6H-Qwf4nZA)
+  * **Switch Notifications to a service**  (e.g., by using https://github.com/caronc/apprise)
+  * Services:
+    * **https://academy.pointtosource.com/containers/ebooks-calibre-readarr/**
+    * Heimdall
 ---
 
 
