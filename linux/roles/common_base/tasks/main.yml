@@ -141,8 +141,7 @@
           - apport
           - ubuntu-report
           - ubuntu-advantage-tools
-          - whoopsie
-          - whoopsie-preferences
+          - whoopsie   # (NOTE: `whoopsie-preferences` is a dependency of `gnome-control-center` (Settings app))
 
     - name: Uninstall
       ansible.builtin.apt:
