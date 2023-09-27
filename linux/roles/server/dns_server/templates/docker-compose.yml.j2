@@ -10,8 +10,8 @@ networks:
 # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
 services:
   {{ container_name }}:
-    hostname: {{ container_name }}
     container_name: {{ container_name }}
+    hostname: {{ container_name }}
 # TODO: `domainname` seems to prevent the WEB-UI from loading under Browsers on Windows  ??
 #    domainname: {{ domainname }}
     image: pihole/pihole
@@ -38,16 +38,14 @@ services:
       PIHOLE_DNS_: {{ dns_servers|join(';') }}
 
       DNSMASQ_LISTENING: "single"
-      INTERFACE: "eth0"
+      INTERFACE: '{{ pihole.if }}'
+      IPv6: 'true'
 
-      WEBPASSWORD: {{ pihole.web_pw }}
+      FTLCONF_RATE_LIMIT: '0/0'             #  TODO: Workaround as all IPv6 requests arrive w/ same saddr (due 2 sNAT)
 
-      RATE_LIMIT: 0/0             # $$$$$$$$$$$$$$$$$$$$$$   TODO: Workaround as all IPv6 requests arrive w/ same saddr (due 2 sNAT)   $$$$$$$$$$$$$$$$$$$$$$
-
-      IPv6: "true"
-
-      PROXY_LOCATION: {{ container_name }}
-      VIRTUAL_HOST: {{ container_name }}.{{ domainname }}
+      WEBPASSWORD: '{{ pihole.web_pw }}'
+      PROXY_LOCATION: '{{ container_name }}'
+      VIRTUAL_HOST: '{{ container_name }}.{{ domainname }}'
       VIRTUAL_PORT: 80
 
 {% if pihole.conditional_forwarding_enabled is defined and pihole.conditional_forwarding_enabled %}
