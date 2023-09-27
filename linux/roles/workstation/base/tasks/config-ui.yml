@@ -72,7 +72,7 @@
           with_items:
             # !!  BE AWARE: Schema for gtk (used by `gsettings`): `org.gtk.Settings.FileChooser` v.s. Path (used by dconf editor and Ansible module): `org.gtk.settings.file-chooser`  !!
             # --  General settings  --
-        #    - { key: '/org/gnome/desktop/input-sources/sources', value: "[('xkb', 'de')]", state: present }
+#            - { key: '/org/gnome/desktop/input-sources/sources', value: "[('xkb', 'de')]", state: present }
 
             # --  General Behavior  --
             - { key: '/org/gnome/desktop/privacy/show-full-name-in-top-bar', value: 'true', state: present }
@@ -80,7 +80,7 @@
             - { key: '/org/gnome/desktop/privacy/remove-old-temp-files', value: 'true', state: present }
             - { key: '/org/gnome/desktop/sound/event-sounds', value: 'false', state: present }
             - { key: '/org/gnome/desktop/wm/preferences/audible-bell', value: 'false', state: present }           # TODO: Use `visual-bell`` bell instead (currently not suitable (flashes entire screen))
-            #- { key: '/org/gnome/desktop/interface/gtk-enable-primary-paste', value: 'false', state: present }    # TODO:  Disable "Middle-click paste"  (doesn't work 4 Ubuntu 22.04 LTS)
+#            - { key: '/org/gnome/desktop/interface/gtk-enable-primary-paste', value: 'false', state: present }    # TODO:  Disable "Middle-click paste"  (doesn't work 4 Ubuntu 22.04 LTS)
             - { key: '/org/gnome/desktop/notifications/show-banners', value: 'false', state: present }            # 'Do not disturb' in Ubuntu's Settings app
             - { key: '/org/gnome/gnome-session/logout-prompt', value: 'false', state: present }
             # -  Privacy  -
@@ -93,7 +93,6 @@
             - { key: '/org/gnome/desktop/interface/clock-format', value: "'12h'", state: present }
             - { key: '/org/gtk/settings/file-chooser/clock-format', value: "'12h'", state: present }
             - { key: '/org/gnome/shell/favorite-apps', value: "[{{ dock_favorite_apps|join(', ') }}]", state: present }  # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
-            - { key: '/org/gnome/desktop/wm/preferences/button-layout', value: "'close,minimize,maximize:'", state: present }
             # --  Extensions  --
             # -  Dock  -
             - { key: '/org/gnome/shell/extensions/dash-to-dock/extend-height', value: 'false', state: present }
@@ -128,6 +127,17 @@
             - { key: '/ca/desrt/dconf-editor/show-warning', value: 'false', state: present }
           loop_control:
             loop_var: gnome_setting
+
+        - name: '[Ubuntu] GNOME - Set settings'
+          community.general.dconf:
+            key: '{{ gnome_setting.key }}'
+            value: '{{ gnome_setting.value }}'
+            state: '{{ gnome_setting.state }}'
+          with_items:
+            - { key: '/org/gnome/desktop/wm/preferences/button-layout', value: "'close,minimize,maximize:'", state: present }
+          loop_control:
+            loop_var: gnome_setting
+          when: ansible_facts.distribution == 'Ubuntu'
 
         - name: GNOME - Set settings [BARE-METAL]
           community.general.dconf:
