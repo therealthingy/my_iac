@@ -94,21 +94,23 @@
     - name: '[Darwin / Debian/Ubuntu]'
       ansible.builtin.package:
         name:
-          - iperf
-          - speedtest-cli
           - nmap                          # Contains also `ncat` on macOS ??!
           - socat
+          - arp-scan                      # Contains `arp-scan`, `arp-fingerprint`
+          - iperf
+          - speedtest-cli
           - wget
           - aria2                         # Download tool  (SEE: https://aria2.github.io/); cmd: `aria2c``
       become: "{{ 'true' if ansible_facts.os_family != \"Darwin\" else 'false' }}"
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
-          - netcat-openbsd
-          - dnsutils                      # `dig`
           - iproute2                      # `ip`;   NOTE: package 'net-tools' has been deprecated
           - traceroute
+          - netcat-openbsd
+          - dnsutils                      # `dig`
           - tcpdump
+          - netdiscover
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'

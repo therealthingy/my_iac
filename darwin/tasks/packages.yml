@@ -140,7 +140,9 @@
               - 'imageoptim'
               - 'keycastr'
           - dir: Tools/Virtualization
-            packages: ['vmware-fusion']     # TODO: Install w/ option `--no-quarantine`, otherwise: '“vmware-id” is an app downloaded from the Internet. Are you sure you want to open it?'
+            packages:
+              - 'vmware-fusion'     # TODO: Install w/ option `--no-quarantine`, otherwise: '“vmware-id” is an app downloaded from the Internet. Are you sure you want to open it?'
+#              - 'utm'
           - dir: Video
             packages:
               - 'iina'
