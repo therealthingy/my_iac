@@ -10,7 +10,7 @@ services:
     restart: "no"
 
     #user: {{ www_user_uid }}:{{ www_user_gid }}
-    # $$$ Required for binding to TCP/UDP sockets below 1024 (aka 'privileged ports') -> cap_add doesn't seem to work -> use sysctl instead... $$$
+    # $$$ Required for binding to TCP/UDP sockets below 1024 (aka 'privileged ports') -> cap_add doesn't seem to work -> use sysctl instead… $$$
     #sysctls:
     #  - net.ipv4.ip_unprivileged_port_start=0
 

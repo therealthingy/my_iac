@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     name:
       - open-vm-tools
-      - gvfs-fuse         # NOTE: Package `fuse` causes autoremove of GNOME packages (https://askubuntu.com/questions/1406236/desktop-icons-gone-in-22-04), hence install `gvfs-fuse`
+      - gvfs-fuse         # NOTE: Package `fuse` causes `autoremove` of GNOME packages (https://askubuntu.com/questions/1406236/desktop-icons-gone-in-22-04), hence install `gvfs-fuse`
     state: present
   become: true
 
@@ -20,7 +20,9 @@
     owner: root
     group: root
     mode: 0644
-  when: ansible_architecture == 'aarch64' and ansible_facts.distribution == 'Debian'
+  when:
+    - ansible_architecture == 'aarch64'
+    - ansible_facts.distribution == 'Debian'
   become: true
 
 
@@ -28,7 +30,7 @@
   block:
     - name: Mount vmware shares on boot
       ansible.posix.mount:
-        path: '{{ vmshares_mount_dir }}'
+        path: '{{ vm_shares_mount_dir }}'
         src: 'vmhgfs-fuse'
         fstype: fuse
         opts: 'defaults,allow_other'
@@ -37,11 +39,8 @@
 
     - name: Create symlink in home dir
       ansible.builtin.file:
-        src: '{{ vmshares_mount_dir }}'
+        src: '{{ vm_shares_mount_dir }}'
         dest: '/home/{{ user_name }}/vm-shares'
         state: link
       become: false
-  when: vm_sharing_is_enabled
-
-
-
+  when: vm_shares_setup

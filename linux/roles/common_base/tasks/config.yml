@@ -62,7 +62,6 @@
   loop:
     - config-grub.yml
     - config-ssh.yml
-#    - config-rosetta.yml               # TODO: Doesn't work yet on VMWare Fusion ??  ("Error mounting /media/rosetta: mount: /media/rosetta: wrong fs type, bad option, bad superblock on rosetta, missing codepage or helper program, or other error.")
     - config-swapfile.yml
   loop_control:
     loop_var: included_common_config_task

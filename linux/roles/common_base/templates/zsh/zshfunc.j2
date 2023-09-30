@@ -57,7 +57,7 @@ path-rm() {
 # Checks and exports alias(es) if command exists (warns otherwise that command doesn't exist)
 #
 # @param 1 (required_command): The command which is used by alias (will be checked for presence)
-# @param 2...n (alias): Will be validated and exported, if valid...
+# @param 2…n (alias): Will be validated and exported, if valid…
 #
 alias-add() {
   readonly required_command=${1:?"The 'required_command' may be specified."}
@@ -66,7 +66,7 @@ alias-add() {
   shift
 
   if ! command -v ${required_command} > /dev/null; then
-    echo -e "\e[1;31;49mThe required '${required_command}' command doesn't exist, not exporting alias(es)...\e[0m\n"
+    echo -e "\e[1;31;49mThe required '${required_command}' command doesn't exist, not exporting alias(es)…\e[0m\n"
     return
   fi
 
@@ -155,7 +155,7 @@ export LSCOLORS=ExFxCxDxBxegedabagacad  # Default (only brighter)
 {%   if 'dev_workstations' in group_names or 'dev_servers' in group_names %}
 #export MAKEFLAGS="-j$(nproc)"
 {%   endif %}
-#...
+#…
 {% endif %}
 
 

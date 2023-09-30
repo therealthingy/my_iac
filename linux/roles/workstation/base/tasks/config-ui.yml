@@ -153,7 +153,7 @@
             - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 900', state: present }
           loop_control:
             loop_var: gnome_setting
-          when: "'vmware_vms' not in group_names"
+          when: "'vms' not in group_names"
 
         - name: GNOME - Set settings [VMs]
           community.general.dconf:
@@ -166,7 +166,7 @@
             - { key: '/org/gnome/desktop/session/idle-delay', value: 'uint32 0', state: present }                 # Don't show black screen after idle timeout
           loop_control:
             loop_var: gnome_setting
-          when: "'vmware_vms' in group_names"
+          when: "'vms' in group_names"
       become: false
 
     - name: Set installed apps as default
@@ -235,7 +235,7 @@
               become: true
             - name: Mute audio
               ansible.builtin.command: pactl set-sink-mute @DEFAULT_SINK@ true
-          when: "'vmware_vms' in group_names"
+          when: "'vms' in group_names"
 
         - name: Set GNOME settings
           community.general.dconf:

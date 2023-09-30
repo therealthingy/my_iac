@@ -22,7 +22,7 @@
               browser.discovery.enabled: false                                             # Disable "Recommend extensions / features as you browse"
               browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons: false
               browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features: false
-              privacy.sanitize.timeSpan: 0                                                 # Changes Burger menu -> History -> 'Clear recent history' ... -> 'Time range to clear': 'Everything'
+              privacy.sanitize.timeSpan: 0                                                 # Changes Burger menu -> History -> 'Clear recent history' … -> 'Time range to clear': 'Everything'
               # Privacy - Safe browsing
               browser.safebrowsing.downloads.enabled: false
               browser.safebrowsing.downloads.remote.block_potentially_unwanted: false

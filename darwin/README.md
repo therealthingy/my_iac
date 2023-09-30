@@ -40,7 +40,7 @@ RUN: `ansible-playbook main.yml`
     `defaults write -g com.apple.swipescrolldirection -bool FALSE`
   * **Show full file path in Finder**
     `defaults write com.apple.finder _FXShowPosixPathInTitle -bool YES; killall Finder`
-  * **Disable ń popup after long pressing n, ...**
+  * **Disable ń popup after long pressing n, &mldr;**
     `defaults write -g ApplePressAndHoldEnabled -bool FALSE`
   * **Change Screenshot format**
     `defaults write com.apple.screencapture type JPG` (JPG, PNG, TIFF, PDF)

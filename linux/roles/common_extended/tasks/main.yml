@@ -86,7 +86,7 @@
       when:
         - ansible_facts.os_family != 'Darwin'
         - "'rpis' not in group_names"
-        - "'vmware_vms' not in group_names"
+        - "'vms' not in group_names"
   become: true
 
 - name: Install networking tools

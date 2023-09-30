@@ -54,7 +54,7 @@
               - heaptrack             # Heap analysis tool (from KDE)
               - heaptrack-gui
               - graphviz              # TODO: Apparently required by kcachegrind  ??
-              - time                  # NOTE: Usually implemented as shell builtin  (hence must be called directly via `/usr/bin/time ...`)
+              - time                  # NOTE: Usually implemented as shell builtin  (hence must be called directly via `/usr/bin/time`)
               - pahole                # Shows & manipulates data structure layout
               # Utils
               - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
