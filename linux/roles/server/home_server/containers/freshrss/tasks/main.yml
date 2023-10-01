@@ -1,0 +1,23 @@
+---
+- name: Create dirs
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    mode: 0755
+  become: false
+  with_items:
+    - '{{ docker_container.config_basedir }}/{{ container_name }}/'
+    - '{{ docker_container.data_basedir }}/{{ container_name }}/config/'
+
+- name: Copy docker-compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: '{{ docker_container.config_basedir }}/{{ container_name }}/docker-compose.yml'
+    mode: 0640
+  become: false
+
+#- name: Ensure container is running
+#  community.docker.docker_compose:
+#    project_src: '{{ docker_container.config_basedir }}/{{ container_name }}/'
+#    build: false
+#  become: false

@@ -80,29 +80,43 @@
       config_basedir: /home/{{ user_name }}/homeserver/config/
   roles:
   # -- Docker containers --
-    - role: server/home_server/containers/bitwarden
-      tags:
-        - bitwarden
-    - role: server/home_server/containers/baikal
-      tags:
-        - baikal
-    - role: server/home_server/containers/nginx-helloworld
-      tags:
-        - testing
-#    - role: server/home_server/containers/portainer
-#      tags:
-#        - portainer
     - role: 3rd-party/internet-pi
       tags:
         - inet_monitoring
+
+    - role: server/home_server/containers/baikal
+      tags:
+        - baikal
+
+    - role: server/home_server/containers/bitwarden
+      tags:
+        - bitwarden
+
+    - role: server/home_server/containers/dl_services
+      tags:
+        - dl_services
+
+    - role: server/home_server/containers/freshrss
+      tags:
+        - freshrss
+
+    - role: server/home_server/containers/nginx-helloworld
+      tags:
+        - testing
+
+#    - role: server/home_server/containers/portainer
+#      tags:
+#        - portainer
 
 # KEEP IN MIND: Only run samba - OR - filebrowser (otherwise weird behavior when using simultaneously)
 #    - role: server/home_server/containers/filebrowser
 #      tags:
 #        - filebrowser
+
     - role: server/home_server/containers/samba
       tags:
         - samba
+
     - role: server/home_server/containers/syncthing
       tags:
         - syncthing
@@ -110,15 +124,15 @@
     - role: server/home_server/containers/traefik
       tags:
         - traefik
-    - role: server/home_server/containers/dl_services
-      tags:
-        - dl_services
+
     - role: server/home_server/containers/volact
       tags:
         - volact
+
     - role: server/home_server/containers/vpn
       tags:
         - vpn
+
     - role: server/home_server/containers/watchtower
       tags:
         - watchtower
