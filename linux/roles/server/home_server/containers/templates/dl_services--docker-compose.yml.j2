@@ -1,0 +1,207 @@
+---
+# {{ ansible_managed }}
+# $$$$$$$$$$$$$$$$$$$$$$$   TODO: Rootless support 4 linuxserver images    (https://github.com/just-containers/s6-overlay#user-directive)   $$$$$$$$$$$$$$$$$$$$$$$
+#      --> SEE WIP: https://docs.linuxserver.io/general/understanding-puid-and-pgid
+
+version: "3.7"
+
+networks:
+  {{ reverse_proxy_docker_network }}:
+    external: true
+
+services:
+  gluetun:
+    image: qmcgaw/gluetun
+    restart: '{{ dl_services.restart_policy }}'
+    container_name: gluetun
+    networks:
+      - {{ reverse_proxy_docker_network }}
+    sysctls:
+        - net.ipv6.conf.all.disable_ipv6=0
+#    user: {{ www_user.uid }}:{{ www_user.gid }}
+#    security_opt:
+#      - no-new-privileges:true                                           # Prevents application processes (inside container) from gaining new privileges during execution (via setuid execs)
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+#    ports:
+#      # - Web-UIs of containers
+#      - 8090:8090        # qbittorrent: Web ui
+#      - 6881:6881        # qbittorrent: Forwarded port
+#      - 6881:6881/udp    # qbittorrent: Forwarded port
+#      - 9696:9696        # prowlarr: Web ui
+##      # -  LAN proxy stuff  -
+##      - 8888:8888/tcp   # HTTP proxy
+##      - 8388:8388/tcp   # Shadowsocks
+##      - 8388:8388/udp   # Shadowsocks
+##      - 8389:8389/udp   # Gluetun-Shadowsocks?
+##      - 8389:8389/tcp   # Gluetun-Shadowsocks?
+##      - 8889:8889/tcp   # Gluetun
+#    volumes:
+#      - '{{ docker_container.config_basedir }}/dl_services/gluetun/:/gluetun'
+    # SEE: https://github.com/qdm12/gluetun-wiki/tree/main/setup/options
+    environment:
+      - TZ={{ timezone }}
+      - VPN_SERVICE_PROVIDER={{ dl_services.gluetun.vpnsp }}
+      - SERVER_COUNTRIES={{ dl_services.gluetun.server_country }}              # Optional
+      - VPN_TYPE=wireguard #openvpn
+#      # -  openvpn specific stuff  -
+#      - PROTOCOL=udp        # Only 4 openvpn required
+#      - OPENVPN_CIPHERS=AES-256-GCM
+      # -  wireguard specific stuff  -
+      - WIREGUARD_ADDRESSES={{ dl_services.gluetun.wireguard_vpn_service.addresses }}
+#      - DNS_ADDRESS=xxx.xxx.xxx.xxx
+      - FIREWALL_VPN_INPUT_PORTS={{ dl_services.gluetun.forward_port }}      # Port forwarding ~~(must be also mentioned as port ???!)~~  -> validate w/ (run in container): `nc -l -p <port>`
+#      - WIREGUARD_PUBLIC_KEY={{ dl_services.gluetun.wireguard_vpn_service.pk }}
+      - WIREGUARD_PRIVATE_KEY={{ dl_services.gluetun.wireguard_vpn_service.sk }}
+      - WIREGUARD_PRESHARED_KEY={{ dl_services.gluetun.wireguard_vpn_service.preshared_key }}
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+      - com.centurylinklabs.watchtower.monitor-only=true
+      - traefik.enable=true
+      - traefik.http.services.prowlarr.loadbalancer.server.port=9696
+      - traefik.http.routers.prowlarr.rule=Host(`prowlarr.{{ domainname }}`)
+      - traefik.http.routers.prowlarr.service=prowlarr
+      - traefik.http.services.qbittorrent.loadbalancer.server.port=8090
+      - traefik.http.routers.qbittorrent.rule=Host(`qbit.{{ domainname }}`)
+      - traefik.http.routers.qbittorrent.service=qbittorrent
+#      - traefik.http.services.ariang.loadbalancer.server.port=8080
+#      - traefik.http.routers.ariang.rule=Host(`ariang.{{ domainname }}`)
+#      - traefik.http.routers.ariang.service=ariang
+#      - traefik.http.services.nzbget.loadbalancer.server.port=6789
+#      - traefik.http.routers.nzbget.rule=Host(`nzb.{{ domainname }}`)
+#      - traefik.http.routers.nzbget.service=nzbget
+
+
+
+
+
+  # ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------
+  # ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------
+  # $$$$$$$$$ TODO:  WORKAROUND: https://github.com/qdm12/gluetun/issues/1407  $$$$$$$$$
+  portcheck:
+    image: eiqnepm/portcheck:latest
+    restart: "{{ dl_services.restart_policy }}"
+    container_name: portchecker
+    environment:
+      QBITTORRENT_PORT: "{{ dl_services.gluetun.forward_port }}"
+      QBITTORRENT_WEBUI_PORT: "8090"
+      QBITTORRENT_USERNAME: "{{ dl_services.web_ui.username }}"
+      QBITTORRENT_PASSWORD: "{{ dl_services.web_ui.password }}"
+    network_mode: service:gluetun
+    depends_on:
+      - qbittorrent
+  # ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------
+  # ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------
+
+
+
+
+
+  # Important: Set in advanced settings network adapter 2 `tun0`
+  qbittorrent:
+    image: linuxserver/qbittorrent:latest
+    restart: "{{ dl_services.restart_policy }}"
+    container_name: qbittorrent
+    environment:
+      - TZ={{ timezone }}
+      - PUID={{ www_user.uid }}
+      - PGID={{ www_user.gid }}
+      - UMASK=022
+      - WEBUI_PORT=8090
+#    user: {{ www_user.uid }}:{{ www_user.gid }}
+#    security_opt:
+#      - no-new-privileges:true
+    volumes:
+      - {{ dl_services.base_dir }}/qbittorrent/:/config/   # $$$$$$$$$$$$$$$$$$$$$$$$$$$    TODO: Change ALL 2 `docker_container.data_basedir` (once full disk enc.)
+      - {{ dl_services.base_dir }}/downloads/torrents/:/downloads/
+    network_mode: service:gluetun
+    healthcheck:
+      test: curl {{ dl_services.healthcheck_url }} || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - autoheal=true
+      - com.centurylinklabs.watchtower.enable=true
+      - com.centurylinklabs.watchtower.monitor-only=true
+
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$   TODO: RPC NOT WORKING   $$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+#  ariang:
+#    image: hurlenko/aria2-ariang
+#    restart: {{ dl_services.restart_policy }}
+#    container_name: ariang
+#    environment:
+#      - PUID={{ www_user.uid }}
+#      - PGID={{ www_user.gid }}
+#      - BASIC_AUTH_USERNAME={{ dl_services.web_ui.username }}
+#      - BASIC_AUTH_PASSWORD={{ dl_services.web_ui.password }}
+##      - RPC_SECRET=secret
+#      - ARIA2RPCPORT=443
+#    volumes:
+#      - {{ dl_services.base_dir }}/ariang/:/aria2/conf
+#      - {{ dl_services.base_dir }}/downloads/ariang/:/aria2/data
+##    ports:
+##      - 443:8080
+#    network_mode: service:gluetun
+#    healthcheck:
+#      test: curl {{ dl_services.healthcheck_url }} || exit 1
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#    labels:
+#      - autoheal=true
+#      - com.centurylinklabs.watchtower.enable=true
+#      - com.centurylinklabs.watchtower.monitor-only=true
+
+#  nzbget:
+#    image: linuxserver/nzbget:latest
+#    restart: "{{ dl_services.restart_policy }}"
+#    container_name: nzbget
+#    environment:
+#      - TZ={{ timezone }}
+#      - PUID={{ www_user.uid }}
+#      - PGID={{ www_user.gid }}
+#      - NZBGET_USER={{ dl_services.web_ui.username }}
+#      - NZBGET_PASS={{ dl_services.web_ui.password }}
+##    user: {{ www_user.uid }}:{{ www_user.gid }}
+##    security_opt:
+##      - no-new-privileges:true
+#    volumes:
+#      - {{ dl_services.base_dir }}/nzbget/:/config/
+#      - {{ dl_services.base_dir }}/downloads/nzb/:/downloads/
+##    ports:
+##      - 6789:6789
+#    network_mode: service:gluetun
+#    healthcheck:
+#      test: curl {{ dl_services.healthcheck_url }} || exit 1
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#    labels:
+#      - autoheal=true
+#      - com.centurylinklabs.watchtower.enable=true
+#      - com.centurylinklabs.watchtower.monitor-only=true
+
+  prowlarr:
+    image: hotio/prowlarr:testing
+    restart: "{{ dl_services.restart_policy }}"
+    container_name: prowlarr
+    environment:
+      - TZ={{ timezone }}
+      - PUID={{ www_user.uid }}
+      - PGID={{ www_user.gid }}
+#    user: {{ www_user.uid }}:{{ www_user.gid }}
+#    security_opt:
+#      - no-new-privileges:true
+    volumes:
+      - '{{ dl_services.base_dir }}/prowlarr/:/config/'
+    network_mode: service:gluetun
+    depends_on:
+      - gluetun
+      - qbittorrent
+#      - nzbget
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+      - com.centurylinklabs.watchtower.monitor-only=true

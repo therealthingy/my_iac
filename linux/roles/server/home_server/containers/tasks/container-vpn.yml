@@ -1,0 +1,51 @@
+---
+# REFERENCE: https://netplan.readthedocs.io/en/latest/netplan-yaml/
+# VERIFY: `networkctl status`
+- name: "[netplan] Add 'stable' global IPv6 addr"
+  ansible.builtin.template:
+    src: vpn--netplan--10-wireguard_vpn.yaml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
+    dest: /etc/netplan/10-wireguard_vpn.yaml
+    mode: 0644
+  notify: Applying Netplan Configuration
+  when: ansible_facts.distribution == 'Ubuntu'
+  become: true
+
+# VERIFY: `sudo lsmod |grep ip6table_filter`
+# EQUIVALENT COMMAND: `sudo modprobe <module>` & adding entry in `/etc/modules` (or `/etc/modprobe.d/`)
+- name: Add kernel module 4 IPv6 connectivity
+  community.general.modprobe:
+    name: ip6table_filter
+    state: present
+    persistent: present
+  become: true
+
+- name: Create config dirs
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    mode: 0755
+  with_items:
+    - '{{ docker_container.config_basedir }}/{{ container.name }}/'
+#    - '{{ docker_container.config_basedir }}/{{ container.name }}/ddclient/'
+  become: false
+
+- name: Copy config files
+  ansible.builtin.template:
+    src: '{{ item.file }}.j2'
+    dest: '{{ docker_container.config_basedir }}/{{ container.name }}/{{ item.dir }}/{{ item.file }}'
+    mode: '{{ item.mode }}'
+  with_items:
+    - { file: 'vpn--docker-compose.yml', dir: '.', mode: '0644' }
+#    - { file: 'vpn--ddclient.conf', dir: 'ddclient', mode: '0644' }
+    - { file: 'vpn--dyndns-update', dir: '.', mode: '0755' }
+    - { file: 'vpn--dyndns-Dockerfile', dir: '.', mode: '0755' }
+  become: false
+
+## VERIFY
+##   - … on server: `ping 8.8.8.8` on client & `sudo tcpdump -envi wg0 host 8.8.8.8` (… on server)
+##   - … on different network (whether port open + service running): `ncat -uvz <public-ip> <udp-port>`
+#- name: Ensure container is running
+#  community.docker.docker_compose:
+#    project_src: '{{ docker_container.config_basedir }}/{{ container.name }}/'
+#    build: true
+#  become: false

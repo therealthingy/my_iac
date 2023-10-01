@@ -1,0 +1,32 @@
+---
+# {{ ansible_managed }}
+
+version: "3.7"
+
+networks:
+  {{ reverse_proxy_docker_network }}:
+    external: true
+
+services:
+  {{ container.name }}:
+    image: portainer/portainer-ce
+    container_name: portainer
+    restart: always
+
+    user: {{ www_user.uid }}:{{ www_user.gid }}
+    security_opt:
+      - no-new-privileges:true
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - {{ docker_container.data_basedir }}/{{ container.name }}/:/data
+      - /etc/localtime:/etc/localtime:ro
+
+    networks:
+      - {{ reverse_proxy_docker_network }}
+
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+      - traefik.enable=true
+      - traefik.http.services.{{ container.name }}_service.loadbalancer.server.port=9000
+      - traefik.http.routers.{{ container.name }}_router.rule=Host(`{{ container.name }}.{{ domainname }}`)

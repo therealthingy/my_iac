@@ -1,0 +1,55 @@
+---
+# WORKAROUND 4: "ERROR! 'loop_control' is not a valid attribute for a Block"  (SEE: https://stackoverflow.com/questions/58908625/issue-looping-on-block-containing-a-set-of-tasks-in-ansible)
+- name: Copy docker-compose file
+  block:
+    - name: Create config dir
+      ansible.builtin.file:
+        path: '{{ docker_container.config_basedir }}/{{ container.name }}/'
+        state: directory
+        mode: 0755
+    - name: Copy compose file
+      ansible.builtin.template:
+        src: '{{ container.name }}--docker-compose.yml.j2'
+        dest: '{{ docker_container.config_basedir }}/{{ container.name }}/docker-compose.yml'
+        mode: 0640
+  become: false
+
+- name: Copy config files
+  block:
+    - name: Create dir
+      ansible.builtin.file:
+        path: '{{ docker_container.config_basedir }}/{{ container.name }}/{{ conf_file.target_dir if conf_file.target_dir is defined else "." }}'
+        state: directory
+        mode: 0755
+      loop_control:     # AGAIN: Doesn't work on `block`, thus duplicated
+        loop_var: conf_file
+      with_items: '{{ container.config_files }}'
+
+    - name: Copy file
+      ansible.builtin.template:
+        src: '{{ container.name }}--{{ conf_file.name }}.j2'
+        dest: '{{ docker_container.config_basedir }}/{{ container.name }}/{{ conf_file.target_dir if conf_file.target_dir is defined else "." }}/{{ conf_file.name }}'
+        mode: '{{ conf_file.mode if conf_file.mode is defined else "0640" }}'
+      loop_control:
+        loop_var: conf_file
+      with_items: '{{ container.config_files }}'
+  become: false
+  when: container.config_files is defined
+
+- name: Create data dirs 4 volumes
+  ansible.builtin.file:
+    path: '{{ docker_container.data_basedir }}/{{ container.name }}/{{ volume }}'
+    state: directory
+    mode: 0755
+  loop_control:
+    loop_var: volume
+  with_items: '{{ container.volumes }}'
+  become: false
+  when: container.volumes is defined
+
+- name: Ensure container is running
+  community.docker.docker_compose:
+    project_src: '{{ docker_container.config_basedir }}/{{ container.name }}/'
+    build: false
+  become: false
+  when: container.startup is defined and container.startup

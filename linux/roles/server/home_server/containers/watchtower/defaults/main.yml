@@ -1,6 +1,0 @@
----
-container_name: watchtower
-
-
-# FORMAT: Seconds, Minutes, Hours, Day of month, Month, Day of week  (see https://pkg.go.dev/github.com/robfig/cron@v1.2.0#hdr-CRON_Expression_Format)
-watchtower_cron_schedule: 0 30 3 * * WED,SAT

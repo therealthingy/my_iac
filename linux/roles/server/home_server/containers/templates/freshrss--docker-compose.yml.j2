@@ -1,0 +1,35 @@
+---
+# {{ ansible_managed }}
+
+version: '3.7'
+
+networks:
+  {{ reverse_proxy_docker_network }}:
+    external: true
+
+services:
+  {{ container.name }}:
+    image: lscr.io/linuxserver/freshrss:latest
+    container_name: {{ container.name }}
+    restart: unless-stopped
+
+#    user: {{ www_user.uid }}:{{ www_user.gid }}
+    security_opt:
+      - no-new-privileges:true
+
+    volumes:
+      - {{ docker_container.data_basedir }}/{{ container.name }}/:/config/
+
+    environment:
+      - TZ={{ timezone }}
+      - PUID={{ www_user.uid }}
+      - PGID={{ www_user.gid }}
+
+    networks:
+      - {{ reverse_proxy_docker_network }}
+
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+      - traefik.enable=true
+      - traefik.http.services.{{ container.name }}_service.loadbalancer.server.port=80
+      - traefik.http.routers.{{ container.name }}_router.rule=Host(`{{ container.name }}.{{ domainname }}`)

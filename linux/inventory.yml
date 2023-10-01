@@ -231,6 +231,7 @@ all:
                         30386636616134623536306565623439336533383364316336313963383136373130326538613433
                         3539633131643734370a306666636137363662326664336163633462356464656164323963336538
                         36373638663766666464303265303630363839313931303031393835363834383539
+            wireguard_mtu: 1380
             wireguard_ui:
 #              user: !vault |
 #                      $ANSIBLE_VAULT;1.1;AES256
@@ -262,39 +263,38 @@ all:
 #                      3331623634363762316531613931313162393630353032333837
               log_level: INFO
 
-#          filebrowser_container_share_dir: '{{docker_container.data_basedir}}/samba-filebrowser/share'
-
-          samba_shares:
-            - name: private
-              bind_mounts:
-                - '{{docker_container.data_basedir}}/samba-filebrowser/share/private:/mnt/share/private/'
-                - '{{ dl_services.base_dir }}/downloads/:/mnt/share/private/storage/downloads/'
-              path: /mnt/share/private
-              browsable: 'no'
-              readonly: 'no'
-              guest: 'no'
-              users:
-                - 'gtg'
-            - name: shared
-              bind_mounts:
-                - '{{docker_container.data_basedir}}/samba-filebrowser/share/public:/mnt/share/public/'
-              path: /mnt/share/public
-              browsable: 'yes'
-              readonly: 'no'
-              guest: 'no'
-              users:
-                - 'all'
-          samba_users:
-            - name: gtg
-              pass: !vault |
-                        $ANSIBLE_VAULT;1.1;AES256
-                        33663564613033363663346538623237666233326238376361633734633163336133306338663031
-                        3930643565623630383833613661393736373036393763370a303461373435393765343634333463
-                        32646536616338316331386664363830313635323665613663366132373361613238653863316562
-                        6531363636383339390a646638356432653037383238626239326535383566383836333464396132
-                        6236
-#            - name: family
-#              pass: '1'
+          samba:
+            shares:
+              - name: private
+                bind_mounts:
+                  - '{{docker_container.data_basedir}}/samba-filebrowser/share/private:/mnt/share/private/'
+                  - '{{ dl_services.base_dir }}/downloads/:/mnt/share/private/storage/downloads/'
+                path: /mnt/share/private
+                browsable: 'no'
+                readonly: 'no'
+                guest: 'no'
+                users:
+                  - 'gtg'
+              - name: shared
+                bind_mounts:
+                  - '{{docker_container.data_basedir}}/samba-filebrowser/share/public:/mnt/share/public/'
+                path: /mnt/share/public
+                browsable: 'yes'
+                readonly: 'no'
+                guest: 'no'
+                users:
+                  - 'all'
+            users:
+              - name: gtg
+                pass: !vault |
+                          $ANSIBLE_VAULT;1.1;AES256
+                          33663564613033363663346538623237666233326238376361633734633163336133306338663031
+                          3930643565623630383833613661393736373036393763370a303461373435393765343634333463
+                          32646536616338316331386664363830313635323665613663366132373361613238653863316562
+                          6531363636383339390a646638356432653037383238626239326535383566383836333464396132
+                          6236
+#              - name: family
+#                pass: '1'
 
 
     # --  "HW specific"  --

@@ -1,0 +1,70 @@
+---
+- name: Setup containers
+  ansible.builtin.include_tasks: workaround-setup.yml
+  loop_control:
+    loop_var: container
+  with_items:
+    - name: traefik
+      config_files:
+        - name: ssl-certgen
+          mode: "0755"
+        - name: dynamic-conf.yml      # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
+      startup: True
+
+    - name: baikal
+      volumes:
+        - 'config'
+        - 'user'
+      startup: True
+
+    - name: bitwarden
+      volumes:
+        - '.'
+      startup: True
+
+    - name: dl_services
+      volumes:
+        - '.'
+      startup: False
+
+    - name: filebrowser         # TODO: COMMENT OUT
+      config_files:
+        - name: settings.json
+      volumes:
+        - '.'
+      startup: False
+
+    - name: freshrss
+      volumes:
+        - 'config'
+      startup: False
+
+    - name: helloworld
+      startup: False
+
+    - name: portainer         # TODO: COMMENT OUT
+      volumes:
+        - '.'
+      startup: False
+
+    - name: samba
+      startup: True
+
+    - name: syncthing
+      volumes:
+        - '.'
+      startup: False
+
+    - name: watchtower
+      startup: True
+
+
+
+- name: VPN
+  block:
+    - name: Set variables
+      ansible.builtin.set_fact:
+        container:
+          name: vpn
+    - name: Run role
+      ansible.builtin.import_tasks: container-vpn.yml

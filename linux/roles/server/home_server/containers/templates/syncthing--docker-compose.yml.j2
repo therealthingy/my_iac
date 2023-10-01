@@ -1,0 +1,34 @@
+---
+# {{ ansible_managed }}
+
+version: "3.7"
+
+services:
+  syncthing:
+    image: syncthing/syncthing
+    restart: "unless-stopped"
+    hostname: {{ container.name }}
+    container_name: {{ container.name }}
+
+#    ports:                                # Not relevant when using `network_mode=host`
+#      - 8384:8384                         # Web UI
+#      - 22000:22000/tcp                   # TCP file transfers
+#      - 22000:22000/udp                   # QUIC file transfers
+#      - 21027:21027/udp                   # Receive local discovery broadcasts
+    network_mode: host                    # Required 4 local discovery
+
+    user: {{ www_user.uid }}:{{ www_user.gid }}
+    security_opt:
+      - no-new-privileges:true
+
+    volumes:
+      - '{{ docker_container.data_basedir }}/{{ container.name }}/:/var/syncthing/'
+
+    environment:
+      - PUID={{ www_user.uid }}
+      - PGID={{ www_user.gid }}
+      # Access GUI via: `ssh -L 8385:127.0.0.1:8384 gg-rpi0`
+      - STGUIADDRESS=                      # Empty = Fallback 2 localhost   (change address from `0.0.0.0:<port>` 2 `127.0.0.1:<port>` 4 added security)
+
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
