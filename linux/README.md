@@ -30,6 +30,8 @@
 * Consider switching all apps to flatpak  (EVENTUALLY firefox, vscodium)
 
 ### *server*
+* ON ALL DISTROS: USE **netplan + systemd-networkd**
+
 * **SECURITY**: https://christitus.com/linux-security-mistakes/  (Fail2ban)
 * !!!!!!!!!!!!!!!!!!!     Add restricted www user     !!!!!!!!!!!!!!!!!!!
 

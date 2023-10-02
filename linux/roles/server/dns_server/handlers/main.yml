@@ -11,15 +11,3 @@
 #  listen: netplan apply config
   become: true
 #  when: netplan_apply
-
-
-
-
-
-
-- name: restart dhcpcd service        # $$$$$$$$$$$$$$$$$$$$$$$  TODO: RMV SOOn  $$$$$$$$$$$$$$$$$$$$$$$
-  ansible.builtin.service:
-    name: dhcpcd
-    state: restarted
-    enabled: true
-  become: true

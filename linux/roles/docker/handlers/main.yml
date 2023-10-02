@@ -16,13 +16,3 @@
     name: '{{ networking_service }}'
     state: restarted
   become: true
-
-
-
-
-# ------------------------------------------------------------------------------------------------------
-- name: restart dhcpcd service
-  ansible.builtin.service:
-    name: dhcpcd
-    state: restarted
-  become: true
