@@ -1,8 +1,9 @@
 ---
 container_name: pihole
 
-pihole_config_dir: '/home/{{ user_name }}/pihole/'
-pihole_data_dir:   '/home/{{ user_name }}/pihole/data'
+dirs:
+  config: '/home/{{ user_name }}/'            # $$$$$$$$$$  TODO: REVISE PATHS  $$$$$$$$$$
+  data:   '/home/{{ user_name }}/pihole/data/'
 
 
 dns_servers:

@@ -1,6 +1,7 @@
 ---
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TODO: Derive `volumes` from `compose`  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 - name: Setup containers
-  ansible.builtin.include_tasks: workaround-setup.yml
+  ansible.builtin.include_tasks: setup_containers.yml
   loop_control:
     loop_var: container
   with_items:
@@ -9,40 +10,254 @@
         - name: ssl-certgen
           mode: '0755'
         - name: dynamic-conf.yml      # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
+      compose:
+        services:
+          - name: traefik
+            image: traefik
+            network:
+              nets: ['{{ reverse_proxy_docker_network }}']
+              ports:
+                - 80:80
+                - 443:443
+            command:
+              - "--log.level=WARN"
+              - "--global.sendanonymoususage=false"
+              - "--api.dashboard=false"
+              - "--api.insecure=true"
+              - "--entrypoints.websecure.address=:443"
+              - "--entrypoints.websecure.http.tls=true"
+              - "--entrypoints.web.address=:80"
+              - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+              - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+              - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+              - "--entrypoints.websecure.http.middlewares=securityHeaders@file"
+              - "--providers.docker=true"
+              - "--providers.docker.exposedByDefault=false"
+              - "--providers.docker.network={{ reverse_proxy_docker_network }}"
+              - "--providers.file.directory=/config/"
+              - "--providers.file.watch=true"
+#             - "--ping=false"
+            volumes:
+              - path: '/var/run/docker.sock:/var/run/docker.sock'
+                ro: true
+              # config
+              - path: './dynamic-conf.yml:/config/dynamic-conf.yml'
+              - path: '{{ docker_container.data_basedir }}/traefik/:/config/certs/'
+            env_vars:
+              -  TZ={{ timezone }}
 
     - name: baikal
       volumes:
         - 'config'
         - 'user'
+      compose:
+        services:
+          - name: baikal
+            security:
+              use_root: True
+            image: ckulka/baikal:nginx
+            network:
+              reverse_proxy_mappings:
+                - subdomain: baikal
+                  port: 80
+            volumes:
+              - path: '{{ docker_container.data_basedir }}/baikal/config/:/var/www/baikal/config'
+              - path: './dynamic-conf.yml:/config/dynamic-conf.yml'
+              - path: '{{ docker_container.data_basedir }}/baikal/user/:/var/www/baikal/Specific'
 
     - name: bitwarden
       volumes:
         - '.'
+      compose:
+        services:
+          - name: bitwarden
+            image: vaultwarden/server
+            network:
+              reverse_proxy_mappings:
+                - subdomain: bitwarden
+                  port: 80
+                - subdomain: bitwarden
+                  path: '/notifications/hub'
+                  port: 3012
+            volumes:
+              - path: '{{ docker_container.data_basedir }}/bitwarden/:/data/'
+              - path: './dynamic-conf.yml:/config/dynamic-conf.yml'
+              - path: '{{ docker_container.data_basedir }}/bitwarden/user/:/var/www/baikal/Specific'
+            env_vars:
+              - TZ={{ timezone }}
+              # --- General
+              - DATA_FOLDER=/data
+              - DATABASE_URL=/data/db.sqlite3
+              - WEBSOCKET_ENABLED=true
+              - SIGNUPS_ALLOWED={{ bitwarden_signups_allowed | default('false', true) }}
+              - SIGNUPS_VERIFY={{ 'true' if notifications_mail is defined else 'false' }}
+              # --- Emailing
+              - SMTP_HOST={{ notifications_mail.smtp_host }}
+              - SMTP_FROM={{ notifications_mail.smtp_username }}
+              - SMTP_FROM_NAME=Bitwarden_RS
+              - SMTP_PORT={{ notifications_mail.smtp_port }}
+              # NOTE: ("starttls", "force_tls", "off") Enable a secure connection. Default is "starttls" (Explicit - ports 587 or 25), "force_tls" (Implicit - port 465) or "off", no encryption (port 25)
+              - SMTP_SECURITY={{ notifications_mail.smtp_enc }}
+              - SMTP_USERNAME={{ notifications_mail.smtp_username }}
+              - SMTP_PASSWORD={{ notifications_mail.smtp_password }}
+              - SMTP_TIMEOUT=15
 
     - name: dl_services
       volumes:
         - '.'
       startup: False
-
-    - name: filebrowser         # TODO: COMMENT OUT
-      config_files:
-        - name: settings.json
-      volumes:
-        - '.'
-      startup: False
+      compose:
+        services:
+          - name: gluetun
+            image: qmcgaw/gluetun
+            restart_policy: '{{ dl_services.restart_policy }}'
+            sysctls:
+              - net.ipv6.conf.all.disable_ipv6=0
+            security:
+              use_root: True
+              allow_priv_esc: True
+              cap_add:
+                - NET_ADMIN
+            devices:
+              - /dev/net/tun
+            network:
+#              ports:
+#                # - Web-UIs of containers
+#                - 8090:8090        # qbittorrent: Web ui
+#                - 6881:6881        # qbittorrent: Forwarded port
+#                - 6881:6881/udp    # qbittorrent: Forwarded port
+#                - 9696:9696        # prowlarr: Web ui
+##                # -  LAN proxy stuff  -
+##                - 8888:8888/tcp   # HTTP proxy
+##                - 8388:8388/tcp   # Shadowsocks
+##                - 8388:8388/udp   # Shadowsocks
+##                - 8389:8389/udp   # Gluetun-Shadowsocks?
+##                - 8389:8389/tcp   # Gluetun-Shadowsocks?
+##                - 8889:8889/tcp   # Gluetun
+              reverse_proxy_mappings:
+                - subdomain: 'prowlarr'
+                  port: 9696
+                - subdomain: 'qbit'
+                  port: 8090
+#            volumes:
+#              - path: '{{ docker_container.config_basedir }}/dl_services/gluetun/:/gluetun'
+            env_vars:
+              - VPN_SERVICE_PROVIDER={{ dl_services.gluetun.vpnsp }}
+              - SERVER_COUNTRIES={{ dl_services.gluetun.server_country }}              # Optional
+              - VPN_TYPE=wireguard #openvpn
+#              # -  openvpn specific stuff  -
+#              - PROTOCOL=udp        # Only 4 openvpn required
+#              - OPENVPN_CIPHERS=AES-256-GCM
+              # -  wireguard specific stuff  -
+              - WIREGUARD_ADDRESSES={{ dl_services.gluetun.wireguard_vpn_service.addresses }}
+#              - DNS_ADDRESS=xxx.xxx.xxx.xxx
+              - FIREWALL_VPN_INPUT_PORTS={{ dl_services.gluetun.forward_port }}      # Port forwarding ~~(must be also mentioned as port ???!)~~  -> validate w/ (run in container): `nc -l -p <port>`
+#              - WIREGUARD_PUBLIC_KEY={{ dl_services.gluetun.wireguard_vpn_service.pk }}
+              - WIREGUARD_PRIVATE_KEY={{ dl_services.gluetun.wireguard_vpn_service.sk }}
+              - WIREGUARD_PRESHARED_KEY={{ dl_services.gluetun.wireguard_vpn_service.preshared_key }}
+          # $$$$$$$$$ TODO:  WORKAROUND: https://github.com/qdm12/gluetun/issues/1407  $$$$$$$$$
+          - name: portcheck
+            image: eiqnepm/portcheck:latest
+            restart_policy: '{{ dl_services.restart_policy }}'
+            network:
+              mode: service:gluetun
+            dependencies:
+              - qbittorrent
+            healthcheck: curl {{ dl_services.healthcheck_url }} || exit 1
+            env_vars:
+              - QBITTORRENT_PORT="{{ dl_services.gluetun.forward_port }}"
+              - QBITTORRENT_WEBUI_PORT="8090"
+              - QBITTORRENT_USERNAME="{{ dl_services.web_ui.username }}"
+              - QBITTORRENT_PASSWORD="{{ dl_services.web_ui.password }}"
+          - name: qbittorrent
+            image: linuxserver/qbittorrent:latest
+            restart_policy: '{{ dl_services.restart_policy }}'
+            security:
+              use_root: True
+              allow_priv_esc: True
+            network:
+              mode: service:gluetun
+            volumes:
+              - path: '{{ dl_services.base_dir }}/qbittorrent/:/config/'
+              - path: '{{ dl_services.base_dir }}/downloads/torrents/:/downloads/'
+            healthcheck: curl {{ dl_services.healthcheck_url }} || exit 1
+            env_vars:
+              - TZ={{ timezone }}
+              - PUID={{ www_user.uid }}
+              - PGID={{ www_user.gid }}
+              - UMASK=022
+              - WEBUI_PORT=8090
+          - name: prowlarr
+            image: hotio/prowlarr:testing
+            restart_policy: '{{ dl_services.restart_policy }}'
+            security:
+              use_root: True
+              allow_priv_esc: True
+            network:
+              mode: service:gluetun
+            volumes:
+              - path: '{{ dl_services.base_dir }}/prowlarr/:/config/'
+            dependencies:
+              - gluetun
+              - qbittorrent
+            env_vars:
+              - TZ={{ timezone }}
+              - PUID={{ www_user.uid }}
+              - PGID={{ www_user.gid }}
 
     - name: freshrss
       volumes:
         - 'config'
       startup: False
+      compose:
+        services:
+          - name: freshrss
+            security:
+              use_root: True
+            image: lscr.io/linuxserver/freshrss:latest
+            network:
+              reverse_proxy_mappings:
+                - subdomain: freshrss
+                  port: 80
+            volumes:
+              - path: '{{ docker_container.data_basedir }}/freshrss/:/config/'
+            env_vars:
+              - TZ={{ timezone }}
+              - PUID={{ www_user.uid }}
+              - PGID={{ www_user.gid }}
 
     - name: helloworld
       startup: False
+      compose:
+        services:
+          - name: nginx-helloworld
+            security:
+              use_root: True
+            image: nginxdemos/hello:latest
+            restart_policy: "no"
+            network:
+              ports:
+                - '{{ host_port if host_port is defined else 8080 }}:80'
 
-    - name: portainer         # TODO: COMMENT OUT
+    - name: portainer
       volumes:
         - '.'
       startup: False
+      compose:
+        services:
+          - name: portainer
+            security:
+              use_root: True
+            image: portainer/portainer-ce
+            network:
+              reverse_proxy_mappings:
+                - subdomain: portainer
+                  port: 9000
+            volumes:
+              - path: '/var/run/docker.sock:/var/run/docker.sock'
+              - path: '{{ docker_container.data_basedir }}/portainer/:/data'
+              - path: '/etc/localtime:/etc/localtime'
+                ro: True
 
     - name: samba
 
@@ -50,16 +265,66 @@
       volumes:
         - '.'
       startup: False
+      compose:
+        services:
+          - name: syncthing
+            image: syncthing/syncthing
+            network:
+#              ports:                                # Not relevant when using `network_mode=host`
+#                - 8384:8384                         # Web UI
+#                - 22000:22000/tcp                   # TCP file transfers
+#                - 22000:22000/udp                   # QUIC file transfers
+#                - 21027:21027/udp                   # Receive local discovery broadcasts
+              mode: host                            # Required 4 local discovery
+            volumes:
+              - path: '{{ docker_container.data_basedir }}/syncthing/:/var/syncthing/'
+            env_vars:
+              - PUID={{ www_user.uid }}
+              - PGID={{ www_user.gid }}
+              # Access GUI via: `ssh -L 8385:127.0.0.1:8384 gg-rpi0`
+              - STGUIADDRESS=                      # Empty = Fallback 2 localhost   (change address from `0.0.0.0:<port>` 2 `127.0.0.1:<port>` 4 added security)
+
+    - name: volact
+      compose:
+        services:
+          - name: volact
+            image: '{{ volact.container_image }}'
+            network:
+              ports:
+                - '{{ volact.port }}:{{ volact.port }}/tcp'
+              mode: bridge
+            volumes:
+              - path: '/etc/localtime:/etc/localtime'
+                ro: True
 
     - name: watchtower
+      compose:
+        services:
+          - name: watchtower
+            image: containrrr/watchtower
+            network:
+              mode: bridge
+            volumes:
+              - path: '/var/run/docker.sock:/var/run/docker.sock'
+            # TESTING: `--run-once`
+            # - WATCHTOWER_SCHEDULE="<watchtower_cron_schedule>"
+            # FORMAT: Seconds, Minutes, Hours, Day of month, Month, Day of week  (see https://pkg.go.dev/github.com/robfig/cron@v1.2.0#hdr-CRON_Expression_Format)
+            command: ['--schedule "{{ watchtower_cron_schedule  if watchtower_cron_schedule is defined else "0 30 3 * * WED,SAT" }}"']
+            env_vars:
+              - TZ={{ timezone }}
+              - WATCHTOWER_CLEANUP=true
+              - WATCHTOWER_LABEL_ENABLE=true                            # Filter by enable label
+              - WATCHTOWER_NO_STARTUP_MESSAGE=true
+              # - Emailing
+              - WATCHTOWER_NOTIFICATIONS=email
+              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ notifications_mail.smtp_host }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT={{ notifications_mail.smtp_port }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER={{ notifications_mail.smtp_username }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD={{ notifications_mail.smtp_password }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_FROM={{ notifications_mail.smtp_username }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail.system_admin_mail }}
 
 
 
 - name: VPN
-  block:
-    - name: 'VPN: Set vars'
-      ansible.builtin.set_fact:
-        container:
-          name: vpn
-    - name: 'VPN: Run role'
-      ansible.builtin.import_tasks: container-vpn.yml
+  ansible.builtin.import_tasks: vpn.yml

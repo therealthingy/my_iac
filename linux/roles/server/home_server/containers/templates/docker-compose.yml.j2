@@ -1,0 +1,126 @@
+---
+# {{ ansible_managed }}
+
+version: '3.7'
+
+{# $$$$$$$  TODO: Check whether service actually uses reverse-proxy  $$$$$$$ #}
+networks:
+  {{ reverse_proxy_docker_network }}:
+    external: true
+{% if container.compose.networks is defined %}
+  {{ container.compose.networks }}
+{% endif %}
+
+
+services:
+{% for service in container.compose.services %}
+  {{ service.name }}:
+    image: {{ service.image }}
+{%   if service.image_build is defined %}
+    build:
+      context: {{ service.image_build.ctx }}
+      dockerfile: {{ service.image_build.df }}
+{%   endif %}
+    container_name: {{ service.name }}
+{%   if service.network.mode is not defined %}
+    hostname: {{ service.name }}
+    domainname: {{ domainname }}
+{%   endif %}
+    restart: '{{ service.restart_policy if service.restart_policy is defined else "always" }}'
+{%   if service.dependencies is defined %}
+    depends_on:
+{%     for dep in service.dependencies %}
+      - {{ dep }}
+{%     endfor %}
+{%   endif %}
+{%   if service.healthcheck is defined %}
+    healthcheck:
+      test: {{ service.healthcheck }}
+      interval: 30s
+      timeout: 10s
+      retries: 3
+{%   endif %}
+{%   if service.sysctls is defined %}
+    sysctls:
+{%     for sysctl in service.sysctls %}
+      - {{ sysctl }}
+{%     endfor %}
+{%   endif %}
+{%   if service.security is not defined %}
+{%     if service.security.use_root is not defined  or  not service.security.use_root %}
+    user: {{ www_user.uid }}:{{ www_user.gid }}
+{%     endif %}
+{%     if service.security.allow_priv_esc is not defined  or  not service.security.allow_priv_esc %}
+    security_opt:
+      - no-new-privileges:true                   # Prevents application processes (inside container) from gaining new privileges during execution (via setuid execs)
+{%     endif %}
+{%   else %}
+{%     if service.security.cap_add is defined %}
+    cap_add:
+{%       for cap in service.security.cap_add %}
+      - {{ cap }}
+{%       endfor %}
+{%     endif %}
+{%   endif %}
+{%   if service.devices is defined %}
+    devices:
+{%     for dev in service.devices %}
+      - {{ dev }}
+{%     endfor %}
+{%   endif %}
+{%   if service.env_vars is defined %}
+    environment:
+{%     for env_var in service.env_vars %}
+      - {{ env_var }}
+{%     endfor %}
+{%   endif %}
+{%   if service.volumes is defined %}
+    volumes:
+{%     for vol in service.volumes %}
+      - {{ vol.path }}{{ ":ro" if vol.ro is defined and vol.ro else "" }}
+{%     endfor %}
+{%   endif %}
+{%   if service.command is defined %}
+    command: {{ service.command|join(" ") }}
+{%   endif %}
+{%   if service.network is defined %}
+{%     if service.network.reverse_proxy_mappings is defined  or  service.network.nets is defined %}
+    networks:
+{%       if service.network.reverse_proxy_mappings is defined %}
+      - {{ reverse_proxy_docker_network }}
+{%       endif %}
+{%       if service.network.nets is defined %}
+{%         for net in service.network.nets %}
+      - {{ net }}
+{%         endfor %}
+{%       endif %}
+{%     endif %}
+{%     if service.network.ports is defined %}
+    ports:
+{%       for port in service.network.ports %}
+      - "{{ port }}"
+{%       endfor %}
+{%     endif %}
+{%     if service.network.mode is defined %}
+    network_mode: {{ service.network.mode }}
+{%     endif %}
+{%   endif %}
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+{%   if container.compose.autoupdate_disabled is defined  and  container.compose.autoupdate_disabled %}
+      - com.centurylinklabs.watchtower.monitor-only=true
+{%   endif %}
+{%   if service.network is defined  and  service.network.reverse_proxy_mappings is defined %}
+      - traefik.enable=true
+{%     for mapping in service.network.reverse_proxy_mappings %}
+      - traefik.http.services.{{ service.name }}-{{ mapping.port }}_service.loadbalancer.server.port={{ mapping.port }}
+      # Next line is actually NOT required when single service
+      - traefik.http.routers.{{ service.name }}-{{ mapping.port }}_router.service={{ service.name }}-{{ mapping.port }}_service
+      - traefik.http.routers.{{ service.name }}-{{ mapping.port }}_router.rule=Host(`{{ mapping.subdomain }}.{{ domainname }}`){{ " && Path(`{0}`)".format(mapping.path) if mapping.path is defined else "" }}
+{%     endfor %}
+{%   endif %}
+{%   if service.log_disabled is defined  and  service.log_disabled %}
+    logging:
+      driver: none
+{%   endif %}
+{% endfor %}

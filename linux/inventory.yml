@@ -32,7 +32,6 @@ all:
             ipv4: 10.38.170.2/24
             router_reverse_dns_zone: 10.38.170.0/24
             router_ip: 10.38.170.1
-            conditional_forwarding_enabled: true
             router_domain: fritz.box
             web_pw: !vault |
                       $ANSIBLE_VAULT;1.1;AES256

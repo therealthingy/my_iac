@@ -9,7 +9,7 @@
         mode: 0755
     - name: 'Container {{ container.name }}: Copy compose file'
       ansible.builtin.template:
-        src: '{{ container.name }}--docker-compose.yml.j2'
+        src: '{{ "{0}--".format(container.name) if container.compose is not defined else "" }}docker-compose.yml.j2'
         dest: '{{ docker_container.config_basedir }}/{{ container.name }}/docker-compose.yml'
         mode: 0640
   become: false

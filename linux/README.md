@@ -18,6 +18,8 @@
 
 ## TODOs
 ### General
+- Fix tags  (e.g., `ansible-playbook --tags=containers, --vault-pass-file ~/.ansible-vault --ask-become-pass  main.yml`)
+
 - **Merge mac- & linux** playbooks
 
 ### *dev-workstation*

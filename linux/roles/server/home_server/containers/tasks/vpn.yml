@@ -1,0 +1,165 @@
+---
+# REFERENCE: https://netplan.readthedocs.io/en/latest/netplan-yaml/
+# VERIFY: `networkctl status`
+- name: "[netplan] Add 'stable' global IPv6 addr"
+  ansible.builtin.template:
+    src: vpn--netplan--10-wireguard_vpn.yaml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
+    dest: /etc/netplan/10-wireguard_vpn.yaml
+    mode: 0644
+  notify: Applying Netplan Configuration
+  when: ansible_facts.distribution == 'Ubuntu'
+  become: true
+
+# VERIFY: `sudo lsmod |grep ip6table_filter`
+# EQUIVALENT COMMAND: `sudo modprobe <module>` & adding entry in `/etc/modules` (or `/etc/modprobe.d/`)
+- name: Add kernel module 4 IPv6 connectivity
+  community.general.modprobe:
+    name: ip6table_filter
+    state: present
+    persistent: present
+  become: true
+
+
+
+## VERIFY
+##   - … on server: `ping 8.8.8.8` on client & `sudo tcpdump -envi wg0 host 8.8.8.8` (… on server)
+##   - … on different network (whether port open + service running): `ncat -uvz <public-ip> <udp-port>`
+#- name: Ensure container is running
+#  community.docker.docker_compose:
+#    project_src: '{{ docker_container.config_basedir }}/{{ container.name }}/'
+#    build: true
+#  become: false
+- name: Setup container
+  ansible.builtin.include_tasks: setup_containers.yml
+  loop_control:
+    loop_var: container
+  with_items:
+    - name: vpn
+      config_files:
+#        - name: ddclient.conf
+#          target_dir: ddclient
+        - name: dyndns-update
+          mode: '0755'
+        - name: dyndns-Dockerfile
+      startup: False
+      compose:
+        networks: |+
+          vpn:
+              enable_ipv6: true
+              ipam:
+                config:
+                  - subnet: '{{ ipv6_conf.prefix }}:2::/{{ (ipv6_conf.prefix_cidr + 16)|int }}'
+        services:
+          - name: ddclient
+#            image: lscr.io/linuxserver/ddclient:latest
+            image: ddclient
+            image_build:
+              ctx: .
+              df: dyndns-Dockerfile
+            network:
+              mode: host
+#            volumes:
+#              - path: '{{ docker_container.config_basedir }}/vpn/ddclient/:/config/'
+#                ro: true
+            env_vars:
+              -  TZ={{ timezone }}
+          - name: wireguard
+            image: linuxserver/wireguard:latest
+            security:
+              use_root: True
+              cap_add:
+                - NET_ADMIN
+#                - SYS_MODULE
+            network:
+              nets: ['vpn']
+              ports:
+                # Port of the wireguard server
+                - '{{ vpn.port }}:{{ vpn.port }}/udp'        # DEFAULT PORT: 51820
+                # Wireguard UI   -->  Access GUI via: `ssh -L 8080:127.0.0.1:8080 gg-rpi0`  (ALTERNATIVE: use traefik ––––––––  WHICH DOESN't WORK aS LONG AS We DON'T USE ITS NETWORK)
+                - '127.0.0.1:{{ vpn.wireguard_ui.local_port if vpn.wireguard_ui.local_port is defined else 8080 }}:5000/tcp'
+            volumes:
+              - path: '{{ docker_container.data_basedir }}/vpn/wireguard/:/config/'
+            sysctls:
+              # REFERENCE: https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html
+              #            https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt
+              - net.ipv6.conf.all.disable_ipv6=0
+              # Enable packet forwarding
+              - net.ipv4.ip_forward=1
+              - net.ipv6.conf.all.forwarding=1
+              # ?
+              - net.ipv4.conf.all.src_valid_mark=1
+              # Accept Router Advertisements (RAs)
+              - net.ipv6.conf.eth0.accept_ra=2
+              # Disable Privacy Extensions
+              - net.ipv6.conf.eth0.use_tempaddr=0
+              - net.ipv6.conf.default.use_tempaddr=0
+              - net.ipv6.conf.all.use_tempaddr=0
+              # How link-local- & autoconf addresses are generated (`0` = EUI64)
+              - net.ipv6.conf.default.addr_gen_mode=0
+              - net.ipv6.conf.eth0.addr_gen_mode=0
+            env_vars:
+              - TZ={{ timezone }}
+              - PUID={{ www_user.uid }}
+              - PGID={{ www_user.gid }}
+          - name: wireguard-ui
+            image: ngoduykhanh/wireguard-ui:latest
+            security:
+              use_root: True
+              cap_add:
+                - NET_ADMIN
+            network:
+              mode: service:wireguard
+            volumes:
+              - path: '{{ docker_container.data_basedir }}/vpn/wireguard/:/config/'
+            sysctls:
+              # REFERENCE: https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html
+              #            https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt
+              - net.ipv6.conf.all.disable_ipv6=0
+              # Enable packet forwarding
+              - net.ipv4.ip_forward=1
+              - net.ipv6.conf.all.forwarding=1
+              # ?
+              - net.ipv4.conf.all.src_valid_mark=1
+              # Accept Router Advertisements (RAs)
+              - net.ipv6.conf.eth0.accept_ra=2
+              # Disable Privacy Extensions
+              - net.ipv6.conf.eth0.use_tempaddr=0
+              - net.ipv6.conf.default.use_tempaddr=0
+              - net.ipv6.conf.all.use_tempaddr=0
+              # How link-local- & autoconf addresses are generated (`0` = EUI64)
+              - net.ipv6.conf.default.addr_gen_mode=0
+              - net.ipv6.conf.eth0.addr_gen_mode=0
+            # REFERENCE: https://github.com/ngoduykhanh/wireguard-ui#environment-variables
+            env_vars:
+              # UI
+              - 'WGUI_USERNAME={{ vpn.wireguard_ui.user if vpn.wireguard_ui.user is defined else "gg" }}'
+              - 'WGUI_PASSWORD={{ vpn.wireguard_ui.pass if vpn.wireguard_ui.user is defined else "1" }}'
+#              - 'SESSION_SECRET=XX vpn.wireguard_ui.session_secret XX'
+              - 'WGUI_LOG_LEVEL={{ vpn.wireguard_ui.log_level }}'
+              # Start / restart wireguard container w/ this container
+              # $$  TODO: WORKAROUND  (https://github.com/ngoduykhanh/wireguard-ui/issues/381#issuecomment-1582258804)  $$
+              - WGUI_MANAGE_START=false
+              - WGUI_MANAGE_RESTART=false
+              # Wireguard conf file (wg0.conf)
+#              - WG_CONF_TEMPLATE
+              # Server Tunnel
+              - WGUI_SERVER_LISTEN_PORT={{ vpn.port }}
+              - WGUI_ENDPOINT_ADDRESS={{ vpn.dyndns.domain }}:{{ vpn.port }}
+              - WGUI_SERVER_INTERFACE_ADDRESSES={{ vpn.networks|map(attribute='server')|join(',') }}
+              - WGUI_DNS={{ vpn.networks|map(attribute='dns')|join(',') }}
+              # OVERHEAD: IPv4: 20 bytes / IPv6: 40 bytes, UDP: 8 bytes, WG: 32 bytes   //   MTU: Cable = 1500, DSL = 1492
+              - WGUI_MTU={{ vpn.wireguard_mtu if vpn.wireguard_mtu is defined else 1450 }}
+              # ( Don't route inet traffic (by default) through tunnel   --> {# `{% for network in vpn.networks %}{{ network.subnet }},{{ "%s0/%s"|format(network.server[:-4], network.server.split("/")[1]) }}{{ "" if loop.last else "," }}{% endfor %}` ) #}
+              - WGUI_DEFAULT_CLIENT_ALLOWED_IPS=0.0.0.0/0,::/0
+              # Rules 4 forwarding from VPN subnet 2 actual network
+              - WGUI_SERVER_POST_UP_SCRIPT=iptables -A FORWARD -i %i -j ACCEPT; ip6tables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; ip6tables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE; ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+              - WGUI_SERVER_POST_DOWN_SCRIPT=iptables -D FORWARD -i %i -j ACCEPT; ip6tables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; ip6tables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE; ip6tables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+              # MAILING
+              - SMTP_HOSTNAME={{ notifications_mail.smtp_host }}
+              - SMTP_PORT={{ notifications_mail.smtp_port }}
+              - SMTP_USERNAME={{ notifications_mail.smtp_username }}
+              - SMTP_PASSWORD={{ notifications_mail.smtp_password }}
+              - SMTP_AUTH_TYPE={{ notifications_mail.smtp_auth_type|upper  }}
+              - SMTP_ENCRYPTION={{ notifications_mail.smtp_enc|upper }}
+              - EMAIL_FROM_ADDRESS={{ notifications_mail.smtp_username }}
+#              - EMAIL_FROM_NAME="WireGuard UI"

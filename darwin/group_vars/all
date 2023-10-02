@@ -14,7 +14,7 @@ hblock:
         - 'bitwarden.rpi.lan'
         - 'baikal.rpi.lan'
         - 'pihole.rpi.lan'
-        - 'inet_monitoring.rpi.lan'
+        - 'inet-monitoring.rpi.lan'
 #        - 'portainer.rpi.lan'
 #        - 'freshrss.rpi.lan'
         - 'kms.rpi.lan'
