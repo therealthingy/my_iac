@@ -325,6 +325,9 @@
               - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail.system_admin_mail }}
 
 
-
 - name: VPN
   ansible.builtin.import_tasks: vpn.yml
+
+
+- name: Pihole
+  ansible.builtin.import_tasks: pihole.yml

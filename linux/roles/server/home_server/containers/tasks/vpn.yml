@@ -3,7 +3,7 @@
 # VERIFY: `networkctl status`
 - name: "[netplan] Add 'stable' global IPv6 addr"
   ansible.builtin.template:
-    src: vpn--netplan--10-wireguard_vpn.yaml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
+    src: vpn--netplan_rules.yml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
     dest: /etc/netplan/10-wireguard_vpn.yaml
     mode: 0644
   notify: Applying Netplan Configuration

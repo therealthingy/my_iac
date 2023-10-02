@@ -1,0 +1,67 @@
+---
+# Equivalent command (for adding IPv6 address): `sudo ip addr add {{ pihole.ipv6_ula }} dev {{ pihole.if }}`
+# VALIDATE (show ip addresses): `ip -6 address show dev eth0`
+# NOTE: DNS entries here affect name resolution capabilities of docker containers !!  (containers 'inherit' config from host)
+- name: Add static DNS entries + static IPv6 ULA addr
+  # REFERENCE: https://netplan.readthedocs.io/en/latest/netplan-yaml/
+  # VERIFY: `networkctl status`
+  ansible.builtin.template:
+    src: pihole--netplan_rules.yml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
+    dest: /etc/netplan/01-pihole.yaml
+    mode: 0644
+  notify: Applying Netplan Configuration
+  become: true
+
+
+
+- name: Setup container
+  ansible.builtin.include_tasks: setup_containers.yml
+  loop_control:
+    loop_var: container
+  with_items:
+    - name: pihole
+      compose:
+        services:
+          - name: pihole
+            image: pihole/pihole
+            autoupdate_disabled: true
+            network:
+              ports:
+                - "{{ pihole.ipv4[:-3] }}:53:53/udp"         # IP addr is required as Ubuntu uses the local DNS-server systemd-resolve  (SEE: https://github.com/sameersbn/docker-bind/issues/65)
+                - "[{{ pihole.ipv6_ula[:-3] }}]:53:53/udp"
+                - "{{ pihole.ipv4[:-3] }}:53:53/tcp"
+                - "[{{ pihole.ipv6_ula[:-3] }}]:53:53/tcp"
+                # 67 = DHCP  (-> TODO: could be uncommented  ???)
+                - "{{ pihole.ipv4[:-3] }}:67:67/udp"
+                - "[{{ pihole.ipv6_ula[:-3] }}]:67:67/udp"
+                # TODO: " if 'home_servers' not in group_names %}
+                # Admin-interface  (ports not necessary since we use reverse proxy)
+                #- 80:80/tcp
+                #- 443:443/tcp
+              reverse_proxy_mappings:
+                - subdomain: pihole
+                  port: 80
+            volumes:
+              - path: '{{ docker_container.data_basedir }}/hole/:/etc/pihole/'
+              - path: '{{ docker_container.data_basedir }}/dns/:/etc/dnsmasq.d/'
+            security:
+              allow_priv_esc: True
+              use_root: True
+              cap_add:
+                - NET_ADMIN
+            env_vars:
+              # See: https://github.com/pi-hole/docker-pi-hole#environment-variables
+              - TZ={{ timezone }}
+              - 'PIHOLE_DNS_={{ dns_servers|join(";") }}'
+              - 'DNSMASQ_LISTENING=single'
+              - 'INTERFACE={{ pihole.if }}'
+              - 'IPv6=true'
+              - FTLCONF_RATE_LIMIT='0/0'             #  TODO: Workaround as all IPv6 requests arrive w/ same saddr (due 2 sNAT)
+              - 'WEBPASSWORD={{ pihole.web_pw }}'
+              - 'PROXY_LOCATION={{ container_name }}'
+              - 'VIRTUAL_HOST={{ container_name }}.{{ domainname }}'
+              - VIRTUAL_PORT=80
+              - 'REV_SERVER=true'                              # Makes only sense when pihole isn't acting as DHCP server
+              - REV_SERVER_TARGET={{ pihole.router_ip }}
+              - REV_SERVER_DOMAIN={{ pihole.router_domain }}
+              - REV_SERVER_CIDR={{ pihole.router_reverse_dns_zone }}
