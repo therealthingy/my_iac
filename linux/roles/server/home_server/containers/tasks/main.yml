@@ -7,20 +7,17 @@
     - name: traefik
       config_files:
         - name: ssl-certgen
-          mode: "0755"
+          mode: '0755'
         - name: dynamic-conf.yml      # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
-      startup: True
 
     - name: baikal
       volumes:
         - 'config'
         - 'user'
-      startup: True
 
     - name: bitwarden
       volumes:
         - '.'
-      startup: True
 
     - name: dl_services
       volumes:
@@ -48,7 +45,6 @@
       startup: False
 
     - name: samba
-      startup: True
 
     - name: syncthing
       volumes:
@@ -56,15 +52,14 @@
       startup: False
 
     - name: watchtower
-      startup: True
 
 
 
 - name: VPN
   block:
-    - name: Set variables
+    - name: 'VPN: Set vars'
       ansible.builtin.set_fact:
         container:
           name: vpn
-    - name: Run role
+    - name: 'VPN: Run role'
       ansible.builtin.import_tasks: container-vpn.yml

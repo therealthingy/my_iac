@@ -2,12 +2,12 @@
 # WORKAROUND 4: "ERROR! 'loop_control' is not a valid attribute for a Block"  (SEE: https://stackoverflow.com/questions/58908625/issue-looping-on-block-containing-a-set-of-tasks-in-ansible)
 - name: Copy docker-compose file
   block:
-    - name: Create config dir
+    - name: 'Container {{ container.name }}: Create config dir'
       ansible.builtin.file:
         path: '{{ docker_container.config_basedir }}/{{ container.name }}/'
         state: directory
         mode: 0755
-    - name: Copy compose file
+    - name: 'Container {{ container.name }}: Copy compose file'
       ansible.builtin.template:
         src: '{{ container.name }}--docker-compose.yml.j2'
         dest: '{{ docker_container.config_basedir }}/{{ container.name }}/docker-compose.yml'
@@ -16,7 +16,7 @@
 
 - name: Copy config files
   block:
-    - name: Create dir
+    - name: 'Container {{ container.name }}: Create dir'
       ansible.builtin.file:
         path: '{{ docker_container.config_basedir }}/{{ container.name }}/{{ conf_file.target_dir if conf_file.target_dir is defined else "." }}'
         state: directory
@@ -25,7 +25,7 @@
         loop_var: conf_file
       with_items: '{{ container.config_files }}'
 
-    - name: Copy file
+    - name: 'Container {{ container.name }}: Copy file'
       ansible.builtin.template:
         src: '{{ container.name }}--{{ conf_file.name }}.j2'
         dest: '{{ docker_container.config_basedir }}/{{ container.name }}/{{ conf_file.target_dir if conf_file.target_dir is defined else "." }}/{{ conf_file.name }}'
@@ -36,7 +36,7 @@
   become: false
   when: container.config_files is defined
 
-- name: Create data dirs 4 volumes
+- name: 'Container {{ container.name }}: Create data dirs 4 volumes'
   ansible.builtin.file:
     path: '{{ docker_container.data_basedir }}/{{ container.name }}/{{ volume }}'
     state: directory
@@ -47,9 +47,9 @@
   become: false
   when: container.volumes is defined
 
-- name: Ensure container is running
+- name: 'Container {{ container.name }}: Ensure container is running'
   community.docker.docker_compose:
     project_src: '{{ docker_container.config_basedir }}/{{ container.name }}/'
     build: false
   become: false
-  when: container.startup is defined and container.startup
+  when: container.startup is not defined or container.startup

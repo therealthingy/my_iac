@@ -79,8 +79,8 @@ services:
       - com.centurylinklabs.watchtower.enable=true
 #      - com.centurylinklabs.watchtower.monitor-only=true
 #      - traefik.enable=true
-#      - traefik.http.services.wireguard_ui.loadbalancer.server.port=5000
-#      - traefik.http.routers.wireguard_ui.rule=Host(`{{ container.name }}.{{ domainname }}`)
+#      - traefik.http.services.wireguard_ui_service.loadbalancer.server.port=5000
+#      - traefik.http.routers.wireguard_ui_router.rule=Host(`{{ container.name }}.{{ domainname }}`)
 
   wireguard-ui:
     image: ngoduykhanh/wireguard-ui:latest

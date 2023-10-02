@@ -16,6 +16,7 @@ hblock:
         - 'pihole.rpi.lan'
         - 'inet_monitoring.rpi.lan'
 #        - 'portainer.rpi.lan'
+#        - 'freshrss.rpi.lan'
         - 'kms.rpi.lan'
         - 'prowlarr.rpi.lan'
         - 'qbit.rpi.lan'

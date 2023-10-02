@@ -60,18 +60,18 @@ services:
       - com.centurylinklabs.watchtower.enable=true
       - com.centurylinklabs.watchtower.monitor-only=true
       - traefik.enable=true
-      - traefik.http.services.prowlarr.loadbalancer.server.port=9696
-      - traefik.http.routers.prowlarr.rule=Host(`prowlarr.{{ domainname }}`)
-      - traefik.http.routers.prowlarr.service=prowlarr
-      - traefik.http.services.qbittorrent.loadbalancer.server.port=8090
-      - traefik.http.routers.qbittorrent.rule=Host(`qbit.{{ domainname }}`)
-      - traefik.http.routers.qbittorrent.service=qbittorrent
-#      - traefik.http.services.ariang.loadbalancer.server.port=8080
-#      - traefik.http.routers.ariang.rule=Host(`ariang.{{ domainname }}`)
-#      - traefik.http.routers.ariang.service=ariang
-#      - traefik.http.services.nzbget.loadbalancer.server.port=6789
-#      - traefik.http.routers.nzbget.rule=Host(`nzb.{{ domainname }}`)
-#      - traefik.http.routers.nzbget.service=nzbget
+      - traefik.http.services.prowlarr_service.loadbalancer.server.port=9696
+      - traefik.http.routers.prowlarr_router.service=prowlarr_service
+      - traefik.http.routers.prowlarr_router.rule=Host(`prowlarr.{{ domainname }}`)
+      - traefik.http.services.qbittorrent_service.loadbalancer.server.port=8090
+      - traefik.http.routers.qbittorrent_router.service=qbittorrent_service
+      - traefik.http.routers.qbittorrent_router.rule=Host(`qbit.{{ domainname }}`)
+#      - traefik.http.services.ariang_service.loadbalancer.server.port=8080
+#      - traefik.http.routers.ariang_router.service=ariang_service
+#      - traefik.http.routers.ariang_router.rule=Host(`ariang.{{ domainname }}`)
+#      - traefik.http.services.nzbget_service.loadbalancer.server.port=6789
+#      - traefik.http.routers.nzbget_router.service=nzbget_service
+#      - traefik.http.routers.nzbget_router.rule=Host(`nzb.{{ domainname }}`)
 
 
 

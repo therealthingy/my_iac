@@ -16,11 +16,6 @@ services:
     user: {{ www_user.uid }}:{{ www_user.gid }}
     security_opt:
       - no-new-privileges:true
-    # $$$ Required for binding to TCP/UDP sockets below 1024 (aka 'privileged ports') -> `CAP_ADD` doesn't seem to work -> use sysctl instead… $$$
-    # cap_add:
-    #   - NET_BIND_SERVICE
-    sysctls:
-      - net.ipv4.ip_unprivileged_port_start=0
 
     # REFERENCE: https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
     environment:
@@ -56,10 +51,10 @@ services:
     labels:
       - com.centurylinklabs.watchtower.enable=true
       - traefik.enable=true
-      - traefik.docker.network={{ reverse_proxy_docker_network }}
-      - traefik.http.routers.bitwarden-ui-http.rule=Host(`{{ container.name }}.{{ domainname }}`)
-      - traefik.http.routers.bitwarden-ui-http.service=bitwarden-ui
-      - traefik.http.services.bitwarden-ui.loadbalancer.server.port=80
-      - traefik.http.routers.bitwarden-websocket-http.rule=Host(`{{ container.name }}.{{ domainname }}`) && Path(`/notifications/hub`)
-      - traefik.http.routers.bitwarden-websocket-http.service=bitwarden-websocket
-      - traefik.http.services.bitwarden-websocket.loadbalancer.server.port=3012
+      # UI & Websocket 4 msges
+      - traefik.http.services.{{ container.name }}-ui_service.loadbalancer.server.port=80
+      - traefik.http.routers.{{ container.name }}-ui_router.service={{ container.name }}-ui_service
+      - traefik.http.routers.{{ container.name }}-ui_router.rule=Host(`{{ container.name }}.{{ domainname }}`)
+      - traefik.http.services.{{ container.name }}-ws_service.loadbalancer.server.port=3012
+      - traefik.http.routers.{{ container.name }}-ws_router.service={{ container.name }}-ws_service
+      - traefik.http.routers.{{ container.name }}-ws_router.rule=Host(`{{ container.name }}.{{ domainname }}`) && Path(`/notifications/hub`)
