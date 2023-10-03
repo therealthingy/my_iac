@@ -20,7 +20,6 @@
   roles:
     - role: common_extended
     - role: workstation/base
-  tags: workstation
   vars:
     dock_favorite_apps:
       - "'org.gnome.Nautilus.desktop'"
@@ -29,6 +28,7 @@
       - "'codium.desktop'"
       - "'terminator.desktop'"
       - "'gnome-system-monitor.desktop'"
+  tags: workstation
 
 - hosts: dev_workstations
   roles:
@@ -81,6 +81,5 @@
     - role: server/home_server/containers/
       tags:
         - containers
-
   tags:
     - home_server

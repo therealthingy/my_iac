@@ -1,0 +1,3 @@
+---
+dependencies:
+  - role: aux/gather_host_facts

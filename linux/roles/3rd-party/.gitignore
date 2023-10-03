@@ -2,5 +2,6 @@
 internet-pi/*
 
 # But not these files…
-!internet-pi/tasks/main.yml
 !internet-pi/defaults/main.yml
+!internet-pi/meta/main.yml
+!internet-pi/tasks/main.yml
