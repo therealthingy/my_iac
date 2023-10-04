@@ -131,6 +131,7 @@
               - net.ipv6.conf.eth0.addr_gen_mode=0
             # REFERENCE: https://github.com/ngoduykhanh/wireguard-ui#environment-variables
             env_vars:
+              # TODO: SSO -->  disable-login
               # UI
               - 'WGUI_USERNAME={{ vpn.wireguard_ui.user|default("gg", true) }}'
               - 'WGUI_PASSWORD={{ vpn.wireguard_ui.pass|default("1", true) }}'
