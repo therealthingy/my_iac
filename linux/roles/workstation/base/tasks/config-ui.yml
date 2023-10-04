@@ -231,6 +231,9 @@
             - key: '/org/gnome/desktop/peripherals/mouse/natural-scroll'
               value: 'true'
               state: present
+            - key: '/org/gnome/desktop/peripherals/touchpad/natural-scroll'
+              value: 'true'
+              state: present
             # - Power -
             - key: '/org/gnome/desktop/session/idle-delay'
               value: 'uint32 900'

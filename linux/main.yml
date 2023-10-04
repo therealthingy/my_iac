@@ -52,7 +52,7 @@
   roles:
     - role: workstation/il_workstation
       tags:
-        - il_workstation          # TODO: VALIDATE
+        - il_workstation
 
 
 - hosts: servers, dev_servers, home_servers
