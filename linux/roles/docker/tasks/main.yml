@@ -15,7 +15,7 @@
         docker_install_compose: false
         docker_add_repo: true
         docker_users:
-          - '{{ user_name }}'
+          - '{{ user.name }}'
         docker_daemon_options:
           ipv6: true
           fixed-cidr-v6: '{{ ipv6_conf.prefix }}:0::/{{ (ipv6_conf.prefix_cidr + 16)|int }}'      # Avoid 'collision' w/ other subnets

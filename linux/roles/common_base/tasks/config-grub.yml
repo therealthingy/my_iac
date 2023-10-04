@@ -24,8 +24,10 @@
         regexp: '^#?{{ item.key }}=[0-9]+$'
         line: '{{ item.key }}={{ item.value }}'
       with_items:
-        - { key: 'GRUB_TIMEOUT', value: '0' }
-        - { key: 'GRUB_RECORDFAIL_TIMEOUT', value: '0' }   # when using btrfs  (SEE: https://askubuntu.com/a/1123295)
+        - key: 'GRUB_TIMEOUT'
+          value: '0'
+        - key: 'GRUB_RECORDFAIL_TIMEOUT'         # when using btrfs  (SEE: https://askubuntu.com/a/1123295)
+          value: '0'
       register: result_grub_timeout_updated
 
     - name: grub makeconfig

@@ -1,6 +1,5 @@
 ---
-# {{ ansible_managed }}
-
+{{ ansible_managed|comment }}
 version: '3.7'
 
 {# $$$$$$$  TODO: Check whether service actually uses reverse-proxy  $$$$$$$ #}
@@ -26,7 +25,7 @@ services:
     hostname: {{ service.name }}
     domainname: {{ domainname }}
 {%   endif %}
-    restart: '{{ service.restart_policy if service.restart_policy is defined else "always" }}'
+    restart: '{{ service.restart_policy|default("always", true) }}'
 {%   if service.dependencies is defined %}
     depends_on:
 {%     for dep in service.dependencies %}

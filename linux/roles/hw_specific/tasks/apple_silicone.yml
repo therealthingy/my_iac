@@ -23,4 +23,4 @@
       ansible.builtin.command:
         cmd: dpkg --add-architecture amd64   # NOTE: 2 install x64 apps, append: `:amd64` (e.g., `sudo apt install libx11-6:amd64`)
   become: true
-  when: vmware is not defined or not vmware      # TODO: Doesn't work (yet) on VMWare Fusion ??  ("Error mounting /media/rosetta: mount: /media/rosetta: wrong fs type, bad option, bad superblock on rosetta, missing codepage or helper program, or other error.")
+  when: hypervisor != 'vmware'      # TODO: Doesn't work (yet) on VMWare Fusion ??  ("Error mounting /media/rosetta: mount: /media/rosetta: wrong fs type, bad option, bad superblock on rosetta, missing codepage or helper program, or other error.")

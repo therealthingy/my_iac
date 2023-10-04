@@ -35,12 +35,18 @@
                   loop_control:
                     loop_var: grafana_docker_compose_item
                   with_items:
-                    - { regex: '- front-tier$', line: '- {{ reverse_proxy_docker_network }}' }
-                    - { regex: '^    ports:\n      - 9090:9090$\n', line: '' }
-                    - { regex: '^    ports:\n      - 3030:3000$\n', line: '' }
-                    - { regex: '^    ports:\n      - 9115:9115$\n', line: '' }
-                    - { regex: '^    ports:\n      - 9798:9798$\n', line: '' }
-                    - { regex: '^    ports:\n      - 9100:9100$\n', line: '' }
+                    - regex: '- front-tier$'
+                      line: '- {{ reverse_proxy_docker_network }}'
+                    - regex: '^    ports:\n      - 9090:9090$\n'
+                      line: ''
+                    - regex: '^    ports:\n      - 3030:3000$\n'
+                      line: ''
+                    - regex: '^    ports:\n      - 9115:9115$\n'
+                      line: ''
+                    - regex: '^    ports:\n      - 9798:9798$\n'
+                      line: ''
+                    - regex: '^    ports:\n      - 9100:9100$\n'
+                      line: ''
                 - name: 'globally'
                   ansible.builtin.replace:
                     path: './roles/3rd-party/internet-pi/templates/docker-compose.yml.j2'

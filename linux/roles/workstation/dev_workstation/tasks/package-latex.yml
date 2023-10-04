@@ -19,8 +19,8 @@
               ansible.builtin.file:
                 path: '/Applications/Office/LaTeX'
                 state: directory
-                owner: '{{ user_name }}'
-                group: '{{user_group_name}}'
+                owner: '{{ user.name }}'
+                group: '{{user.group_name}}'
                 mode: 0755
             - name: Install
               block:
@@ -30,9 +30,12 @@
                     state: latest
                     install_options: '{{ package.options }}'
                   with_items:
-                    - { package: 'basictex', options: 'appdir=/Applications/Office/LaTeX' }
-                    - { package: 'bibdesk', options: 'appdir=/Applications/Office/LaTeX' }
-                    - { package: 'skim', options: 'appdir=/Applications/Office/LaTeX' }
+                    - package: 'basictex'
+                      options: 'appdir=/Applications/Office/LaTeX'
+                    - package: 'bibdesk'
+                      options: 'appdir=/Applications/Office/LaTeX'
+                    - package: 'skim'
+                      options: 'appdir=/Applications/Office/LaTeX'
                   loop_control:
                     loop_var: package
                 - name: latexmk
@@ -54,8 +57,12 @@
                 value: '{{ skin_conf_item.value }}'
                 state: present
               with_items:
-                - { key: 'SKAutoReloadFileUpdate', value: 'true', type: 'boolean' }      # Auto reload file when changed  (in case it doesn't work: Skim -> Preferences -> Sync -> Check 4 file changes + Reload automatically)
-                - { key: 'SKInvertColorsInDarkMode', value: 'true', type: 'bool' }       # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
+                - key: 'SKAutoReloadFileUpdate'         # Auto reload file when changed  (in case it doesn't work: Skim -> Preferences -> Sync -> Check 4 file changes + Reload automatically)
+                  value: 'true'
+                  type: 'boolean'
+                - key: 'SKInvertColorsInDarkMode'       # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
+                  value: 'true'
+                  type: 'bool'
                 # OPTIONAL: View -> Hide Contents Pane + Hide Notes Pane
               loop_control:
                 loop_var: skin_conf_item
@@ -67,8 +74,8 @@
     - name: Copy latexmk config
       ansible.builtin.template:
         src: 'latexmkrc.j2'
-        dest: '{{os_homedir}}/{{ user_name }}/.latexmkrc'
-        owner: '{{ user_name }}'
-        group: '{{ user_group_name }}'
+        dest: '{{os_homedir}}/{{ user.name }}/.latexmkrc'
+        owner: '{{ user.name }}'
+        group: '{{ user.group_name }}'
         mode: 0644
   become: false

@@ -9,9 +9,9 @@
         state: present
 
     - name: nala - Add apt repo and update cache
-      # NOTE: Equivalent command: `sudo add-apt-repository 'deb [arch={{ cpu_architecture }}] http://deb.volian.org/volian/ scar main'`
+      # NOTE: Equivalent command: `sudo add-apt-repository 'deb [arch={{ cpu_arch }}] http://deb.volian.org/volian/ scar main'`
       ansible.builtin.apt_repository:
-        repo: deb [arch={{ cpu_architecture }}] http://deb.volian.org/volian/ scar main
+        repo: deb [arch={{ cpu_arch }}] http://deb.volian.org/volian/ scar main
         filename: volian-archive-scar-unstable
         state: present
         update_cache: true

@@ -52,7 +52,7 @@
   roles:
     - role: workstation/il_workstation
       tags:
-        - il_workstation
+        - il_workstation          # TODO: VALIDATE
 
 
 - hosts: servers, dev_servers, home_servers
@@ -70,8 +70,8 @@
 - hosts: home_servers
   vars:
     docker_container:
-      data_basedir: /home/{{ user_name }}/homeserver/data/
-      config_basedir: /home/{{ user_name }}/homeserver/config/
+      data_basedir: /home/{{ user.name }}/homeserver/data/
+      config_basedir: /home/{{ user.name }}/homeserver/config/
   roles:
   # -- Docker containers --
     - role: 3rd-party/internet-pi

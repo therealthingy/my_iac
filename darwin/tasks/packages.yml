@@ -27,8 +27,8 @@
           ansible.builtin.file:
             path: '/Applications/{{ item.dir }}'
             state: directory
-            owner: '{{ user_name }}'
-            group: '{{user_group_name}}'
+            owner: '{{ user.name }}'
+            group: '{{user.group_name}}'
             mode: 0755
           with_items: '{{ packages_homebrew_casks }}'
 
@@ -204,7 +204,7 @@
       block:
         - name: Set variables (as facts)
           ansible.builtin.set_fact:
-            syncthing_global_conf_file_target_dir: '/Users/{{ user_name }}/'
+            syncthing_global_conf_file_target_dir: '/Users/{{ user.name }}/'
         - name: Copy config file
           ansible.builtin.template:
             src: stglobalignore.j2
@@ -216,30 +216,30 @@
       block:
         - name: Create dir
           ansible.builtin.file:
-            path: '/Users/{{ user_name }}/.config/joplin-desktop'
+            path: '/Users/{{ user.name }}/.config/joplin-desktop'
             state: directory
-            owner: '{{ user_name }}'
-            group: '{{user_group_name}}'
+            owner: '{{ user.name }}'
+            group: '{{user.group_name}}'
             mode: 0755
         - name: Copy config
           ansible.builtin.template:
             src: apps/joplin.css.j2
-            dest: '/Users/{{ user_name }}/.config/joplin-desktop/basenotestyle.css'
+            dest: '/Users/{{ user.name }}/.config/joplin-desktop/basenotestyle.css'
             mode: 0755
 
     - name: Config iTerm
       block:
         - name: Create dir
           ansible.builtin.file:
-            path: '/Users/{{ user_name }}/.config/iterm2'
+            path: '/Users/{{ user.name }}/.config/iterm2'
             state: directory
-            owner: '{{ user_name }}'
-            group: '{{ user_group_name }}'
+            owner: '{{ user.name }}'
+            group: '{{ user.group_name }}'
             mode: 0755
         - name: Copy config
           ansible.builtin.copy:
             src: apps/com.googlecode.iterm2.plist
-            dest: '/Users/{{ user_name }}/.config/iterm2/com.googlecode.iterm2.plist'
+            dest: '/Users/{{ user.name }}/.config/iterm2/com.googlecode.iterm2.plist'
             mode: 0755
         - name: Set config
           community.general.osx_defaults:
@@ -249,6 +249,10 @@
             value: '{{ item.value }}'
             state: present
           with_items:
-            - { key: 'PrefsCustomFolder', value: '/Users/{{ user_name }}/.config/iterm2/', type: 'string' }
-            - { key: 'LoadPrefsFromCustomFolder', value: 'true', type: 'bool' }
+            - key: 'PrefsCustomFolder'
+              value: '/Users/{{ user.name }}/.config/iterm2/'
+              type: 'string'
+            - key: 'LoadPrefsFromCustomFolder'
+              value: 'true'
+              type: 'bool'
   become: false

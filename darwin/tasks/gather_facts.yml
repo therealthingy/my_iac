@@ -25,19 +25,22 @@
           register: result_uname
           changed_when: false
 
-
     - name: Set variables (as facts)
       ansible.builtin.set_fact:
-        cpu_arch: '{{ result_uname.stdout }}'
-        user_name: '{{ result_username.stdout }}'
-        user_group_name: 'staff'
-        user_uid: '{{ result_uid.stdout }}'
-        user_gid: '{{ result_gid.stdout }}'
         os_homedir: /Users/
+        user:
+          name: '{{ result_username.stdout }}'
+          group_name: 'staff'
+          uid: '{{ result_uid.stdout }}'
+          gid: '{{ result_gid.stdout }}'
+        cpu_arch: '{{ result_uname.stdout }}'
         gathered_host_facts: True
   when: gathered_host_facts is not defined
   become: false
 
 
 #-  ansible.builtin.debug:
-#    msg: user_name={{ user_name }}, user_uid={{ user_uid }}
+#    msg:
+#      user={{ user }},
+#      cpu_arch={{ cpu_arch }}
+

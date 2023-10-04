@@ -19,7 +19,7 @@
           register: result_gid
           changed_when: false
 
-        - name: Get gid of the docker group
+        - name: Get gid of the docker group                           # TODO: Doesn't work when docker not yet installed   !!!!!!!!
           ansible.builtin.shell: >
                     getent group |
                     grep docker |
@@ -51,24 +51,45 @@
                 ubuntu_networking_service: "{% if result_ubuntu_nmcli == 0 %}NetworkManager{% else %}systemd-networkd{% endif %}'"
           when: ansible_facts.distribution == 'Ubuntu'
 
+    - name: Determine whether running in hypervisor
+      block:
+        - name: Install required tools (4 checking)
+          ansible.builtin.apt:
+            name: dmidecode
+        - name: Check smbios
+          ansible.builtin.shell: dmidecode -s system-product-name | grep -o "VMware"
+          failed_when: false
+          changed_when: false
+          register: result_smbios
+      become: true
+
 
     - name: Set variables (as facts)
       ansible.builtin.set_fact:
-        user_name: '{{ result_username.stdout }}'
-        user_group_name: '{{ result_username.stdout }}'
-        user_uid: '{{ result_uid.stdout }}'
-        user_gid: '{{ result_gid.stdout }}'
+        user:
+          name: '{{ result_username.stdout }}'
+          group_name: '{{ result_username.stdout }}'
+          uid: '{{ result_uid.stdout }}'
+          gid: '{{ result_gid.stdout }}'
         docker_gid: '{{ result_docker_gid.stdout }}'
         www_user:
           uid: '{{ result_uid.stdout }}'           # $$$$$$$$$$$$$$$$$$$$$  TODO: CREATE EXTRA USER …  $$$$$$$$$$$$$$$$$$$$$
           gid: '{{ result_docker_gid.stdout }}'
-        cpu_architecture: '{{ result_deb_architecture.stdout }}'
+        cpu_arch: '{{ result_deb_architecture.stdout }}'
         kernel_release: '{{ result_kernel_release.stdout }}'
-        networking_service: "{% if ansible_facts.distribution == 'Debian' %}networking{% else %}'{{ ubuntu_networking_service }}'{% endif %}"
+        networking_service: "{{ 'networking' if ansible_facts.distribution == 'Debian' else ubuntu_networking_service }}"
+        hypervisor: '{{ "vmware" if result_smbios.rc == 0 else None }}'
         gathered_host_facts: True
   when: gathered_host_facts is not defined
   become: false
 
 
 #-  ansible.builtin.debug:
-#    msg: user_name={{ user_name }}, user_uid={{ user_uid }}, docker_gid={{ docker_gid }}, kernel_release={{ kernel_release }}, cpu_architecture={{ cpu_architecture }}
+#    msg:
+#      user={{ user }},
+#      docker_gid={{ docker_gid }},
+#      www_user={{ www_user }},
+#      cpu_arch={{ cpu_arch }},
+#      kernel_release={{ kernel_release }},
+#      networking_service={{ networking_service }},
+#      hypervisor={{ hypervisor }}

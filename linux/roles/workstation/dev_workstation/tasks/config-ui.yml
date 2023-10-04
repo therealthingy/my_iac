@@ -3,18 +3,18 @@
 #  block:
 #    - name: Ensure wallpaper dir exists
 #      ansible.builtin.file:
-#        path: '/home/{{ user_name }}/Pictures/wallpapers'
+#        path: '/home/{{ user.name }}/Pictures/wallpapers'
 #        state: directory
 #
 #    - name: Copy wallpapers
 #      ansible.posix.synchronize:
 #        src: wallpapers/
-#        dest: '/home/{{ user_name }}/Pictures/wallpapers/'
+#        dest: '/home/{{ user.name }}/Pictures/wallpapers/'
 #
 #    - name: Update GNOME setting
 #      community.general.dconf:
 #        key: '/org/gnome/desktop/background/picture-uri'
-#        value: "'file:///home/{{ user_name }}/Pictures/wallpapers/{{ gnome_wallpaper }}'"
+#        value: "'file:///home/{{ user.name }}/Pictures/wallpapers/{{ gnome_wallpaper }}'"
 #  when: "'GNOME' in desktop_envs"
 #  become: false
 
@@ -23,5 +23,5 @@
 - name: Copy dev references to Desktop
   ansible.posix.synchronize:
     src: references/
-    dest: '/home/{{ user_name }}/Desktop/'
+    dest: '/home/{{ user.name }}/Desktop/'
   become: false

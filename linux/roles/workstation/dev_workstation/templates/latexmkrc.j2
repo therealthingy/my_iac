@@ -1,4 +1,4 @@
-# {{ ansible_managed }}
+{{ ansible_managed|comment }}
 {% if ansible_facts.os_family == 'Darwin' %}
 $pdf_previewer = 'open -a Skim';
 {% else %}

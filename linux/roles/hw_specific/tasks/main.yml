@@ -1,24 +1,4 @@
 ---
-- name: Determine whether running in VmWare Hypervisor
-  block:
-    - name: Install required tools (4 checking)
-      ansible.builtin.apt:
-        name: dmidecode
-
-    - name: Check smbios
-      ansible.builtin.shell: dmidecode -s system-product-name | grep -o "VMware"
-      failed_when: false
-      changed_when: false
-      register: result_vmware
-
-    - name: Set vmware var
-      ansible.builtin.set_fact:
-        vmware: True
-      when: result_vmware.rc == 0
-  become: true
-
-
-
 - name: Apple Silicone
   block:
     - name: Check
@@ -61,4 +41,4 @@
 
 - name: VmWare Hypervisor
   ansible.builtin.import_tasks: vmware_hypervisor.yml
-  when: vmware is defined and vmware
+  when: hypervisor == 'vmware'

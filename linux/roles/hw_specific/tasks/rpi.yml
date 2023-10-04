@@ -17,7 +17,7 @@
         state: present
     - name: Add necessary groups
       ansible.builtin.user:
-        name: '{{ user_name }}'
+        name: '{{ user.name }}'
         groups: video
         append: true
   become: true
@@ -69,14 +69,20 @@
         line: 'dtparam={{ item.key }}={{ item.value }}'
       with_items:
         # Disable activity LED
-        - { key: 'act_led_trigger', value: 'none' }
-        - { key: 'act_led_activelow', value: 'off' }
+        - key: 'act_led_trigger'
+          value: 'none'
+        - key: 'act_led_activelow'
+          value: 'off'
         # Disable PWR LED  (currently not working properly  ??, see: https://stackoverflow.com/a/71492090)
-        - { key: 'pwr_led_trigger', value: 'default-on' }
-        - { key: 'pwr_led_activelow', value: 'off' }
+        - key: 'pwr_led_trigger'
+          value: 'default-on'
+        - key: 'pwr_led_activelow'
+          value: 'off'
         # Disable ethernet port (ACT & LNK) LEDs
-        - { key: 'eth_led0', value: '4' }
-        - { key: 'eth_led1', value: '4' }
+        - key: 'eth_led0'
+          value: '4'
+        - key: 'eth_led1'
+          value: '4'
   become: true
 
 - name: Optimize 4 more speed
@@ -85,14 +91,22 @@
     regexp: '^(#)?{{ item.key }}='
     line: '{{ item.key }}={{ item.value }}'
   with_items:
-    - { key: 'over_voltage', value: '4' }     # Optimize HW: Over Voltage
-    - { key: 'arm_freq', value: '1800' }      # Optimize HW: CPU freq
-#    - { key: 'core_freq', value: '550' }      # Optimize HW: GPU freq
-#    - { key: 'gpu_mem', value: '16' }         # Optimize HW: GPU Memory Split
-    - { key: 'boot_delay', value: '0' }       # Optimize boot: Disable boot delay
-    - { key: 'disable_poe_fan', value: '1' }  # Optimize boot: Turn off PoE hat
-    - { key: 'initial_turbo', value: '60' }   # Optimize boot: OC CPU 4 first secs
-    - { key: 'disable_splash', value: '1' }   # UNRELATED …
+    - key: 'over_voltage'     # Optimize HW: Over Voltage
+      value: '4'
+    - key: 'arm_freq'         # Optimize HW: CPU freq
+      value: '1800'
+#    - key: 'core_freq'        # Optimize HW: GPU freq
+#      value: '550'
+#    - key: 'gpu_mem'          # Optimize HW: GPU Memory Split
+#      value: '16'
+    - key: 'boot_delay'       # Optimize boot: Disable boot delay
+      value: '0'
+    - key: 'disable_poe_fan'  # Optimize boot: Turn off PoE hat
+      value: '1'
+    - key: 'initial_turbo'    # Optimize boot: OC CPU 4 first secs
+      value: '60'
+    - key: 'disable_splash'   # UNRELATED …
+      value: '1'
   become: true
 
 
@@ -180,8 +194,10 @@
 #        mode: 0755
 #        remote_src: true
 #      with_items:
-#        - { 'dest_dir': '/usr/local/bin', 'file': 'fan_control' }
-#        - { 'dest_dir': '/etc/systemd/system', 'file': 'fan_control.service' }
+#        - dest_dir: '/usr/local/bin'
+#          file: 'fan_control'
+#        - dest_dir: '/etc/systemd/system'
+#          file: 'fan_control.service'
 #      loop_control:
 #        loop_var: rpi_fan_file
 #    # REMOVAL of SERVICE later:

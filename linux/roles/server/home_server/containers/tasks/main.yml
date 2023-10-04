@@ -89,7 +89,7 @@
               - DATA_FOLDER=/data
               - DATABASE_URL=/data/db.sqlite3
               - WEBSOCKET_ENABLED=true
-              - SIGNUPS_ALLOWED={{ bitwarden_signups_allowed | default('false', true) }}
+              - SIGNUPS_ALLOWED={{ bitwarden_signups_allowed|default('false', true) }}
               - SIGNUPS_VERIFY={{ 'true' if notifications_mail is defined else 'false' }}
               # --- Emailing
               - SMTP_HOST={{ notifications_mail.smtp_host }}
@@ -237,7 +237,7 @@
             restart_policy: "no"
             network:
               ports:
-                - '{{ host_port if host_port is defined else 8080 }}:80'
+                - '{{ host_port|default(8080, true) }}:80'
 
     - name: portainer
       volumes:
@@ -309,7 +309,7 @@
             # TESTING: `--run-once`
             # - WATCHTOWER_SCHEDULE="<watchtower_cron_schedule>"
             # FORMAT: Seconds, Minutes, Hours, Day of month, Month, Day of week  (see https://pkg.go.dev/github.com/robfig/cron@v1.2.0#hdr-CRON_Expression_Format)
-            command: ['--schedule "{{ watchtower_cron_schedule  if watchtower_cron_schedule is defined else "0 30 3 * * WED,SAT" }}"']
+            command: ['--schedule "{{ watchtower_cron_schedule|default("0 30 3 * * WED,SAT", true) }}"']
             env_vars:
               - TZ={{ timezone }}
               - WATCHTOWER_CLEANUP=true

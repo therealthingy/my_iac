@@ -68,7 +68,7 @@
             path: '{{ item }}'
             state: absent
           with_items:
-            - /home/{{ user_name }}/snap
+            - /home/{{ user.name }}/snap
             - /snap
             - /var/snap
             - /var/lib/snapd

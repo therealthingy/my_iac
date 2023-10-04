@@ -1,2 +1,2 @@
-# {{ ansible_managed }}
+{{ ansible_managed|comment }}
 ACTION=="add|change", ATTRS{idVendor}=="{{ usb_enclosure.vendor_id }}", ATTRS{idProduct}=="{{ usb_enclosure.product_id }}", SUBSYSTEM=="scsi_disk", ATTR{provisioning_mode}="unmap"

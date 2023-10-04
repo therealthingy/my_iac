@@ -1,7 +1,6 @@
 #!/usr/bin/env zsh
 
-# {{ ansible_managed }}
-
+{{ ansible_managed|comment }}
 # =================================================================================================================
 # =========================================   Function/Alias defintions   =========================================
 # =================================================================================================================
@@ -126,8 +125,8 @@ alias-add vid-download vid-download-workaround_fname="vid-download  -o '%(title)
 {% endif %}
 
 {% if ansible_facts.os_family == 'Darwin' %}
-alias-add hblock hblock-up="hblock -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list"
-alias-add hblock hblock-down="hblock -S none -D none"
+alias-add hblock hblock-enable="hblock -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list"
+alias-add hblock hblock-disable="hblock -S none -D none"
 {% endif %}
 
 # - Replace existing commands -

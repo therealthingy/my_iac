@@ -30,13 +30,13 @@
         - name: Download package as deb
           get_url:
             # TODO: Always fetch latest version
-            url: 'https://github.com/mi-g/vdhcoapp/releases/download/v{{ downloadhelper_coapp_ver }}/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ cpu_architecture }}.deb'
-            dest: '/tmp/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ cpu_architecture }}.deb'
+            url: 'https://github.com/mi-g/vdhcoapp/releases/download/v{{ downloadhelper_coapp_ver }}/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ cpu_arch }}.deb'
+            dest: '/tmp/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ cpu_arch }}.deb'
           become: false
 
         - name: Install it
           # Equivalent command: `sudo apt install ./name.deb`
           apt:
-            deb: '/tmp/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ cpu_architecture }}.deb'
+            deb: '/tmp/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ cpu_arch }}.deb'
           become: true
       when: ansible_os_family == 'Debian' and 'net.downloadhelper.coapp' not in ansible_facts.packages

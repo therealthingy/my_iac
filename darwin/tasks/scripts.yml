@@ -5,13 +5,13 @@
       block:
         - name: Create dir
           ansible.builtin.file:
-            path: '/Users/{{ user_name }}/bin'
+            path: '/Users/{{ user.name }}/bin'
             state: directory
-            owner: '{{ user_name }}'
-            group: '{{ user_group_name }}'
+            owner: '{{ user.name }}'
+            group: '{{ user.group_name }}'
             mode: 0755
         - name: Hide dir
-          ansible.builtin.shell: chflags hidden '/Users/{{ user_name }}/bin'
+          ansible.builtin.shell: chflags hidden '/Users/{{ user.name }}/bin'
           changed_when: false       # !!!!!!!!!!!!!!!!                            TODO: REVISE
     - name: Copy scripts
       ansible.builtin.template:
@@ -21,7 +21,10 @@
         group: '{{ config_file.group }}'
         mode: 0755
       with_items:
-        - { src: 'bin/home/git-update_repos', dest_file: '/Users/{{ user_name }}/bin/git-update_repos', owner: '{{ user_name }}', group: '{{ user_group_name }}' }
+        - src: 'bin/home/git-update_repos'
+          dest_file: '/Users/{{ user.name }}/bin/git-update_repos'
+          owner: '{{ user.name }}'
+          group: '{{ user.group_name }}'
       loop_control:
         loop_var: config_file
       become: false
@@ -31,9 +34,9 @@
 - name: Finder services
   ansible.builtin.copy:
     src: 'finder-workflows/{{ workflow_file }}/'
-    dest: '/Users/{{user_name}}/Library/Services/{{ workflow_file }}'
-    owner: '{{ user_name }}'
-    group: '{{ user_group_name }}'
+    dest: '/Users/{{user.name}}/Library/Services/{{ workflow_file }}'
+    owner: '{{ user.name }}'
+    group: '{{ user.group_name }}'
     mode: 0755
   with_items:
     - 'Clean LaTeX Junk.workflow'

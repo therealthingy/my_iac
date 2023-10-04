@@ -8,8 +8,8 @@
 - name: kitty - Copy config
   ansible.builtin.copy:
     src: 'kitty.conf'
-    dest: '/home/{{ user_name }}/.config/kitty/kitty.conf'
-    owner: '{{ user_name }}'
-    group: '{{ user_group_name }}'
+    dest: '/home/{{ user.name }}/.config/kitty/kitty.conf'
+    owner: '{{ user.name }}'
+    group: '{{ user.group_name }}'
     mode: 0644
   become: false

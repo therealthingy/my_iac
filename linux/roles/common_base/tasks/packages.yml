@@ -89,16 +89,18 @@
           block:
             - name: Create config dir
               ansible.builtin.file:
-                path: '{{ os_homedir }}/{{ user_name }}/.config/nvim'
+                path: '{{ os_homedir }}/{{ user.name }}/.config/nvim'
                 state: directory
             - name: Copy config files
               ansible.builtin.template:
                 src: '{{ common_nvim_conf_file.src }}.j2'
-                dest: '{{ os_homedir }}/{{ user_name }}/{{ common_nvim_conf_file.dest }}'
+                dest: '{{ os_homedir }}/{{ user.name }}/{{ common_nvim_conf_file.dest }}'
                 mode: 0644
               with_items:
-                - { src: 'nvim', dest: '.vimrc' }
-                - { src: 'init.vim', dest: '.config/nvim/init.vim' }       # TODO: INLINE ONCE SUPPORTED BY MODULE
+                - src: 'nvim'
+                  dest: '.vimrc'
+                - src: 'init.vim'              # TODO: INLINE ONCE SUPPORTED BY MODULE
+                  dest: '.config/nvim/init.vim'
               loop_control:
                 loop_var: common_nvim_conf_file
           become: false
@@ -108,8 +110,12 @@
             link: '{{ common_nvim_alt.link }}'
             path: '{{ common_nvim_alt.path }}'
           with_items:
-            - { name: editor, link: /usr/bin/editor, path: /usr/bin/nvim }
-            - { name: vi,     link: /usr/bin/vi,     path: /usr/bin/nvim }
+            - name: editor
+              link: /usr/bin/editor
+              path: /usr/bin/nvim
+            - name: vi
+              link: /usr/bin/vi
+              path: /usr/bin/nvim
           loop_control:
             loop_var: common_nvim_alt
           when: ansible_facts.os_family != 'Darwin'
@@ -118,12 +124,13 @@
 #      ansible.builtin.template:
 #        src: '{{ common_package_file.src }}.j2'
 #        dest: '{{ common_package_file.dest }}'
-#        owner: '{{ user_name }}'
-#        group: '{{ user_group_name }}'
+#        owner: '{{ user.name }}'
+#        group: '{{ user.group_name }}'
 #        mode: 0644
 #      become: false
 #      with_items:
 #        # htop
-#        - { src: 'htoprc', dest: '{{os_homedir}}/{{ user_name }}/.htoprc' }   # Config file which changes when using the UI
+#        - src: 'htoprc'                                   # Config file which changes when using the UI
+#          dest: '{{os_homedir}}/{{ user.name }}/.htoprc'
 #      loop_control:
 #        loop_var: common_package_file

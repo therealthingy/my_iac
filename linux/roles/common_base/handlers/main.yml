@@ -4,3 +4,10 @@
     name: sshd
     state: restarted
   become: true
+
+
+
+- name: dpkg-reconfigure keyboard-configuration
+  command: /usr/sbin/dpkg-reconfigure -f noninteractive keyboard-configuration
+  become: true
+  when: ansible_os_family == 'Debian'

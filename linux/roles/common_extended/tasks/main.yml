@@ -196,12 +196,13 @@
   ansible.builtin.template:
     src: '{{ common_package_file.src }}.j2'
     dest: '{{ common_package_file.dest }}'
-    owner: '{{ user_name }}'
-    group: '{{ user_group_name }}'
+    owner: '{{ user.name }}'
+    group: '{{ user.group_name }}'
     mode: 0644
   become: false
   with_items:
     # tmux
-    - { src: 'tmux.conf', dest: '{{os_homedir}}/{{ user_name }}/.tmux.conf' }
+    - src: 'tmux.conf'
+      dest: '{{os_homedir}}/{{ user.name }}/.tmux.conf'
   loop_control:
     loop_var: common_package_file

@@ -1,8 +1,8 @@
 ---
 # TODO: for all systems: common ansible ssh-key
-#- name: Add ssh key for {{ user_name }}
+#- name: Add ssh key for {{ user.name }}
 #  authorized_key:
-#    user: {{ user_name }}
+#    user: {{ user.name }}
 #    key: {{ user_ssh_key }}
 
 
@@ -18,16 +18,22 @@
             validate: '/usr/sbin/sshd -T -f %s'
           with_items:
             # Disable root login
-            - { key: 'PermitRootLogin', value: 'no' }
+            - key: 'PermitRootLogin'
+              value: 'no'
             # Enable public key authentication
-            - { key: 'PubkeyAuthentication', value: 'yes' }
+            - key: 'PubkeyAuthentication'
+              value: 'yes'
             # Disable password login
-            - { key: 'PasswordAuthentication', value: 'no' }
-            - { key: 'ChallengeResponseAuthentication', value: 'no' }
+            - key: 'PasswordAuthentication'
+              value: 'no'
+            - key: 'ChallengeResponseAuthentication'
+              value: 'no'
             # Enable/Disable X11 forwarding
-            - { key: 'X11Forwarding', value: "{{ ssh.x11_enabled|default('no', true) }}" }
+            - key: 'X11Forwarding'
+              value: "{{ ssh.x11_enabled|default('no', true) }}"
             # Change ssh port
-            - { key: 'Port', value: "{{ ssh.port|default('22', true) }}" }
+            - key: 'Port'
+              value: "{{ ssh.port|default('22', true) }}"
           loop_control:
             loop_var: common_ssh_item
         - name: Rmv contradicting conf file (Ubuntu Server)       # Would overwrite overwrite `PasswordAuthentication` 2 `yes`

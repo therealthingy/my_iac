@@ -76,7 +76,7 @@
                 # Port of the wireguard server
                 - '{{ vpn.port }}:{{ vpn.port }}/udp'        # DEFAULT PORT: 51820
                 # Wireguard UI   -->  Access GUI via: `ssh -L 8080:127.0.0.1:8080 gg-rpi0`  (ALTERNATIVE: use traefik ––––––––  WHICH DOESN't WORK aS LONG AS We DON'T USE ITS NETWORK)
-                - '127.0.0.1:{{ vpn.wireguard_ui.local_port if vpn.wireguard_ui.local_port is defined else 8080 }}:5000/tcp'
+                - '127.0.0.1:{{ vpn.wireguard_ui.local_port|default(8080, true) }}:5000/tcp'
             volumes:
               - path: '{{ docker_container.data_basedir }}/vpn/wireguard/:/config/'
             sysctls:
@@ -132,8 +132,8 @@
             # REFERENCE: https://github.com/ngoduykhanh/wireguard-ui#environment-variables
             env_vars:
               # UI
-              - 'WGUI_USERNAME={{ vpn.wireguard_ui.user if vpn.wireguard_ui.user is defined else "gg" }}'
-              - 'WGUI_PASSWORD={{ vpn.wireguard_ui.pass if vpn.wireguard_ui.user is defined else "1" }}'
+              - 'WGUI_USERNAME={{ vpn.wireguard_ui.user|default("gg", true) }}'
+              - 'WGUI_PASSWORD={{ vpn.wireguard_ui.pass|default("1", true) }}'
 #              - 'SESSION_SECRET=XX vpn.wireguard_ui.session_secret XX'
               - 'WGUI_LOG_LEVEL={{ vpn.wireguard_ui.log_level }}'
               # Start / restart wireguard container w/ this container
@@ -148,7 +148,7 @@
               - WGUI_SERVER_INTERFACE_ADDRESSES={{ vpn.networks|map(attribute='server')|join(',') }}
               - WGUI_DNS={{ vpn.networks|map(attribute='dns')|join(',') }}
               # OVERHEAD: IPv4: 20 bytes / IPv6: 40 bytes, UDP: 8 bytes, WG: 32 bytes   //   MTU: Cable = 1500, DSL = 1492
-              - WGUI_MTU={{ vpn.wireguard_mtu if vpn.wireguard_mtu is defined else 1450 }}
+              - WGUI_MTU={{ vpn.wireguard_mtu|default(1450, true) }}
               # ( Don't route inet traffic (by default) through tunnel   --> {# `{% for network in vpn.networks %}{{ network.subnet }},{{ "%s0/%s"|format(network.server[:-4], network.server.split("/")[1]) }}{{ "" if loop.last else "," }}{% endfor %}` ) #}
               - WGUI_DEFAULT_CLIENT_ALLOWED_IPS=0.0.0.0/0,::/0
               # Rules 4 forwarding from VPN subnet 2 actual network

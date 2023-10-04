@@ -19,7 +19,8 @@
         inject_packages: '{{ package.packages }}'
         executable: pipx
       with_items:
-        - { name: 'ansible', packages: ['ansible-lint[yamllint]'] }
+        - name: 'ansible'
+          packages: ['ansible-lint[yamllint]']
       loop_control:
         loop_var: package
   become: false
@@ -36,6 +37,6 @@
       - pandas
       - matplotlib
 #      - scipy
-    virtualenv: '{{ os_homedir }}/{{ user_name }}/.venvs/science'
+    virtualenv: '{{ os_homedir }}/{{ user.name }}/.venvs/science'
     virtualenv_command: python -m venv
   become: false               # NOTE: sudo installs it for ALL users (otherwise only local user)
