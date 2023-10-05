@@ -289,6 +289,30 @@ if command -v ffmpeg > /dev/null; then
     fi
   }
 
+  video-trim_keep() {
+    local cut_ranges=${1:?"Cuts may be specified as follows: start-end[,start2-end2,…], where each h[h][:mm:ss.MMM]."}
+    cut_ranges=("${(@s/,/)cut_ranges}")
+    local ffmpeg_cuts
+    for cut_range in $cut_ranges; do
+      local cut_range=("${(@s/-/)cut_range}")
+{% raw %}
+      if (( 2 != ${#cut_range[@]} )); then
+{% endraw %}
+        echo "Invalid cut_range"
+        return 1
+      fi
+      local cut_start=$(gdate -d "1970-01-01 ${cut_range[@]:0:1}Z" +%s.%N)
+      local cut_end=$(gdate -d "1970-01-01 ${cut_range[@]:1:1}Z" +%s.%N)
+      ffmpeg_cuts+="between(t,${cut_start},${cut_end})"
+      ffmpeg_cuts+='+'
+    done
+    ffmpeg_cuts="${ffmpeg_cuts::-1}"
+
+    local file=${2:?"Filename may be specified."}
+
+    ffmpeg -i "${file}" -vf "select='${ffmpeg_cuts}',setpts=N/FRAME_RATE/TB" -af "aselect='${ffmpeg_cuts}',asetpts=N/SR/TB" "trimmed_${file}"
+  }
+
 
 #  mp4-from_m2ts () {
 #
