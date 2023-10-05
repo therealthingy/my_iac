@@ -42,8 +42,8 @@
                 - subdomain: pihole
                   port: 80
             volumes:
-              - path: '{{ docker_container.data_basedir }}/hole/:/etc/pihole/'
-              - path: '{{ docker_container.data_basedir }}/dns/:/etc/dnsmasq.d/'
+              - path: '{{ docker_container.data_basedir }}/pihole/hole/:/etc/pihole/'
+              - path: '{{ docker_container.data_basedir }}/pihole/dns/:/etc/dnsmasq.d/'
             security:
               allow_priv_esc: True
               use_root: True

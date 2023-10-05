@@ -123,6 +123,9 @@
             packages:
               - 'keka'
               - 'pacifist'
+          - dir: Privacy
+            packages:
+              - 'cryptomator'
           - dir: Security
             packages:
               - 'blockblock'
@@ -150,12 +153,18 @@
       become: false
 
 
+- name: Install blackhole          # System audio capture
+  community.general.homebrew_cask:
+    name: blackhole-2ch
+    state: latest
+  become: false
+
+
 - name: hblock
   block:
     - name: Install
       community.general.homebrew:
-        name:
-          - hblock
+        name: hblock
       become: false
     - name: Config hblock
       block:

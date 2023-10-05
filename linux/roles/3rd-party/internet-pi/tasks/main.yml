@@ -9,7 +9,7 @@
             path: "./roles/3rd-party/internet-pi/.git/"
           register: git_already_cloned
         - name: Clone it  (in a hacky way 2 avoid git non-empty dir err)
-          ansible.builtin.shell: "{{item}}"
+          ansible.builtin.shell: '{{ item }}'
           with_items:
             - git init
             - git remote add origin https://github.com/geerlingguy/internet-pi.git

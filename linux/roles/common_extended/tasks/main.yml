@@ -156,8 +156,20 @@
         name:
           - coreutils                     # `shred`
           - ccrypt                        # ENCs/DECs files/streams
-#          - cryfs                         # $$$$$$$$$$$$$$$$$$$$      TODO: Sparsebundle replacement  (FUSE-T support missing !!!!)
-      become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
+    - name: '[Darwin]'
+      block:
+        - name: Install fuse-t
+          block:
+            - name: Add homebrew tap
+              community.general.homebrew_tap:
+                name: macos-fuse-t/homebrew-cask
+            - name: Install
+              community.general.homebrew_cask:
+                name: fuse-t
+                state: latest
+        # …
+      when: ansible_facts.os_family == 'Darwin'
+  become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
 
 
 - name: Install shell related tools

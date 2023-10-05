@@ -112,7 +112,7 @@
               - linux-tools-common    # `perf`  (Performance analysis tools for Linux)
           when: ansible_facts.os_family == 'Ubuntu'
 
-    - name: '[Ubuntu] Install proprietary extra stuff (codecs, fonts, ...)'
+    - name: '[Ubuntu] Install proprietary extra stuff (codecs, fonts, …)'
       ansible.builtin.apt:
         name: ubuntu-restricted-extras
       when: ansible_facts.os_family == 'Ubuntu'
