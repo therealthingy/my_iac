@@ -120,7 +120,10 @@
           - aspell
           - ispell
           - hunspell
-          - ocrmypdf              # NOTE: Based on tesseract (and itsl lang packs)
+          - qpdf                  # USE CASE: Rmv pdf password  (also dep of ocrmypdf)
+          - ghostscript           # Rasterization/rendering of pdf/postscript  (also dep of ocrmypdf)
+          - ocrmypdf              # NOTE: Based on tesseract (and its lang packs)
+          - img2pdf
     - name: Install tesseract + language packs
       block:
         - name: '[Darwin]'

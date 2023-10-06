@@ -254,9 +254,31 @@ if command -v ssh-keygen > /dev/null; then
 
 fi
 
+
+{% if 'workstations' in group_names    or ansible_facts.os_family == 'Darwin' %}
+if command -v img2pdf > /dev/null; then
+  pdf-from_images() {
+    img2pdf -o "$1:t:r.pdf" $@
+  }
+fi
+
+if command -v gs > /dev/null; then
+  pdf-merge() {
+    gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -sOutputFile="$1:t:r--merged.pdf" $@
+  }
+fi
+
+if command -v qpdf > /dev/null; then
+  pdf-decrypt() {
+    qpdf --decrypt --password=$2 $1 "$1:t:r--decrypted.pdf"
+  }
+fi
+{% endif %}
+
+
 {% if ansible_facts.os_family == 'Darwin' %}
-{% set DEFAULT_OUTPUT_FNAME = "output-$(date +'%F-%H_%m_%S')" %}
-{% set FILE_NOT_FOUND_MSG = "File(s) not found" %}
+{%   set DEFAULT_OUTPUT_FNAME = "output-$(date +'%F-%H_%m_%S')" %}
+{%   set FILE_NOT_FOUND_MSG = "File(s) not found" %}
 
 # - ffmpeg stuff -
 if command -v ffmpeg > /dev/null; then
@@ -295,9 +317,9 @@ if command -v ffmpeg > /dev/null; then
     local ffmpeg_cuts
     for cut_range in $cut_ranges; do
       local cut_range=("${(@s/-/)cut_range}")
-{% raw %}
+{%   raw %}
       if (( 2 != ${#cut_range[@]} )); then
-{% endraw %}
+{%   endraw %}
         echo "Invalid cut_range"
         return 1
       fi
@@ -377,13 +399,13 @@ alias clipbrd-text_2_upper='echo $(pbpaste) | tr "[a-z]" "[A-Z]" | pbcopy'
 #alias finder-hide_hiddenfiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
 
 
-{% if ansible_architecture != "arm64" %}
+{%   if ansible_architecture != "arm64" %}
 # - Hackintosh specific -
 if command -v mountefi > /dev/null; then
   # alias esp-mount_open='sudo mkdir /Volumes/EFI ; sudo mount -t msdos /dev/disk1s1 /Volumes/EFI && open /Volumes/EFI'
   alias-add mountefi esp-mount_open='mountefi / && open /Volumes/EFI'
 fi
-{% endif %}
+{%   endif %}
 
 
 # - GNU/Linux commands -
