@@ -256,6 +256,19 @@ fi
 
 
 {% if 'workstations' in group_names    or ansible_facts.os_family == 'Darwin' %}
+if command -v pdfimages > /dev/null; then
+  pdf-extract_images() {
+    local filename_prefix=${1:?"The 'pdf file' may be specified."}
+    pdfimages -all "$1" "$1:t:r_pdf--extracted_img"
+  }
+fi
+
+if command -v qpdf > /dev/null; then
+  pdf-decrypt() {
+    qpdf --decrypt --password=$2 $1 "$1:t:r--decrypted.pdf"
+  }
+fi
+
 if command -v img2pdf > /dev/null; then
   pdf-from_images() {
     img2pdf -o "$1:t:r.pdf" $@
@@ -265,12 +278,6 @@ fi
 if command -v gs > /dev/null; then
   pdf-merge() {
     gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -sOutputFile="$1:t:r--merged.pdf" $@
-  }
-fi
-
-if command -v qpdf > /dev/null; then
-  pdf-decrypt() {
-    qpdf --decrypt --password=$2 $1 "$1:t:r--decrypted.pdf"
   }
 fi
 {% endif %}

@@ -98,7 +98,7 @@
       ansible.builtin.apt:
         name:
           - trash-cli
-          - poppler-utils          # `pdftotext` command
+          - poppler-utils          # `pdfimages`, `pdftotext`
           #- pdfgrep
         state: present
       become: true
