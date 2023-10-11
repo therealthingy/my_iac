@@ -4,7 +4,7 @@
 - name: 'Ubuntu - Ensure no Firefox snap is / will be installed'
   block:
     - name: Add apt repo and update cache
-      # NOTE: Equivalent command: `sudo add-apt-repository 'ppa:mozillateam/ppa'`
+      # NOTE: Equivalent command: `sudo add-apt-repository 'ppa:mozillateam/ppa'  &&  sudo apt update`
       ansible.builtin.apt_repository:
         repo: ppa:mozillateam/ppa
         state: present
