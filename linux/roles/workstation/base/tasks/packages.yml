@@ -122,14 +122,14 @@
           - hunspell
           - qpdf                  # USE CASE: Rmv pdf password  (also dep of ocrmypdf)
           - ghostscript           # Rasterization/rendering of pdf/postscript  (also dep of ocrmypdf)
-          - ocrmypdf              # NOTE: Based on tesseract (and its lang packs)
+          - ocrmypdf              # NOTE: Based on tesseract (and its lang packs -> e.g., `ocrmypdf -l eng+deu …`)
           - img2pdf
     - name: Install tesseract + language packs
       block:
         - name: '[Darwin]'
           community.general.homebrew:
             name:
-              - tesseract
+              - tesseract         # Validate via: `tesseract --list-langs`
               - tesseract-lang
           when: ansible_facts.os_family == 'Darwin'
         - name: '[Debian/Ubuntu]'
