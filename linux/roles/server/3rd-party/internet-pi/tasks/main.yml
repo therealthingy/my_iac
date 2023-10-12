@@ -6,7 +6,7 @@
       block:
         - name: Check already cloned
           ansible.builtin.stat:
-            path: "./roles/3rd-party/internet-pi/.git/"
+            path: "./roles/server/3rd-party/internet-pi/.git/"
           register: git_already_cloned
         - name: Clone it  (in a hacky way 2 avoid git non-empty dir err)
           ansible.builtin.shell: '{{ item }}'
@@ -18,7 +18,8 @@
             - mkdir handlers/
             - mv tasks/handlers.yml handlers/main.yml
           args:
-            chdir: ./roles/3rd-party/internet-pi/
+            chdir: ./roles/server/3rd-party/internet-pi/
+            creates: "./roles/server/3rd-party/internet-pi/.git/"
           when: git_already_cloned.stat.exists == False
 
     - name: Change config
@@ -29,7 +30,7 @@
               block:
                 - name: 'container Grafana + rmv ports'
                   ansible.builtin.replace:
-                    path: './roles/3rd-party/internet-pi/templates/docker-compose.yml.j2'
+                    path: './roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2'
                     regexp: '{{grafana_docker_compose_item.regex}}'
                     replace: '{{grafana_docker_compose_item.line}}'
                   loop_control:
@@ -49,7 +50,7 @@
                       line: ''
                 - name: 'globally'
                   ansible.builtin.replace:
-                    path: './roles/3rd-party/internet-pi/templates/docker-compose.yml.j2'
+                    path: './roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2'
                     regexp: '^  front-tier:\n    name: internet-monitoring-front-tier$\n'
                     replace: |2
                         {{ reverse_proxy_docker_network }}:
@@ -58,7 +59,7 @@
             - name: Add traefik config
               ansible.builtin.blockinfile:
                 marker: '# {mark} TRAEFIK CONFIG'
-                path: './roles/3rd-party/internet-pi/templates/docker-compose.yml.j2'
+                path: './roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2'
                 insertafter: '^  grafana:$'
                 block: |2
                       labels:
@@ -70,7 +71,7 @@
             - name: Add watchtower labels 4 remaining containers
               ansible.builtin.blockinfile:
                 marker: '# {mark} WATCHTOWER {{ config_cred_item }}'
-                path: './roles/3rd-party/internet-pi/templates/docker-compose.yml.j2'
+                path: './roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2'
                 insertbefore: '^    image: {{config_cred_item}}:latest$'
                 block: |2
                       labels:

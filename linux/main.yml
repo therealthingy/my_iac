@@ -74,7 +74,7 @@
       config_basedir: /home/{{ user.name }}/homeserver/config/
   roles:
   # -- Docker containers --
-    - role: 3rd-party/internet-pi
+    - role: server/3rd-party/internet-pi
       tags:
         - inet_monitoring
 
