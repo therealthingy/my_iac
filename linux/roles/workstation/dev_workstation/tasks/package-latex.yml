@@ -1,79 +1,64 @@
 ---
 - name: Install LaTeX
   block:
-    - name: Install
+    - name: '[Linux]'
+      ansible.builtin.apt:
+        name:
+          - texlive-latex-extra              # OG: `texlive-full` (too large)    (OVERVIEW different versions: https://tex.stackexchange.com/a/504566)
+          - latexmk
+        state: present
+      when: ansible_facts.os_family != 'Darwin'
+      become: true
+
+    - name: '[Darwin]'
       block:
-        - name: '[Linux]'
-          ansible.builtin.apt:
-            name:
-              - texlive-base #ORIGINALLY: `texlive-full` (too large)
-              - texlive-latex-recommended
-              - texlive-fonts-recommended
-              - latexmk
-            state: present
-          when: ansible_facts.os_family != 'Darwin'
+        - name: '[Darwin] Install casks'
+          ansible.builtin.include_tasks: ../../../../../darwin/tasks/config.yml
+          vars:
+            packages_homebrew_casks:
+              - dir: Office/LaTeX
+                packages:
+                  - basictex
+                  - bibdesk
+                  - skim
+        - name: '[Darwin] Install latexmk'
+          ansible.builtin.shell: tlmgr install latexmk
+          args:
+            creates: /Library/TeX/texbin/latexmk
           become: true
-        - name: '[Darwin]'
-          block:
-            - name: '[Darwin] Create dir'
-              ansible.builtin.file:
-                path: '/Applications/Office/LaTeX'
-                state: directory
-                owner: '{{ user.name }}'
-                group: '{{user.group_name}}'
-                mode: 0755
-            - name: Install
-              block:
-                - name: '[Darwin] Install'
-                  community.general.homebrew_cask:
-                    name: '{{ package.package }}'
-                    state: latest
-                    install_options: '{{ package.options }}'
-                  with_items:
-                    - package: 'basictex'
-                      options: 'appdir=/Applications/Office/LaTeX'
-                    - package: 'bibdesk'
-                      options: 'appdir=/Applications/Office/LaTeX'
-                    - package: 'skim'
-                      options: 'appdir=/Applications/Office/LaTeX'
-                  loop_control:
-                    loop_var: package
-                - name: latexmk
-                  block:
-                    - name: '[Darwin] Check already installed'
-                      ansible.builtin.shell: command -v latexmk >/dev/null 2>&1
-                      register: latexmk_installed
-                      ignore_errors: true
-                      changed_when: false
-                    - name: '[Darwin] Install latexmk'
-                      ansible.builtin.shell: tlmgr install latexmk
-                      when: latexmk_installed.rc != 0
-                      become: true
-            - name: '[Darwin] Config'
-              community.general.osx_defaults:
-                domain: net.sourceforge.skim-app.skim
-                key: '{{ skin_conf_item.key }}'
-                type: '{{ skin_conf_item.type }}'
-                value: '{{ skin_conf_item.value }}'
-                state: present
-              with_items:
-                - key: 'SKAutoReloadFileUpdate'         # Auto reload file when changed  (in case it doesn't work: Skim -> Preferences -> Sync -> Check 4 file changes + Reload automatically)
-                  value: 'true'
-                  type: 'boolean'
-                - key: 'SKInvertColorsInDarkMode'       # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
-                  value: 'true'
-                  type: 'bool'
-                # OPTIONAL: View -> Hide Contents Pane + Hide Notes Pane
-              loop_control:
-                loop_var: skin_conf_item
-          when: ansible_facts.os_family == 'Darwin'
+      when: ansible_facts.os_family == 'Darwin'
+  become: false
+
+
+- name: Configure tools for LaTeX
+  block:
+    - name: '[Darwin]'
+      block:
+        - name: Skim config
+          community.general.osx_defaults:
+            domain: net.sourceforge.skim-app.skim
+            key: '{{ skin_conf_item.key }}'
+            type: '{{ skin_conf_item.type }}'
+            value: '{{ skin_conf_item.value }}'
+            state: present
+          with_items:
+            - key: 'SKAutoReloadFileUpdate'         # Auto reload file when changed  (in case it doesn't work: Skim -> Preferences -> Sync -> Check 4 file changes + Reload automatically)
+              value: 'true'
+              type: 'boolean'
+            - key: 'SKInvertColorsInDarkMode'       # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
+              value: 'true'
+              type: 'bool'
+            # OPTIONAL: View -> Hide Contents Pane + Hide Notes Pane
+          loop_control:
+            loop_var: skin_conf_item
+      when: ansible_facts.os_family == 'Darwin'
 
     # USAGE:
     #   `latexmk -pvc -pdf <tex_file>`
     #   `latexmk -C`
     - name: Copy latexmk config
       ansible.builtin.template:
-        src: 'latexmkrc.j2'
+        src: latexmkrc.j2
         dest: '{{os_homedir}}/{{ user.name }}/.latexmkrc'
         owner: '{{ user.name }}'
         group: '{{ user.group_name }}'

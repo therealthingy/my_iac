@@ -43,5 +43,4 @@
       become: "{{ 'true' if ansible_facts['os_family'] != \"Darwin\" else 'false' }}"
 
 
-- name: Install shared packages
-  ansible.builtin.import_tasks: ./package-latex.yml
+- ansible.builtin.import_tasks: ./package-latex.yml

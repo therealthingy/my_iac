@@ -19,27 +19,11 @@
 - name: 'UI apps: Install'
   block:
 #    - name: App Store
+#      TODO: Consider switching 2 https://github.com/geerlingguy/ansible-collection-mac
 #      ansible.builtin.debug:
 #        msg: "!!!!!!!!!!!!!!!!                            TODO"
     - name: homebrew
-      block:
-        - name: Create dir
-          ansible.builtin.file:
-            path: '/Applications/{{ item.dir }}'
-            state: directory
-            owner: '{{ user.name }}'
-            group: '{{user.group_name}}'
-            mode: 0755
-          with_items: '{{ packages_homebrew_casks }}'
-
-        - name: Install packages
-          community.general.homebrew_cask:
-            name: '{{ item.1 }}'
-            state: latest
-            install_options: 'appdir=/Applications/{{ item.0.dir }}'
-          with_subelements:
-            - '{{ packages_homebrew_casks }}'
-            - packages
+      ansible.builtin.include_tasks: install_homebrew_casks.yml
       vars:
         packages_homebrew_casks:                                                   # TODO: little-snitch
           - dir: Audio
@@ -106,7 +90,6 @@
 #            packages: ['spotify']                                  # TODO:
           - dir: Network
             packages:
-              - 'angry-ip-scanner'
               - 'wireshark'
           - dir: Notes
             packages:
@@ -150,7 +133,6 @@
             packages:
               - 'iina'
               - 'vlc'
-      become: false
 
 
 - name: Install blackhole          # System audio capture
