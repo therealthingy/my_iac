@@ -11,6 +11,10 @@
     - name: Gather facts
       ansible.builtin.import_tasks: tasks/gather_facts.yml
 
+  roles:
+    # Equivalent 2 `xcode-select --install`
+    - role: elliotweiser.osx-command-line-tools
+
   tasks:
     - name: Config
       ansible.builtin.import_tasks: tasks/config.yml

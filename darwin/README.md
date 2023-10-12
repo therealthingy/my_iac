@@ -49,8 +49,6 @@ RUN: `ansible-playbook main.yml`
 
 
 ## Apps
-* Install *Xcode Command Line Tools*: `xcode-select --install`
-
 ### Blackhole: Record Sysaudio
 #### How it works
 - OS sends Audio to Speakers AND Blackhole
