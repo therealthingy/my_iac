@@ -136,7 +136,7 @@
               value: "'12h'"
               state: present
             - key: '/org/gnome/shell/favorite-apps'                                # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
-              value: "[{{ dock_favorite_apps|join(', ') }}]"
+              value: "[{{ dock_fav_apps|join(', ') }}]"
               state: present
             # --  Extensions  --
             # -  Dock  -
@@ -181,6 +181,9 @@
             - key: '/org/gnome/nautilus/preferences/show-delete-permanently'
               value: 'true'
               state: present
+#            - key: '/org/gnome/nautilus/preferences/show-hidden-files'
+#              value: 'true'
+#              state: present
             - key: '/org/gnome/nautilus/preferences/default-sort-order'
               value: "'type'"                                                   # Possible values: size, type, mtime, atime, starred
               state: present
@@ -309,8 +312,10 @@
               AutomaticLoginEnable = true
               AutomaticLogin = {{ user.name }}
           become: true
-      when: "'gdm3' in ansible_facts.packages"
-  when: ansible_facts.os_family != 'Darwin'
+  when:
+    - ansible_facts.os_family != 'Darwin'
+    - "'gdm3' in ansible_facts.packages"
+    - 'hypervisor is defined and hypervisor'    # TODO: Add also `autologin_enabled` value
 
 
 - name: Perform initial-run only tasks  (which shall never be run again once completed)

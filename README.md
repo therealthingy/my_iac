@@ -28,9 +28,8 @@
 
 ## TODOs
 * Debian:
-  * Firefox install non-indempodent
-  * Fix dock  -- Terminal app missing
-  * Nautilus settings not set
+  * Nautilus show hidden not working
+* LaTeX
 
 
 ### General
@@ -83,7 +82,7 @@
 
 
 
-### *dev-workstation*
+### *dev-client*
 * initial setup: Muting audio doesn't work  (4 some reason ??!)
 * not indempotent ISSUE:
    * Firefox settings after restart
@@ -142,9 +141,9 @@
 * *Home servers*:
   * traefik: SSL certs gen
   * transmission & samba: Directory structure (e.g., on (encrypted luks) sparse file)
-* *workstations*:
+* *clients*:
   * Enable installed Gnome extensions (via 'Extensions app')  (!!  TODO: AUTOMATE  !!)
-* *Dev workstations*:
+* *Dev clients*:
   * Apps setup
     * *VSCod~~e~~ium*: Install extension 'Settings Sync' & follow instructions
     * *Firefox*:

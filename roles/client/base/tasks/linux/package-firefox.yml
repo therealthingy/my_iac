@@ -1,5 +1,5 @@
 ---
-# --  Install Firefox  --
+# --  Ubuntu Firefox  --
 # TODO: (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
 - name: 'Ubuntu - Ensure no Firefox snap is / will be installed'
   block:
@@ -28,9 +28,4 @@
   become: true
 
 
-- name: Firefox - Install
-  ansible.builtin.apt:
-    name: '{{ firefox_package_name }}'
-    state: present
-    allow_downgrade: true
-  become: true
+# NOTE: Installation is handled by `staticdev.firefox` role

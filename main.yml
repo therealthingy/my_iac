@@ -21,12 +21,12 @@
     - role: power_user
     - role: client/base
   vars:
-    dock_favorite_apps:
+    dock_fav_apps:
       - "'org.gnome.Nautilus.desktop'"
       - "'firefox.desktop'"
       - "'brave-browser.desktop'"
       - "'codium.desktop'"
-      - "'terminator.desktop'"
+      - "'org.gnome.Terminal.desktop'"
       - "'gnome-system-monitor.desktop'"
   tags: workstation
 

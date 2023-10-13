@@ -83,6 +83,7 @@
               app.normandy.api_url: ''
               breakpad.reportURL: ''
               browser.tabs.crashReporting.sendReport: false
+              browser.tabs.warnOnOpen: false
               browser.tabs.warnOnClose: false
               browser.tabs.firefox-view: false                                             # Disable 'Firefox View'
               browser.crashReports.unsubmittedCheck.autoSubmit2: false
