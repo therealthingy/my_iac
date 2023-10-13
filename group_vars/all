@@ -1,0 +1,14 @@
+locale: en_US.UTF-8
+timezone: Europe/Berlin
+
+keyboard:
+  model: pc104
+  layout: us
+  variant: ''
+  options: ''
+  backspace: guess
+
+
+ipv6_conf:
+  prefix: 2001:db8
+  prefix_cidr: 32

@@ -1,0 +1,12 @@
+---
+collections:
+  - name: community.general
+  - name: community.docker
+
+roles:
+  - name: geerlingguy.docker
+  - name: chriswayg.msmtp-mailer            # Required 4 mail notifications
+  - name: staticdev.firefox
+  - name: petermosmans.customize-gnome
+
+  - name: elliotweiser.osx-command-line-tools

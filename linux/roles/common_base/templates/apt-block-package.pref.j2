@@ -1,7 +1,0 @@
-{{ ansible_managed|comment }}
-{% for p in blocked_pkgs %}
-Package: {{ p }}
-Pin: release *
-Pin-Priority: -1
-
-{% endfor %}

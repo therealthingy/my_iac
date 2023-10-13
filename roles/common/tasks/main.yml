@@ -1,0 +1,181 @@
+---
+# ---------------------------------- PRE-packages - Distro specific stuff ----------------------------------
+- name: '[Debian/Ubuntu]'
+  block:
+    - name: '[Debian] Pre packages - apt sources'
+      block:
+        - name: Remove CD/DVD install as apt source
+          ansible.builtin.replace:
+            dest: /etc/apt/sources.list
+            regexp: '^(#\s*)?deb cdrom:\[.+\]\/ \w+ (contrib|main) (contrib|main)$'
+
+        # Will have by default prio of 100  (check via `apt-cache policy`)
+        - name: Add Backports apt source (to get newer packages backported to the release stable)
+          # NOTE: Equivalent command: `sudo add-apt-repository 'deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main'`
+          ansible.builtin.apt_repository:
+            repo: deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main
+            state: present
+            filename: backports
+            update_cache: true
+      when: ansible_facts.distribution == 'Debian'
+      become: true
+
+
+    # WORKAROUND FOR "[…] cannot remove '/var/snap/firefox/common/host-hunspell/en_US.aff': Read-only file system\r\nr":
+    #  --> `sudo systemctl stop var-snap-firefox-common-host\\x2dhunspell.mount  &&  sudo systemctl disable var-snap-firefox-common-host\\x2dhunspell.mount`
+    - name: '[Ubuntu] Pre packages'
+      block:
+        - name: 'Snaps'
+          block:
+            - name: Shutdown services, sockets and timers
+              ansible.builtin.service:
+                name: '{{ item }}'
+                state: stopped
+                enabled: false
+              failed_when: false
+              with_items:
+                - snapd.apparmor.service
+                - snapd.autoimport.service
+                - snapd.core-fixup.service
+                - snapd.recovery-chooser-trigger.service
+                - snapd.seeded.service
+                - snapd.service
+                - snapd.snap-repair.timer
+                - snapd.socket
+                - snapd.system-shutdown.service
+
+            - name: Set package names
+              ansible.builtin.set_fact:
+                blocked_pkgs:
+                  #- gir1.2-snapd-1
+                  #- libsnapd-glib1
+                  - snapd
+
+            - name: Remove snapd packages
+              ansible.builtin.apt:
+                name: '{{ item }}'
+                state: absent
+                purge: true
+                allow_downgrade: true
+              with_items: '{{ blocked_pkgs }}'
+
+            - name: Block snapd from installing again
+              block:
+                - name: Construct list
+                  ansible.builtin.set_fact:
+                    apt_pin_packages: "{{ packages|default([]) + [{'name': item, 'priority': -1}] }}"
+                  with_items:  '{{ blocked_pkgs }}'
+                - name: Pass 2 template
+                  # EQUIVALENT command  ??: `sudo apt-mark hold snapd`
+                  ansible.builtin.template:
+                    src: linux/apt-pin.pref.j2
+                    dest: /etc/apt/preferences.d/snapd-block.pref
+                    mode: 0644
+
+            - name: Cleanup
+              ansible.builtin.file:
+                path: '{{ item }}'
+                state: absent
+              with_items:
+                - /home/{{ user.name }}/snap
+                - /snap
+                - /var/snap
+                - /var/lib/snapd
+                - /var/cache/snapd
+                - /run/snapd-snap.socket
+                - /run/snapd.socket
+                - /etc/apt/apt.conf.d/20snapd.conf
+
+            - name: Rmv cloud-init
+              block:
+                - name: Remove package
+                  ansible.builtin.apt:
+                    name: cloud-init
+                    state: absent
+                    purge: true
+
+                - name: Shutdown services, sockets and timers
+                  ansible.builtin.service:
+                    name: '{{ item }}'
+                    state: stopped
+                    enabled: false
+                  failed_when: false
+                  with_items:
+                    - cloud-init.service
+                    - cloud-init-local.service
+                    - cloud-init.target
+                    - cloud-init-hotplugd.socket
+
+                - name: Cleanup
+                  ansible.builtin.file:
+                    path: '{{ item }}'
+                    state: absent
+                  with_items:
+                    - /etc/systemd/system/cloud-init.service
+                    - /etc/systemd/system/cloud-init.target.wants
+                    - /etc/systemd/system/cloud-init-local.service
+                    - /etc/systemd/system/cloud-init-local.service.d
+                    - /etc/systemd/system/cloud-init-hotplugd.socket
+                    - /etc/systemd/system/sshd-keygen@.service.d/disable-sshd-keygen-if-cloud-init-active.conf
+                    - /etc/cloud/
+                    - /var/lib/cloud/
+                    - /etc/netplan/50-cloud-init.yaml
+
+        - name: Disable other services
+          ansible.builtin.service:
+            name: iscsid.service
+            state: stopped
+            enabled: false
+          failed_when: false
+      when: ansible_facts.distribution == 'Ubuntu'
+      become: true
+  when: ansible_facts.os_family != 'Darwin'
+# ----------------------------------------------------------------------------------------------------------
+
+
+- ansible.builtin.include_tasks: '{{ included_common_task }}'
+  loop:
+    - config.yml
+    - packages.yml
+  loop_control:
+    loop_var: included_common_task
+
+
+# ---------------------------------- POST packages - Distro specific stuff ----------------------------------
+- name: '[Debian/Ubuntu]'
+  block:
+    # See https://vitux.com/how-to-disable-enable-automatic-error-reporting-in-ubuntu/
+    - name: '[Ubuntu] Post packages - Uninstall Telemetry/error reporting services'
+      block:
+        - name: Set package names
+          ansible.builtin.set_fact:
+            blocked_pkgs:
+              - apport
+              - ubuntu-report
+              - ubuntu-advantage-tools
+              - whoopsie   # (NOTE: `whoopsie-preferences` is a dependency of `gnome-control-center` (Settings app))
+
+        - name: Uninstall
+          ansible.builtin.apt:
+            name: '{{ item }}'
+            state: absent
+            purge: true
+            clean: true
+            autoremove: true
+          with_items: '{{ blocked_pkgs }}'
+
+        - name: Block packages
+          block:
+            - name: Construct list
+              ansible.builtin.set_fact:
+                apt_pin_packages: "{{ packages|default([]) + [{'name': item, 'priority': -1}] }}"
+              with_items:  '{{ blocked_pkgs }}'
+            - name: Pass 2 template
+              ansible.builtin.template:
+                src: linux/apt-pin.pref.j2
+                dest: /etc/apt/preferences.d/ubuntu-telemetry-block.pref
+                mode: 0644
+      when: ansible_facts.distribution == 'Ubuntu'
+      become: true
+  when: ansible_facts.os_family != 'Darwin'
+# -----------------------------------------------------------------------------------------------------------

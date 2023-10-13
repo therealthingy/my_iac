@@ -1,0 +1,326 @@
+---
+- ansible.builtin.include_tasks: '{{ item }}'
+  loop:
+    - packages-python.yml
+
+
+
+- name: Install file general purpose tools
+  block:
+    - name: '[Darwin / Debian/Ubuntu]'
+      ansible.builtin.package:
+        name:
+          - detox                         # Renames files to make them easier to work w/ under Unix & related OSes
+          - tree
+          - rename
+          - dos2unix
+          - jdupes                        # OG: `fdupes`
+          - rsync
+          - rclone                        # Cloud storage management software
+      become: '{{ package_manager_become }}'
+    - name: '[Debian/Ubuntu]'
+      ansible.builtin.apt:
+        name:
+          - libc-bin                      # Collection of helper programs, so called binary tools, that work in conjunction with libc  (`iconv`, ..)
+          - file
+          - zerofree                      # NOTE: Useful 4 sparse files
+        state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+    - name: '[Darwin]'
+      community.general.homebrew:
+        name:
+        - gnu-sed
+        - gawk
+        - grep
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
+
+- name: '[Debian/Ubuntu] Install file archiving tools'
+  ansible.builtin.apt:
+    name:
+      - zip
+      - unzip
+    state: present
+  become: true
+  when: ansible_facts.os_family != 'Darwin'
+
+- name: Install backup tools
+  ansible.builtin.apt:
+    name:
+      - borgbackup
+    state: present
+  become: true
+  when: ansible_facts.os_family != 'Darwin'
+
+- name: Monitoring tools
+  block:
+    - name: Install monitoring tools (I)
+      block:
+        - name: '[Debian/Ubuntu]'
+          ansible.builtin.apt:
+            name:
+              - atop
+              - dstat                         # System monitoring tool  (allows monitoring system resources such as cpu, memory, disk & network stats) -> replacement 4 `vmstat`, `iostat` & `ifstat`
+              - psmisc                        # Utilities that use the proc file-system (`fuser` - Identifies processes using files or sockets, `killall` - kills processes by name, `prtstat` - prints process statistics, `pslog` - prints log path(s) of a process, `pstree` - shows currently running processes as a tree, `peekfd` - shows data travelling over a fildes)
+              - iotop
+              - powertop
+              - sysstat                       # `sar` (can be used 2 monitor Linux system’s resources like CPU usage, memory utilization, I/O devices consumption, etc.), `iostat`
+              - usbutils                      # `lsusb`
+            state: present
+          when: ansible_facts.os_family != 'Darwin'
+        - name: '[Darwin]'
+          community.general.homebrew:
+            name:
+              - lsusb
+              - pidof
+              - smartmontools
+          become: false
+          when: ansible_facts.os_family == 'Darwin'
+    - name: Install monitoring tools (II)
+      ansible.builtin.apt:
+        name:
+          - smartmontools                 # `smartctl` & `smartd` 4 controlling & monitoring SMART storage
+          - hdparm                        # Allows setting & viewing ATA hd drive HW params & test performance
+          - nvme-cli
+          - lm-sensors                    # `sensors`
+      when:
+        - ansible_facts.os_family != 'Darwin'
+        - hw_is_rpi == False
+        -  'hypervisor is not defined or not hypervisor'
+  become: true
+
+- name: Install networking tools
+  block:
+    - name: '[Darwin / Debian/Ubuntu]'
+      ansible.builtin.package:
+        name:
+          - nmap                          # Contains also `ncat` on macOS ??!
+          - socat
+          - arp-scan                      # Contains `arp-scan`, `arp-fingerprint`
+          - iperf
+          - speedtest-cli
+          - wget
+          - aria2                         # Download tool  (SEE: https://aria2.github.io/); cmd: `aria2c`
+#          - openvpn
+      become: "{{ 'true' if ansible_facts.os_family != \"Darwin\" else 'false' }}"
+    - name: '[Debian/Ubuntu]'
+      ansible.builtin.apt:
+        name:
+          - iproute2                      # `ip`;   NOTE: package 'net-tools' has been deprecated
+          - traceroute
+          - netcat-openbsd
+          - dnsutils                      # `dig`
+          - tcpdump
+          - netdiscover
+        state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+
+- name: Administration tools
+  block:
+    - name: '[Darwin / Debian/Ubuntu]'
+      ansible.builtin.package:
+        name:
+          - mosh
+          - tmux
+      become: '{{ package_manager_become }}'
+    - name: '[Debian/Ubuntu]'
+      ansible.builtin.apt:
+        name:
+#          - aptitude
+          - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu`, `lspci`, …)
+          - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
+          #- initramfs-tools
+          #- stow                         # See https://www.gnu.org/software/stow/
+          # FS stuff
+          - cloud-guest-utils             # `growpart`
+          - btrfs-compsize                # `compsize <file>` -> Compare size of files (2 see effect of compression)
+          #- fuse
+          #- ntfs-3g                       # Read/write NTFS driver 4 FUSE
+          #- libapfs-utils                 # Contains `fsapfsinfo`, an APFS information retrieval utility, & `fpafsmount`, a FUSE-based APFS filesystem implementation
+        state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+    - name: '[Darwin]'
+      community.general.homebrew:
+        name:
+          - terminal-notifier
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
+
+
+- name: Install privacy tools
+  block:
+    - name: '[Darwin / Debian/Ubuntu]'
+      ansible.builtin.package:
+        name:
+          - coreutils                     # `shred`
+          - ccrypt                        # ENCs/DECs files/streams
+    - name: Install cryptomator         # TODO: Add flatpak counterpart 4 linux & check whether VM
+      block:
+        - name: '[Darwin] Install homebrew package'
+          ansible.builtin.include_tasks: ../../client/base/tasks/darwin/install_homebrew_casks.yml
+          vars:
+            packages_homebrew_casks:
+              - dir: Privacy
+                packages:
+                  - 'cryptomator'
+
+    - name: '[Darwin / Debian/Ubuntu] hblock'
+      block:
+        - name: Install
+          community.general.homebrew:
+            name: hblock
+          become: false
+        - name: Config hblock
+          block:
+            - name: Create dir
+              ansible.builtin.file:
+                path: /etc/hblock.d
+                state: directory
+                owner: root
+                group: wheel
+                mode: 0755
+            - name: Copy config
+              ansible.builtin.template:
+                src: 'hblock/{{ config_file }}.j2'
+                dest: '/etc/hblock.d/{{ config_file }}'
+                owner: root
+                group: wheel
+                mode: 0755
+              with_items:
+                - 'header'
+                - 'blacklist.list'
+                - 'whitelist.list'
+              loop_control:
+                loop_var: config_file
+            - name: Setup cron job
+              block:
+                - name: Get path of hblock exec
+                  ansible.builtin.shell: which hblock
+                  register: result_hblock
+                  changed_when: false
+                - name: Add cron job
+                  ansible.builtin.cron:
+                    name: hblock autoupdate
+                    minute: "0"
+                    hour: "18"
+                    dom: "*/3"
+                    month: "*"
+                    dow: "*"
+                    user: root
+                    job: '{{ result_hblock.stdout }} -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list -q'
+              become: true
+      when: 'hypervisor is not defined or not hypervisor'
+
+    - name: '[Darwin]'
+      block:
+        - name: Install fuse-t
+          block:
+            - name: Add homebrew tap
+              community.general.homebrew_tap:
+                name: macos-fuse-t/homebrew-cask
+            - name: Install
+              community.general.homebrew_cask:
+                name: fuse-t
+                state: latest
+        # …
+      when: ansible_facts.os_family == 'Darwin'
+  become: '{{ package_manager_become }}'
+
+
+- name: Install shell related tools
+  block:
+    - name: '[Darwin / Ubuntu/Debian]'
+      ansible.builtin.package:
+        name:
+          - moreutils
+          - parallel                      # NOTE: Installs also `parallel` like `moreutils`  (but seems 2 be newer version)
+          - pv
+      become: '{{ package_manager_become }}'
+    - name: '[Ubuntu/Debian]'
+      ansible.builtin.apt:
+        name:
+          - procps                        # `watch`, `pmap` command
+          - uuid
+        state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+    - name: '[Darwin]'
+      community.general.homebrew:
+        name:
+          - watch
+          - gnu-time
+          - duti                          # Set default app 4 opening file
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
+
+
+- name: Install benchmark tools
+  block:
+    - name: '[Darwin] Install homebrew packages'
+      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+          - dir: Benchmark
+            packages: ['amorphousdiskmark']
+
+
+- name: Install maintenance tools
+  block:
+    - name: '[Darwin] Install homebrew packages'
+      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+          - dir: Maintenance
+            packages:
+              - 'appcleaner'
+              - 'omnidisksweeper'
+              - 'onyx'
+#              - 'aldente'                                          # TODO
+
+
+- name: Install virtualization tools
+  block:
+    - name: '[Darwin] Install homebrew packages'
+      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+          - dir: Tools/Virtualization
+            packages:
+              - 'vmware-fusion'     # TODO: Install w/ option `--no-quarantine`, otherwise: '“vmware-id” is an app downloaded from the Internet. Are you sure you want to open it?'
+#              - 'utm'
+
+
+- name: Install misc tools
+  block:
+    - name: '[Darwin] Install homebrew packages'
+      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+          - dir: Misc
+            packages:
+              - 'apparency'
+              - 'istat-menus'
+              - 'prefs-editor'
+              - 'qlmarkdown'
+              - 'raycast'
+
+
+
+
+- name: Copy config for packages
+  ansible.builtin.template:
+    src: '{{ common_package_file.src }}.j2'
+    dest: '{{ common_package_file.dest }}'
+    owner: '{{ user.name }}'
+    group: '{{ user.group_name }}'
+    mode: 0644
+  become: false
+  with_items:
+    # tmux
+    - src: 'tmux.conf'
+      dest: '{{os_homedir}}/{{ user.name }}/.tmux.conf'
+  loop_control:
+    loop_var: common_package_file

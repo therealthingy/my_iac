@@ -1,0 +1,147 @@
+---
+- name: Install video players
+  block:
+    - name: '[Darwin] Install homebrew packages'
+      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:
+          - dir: Network
+            packages:
+              - 'wireshark'
+    - name: '[Debian/Ubuntu] Install apt packages'
+      ansible.builtin.apt:
+        name:
+          - wireshark
+        state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+
+
+- name: Install db tools
+  block:
+    - name: '[Darwin] Install homebrew packages'
+      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+          - dir: Development/DB
+            packages:
+              - 'db-browser-for-sqlite'
+              - 'mysqlworkbench'
+              - 'sequel-ace'
+    - name: '[Debian/Ubuntu] Install flatpak packages'
+      community.general.flatpak:
+        name:
+          - org.sqlitebrowser.sqlitebrowser
+#          - io.dbeaver.DBeaverCommunity
+        state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+
+
+- name: Install editors
+  block:
+    - name: '[Darwin] Install homebrew packages'
+      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+          - dir: Development/Editors
+            packages:
+              - 'hex-fiend'
+              - 'sublime-text'
+
+
+#- name: Install API dev stuff
+#  block:
+#    - name: '[Darwin] Install homebrew packages'
+#      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+#      vars:
+#        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+#          - dir: Development/API
+#            packages: ['postman']
+#    - name: '[Debian/Ubuntu] Install flatpak packages'
+#      community.general.flatpak:
+#        name:
+#          - com.getpostman.Postman
+#        state: present
+#      become: true
+#      when: ansible_facts.os_family != 'Darwin'
+
+
+- name: Install misc. tools
+  block:
+    - name: '[Darwin] Install homebrew packages'
+      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+          - dir: Development
+            packages:
+              - 'sourcetree'
+              - 'iterm2'
+#    - name: '[Debian/Ubuntu] Install flatpak packages'
+#      community.general.flatpak:
+#        name:
+#          - com.syntevo.SmartGit
+#        state: present
+#      become: true
+#      when: ansible_facts.os_family != 'Darwin'
+
+
+- name: Install misc. tools
+  block:
+    - name: '[Debian/Ubuntu]'
+      block:
+        - community.general.flatpak:
+            name:
+              - org.ghidra_sre.Ghidra
+            state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+
+    - name: '[Ubuntu] Install mainline'                  # Repo: https://github.com/bkw777/mainline  (tool 4 downloading & installing pre-compiled kernels)
+      block:
+        - name: Add apt repo
+          # NOTE: Equivalent command: `sudo add-apt-repository ppa:cappelikan/ppa`
+          ansible.builtin.apt_repository:
+            repo: ppa:cappelikan/ppa
+            state: present
+            update_cache: true
+        - name: Install mainline
+          ansible.builtin.apt:
+            name: mainline
+      become: true
+      when: ansible_facts.distribution == 'Ubuntu'
+
+
+
+- name: 'Apps: config'
+  block:
+    - name: Config iTerm
+      block:
+        - name: Create dir
+          ansible.builtin.file:
+            path: '/Users/{{ user.name }}/.config/iterm2'
+            state: directory
+            owner: '{{ user.name }}'
+            group: '{{ user.group_name }}'
+            mode: 0755
+        - name: Copy config
+          ansible.builtin.copy:
+            src: apps/com.googlecode.iterm2.plist
+            dest: '/Users/{{ user.name }}/.config/iterm2/com.googlecode.iterm2.plist'
+            mode: 0755
+        - name: Set config
+          community.general.osx_defaults:
+            domain: com.googlecode.iterm2
+            key: '{{ item.key }}'
+            type: '{{ item.type }}'
+            value: '{{ item.value }}'
+            state: present
+          with_items:
+            - key: 'PrefsCustomFolder'
+              value: '/Users/{{ user.name }}/.config/iterm2/'
+              type: 'string'
+            - key: 'LoadPrefsFromCustomFolder'
+              value: 'true'
+              type: 'bool'
+      when: ansible_facts.os_family == 'Darwin'
+  become: false

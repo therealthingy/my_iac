@@ -1,0 +1,35 @@
+---
+- name: Gather host data & set it as facts
+  block:
+    - name: Gather data
+      block:
+        - name: '[Debian/Ubuntu]'
+          block:
+            - name: 'Check if GNOME is used as desktop environment  (TODO: revise)'
+              ansible.builtin.command: which gsettings
+              failed_when: false
+              changed_when: false
+              check_mode: false
+              when: gathered_workstation_facts is not defined
+              register: result_gnome_command
+              become: false
+          when: ansible_facts.os_family != 'Darwin'
+
+    - name: Set variables (as facts)
+      block:
+        # --  Set workstation facts  --
+        - name: '[Debian/Ubuntu]'
+          ansible.builtin.set_fact:
+            desktop_envs: "{{ ['GNOME' if result_gnome_command.rc == 0] }}"
+            firefox_package_name: "{{ 'firefox-esr' if ansible_facts.distribution == 'Debian' else 'firefox' }}"
+            gathered_workstation_facts: True
+          when: gathered_workstation_facts is not defined
+          become: false
+      when: ansible_facts.os_family != 'Darwin'
+  when: gathered_workstation_facts is not defined
+
+
+#-  ansible.builtin.debug:
+#    msg:
+#      desktop_envs={{ desktop_envs }}
+#      firefox_package_name={{ firefox_package_name }}

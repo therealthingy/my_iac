@@ -1,0 +1,84 @@
+---
+- name: Install it
+  block:
+    - name: Set config as vars for role
+      # SEE: https://github.com/geerlingguy/ansible-role-docker#role-variables
+      ansible.builtin.set_fact:
+        docker_edition: 'ce'
+        docker_service_manage: true
+        docker_service_state: started
+        docker_service_enabled: true
+        docker_restart_handler_state: restarted
+        docker_install_compose_plugin: true
+        docker_compose_package: docker-compose-plugin
+        docker_compose_package_state: present
+        docker_install_compose: false
+        docker_add_repo: true
+        docker_users:
+          - '{{ user.name }}'
+        docker_daemon_options:
+          ipv6: true
+          fixed-cidr-v6: '{{ ipv6_conf.prefix }}:0::/{{ (ipv6_conf.prefix_cidr + 16)|int }}'      # Avoid 'collision' w/ other subnets
+    - name: Run role
+      ansible.builtin.include_role:
+        name: geerlingguy.docker
+  become: true
+
+
+
+- name: Install docker-compose v1 (deprecated) using pip       # $$$$$$$$$$$$$$$$$$$$   Still required (docker-compose plugin relies on it)  => TODO: CHANGE ONCE RESOLVED: https://github.com/ansible-collections/community.docker/issues/216
+  ansible.builtin.pip:
+    name: docker-compose
+    state: present
+    executable: pip3
+#    extra_args: --break-system-packages   # TODO: Workaround 4 now
+  become: false
+
+
+
+# --------------------------------------------------  IPv6 support  --------------------------------------------------
+# TODO: WORKAROUND -- Fix routing:  Currently IPv6 w/ NAT (https://blog.widodh.nl/2017/04/docker-containers-with-ipv6-behind-nat/) since network prefix (provided by ISP) changes constantly :/
+- name: Configure IPv6 NAT
+  block:
+    - name: Install nftables
+      ansible.builtin.apt:
+        name: nftables
+        state: present
+      become: true
+
+    # VERIFY:
+    #   - `sudo nft list ruleset`
+    #   - Docker container connectivity: `docker run -it --rm nicolaka/netshoot ping6 -c 3 google.com`
+    - name: Add nftables rules
+      ansible.builtin.blockinfile:
+        path: /etc/nftables.conf
+        block: |
+          table ip6 nat {
+          	chain PREROUTING {
+          		type nat hook prerouting priority dstnat; policy accept;
+          	}
+
+          	chain INPUT {
+          		type nat hook input priority 100; policy accept;
+          	}
+
+           	chain OUTPUT {
+           		type nat hook output priority -100; policy accept;
+           	}
+
+          	chain POSTROUTING {
+          		type nat hook postrouting priority srcnat; policy accept;
+          		# Docker IPv6 sNAT
+          		oifname != "docker0" ip6 saddr 2001:db8::/32 masquerade
+          	}
+          }
+      notify: restart nftables
+
+    - name: Enable nftables
+      ansible.builtin.service:
+        name: nftables
+        enabled: true
+  become: true
+  when:
+    - 'ipv6_conf is defined  and  ipv6_conf.prefix == "2001:db8"'
+    - ansible_facts.os_family != 'Darwin'

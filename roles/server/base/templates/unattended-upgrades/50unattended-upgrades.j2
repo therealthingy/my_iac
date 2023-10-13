@@ -1,0 +1,47 @@
+{{ ansible_managed|comment }}
+Unattended-Upgrade::MinimalSteps "true";
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
+{% if autoupdate_reboot_enabled is defined and autoupdate_reboot_enabled %}
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Automatic-Reboot-Time "{{ autoupdate_reboot_time |d('04:00', true) }}";      // 24H format
+{% else %}
+Unattended-Upgrade::Automatic-Reboot "false";
+{% endif %}
+
+Unattended-Upgrade::InstallOnShutdown "false";
+
+{% if notifications_mail is defined %}
+Unattended-Upgrade::Mail "root";                                                                 // Alias (see `/etc/aliases`) who should receive mail
+Unattended-Upgrade::MailReport "on-change";                                                      // Possible values: "always", "only-on-error" or "on-change"
+{% endif %}
+
+// NOTE: See `apt-cache policy` for origins
+Unattended-Upgrade::Origins-Pattern {
+{% if ansible_facts.distribution == 'Debian' %}
+        // --  Debian origins  --
+        "origin=Debian,codename=${distro_codename},label=Debian";
+        "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+        "origin=Debian,codename=${distro_codename}-updates";
+        "origin=Debian Backports,codename=${distro_codename}-backports,label=Debian Backports";
+{% endif %}
+{% if hw_is_rpi == True and ansible_facts.distribution == 'Debian' %}
+        // --  Raspberry Pi OS origins  --
+        "origin=Raspbian,codename=${distro_codename},label=Raspbian";
+        "origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
+{% endif %}
+{% if autoupdate_additional_allowed_origins is defined %}
+        // --  Additional origins  --
+        {{ autoupdate_additional_allowed_origins | indent(width=8) }}
+{% endif %}};
+
+Unattended-Upgrade::Allowed-Origins {
+{% if ansible_facts.distribution == 'Ubuntu' %}
+    "${distro_id} stable";
+    "${distro_id} ${distro_codename}-security";
+    "${distro_id} ${distro_codename}-updates";
+//  "${distro_id} ${distro_codename}-proposed-updates";
+{% endif %}
+{% if 'home_servers' in group_names %}
+        "Docker:${distro_codename}";
+{% endif %}};

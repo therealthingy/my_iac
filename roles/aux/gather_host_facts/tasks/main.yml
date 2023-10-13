@@ -1,0 +1,122 @@
+---
+- name: Gather host data & set it as facts
+  block:
+    - name: Gather data
+      block:
+        # --  User data  --
+        - name: Get username of current user
+          ansible.builtin.shell: whoami                               # ALTERNATIVE 4 username: `id -u -n` OR ansible_user_id
+          register: result_username
+          changed_when: false
+
+        - name: Get uid of current user
+          ansible.builtin.shell: id -u
+          register: result_uid
+          changed_when: false
+
+        - name: Get gid of current user
+          ansible.builtin.shell: id -g
+          register: result_gid
+          changed_when: false
+
+        # --  System info  --
+        - name: Determine CPU architecture   # (NOTE: on GNU/Linux deb cpu arch)
+          block:
+            - name: '[Debian/Ubuntu]'
+              ansible.builtin.shell: dpkg --print-architecture            # ALTERNATIVE for arch.: ansible_architecture
+              register: result_deb_architecture                           # We need 2 different vars (https://github.com/ansible/ansible/issues/15710)
+              changed_when: false
+              when: ansible_facts.os_family != 'Darwin'
+            - name: '[Darwin]'
+              ansible.builtin.shell: uname -m
+              register: result_cpu_architecture
+              changed_when: false
+              when: ansible_facts.os_family == 'Darwin'
+
+        - name: '[Debian/Ubuntu]'
+          block:
+            - name: Get gid of the docker group                           # TODO: Doesn't work when docker not yet installed   !!!!!!!!
+              ansible.builtin.shell: >
+                        getent group |
+                        grep docker |
+                        awk -F: '{printf "%d", $3}'
+              register: result_docker_gid
+              changed_when: false
+
+            # --  System info  --
+            - name: Determine kernel release
+              ansible.builtin.shell: uname -r
+              register: result_kernel_release
+              changed_when: false
+
+            - name: Check whether HW is a Raspberry Pi
+              ansible.builtin.command:
+                cmd: grep --text -o "Raspberry Pi" /sys/firmware/devicetree/base/model
+              failed_when: false
+              changed_when: false
+              register: result_rpi
+
+            - name: '[Ubuntu] Check whether NetworkManager is used'        # Ubuntu Desktop = NetworkManager, Server = systemd-networkd
+              block:
+                - name: Check for nmcli
+                  ansible.builtin.command: which nmcli
+                  failed_when: false
+                  changed_when: false
+                  check_mode: false
+                  register: result_ubuntu_nmcli
+                - name: Set networking service name
+                  ansible.builtin.set_fact:
+                    ubuntu_networking_service: "{% if result_ubuntu_nmcli == 0 %}NetworkManager{% else %}systemd-networkd{% endif %}'"
+              when: ansible_facts.distribution == 'Ubuntu'
+
+            - name: Determine whether running in hypervisor
+              block:
+                - name: Install required tools (4 checking)
+                  ansible.builtin.apt:
+                    name: dmidecode
+                - name: Check smbios
+                  ansible.builtin.shell: dmidecode -s system-product-name | grep -o "VMware"
+                  failed_when: false
+                  changed_when: false
+                  register: result_smbios
+              become: true
+          when: ansible_facts.os_family != 'Darwin'
+
+    - name: Set variables (as facts)
+      block:
+        - name: '[Debian/Ubuntu]'
+          ansible.builtin.set_fact:
+            docker_gid: '{{ result_docker_gid.stdout }}'
+            www_user:
+              uid: '{{ result_uid.stdout }}'           # $$$$$$$$$$$$$$$$$$$$$  TODO: CREATE EXTRA USER …  $$$$$$$$$$$$$$$$$$$$$
+              gid: '{{ result_docker_gid.stdout }}'
+            kernel_release: '{{ result_kernel_release.stdout }}'
+            hw_is_rpi: '{{ True if result_rpi.rc == 0 else False }}'
+            networking_service: "{{ 'networking' if ansible_facts.distribution == 'Debian' else ubuntu_networking_service }}"
+            hypervisor: '{{ "vmware" if result_smbios.rc == 0 else None }}'
+          when: ansible_facts.os_family != 'Darwin'
+        - name: '[Darwin / Debian/Ubuntu]'
+          ansible.builtin.set_fact:
+            package_manager_become: "{{ 'true' if ansible_facts.os_family != 'Darwin' else 'false' }}"
+            os_homedir: "{{ '/home' if ansible_facts.os_family != 'Darwin' else '/Users' }}"
+            cpu_arch: "{{ result_deb_architecture.stdout if ansible_facts.os_family != 'Darwin' else result_cpu_architecture.stdout }}"
+            user:
+              name: '{{ result_username.stdout }}'
+              group_name: "{{ result_username.stdout if ansible_facts.os_family != 'Darwin' else 'staff' }}"
+              uid: '{{ result_uid.stdout }}'
+              gid: '{{ result_gid.stdout }}'
+            gathered_host_facts: True
+  when: gathered_host_facts is not defined
+  become: false
+
+
+#-  ansible.builtin.debug:
+#    msg:
+#      user={{ user }},
+#      docker_gid={{ docker_gid }},
+#      www_user={{ www_user }},
+#      cpu_arch={{ cpu_arch }},
+#      kernel_release={{ kernel_release }},
+#      hw_is_rpi={{ hw_is_rpi }},
+#      networking_service={{ networking_service }},
+#      hypervisor={{ hypervisor }}

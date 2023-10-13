@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+
+{{ ansible_managed|comment }}
+#set -e          # Exit immediately if a command exits with a non-zero status  (HOWEVER: considered bad practice)
+
+
+
+validate_cli_args() {
+    if [ "$#" -ne 2 ]; then
+        echo "Usage: $0 $1 <path-to-sparse-file>"  >&2
+        exit 1
+    elif [ ! -f "$2" ]; then
+        echo "\"$2\" is not a valid file, aborting ..."
+        exit 1
+    fi
+}
+
+derive_args_from_filename() {
+    local file_path=$1
+    local tmp_fname=${file_path##*/}
+    luks_mapper_name=${tmp_fname%.*}
+    mountpoint="/mnt/$luks_mapper_name"
+}
+
+get_loopback_device_from_filename() {
+    lb_dev=$(losetup -j $1 | grep -o "/dev/loop[0-9]*")               # -j = Show the status of all loop devices associated w/ the given file
+}
+
+
+
+case $1 in
+
+  create_sparse)
+    if [ "$#" -ne 3 ] || [[ ! "$3" =~ ^[0-9]+$ ]]; then      # "=~" operator: rhs is considered an extended regex. If the lhs matches, the operator returns 0, and 1 otherwise
+        echo "Usage: $0 $1 <path-to-sparse-file> <size-in-gb>"  >&2
+        exit 1
+    fi
+
+    sparse_file_path=$2
+    sparse_file_size_in_gb=$3
+
+    echo "(I  ) Creating sparse file \"$sparse_file_path\" of size $sparse_file_size_in_gb GB"
+    if [ ! -f "$sparse_file_path" ]; then
+        dd of=$sparse_file_path bs=1G count=0 seek=$sparse_file_size_in_gb   status=none
+    else
+        echo "File \"$sparse_file_path\" exists already, aborting ..." >&2
+        exit 1
+    fi
+
+    echo "(II ) Attaching sparse file as looback dev (so it can be mounted like a regular hard disk)"
+    sudo losetup -f $sparse_file_path                                                # -f = Find the 1st unused loop device
+    get_loopback_device_from_filename $sparse_file_path
+
+    echo "(III) Formating block-device (attached under loopback device \"$lb_dev\") using luks"
+    # NOTE 2 check status: 'cryptsetup status <secretfs>'
+{% if hw_is_rpi == True %}
+    sudo cryptsetup -y luksFormat  --type luks2 --cipher xchacha20,aes-adiantum-plain64 --hash sha256 --iter-time 5000 --pbkdf argon2i   $lb_dev      # See: https://rr-developer.github.io/LUKS-on-Raspberry-Pi/
+{% else %}
+    sudo cryptsetup -y luksFormat $lb_dev
+{% endif %}
+
+    echo "(IV ) Creating fs"
+    luks_mapper_name="tmp__${RANDOM}__"
+    sudo cryptsetup open $lb_dev $luks_mapper_name
+    sudo mkfs.ext4 -m0 /dev/mapper/$luks_mapper_name         # "-m" Option reserviert soviel Prozent (hier: 0 Prozent) des Speichers für den Superuser
+
+    echo "(V  ) Cleaning up ..."
+    sudo cryptsetup luksClose $luks_mapper_name
+    sudo losetup -D $lb_dev                                  # NOTE `losetup`:  `-a`: Show all loopback devices
+    ;;
+
+
+  attach)
+    validate_cli_args $@             # INTERESTINGLY $0 is always available, and $@ refers to all CLI args starting w/ $1
+
+    sparse_file_path=$2
+    derive_args_from_filename $sparse_file_path
+
+    if ! mountpoint -q $mountpoint; then
+        get_loopback_device_from_filename $sparse_file_path
+        if [ -z "$lb_dev" ]; then
+            echo "(I  ) Attaching sparse file \"$sparse_file_path\" as looback dev (so it can be mounted like a regular hard disk)"
+            sudo losetup -f $sparse_file_path
+            get_loopback_device_from_filename $sparse_file_path
+        else
+            echo "(I  ) Already attached ??!!, aborting ..."  >&2
+            exit 1
+        fi
+
+        get_loopback_device_from_filename $sparse_file_path
+        echo "(II ) Unlocking device \"$lb_dev\" w/ name \"$luks_mapper_name\""
+        sudo cryptsetup open --allow-discards $lb_dev $luks_mapper_name
+
+        echo "(III) Mounting fs of luks mapper-device \"$luks_mapper_name\"  @ \"$mountpoint\""
+        sudo mkdir $mountpoint 2> /dev/null  &&  sudo chown "$USER": $mountpoint
+        sudo mount -t ext4 -o discard,defaults,auto,user,noatime,noexec /dev/mapper/$luks_mapper_name $mountpoint
+    else
+        echo "\"$sparse_file_path\" is already mounted!"
+        exit 0
+    fi
+    ;;
+
+
+  detach)
+    validate_cli_args $@
+
+    sparse_file_path=$2
+    derive_args_from_filename $sparse_file_path
+
+    if ! mountpoint -q $mountpoint; then
+        echo "Nothing mounted under \"$mountpoint\", aborting ..."  >&2
+        exit 1
+    fi
+
+    echo "(I  ) Unmounting fs  @ \"$mountpoint\""
+    sudo umount $mountpoint
+
+    echo "(II ) \"Closing\" device w/ name \"$luks_mapper_name\""
+    sudo cryptsetup close $luks_mapper_name
+
+    get_loopback_device_from_filename $sparse_file_path
+    echo "(III) Detaching sparse file \"$lb_dev\""
+    sudo losetup --detach $lb_dev
+    ;;
+
+
+  *)                                                         # Default case
+    echo "Usage: $0 create_sparse | attach | detach"  >&2
+    exit 1
+    ;;
+esac
+
+
+exit 0
+

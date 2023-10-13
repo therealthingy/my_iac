@@ -1,0 +1,122 @@
+---
+# Config (refer to https://wiki.archlinux.org/title/locale):
+#   - Files:
+#     - `/etc/locale.gen`: Locales to generate
+#     - `/etc/default/locale`: Set by `update-locale`
+#     - ~~`/etc/environment`~~
+#   - Commands:
+#     - `locale -a`: Display a list of all available locales
+#     - `sudo locale-gen "en_US.UTF-8"`: Generate locale
+- name: locale-gen
+  block:
+    # NOTE: Equivalent command: `sudo locale-gen en_US.UTF-8`
+    - name: Generate locale {{ locale }}
+      community.general.locale_gen:
+        name: '{{ locale }}'
+        state: present
+
+    - name: "Fix ssh locale issue  (causing '<command>: Cannot set LC_CTYPE to default locale: No such file or directory')"
+      ansible.builtin.lineinfile:
+        dest: /etc/default/locale
+        regexp: '^{{ common_locale_fix_item }}="?{{ locale }}"?$'
+        line: '{{ common_locale_fix_item }}={{ locale }}'
+      with_items:
+        - 'LANG'
+        - 'LC_ALL'
+      loop_control:
+        loop_var: common_locale_fix_item
+  become: true
+  when: ansible_facts.os_family != 'Darwin'
+
+
+# Check result: `sudo dpkg-reconfigure tzdata`
+- name: "Set timezone to '{{ timezone }}'"
+  community.general.timezone:
+    name: '{{ timezone }}'
+  become: true
+
+
+- name: Set hostname
+  block:
+    - name: Get current hostname
+      ansible.builtin.shell: hostname            # ALTERNATIVE for hostname: `ansible_hostname`
+      register: result_hostname
+      changed_when: false
+      when: ansible_facts.os_family != 'Darwin'
+
+    - name: "Set hostname to '{{ hostname }}'"
+      ansible.builtin.hostname:
+        name: '{{ hostname }}'
+      become: true
+
+    # IMPORTANT: Requires this special indentation, otherwise other entries will be replaced !!
+    - name: Fix hosts file
+      ansible.builtin.lineinfile:
+        dest: /etc/hosts
+        regexp: '^127\.0\.0\.1\s+{{ result_hostname.stdout }}$'
+        line: '127.0.0.1	{{ hostname }}'
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+  when: hostname is defined
+
+
+# TAKEN FROM: https://github.com/gantsign/ansible-role-keyboard/blob/master/tasks/main.yml
+- name: Keyboard conf
+  block:
+    - name: Install deps
+      ansible.builtin.apt:
+        name:
+          - keyboard-configuration
+          - console-setup
+        state: present
+
+    - name: Write keyboard config
+      ansible.builtin.template:
+        src: linux/keyboard-config.j2
+        dest: /etc/default/keyboard
+        force: true
+        owner: root
+        group: root
+        mode: 'u=rw,go=r'
+      notify:
+        - dpkg-reconfigure keyboard-configuration
+  when: ansible_os_family == 'Debian'
+  become: true
+
+
+- ansible.builtin.include_tasks: '{{ included_common_config_task }}'
+  loop:
+    - linux/config-grub.yml
+    - config-ssh.yml
+    - linux/config-swapfile.yml
+  loop_control:
+    loop_var: included_common_config_task
+  when: ansible_facts.os_family != 'Darwin'
+
+
+- name: "Enable password-less sudo for '{{ user.name }}'"
+  ansible.builtin.template:
+    src: passwordless_sudo.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
+    dest: '/etc/sudoers.d/010_{{ user.name }}-nopasswd'
+    owner: root
+    group: root
+    mode: 0440
+    validate: visudo -cf %s
+  become: true
+  when: passwordless_sudo_enabled is defined and passwordless_sudo_enabled
+
+
+
+
+## NOTE: Via netplan definitions: `ipv6-privacy: true`
+## Will only take effect after reboot
+## VERIFY: `ip -6 a show eth0 |grep ip6-privacy`
+#- name: Enable IPv6 Privacy Extensions  (4 better privacy)
+#  ansible.posix.sysctl:
+#    name: 'net.ipv6.conf.{{ item }}.use_tempaddr'
+#    value: 2
+#    state: present
+#  become: true
+#  with_items:
+#    - 'all'
+#    - 'default'

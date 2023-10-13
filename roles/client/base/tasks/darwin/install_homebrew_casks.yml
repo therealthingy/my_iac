@@ -1,0 +1,27 @@
+---
+- name: Install homebrew casks
+  block:
+    - name: Create dir
+      ansible.builtin.file:
+        path: '/Applications/{{ homebrew_cask_dir.dir }}'
+        state: directory
+        owner: '{{ user.name }}'
+        group: '{{user.group_name}}'
+        mode: 0755
+      with_items: '{{ packages_homebrew_casks }}'
+      loop_control:
+        loop_var: homebrew_cask_dir
+      become: false
+
+    - name: Install packages
+      community.general.homebrew_cask:
+        name: '{{ homebrew_cask.1 }}'
+        state: latest
+        install_options: 'appdir=/Applications/{{ homebrew_cask.0.dir }}'
+      with_subelements:
+        - '{{ packages_homebrew_casks }}'
+        - packages
+      loop_control:
+        loop_var: homebrew_cask
+      become: false
+  when: ansible_facts.os_family == 'Darwin'

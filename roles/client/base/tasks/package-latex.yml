@@ -1,0 +1,66 @@
+---
+- name: Install LaTeX
+  block:
+    - name: '[Linux]'
+      ansible.builtin.apt:
+        name:
+          - texlive-latex-extra              # OG: `texlive-full` (too large)    (OVERVIEW different versions: https://tex.stackexchange.com/a/504566)
+          - latexmk
+        state: present
+      when: ansible_facts.os_family != 'Darwin'
+      become: true
+
+    - name: '[Darwin]'
+      block:
+        - name: '[Darwin] Install homebrew packages'
+          ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
+          vars:
+            packages_homebrew_casks:
+              - dir: Office/LaTeX
+                packages:
+                  - basictex
+                  - bibdesk
+                  - skim
+        - name: '[Darwin] Install latexmk'
+          ansible.builtin.shell: tlmgr install latexmk
+          args:
+            creates: /Library/TeX/texbin/latexmk
+          become: true
+      when: ansible_facts.os_family == 'Darwin'
+  become: false
+
+
+- name: Configure tools for LaTeX
+  block:
+    - name: '[Darwin]'
+      block:
+        - name: Skim config
+          community.general.osx_defaults:
+            domain: net.sourceforge.skim-app.skim
+            key: '{{ skin_conf_item.key }}'
+            type: '{{ skin_conf_item.type }}'
+            value: '{{ skin_conf_item.value }}'
+            state: present
+          with_items:
+            - key: 'SKAutoReloadFileUpdate'         # Auto reload file when changed  (in case it doesn't work: Skim -> Preferences -> Sync -> Check 4 file changes + Reload automatically)
+              value: 'true'
+              type: 'boolean'
+            - key: 'SKInvertColorsInDarkMode'       # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
+              value: 'true'
+              type: 'bool'
+            # OPTIONAL: View -> Hide Contents Pane + Hide Notes Pane
+          loop_control:
+            loop_var: skin_conf_item
+      when: ansible_facts.os_family == 'Darwin'
+
+    # USAGE:
+    #   `latexmk -pvc -pdf <tex_file>`
+    #   `latexmk -C`
+    - name: Copy latexmk config
+      ansible.builtin.template:
+        src: latexmkrc.j2
+        dest: '{{os_homedir}}/{{ user.name }}/.latexmkrc'
+        owner: '{{ user.name }}'
+        group: '{{ user.group_name }}'
+        mode: 0644
+  become: false

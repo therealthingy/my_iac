@@ -1,0 +1,7 @@
+{{ ansible_managed|comment }}
+{% for p in apt_pin_packages %}
+Package: {{ p.name|default('*', true) }}
+Pin: {{ p.target|default('release *', true) }}
+Pin-Priority: {{ p.priority|default('100', true) }}
+
+{% endfor %}

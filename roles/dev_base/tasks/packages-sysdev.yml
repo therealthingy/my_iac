@@ -1,0 +1,220 @@
+---
+- name: '[Darwin / Debian/Ubuntu] Install systems programming tools/libs'
+  block:
+    - name: Install packages (I)
+      block:
+        - name: '[Darwin / Debian/Ubuntu]'
+          ansible.builtin.package:
+            name:
+              # Misc.
+              - bison                 # Parser generator
+              - flex                  # Generates lexical analyzers
+              - shellcheck            # Lint bash scripts
+              # Build tools
+              - gcc
+              - cmake
+              - autoconf
+              - automake              # Automates parts of the compilation process
+              - pkg-config
+              # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
+              - binutils              # Contains `readelf`, `gprof`, …
+              - cloc                  # Count loc
+              - doxygen               # Generates documentation from annotated C++ sources
+              - sphinx-doc
+              - binwalk
+              - poke                  # GNU poke: Extensible editor for structured binary data
+            state: present
+          become: '{{ package_manager_become }}'
+        - name: '[Debian/Ubuntu]'
+          ansible.builtin.apt:
+            name:
+              # Compilers
+              - manpages-dev
+              - build-essential       # Includes GNU debugger, g++/GNU compiler collection, and some more tools (`make`) and libraries that are required to compile a program
+              - clang
+#              - nasm
+              - rustc
+              - cargo
+              # Build tools
+              - cmake-curses-gui
+              - autotools-dev
+              - autoconf              # Tool 4 producing configure script 4 building, installing & packing SW
+              - ninja-build
+              # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
+              - gdb
+              - bpftrace
+              - strace
+              - ltrace
+              - bpfcc-tools           # BPF Compiler Collection (BCC) is a toolkit 4 creating efficient kernel tracing & manipulation programs
+              - valgrind
+              - massif-visualizer
+              # 'Performance' analysis
+              - kcachegrind           # KDE GUI 2 visualize profiling data (mainly used as visualization frontend for data measured by Cachegrind/Callgrind tools from the Valgrind package)
+              - hotspot               # UI (similar 2 KCachegrind 4 valgrind, BUT) around `perf`  (SEE: https://github.com/KDAB/hotspot)
+              - heaptrack             # Heap analysis tool (from KDE)
+              - heaptrack-gui
+              - graphviz              # TODO: Apparently required by kcachegrind  ??
+              - time                  # NOTE: Usually implemented as shell builtin  (hence must be called directly via `/usr/bin/time`)
+              - pahole                # Shows & manipulates data structure layout
+              # Utils
+              - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
+              # Libs
+              - libc6-dbg             # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
+              - binutils-dev          # Necessary 2 build programs which use the GNU BFD library  (which is part of binutils); also includes libbfd
+              - libelf-dev            # Allows reading & writing of ELF files on a high level
+              - libdw-dev             # Provides access to DWARF debug information stored inside ELF files
+              - libdwarf-dev          # Allows reading/consuming and writing/producing of DWARF debugging information from object files, shared libraries, and executables    --  basically the same as `libdw-dev` ??!
+              - libunwind-dev         # (libunwind)
+              - libiberty-dev         # De-mangles C++ function names
+              - libcap-dev            # Implements user-space interfaces 2 the POSIX 1003.1e capabilities
+              - libnuma-dev           # Allows controlling specific NUMA (Non-Uniform Memory Architecture) scheduling or memory placement policies
+              - libncurses5-dev       # ncurses  (terminal-independent method of updating character screens w/ reasonable optimization)
+              - libssl-dev            # OpenSSL  (libcrypto)
+              - zlib1g-dev            # (zlib)
+              - liblzma-dev           # (lzma)
+              - libzstd-dev           # (Zstandard - Fast real-time compression algorithm)
+              - libaio-dev            # (Linux kernel AIO access -> Enables userspace 1 use Linux kernel asynchronous I/O system calls, important 4 the performance of dbs & other advanced apps)
+              - libboost-all-dev      # Boost
+              - libomp-dev            # OpenMP
+              #- libperl-dev           # Assists in developing applications which embed a Perl interpreter
+              - libevent-dev          # Event notification library  (SEE: https://libevent.org/)
+              #- python2
+              #- python2-dev
+              #- python-setuptools
+              - libseccomp-dev        # Provides high level iface 4 constructing, analyzing & installing seccomp filters via a BPF (passed 2 kernel's `prctl`)
+              # Misc.
+              - fakeroot              # Gives a fake root environment (2 remove the need 2 become root 4 a package build)
+              - checksec              # Used 2 check properties of executables (like PIE, RELRO, PaX, Canaries, ASLR, Fortify Source) & kernel security options (like  GRSecurity & SELinux)
+            state: present
+          when: ansible_facts.os_family != 'Darwin'
+        - name: '[Darwin]'
+          community.general.homebrew:
+            name:
+              - boost
+              - rust
+              - ncurses               # API 4 writing text-based user interfaces (TUI) in a terminal-independent manner
+              # Build tools
+              - ninja
+          become: false
+          when: ansible_facts.os_family == 'Darwin'
+        - name: '[Debian/Ubuntu x64]'
+          ansible.builtin.apt:
+            name:
+              - gcc-multilib          # Useful for cross-compiling
+            state: present
+          when: ansible_architecture == 'x86_64' and ansible_facts.os_family != 'Darwin'
+        - name: '[Ubuntu]'
+          ansible.builtin.apt:
+            name:
+              - glibc-tools                   # Contains ’libSigSegv’ library (SEE: https://lemire.me/blog/2023/05/01/under-linux-libsegfault-and-addr2line-are-underrated/)
+              # 'Performance' analysis
+              - linux-tools-generic   # Kernel modules required 4 `perf`
+              - linux-tools-common    # `perf`  (Performance analysis tools for Linux)
+          when: ansible_facts.os_family == 'Ubuntu'
+
+    - name: '[Ubuntu] Install proprietary extra stuff (codecs, fonts, …)'
+      ansible.builtin.apt:
+        name: ubuntu-restricted-extras
+      when: ansible_facts.os_family == 'Ubuntu'
+
+    - name: Install gef (4 `gdb`)
+      block:
+        - name: gef - Check whether already installed
+          ansible.builtin.find:
+            paths: '/home/{{ user.name }}/'
+            file_type: file
+            use_regex: true
+            hidden: true
+            patterns: '^\.gef-[0-9a-f]{40}\.py$'
+          register: gef_find_output
+        - name: gef - Run install script
+          ansible.builtin.shell:
+            cmd: 'bash -c "$(curl -fsSL https://gef.blah.cat/sh)"'
+          become: false
+          when: (gef_find_output.files | length == 0)
+      when: ansible_facts.os_family != 'Darwin'
+  become: true
+
+
+
+#- name: Install G00g13 bazel
+#  block:
+#    - name: bazel - Install dependencies
+#      ansible.builtin.apt:
+#        update_cache: true
+#        name:
+#          - apt-transport-https
+#          - curl
+#          - gnupg
+#    - name: bazel - Add apt signing key
+#      ansible.builtin.apt_key:
+#        url: https://bazel.build/bazel-release.pub.gpg
+#        keyring: /usr/share/keyrings/bazel-archive-keyring.gpg
+#        state: present
+#    - name: bazel - Add apt repo and update cache
+#      ansible.builtin.apt_repository:
+#        repo: "deb [arch={{ cpu_arch }} signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8"
+#        filename: bazel
+#        state: present
+#        update_cache: true
+#    - name: bazel - Install it
+#      ansible.builtin.apt:
+#        name: bazel
+#        state: present
+#  become: true
+
+
+#- name: Install Intel Pin Tools
+#  block:
+#    - name: Set version
+#      ansible.builtin.set_fact:
+#        # TODO: GET ALWAYS LATEST VERSION;  SEE: https://www.intel.com/content/www/us/en/developer/articles/tool/pin-a-binary-instrumentation-tool-downloads.html
+#        intel_pin_tool_version: pin-3.25-98650-g8f6168173-gcc-linux
+#        intel_pin_tools_dir: /opt/intel
+#    - name: Check already installed
+#      ansible.builtin.command: 'which {{ intel_pin_tools_dir }}/{{ intel_pin_tool_version }}/pin'
+#      failed_when: false
+#      changed_when: false
+#      check_mode: false
+#      register: result_pin_command
+#      become: false
+#    - name: Install if not installed
+#      block:
+#        - name: Ensure dir exists
+#          file:
+#            path: "{{ intel_pin_tools_dir }}/"
+#            state: directory
+#            mode: 0755
+#        - name: Download & Install Pin tools
+#          ansible.builtin.unarchive:
+#            src: 'https://software.intel.com/sites/landingpage/pintool/downloads/{{ intel_pin_tool_version }}.tar.gz'
+#            remote_src: true
+#            dest: "{{ intel_pin_tools_dir }}/"
+#            mode: 0755
+#        - name: Update PATH variable globally
+#          ansible.builtin.lineinfile:
+#            dest: /etc/zsh/zshenv
+#            line: |
+#              if [[ "$PATH" != *"{{ intel_pin_tools_dir }}/{{ intel_pin_tool_version }}"* ]]; then
+#                  export PATH="$PATH:{{ intel_pin_tools_dir }}/{{ intel_pin_tool_version }}"
+#              fi
+#      when: result_pin_command.rc == 1
+#      become: true
+#  when: ansible_architecture == "x86_64"
+#  become: false
+
+# Installation steps: https://www.intel.com/content/www/us/en/develop/documentation/vtune-install-guide/top/linux/package-managers.html
+#- name: Install VTune
+#  block:
+#    - name: Add apt repo
+#      # NOTE: Equivalent command: `sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"`
+#      ansible.builtin.apt_repository:
+#        repo: deb https://apt.repos.intel.com/oneapi all main
+#        state: present
+#        filename: intel
+#        update_cache: true
+#    - name: Install VTune
+#      ansible.builtin.apt:
+#        name: intel-oneapi-vtune
+#  when: ansible_architecture == "x86_64"
+#  become: true

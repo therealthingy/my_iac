@@ -1,0 +1,209 @@
+---
+# apt -- show installed packages: `apt list --installed`
+# ---------------------------------------------------------
+- name: Cleanup
+  block:
+    - name: '[Debian/Ubuntu] Uninstall unnecessary apt packages (mostly Gnome stuff)'
+      ansible.builtin.apt:
+        name:
+        # --  Games  --
+          - aisleriot
+          - gnome-mahjongg
+          - gnome-mines
+          - gnome-sudoku
+          - gnome-2048
+          - gnome-chess
+          - five-or-more
+          - four-in-a-row
+          - hitori
+          - gnome-klotski
+          - lightsoff
+          - gnome-nibbles
+          - quadrapassel
+          - gnome-robots
+          - swell-foop
+          - iagno
+          - tali
+          - gnome-taquin
+          - gnome-tetravex
+        # --  Apps  --
+          - gnome-clocks
+          - gnome-calendar
+          - gnome-contacts
+          - gnome-documents
+          - '*gnome-todo*'
+          - gnome-maps
+          - gnome-music
+          - '*rhythmbox*'
+          - gnome-weather
+          - transmission*
+          - libreoffice*
+          - totem                     # Media player
+          - evolution                 # Mail
+          - thunderbird*
+          - simple-scan
+          - cheese                    # NOTE: 'cheese-common', 'libcheese-gtk25' & 'libcheese8' are required by the Settings app (package 'unity-control-center')
+          - 'shotwell*'
+        state: absent
+        purge: true
+        clean: true
+        autoremove: true
+    - name: '[Debian/Ubuntu] (Re)Install nautilus'        # Gets rmved mysteriously …
+      ansible.builtin.apt:
+        name: nautilus
+        state: present
+  become: true
+  when: ansible_facts.os_family == 'Debian'
+# ---------------------------------------------------------
+
+
+
+- name: Install required ansible-related packages
+  block:
+    - name: apt
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - python3-psutil      # Required for `dconf` module
+          - python3-apt         # Required by Ansible modules
+          - dconf-cli
+          - dconf-editor
+        state: present
+    - name: Install flatpak
+      ansible.builtin.include_tasks: linux/package-flatpak.yml
+  become: true
+  when: ansible_facts.os_family != 'Darwin'
+
+
+- ansible.builtin.include_tasks: '{{ item }}'
+  loop:
+    - linux/package-firefox.yml
+    - linux/package-conky.yml
+  when: ansible_facts.os_family != 'Darwin'
+
+
+- name: Install blackhole          # System audio capture
+  community.general.homebrew_cask:
+    name: blackhole-2ch
+    state: latest
+  become: false
+  when: ansible_facts.os_family == 'Darwin'
+
+
+- name: 'Install "convenience" tools'
+  block:
+    - name: '[Debian/Ubuntu]'
+      ansible.builtin.apt:
+        name:
+          - trash-cli
+        state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+    - name: '[Darwin]'
+      community.general.homebrew:
+        name:
+          - ddcctl                 # DDC monitor controls for the OSX command line
+          - trash
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
+
+
+- name: 'Install "Office stuff"'
+  block:
+    - name: '[Darwin]'
+      community.general.homebrew:
+        name:
+          - poppler           # `pdfimages`, `pdftotext`
+          - tesseract         # Validate via: `tesseract --list-langs`
+          - tesseract-lang
+      when: ansible_facts.os_family == 'Darwin'
+    - name: '[Debian/Ubuntu]'
+      ansible.builtin.apt:
+        name:
+          - poppler-utils
+          - tesseract-ocr
+          - tesseract-ocr-deu
+        state: present
+      when: ansible_facts.os_family == 'Debian'
+    - name: '[Darwin / Debian/Ubuntu]'
+      ansible.builtin.package:
+        name:
+          - pandoc                # Converts b/w doc formats
+          - aspell
+          - ispell
+          - hunspell
+          #- pdfgrep
+          - qpdf                  # USE CASE: Rmv pdf password  (also dep of ocrmypdf)
+          - ghostscript           # Rasterization/rendering of pdf/postscript  (also dep of ocrmypdf)
+          - ocrmypdf              # NOTE: Based on tesseract (and its lang packs -> e.g., `ocrmypdf -l eng+deu …`)
+          - img2pdf
+
+    - name: Install Latex
+      ansible.builtin.include_tasks: package-latex.yml
+
+    - name: '[Debian/Ubuntu] Install vscodium'
+      ansible.builtin.include_tasks: linux/package-vscodium.yml
+      when: ansible_facts.os_family != 'Darwin'
+    - name: '[Darwin] Install homebrew packages'
+      ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+          - dir: Office
+            packages:
+              - 'drawio'
+              - 'pdf-expert'
+              - 'slidepilot'
+          - dir: Office/Misc
+            packages: []                                            # TODO: `softmaker-freeoffice`
+          - dir: Development/Editors                                # … as 'general purpose' text editor
+            packages:
+              - 'vscodium'
+  become: '{{ package_manager_become }}'
+
+- name: Install internet related stuff
+  block:
+    - name: '[Darwin] Install homebrew packages'
+      ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:
+          - dir: Internet/Browsers
+            packages:
+              - 'brave-browser'
+              - 'librewolf'
+              - 'tor-browser'
+    - name: '[Debian/Ubuntu] Install flatpak packages'         # TODO: Add mac counterparts & check whether VM
+      community.general.flatpak:
+        name:
+          - com.brave.Browser
+        state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+
+
+- name: Install security related stuff
+  block:
+    - name: '[Darwin] Install homebrew packages'
+      ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:
+          - dir: Security
+            packages:
+              - 'blockblock'
+              - 'dhs'
+              - 'kextviewr'
+              - 'knockknock'
+              - 'suspicious-package'
+              - 'taskexplorer'
+              - 'whatsyoursign'
+
+
+- name: Install archiving related stuff
+  block:
+    - name: '[Darwin] Install homebrew packages'
+      ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+          - dir: Package
+            packages:
+              - 'keka'
+              - 'pacifist'

@@ -1,8 +1,0 @@
----
-- ansible.builtin.include_tasks: '{{ included_dev_server_task }}'
-  loop:
-    - packages-systems_dev.yml
-    - packages-python.yml
-#    - packages-java.yml
-  loop_control:
-    loop_var: included_dev_server_task

@@ -1,0 +1,37 @@
+---
+- ansible.builtin.include_tasks: packages.yml
+
+- ansible.builtin.include_tasks: linux/config-firefox.yml
+  when: ansible_facts.os_family != 'Darwin'               # TODO: REVISE
+
+
+- name: Scripts
+  block:
+    - name: Create dir
+      block:
+        - name: Create dir
+          ansible.builtin.file:
+            path: '/{{ os_homedir }}/{{ user.name }}/bin'
+            state: directory
+            owner: '{{ user.name }}'
+            group: '{{ user.group_name }}'
+            mode: 0755
+        - name: Hide dir
+          ansible.builtin.shell: chflags hidden '/Users/{{ user.name }}/bin'
+          changed_when: false       # !!!!!!!!!!!!!!!!                            TODO: REVISE
+          when: ansible_facts.os_family == 'Darwin'
+    - name: Copy scripts
+      ansible.builtin.template:
+        src: '{{ config_file.src }}.j2'
+        dest: '{{ config_file.dest_file }}'
+        owner: '{{ config_file.owner }}'
+        group: '{{ config_file.group }}'
+        mode: 0755
+      with_items:
+        - src: 'git-update_repos'
+          dest_file: '/{{ os_homedir }}/{{ user.name }}/bin/git-update_repos'
+          owner: '{{ user.name }}'
+          group: '{{ user.group_name }}'
+      loop_control:
+        loop_var: config_file
+      become: false

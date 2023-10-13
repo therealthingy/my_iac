@@ -1,0 +1,91 @@
+#!/usr/bin/env ansible-playbook
+---
+- hosts: all
+  roles:
+    - role: common
+      tags:
+        - common
+
+
+# --  "HW specific"  --
+- hosts: hw_specific
+  roles:
+    - role: hw_specific
+      tags:
+        - hw_specific
+
+
+# --  "System specific"  --
+- hosts: dev_clients, media_clients, workstation_clients
+  roles:
+    - role: power_user
+    - role: client/base
+  vars:
+    dock_favorite_apps:
+      - "'org.gnome.Nautilus.desktop'"
+      - "'firefox.desktop'"
+      - "'brave-browser.desktop'"
+      - "'codium.desktop'"
+      - "'terminator.desktop'"
+      - "'gnome-system-monitor.desktop'"
+  tags: workstation
+
+- hosts: dev_clients, workstation_clients
+  roles:
+    - role: client/dev_client
+      tags:
+        - dev_client
+    - role: dev_base
+#    - role: docker
+#      tags:
+#        - docker
+  vars:
+    firefox_profiles:
+      default:
+        extensions:
+          - umatrix
+          - privacy-redirect
+          - darkreader
+          - save-page-we
+
+- hosts: media_clients, workstation_clients
+  roles:
+    - role: client/media_client
+      tags:
+        - media_client
+
+- hosts: workstation_clients, workstation_clients
+  roles:
+    - role: client/workstation_client
+      tags:
+        - workstation_client
+
+
+- hosts: servers, dev_servers, home_servers
+  roles:
+    - role: server/base
+      tags: server
+
+- hosts: dev_servers
+  roles:
+    - role: power_user
+    - role: dev_base
+  tags:
+    - dev_server
+
+- hosts: home_servers
+  vars:
+    docker_container:
+      data_basedir: /home/{{ user.name }}/homeserver/data/
+      config_basedir: /home/{{ user.name }}/homeserver/config/
+  roles:
+  # -- Docker containers --
+    - role: server/3rd-party/internet-pi
+      tags:
+        - inet_monitoring
+
+    - role: server/home_server/containers/
+      tags:
+        - containers
+  tags:
+    - home_server
