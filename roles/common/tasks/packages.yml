@@ -1,8 +1,13 @@
 ---
-- name: "Run 'elliotweiser.osx-command-line-tools' role"
-  ansible.builtin.include_role:
-    # Equivalent 2 `xcode-select --install`
-    name: elliotweiser.osx-command-line-tools
+- name: Darwin pre-requisites
+  block:
+    - name: Install CLI tools
+      ansible.builtin.include_role:
+        # Equivalent 2 `xcode-select --install`
+        name: elliotweiser.osx-command-line-tools
+    - name: Install homebrew
+      ansible.builtin.include_role:
+        name: geerlingguy.mac.homebrew
   when: ansible_facts.os_family == 'Darwin'
 
 
@@ -72,7 +77,7 @@
           # Networking
           - curl
       become: '{{ package_manager_become }}'
-      
+
 #    - name: Install luks sparse file helper
 #      ansible.builtin.template:
 #        src: bin/luks-sparse_helper.j2
