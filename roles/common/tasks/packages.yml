@@ -46,7 +46,7 @@
         name:
           # Administration
           - sudo
-          - ssh
+          - openssh-client
           - needrestart                   # NOTE: 2 check whether reboot is pending: `sudo needrestart -r i`   (required 4 login motd)
           # Backup
           - timeshift
@@ -94,6 +94,7 @@
     - name: '[Darwin / Debian/Ubuntu]'
       ansible.builtin.include_tasks: '{{ item }}'
       loop:
+        - package-ssh.yml
         - package-zsh.yml
         - packages-python.yml
 #         - linux/package-nala.yml

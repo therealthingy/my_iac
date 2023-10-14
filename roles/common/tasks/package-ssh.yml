@@ -6,8 +6,15 @@
 #    key: {{ user_ssh_key }}
 
 
-- name: Change sshd settings
+- name: Install + change sshd settings
   block:
+    - name: Install ssh server
+      ansible.builtin.apt:
+        name: ssh               # Contains server AND client
+      when: ansible_facts.os_family != 'Darwin'
+
+    # TODO: Enable ssh server  (Darwin: `sudo systemsetup -setremotelogin on`)
+
     - name: Harden
       block:
         - name: Update config file
@@ -50,3 +57,17 @@
         validate: '/usr/sbin/sshd -T -f %s'
   notify: restart ssh daemon
   become: true
+  when:
+    - sshd_disabled is not defined or not sshd_disabled
+
+    - ansible_facts.os_family != 'Darwin'         # TODO: RMV once ssh added in Darwin
+
+
+- name: Uninstall ssh server
+  ansible.builtin.apt:          # TODO: Darwin: `sudo systemsetup -setremotelogin off`
+    name: openssh-server
+    state: absent
+  become: true
+  when:
+    - ansible_facts.os_family != 'Darwin'
+    - sshd_disabled is defined and sshd_disabled

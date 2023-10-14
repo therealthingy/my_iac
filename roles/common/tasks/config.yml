@@ -87,7 +87,6 @@
 - ansible.builtin.include_tasks: '{{ included_common_config_task }}'
   loop:
     - linux/config-grub.yml
-    - config-ssh.yml
     - linux/config-swapfile.yml
   loop_control:
     loop_var: included_common_config_task

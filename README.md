@@ -34,7 +34,7 @@
 
 ### General
 #### Darwin
-* Mac App Store apps:
+* [Mac App Store apps](https://github.com/mas-cli/mas/blob/main/README.md):
   * Uninstall iMovie, Pages, , Numbers, GarageBand
   * Install Keynote, dict.cc, DjVu Viewer + DjVu to PDF
 
@@ -174,41 +174,3 @@
   * `--list-hosts`
   * `--become --ask-become-pass`: Privilege escalation
   * Useful modules: `ping` (not ICMP ping !!), `gather_facts`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
