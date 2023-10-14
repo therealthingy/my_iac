@@ -28,7 +28,7 @@
       - "'codium.desktop'"
       - "'org.gnome.Terminal.desktop'"
       - "'gnome-system-monitor.desktop'"
-  tags: workstation
+  tags: client_base
 
 - hosts: dev_clients, workstation_clients
   roles:

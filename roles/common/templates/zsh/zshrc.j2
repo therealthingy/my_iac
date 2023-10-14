@@ -132,10 +132,9 @@ fi
 ################################################################################################
 # --- Misc.
 ################################################################################################
-{% if ansible_facts.os_family == 'Darwin' and cpu_arch == "arm64" %}
+{% if ansible_facts.os_family == 'Darwin' and cpu_arch == 'arm64' %}
 # -- homebrew (due 2 ARM) --
-export PATH=/opt/homebrew/bin:$PATH
-export PATH=/opt/homebrew/sbin:$PATH
+export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH
 {% endif %}
 
 {% if ansible_facts.os_family != 'Darwin' %}

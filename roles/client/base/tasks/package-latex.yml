@@ -1,11 +1,12 @@
 ---
 - name: Install LaTeX
   block:
-    - name: '[Linux]'
+    - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
           - texlive-latex-extra              # OG: `texlive-full` (too large)    (OVERVIEW different versions: https://tex.stackexchange.com/a/504566)
-          - latexmk
+#          - latexmk
+          - evince                           # Auto-reload pdf reader
         state: present
       when: ansible_facts.os_family != 'Darwin'
       become: true
@@ -19,8 +20,8 @@
               - dir: Office/LaTeX
                 packages:
                   - basictex
+                  - skim                     # Auto-reload pdf reader
                   - bibdesk
-                  - skim
         - name: '[Darwin] Install latexmk'
           ansible.builtin.shell: tlmgr install latexmk
           args:
@@ -32,7 +33,7 @@
 
 - name: Configure tools for LaTeX
   block:
-    - name: '[Darwin]'
+    - name: '[Darwin] Auto-reload pdf reader'
       block:
         - name: Skim config
           community.general.osx_defaults:
@@ -59,7 +60,7 @@
     - name: Copy latexmk config
       ansible.builtin.template:
         src: latexmkrc.j2
-        dest: '{{os_homedir}}/{{ user.name }}/.latexmkrc'
+        dest: '{{ os_homedir }}/{{ user.name }}/.latexmkrc'
         owner: '{{ user.name }}'
         group: '{{ user.group_name }}'
         mode: 0644

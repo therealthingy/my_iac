@@ -21,17 +21,9 @@
 
         # --  System info  --
         - name: Determine CPU architecture   # (NOTE: on GNU/Linux deb cpu arch)
-          block:
-            - name: '[Debian/Ubuntu]'
-              ansible.builtin.shell: dpkg --print-architecture            # ALTERNATIVE for arch.: ansible_architecture
-              register: result_deb_architecture                           # We need 2 different vars (https://github.com/ansible/ansible/issues/15710)
-              changed_when: false
-              when: ansible_facts.os_family != 'Darwin'
-            - name: '[Darwin]'
-              ansible.builtin.shell: uname -m
-              register: result_cpu_architecture
-              changed_when: false
-              when: ansible_facts.os_family == 'Darwin'
+          ansible.builtin.shell: "{{ 'dpkg --print-architecture' if ansible_facts.os_family != 'Darwin' else 'uname -m' }}"            # ALTERNATIVE for arch.: ansible_architecture
+          register: result_cpu_architecture                           # We need 2 different vars (https://github.com/ansible/ansible/issues/15710)
+          changed_when: false
 
         - name: '[Debian/Ubuntu]'
           block:
@@ -66,7 +58,7 @@
                   register: result_ubuntu_nmcli
                 - name: Set networking service name
                   ansible.builtin.set_fact:
-                    ubuntu_networking_service: "{% if result_ubuntu_nmcli == 0 %}NetworkManager{% else %}systemd-networkd{% endif %}'"
+                    ubuntu_networking_service: "{{ 'NetworkManager' if result_ubuntu_nmcli == 0 else 'systemd-networkd' }}"
               when: ansible_facts.distribution == 'Ubuntu'
 
             - name: Determine whether running in hypervisor
@@ -99,7 +91,7 @@
           ansible.builtin.set_fact:
             package_manager_become: "{{ 'true' if ansible_facts.os_family != 'Darwin' else 'false' }}"
             os_homedir: "{{ '/home' if ansible_facts.os_family != 'Darwin' else '/Users' }}"
-            cpu_arch: "{{ result_deb_architecture.stdout if ansible_facts.os_family != 'Darwin' else result_cpu_architecture.stdout }}"
+            cpu_arch: '{{ result_cpu_architecture.stdout }}'
             user:
               name: '{{ result_username.stdout }}'
               group_name: "{{ result_username.stdout if ansible_facts.os_family != 'Darwin' else 'staff' }}"
@@ -113,10 +105,10 @@
 #-  ansible.builtin.debug:
 #    msg:
 #      user={{ user }},
-#      docker_gid={{ docker_gid }},
-#      www_user={{ www_user }},
 #      cpu_arch={{ cpu_arch }},
-#      kernel_release={{ kernel_release }},
-#      hw_is_rpi={{ hw_is_rpi }},
-#      networking_service={{ networking_service }},
-#      hypervisor={{ hypervisor }}
+##      hw_is_rpi={{ hw_is_rpi }},
+##      www_user={{ www_user }},
+##      kernel_release={{ kernel_release }},
+##      docker_gid={{ docker_gid }},
+##      networking_service={{ networking_service }},
+##      hypervisor={{ hypervisor }}
