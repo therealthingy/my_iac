@@ -25,6 +25,13 @@
             creates: /Library/TeX/texbin/latexmk
           become: true
       when: ansible_facts.os_family == 'Darwin'
+
+    - name: Install make
+      ansible.builtin.package:
+        name:
+          - make
+          - cmake
+      become: '{{ package_manager_become }}'
   become: false
 
 
@@ -33,55 +40,43 @@
 #   `latexmk -C`
 - name: Install + configure latexmk
   block:
-    - name: Install
+    - name: Install                        # Can't be installed not in user-mode (which is the only mode in Debian)
+      ansible.builtin.include_tasks: package-latex-install_globally.yml
+      vars:
+        latex_package: latexmk
+    - name: Install + configure auto-reloading pdf reader
       block:
         - name: '[Debian/Ubuntu]'
           ansible.builtin.apt:
-            name:
-              - latexmk                          # Can't be installed not in usermode (which is the only mode in Debian)
-              - evince                           # Auto-reload pdf reader
+            name: evince
           become: true
           when: ansible_facts.os_family != 'Darwin'
         - name: '[Darwin]'
           block:
-            - name: Skim (auto-reload pdf reader)
-              block:
-                - name: Install
-                  ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
-                  vars:
-                    packages_homebrew_casks:
-                      - dir: Office/LaTeX
-                        packages:
-                          - skim
-                - name: Config
-                  community.general.osx_defaults:
-                    domain: net.sourceforge.skim-app.skim
-                    key: '{{ skin_conf_item.key }}'
-                    type: '{{ skin_conf_item.type }}'
-                    value: '{{ skin_conf_item.value }}'
-                    state: present
-                  with_items:
-                    - key: 'SKAutoReloadFileUpdate'         # Auto reload file when changed  (in case it doesn't work: Skim -> Preferences -> Sync -> Check 4 file changes + Reload automatically)
-                      value: 'true'
-                      type: 'boolean'
-                    - key: 'SKInvertColorsInDarkMode'       # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
-                      value: 'true'
-                      type: 'bool'
-                    # OPTIONAL: View -> Hide Contents Pane + Hide Notes Pane
-                  loop_control:
-                    loop_var: skin_conf_item
-            - name: latexmk
-              block:
-                - name: Determine whether already installed
-                  ansible.builtin.command: which latexmk
-                  failed_when: false
-                  changed_when: false
-                  check_mode: false
-                  register: result_latexmk_command
-                - name: Install
-                  ansible.builtin.command: tlmgr install latexmk
-                  become: true
-                  when: result_latexmk_command.rc != 0
+            - name: Install
+              ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
+              vars:
+                packages_homebrew_casks:
+                  - dir: Office/LaTeX
+                    packages:
+                      - skim
+            - name: Config
+              community.general.osx_defaults:
+                domain: net.sourceforge.skim-app.skim
+                key: '{{ skin_conf_item.key }}'
+                type: '{{ skin_conf_item.type }}'
+                value: '{{ skin_conf_item.value }}'
+                state: present
+              with_items:
+                - key: 'SKAutoReloadFileUpdate'         # Auto reload file when changed  (in case it doesn't work: Skim -> Preferences -> Sync -> Check 4 file changes + Reload automatically)
+                  value: 'true'
+                  type: 'boolean'
+                - key: 'SKInvertColorsInDarkMode'       # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
+                  value: 'true'
+                  type: 'bool'
+                # OPTIONAL: View -> Hide Contents Pane + Hide Notes Pane
+              loop_control:
+                loop_var: skin_conf_item
           become: false
           when: ansible_facts.os_family == 'Darwin'
     - name: Config
@@ -92,6 +87,15 @@
         group: '{{ user.group_name }}'
         mode: 0644
   become: false
+
+
+- name: Install packages (globally)      # Can't be installed in user-mode
+  ansible.builtin.include_tasks: package-latex-install_globally.yml
+  loop_control:
+    loop_var: latex_package
+  with_items:
+    - xindy
+    - biber
 
 
 # Derived from: https://github.com/zestedesavoir/ansible-zestedesavoir/blob/main/roles/latex/tasks/packages.yml
@@ -108,7 +112,8 @@
       ansible.builtin.shell: >
         texlive_year=$(tlmgr --version) &&
         texlive_year=$(echo -n $texlive_year | tail -c 4) &&
-        tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/$texlive_year/tlnet-final
+        tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/$texlive_year/tlnet-final &&
+        updmap-user
       when:
         - ansible_facts.os_family != 'Darwin'
         - tlmgr_usertree_created.changed == True
@@ -118,9 +123,8 @@
       register: tlmgr_usertree_packages
     - name: Update + Install packages    # VERIFY: `tlmgr list`
       ansible.builtin.shell: >
-        updmap-user &&
-        tlmgr update --list &&
-        tlmgr install {{ ' '.join(latex_packages) }} &&
+        tlmgr --usermode update --list &&
+        tlmgr --usermode install {{ ' '.join(latex_packages) }} &&
         echo {{ ' '.join(latex_packages) }} > {{ tlmgr_usertree }}/ansible-state
       when: tlmgr_usertree_packages.content is not defined  or  tlmgr_usertree_packages.content|b64decode|trim != latex_packages|join(" ")
   become: false

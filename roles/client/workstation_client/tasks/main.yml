@@ -8,6 +8,7 @@
           - dir: Audio
             packages:
               - mediahuman-audio-converter
+#              - musicbrainz-picard
               - ocenaudio
 #              - xld                                              # TODO
 #              - mediainfo

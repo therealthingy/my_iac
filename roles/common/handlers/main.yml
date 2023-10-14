@@ -1,12 +1,12 @@
 ---
 - name: restart ssh daemon
   block:
-    - name: '[Debian/Ubuntu]'
+    - name: restart ssh daemon
       ansible.builtin.service:
         name: sshd
         state: restarted
       when: ansible_facts.os_family != 'Darwin'
-    - name: '[Darwin]'
+    - name: restart ssh daemon
       community.general.launchd:
         name: com.openssh.sshd
         state: restarted
