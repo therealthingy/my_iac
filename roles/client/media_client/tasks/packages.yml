@@ -27,8 +27,8 @@
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Video
             packages:
-              - 'iina'
-              - 'vlc'
+              - iina
+              - vlc
     - name: '[Debian/Ubuntu] Install flatpak packages'
       community.general.flatpak:
         name:

@@ -12,12 +12,13 @@
       loop_control:
         loop_var: homebrew_cask_dir
       become: false
+      when: homebrew_cask.0.dir is defined and homebrew_cask.0.dir
 
-    - name: Install packages
+    - name: Install packages                                  # TODO: Use `geerlingguy.mac.homebrew`
       community.general.homebrew_cask:
         name: '{{ homebrew_cask.1 }}'
         state: latest
-        install_options: 'appdir=/Applications/{{ homebrew_cask.0.dir }}'
+        install_options: 'appdir=/Applications/{{ homebrew_cask.0.dir if homebrew_cask.0.dir is defined  and homebrew_cask.0.dir else "" }}'
       with_subelements:
         - '{{ packages_homebrew_casks }}'
         - packages

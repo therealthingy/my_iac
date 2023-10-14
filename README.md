@@ -34,7 +34,12 @@
 
 ### General
 #### Darwin
-* Install apps from Mac App Store
+* Mac App Store apps:
+  * Uninstall iMovie, Pages, , Numbers, GarageBand
+  * Install Keynote, dict.cc, DjVu Viewer + DjVu to PDF
+
+* Install X11
+
 * SW:
   * https://github.com/Lymphatus/caesium-image-compressor  (once stable)
   * Android emulator 4 Whatsapp  (BlueStacks ??)

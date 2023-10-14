@@ -157,15 +157,16 @@
         name:
           - coreutils                     # `shred`
           - ccrypt                        # ENCs/DECs files/streams
-    - name: Install cryptomator         # TODO: Add flatpak counterpart 4 linux & check whether VM
-      block:
-        - name: '[Darwin] Install homebrew package'
-          ansible.builtin.include_tasks: ../../client/base/tasks/darwin/install_homebrew_casks.yml
-          vars:
-            packages_homebrew_casks:
-              - dir: Privacy
-                packages:
-                  - 'cryptomator'
+    - name: '[Darwin] Install homebrew package'
+      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/install_homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:           # TODO: Add flatpak counterpart 4 linux & check whether VM
+          - dir: Privacy
+            packages:
+              - cryptomator
+          - packages:                 # Need 2 be in base-dir
+            - little-snitch
+            - tunnelblick
 
     - name: '[Darwin / Debian/Ubuntu] hblock'
       block:
@@ -190,9 +191,9 @@
                 group: wheel
                 mode: 0755
               with_items:
-                - 'header'
-                - 'blacklist.list'
-                - 'whitelist.list'
+                - header
+                - blacklist.list
+                - whitelist.list
               loop_control:
                 loop_var: config_file
             - name: Setup cron job
@@ -275,10 +276,10 @@
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Maintenance
             packages:
-              - 'appcleaner'
-              - 'omnidisksweeper'
-              - 'onyx'
-#              - 'aldente'                                          # TODO
+              - appcleaner
+              - omnidisksweeper
+              - onyx
+#              - aldente                                          # TODO
 
 
 - name: Install virtualization tools
@@ -289,8 +290,8 @@
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Tools/Virtualization
             packages:
-              - 'vmware-fusion'     # TODO: Install w/ option `--no-quarantine`, otherwise: '“vmware-id” is an app downloaded from the Internet. Are you sure you want to open it?'
-#              - 'utm'
+              - vmware-fusion     # TODO: Install w/ option `--no-quarantine`, otherwise: '“vmware-id” is an app downloaded from the Internet. Are you sure you want to open it?'
+#              - utm
 
 
 - name: Install misc tools
@@ -301,11 +302,11 @@
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Misc
             packages:
-              - 'apparency'
-              - 'istat-menus'
-              - 'prefs-editor'
-              - 'qlmarkdown'
-              - 'raycast'
+              - apparency
+              - istat-menus
+              - prefs-editor
+              - qlmarkdown
+              - raycast
 
 
 
@@ -320,7 +321,7 @@
   become: false
   with_items:
     # tmux
-    - src: 'tmux.conf'
-      dest: '{{os_homedir}}/{{ user.name }}/.tmux.conf'
+    - src: tmux.conf
+      dest: '{{ os_homedir }}/{{ user.name }}/.tmux.conf'
   loop_control:
     loop_var: common_package_file

@@ -7,7 +7,7 @@
         packages_homebrew_casks:
           - dir: Network
             packages:
-              - 'wireshark'
+              - wireshark
     - name: '[Debian/Ubuntu] Install apt packages'
       ansible.builtin.apt:
         name:
@@ -25,9 +25,9 @@
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Development/DB
             packages:
-              - 'db-browser-for-sqlite'
-              - 'mysqlworkbench'
-              - 'sequel-ace'
+              - db-browser-for-sqlite
+              - mysqlworkbench
+              - sequel-ace
     - name: '[Debian/Ubuntu] Install flatpak packages'
       community.general.flatpak:
         name:
@@ -46,8 +46,8 @@
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Development/Editors
             packages:
-              - 'hex-fiend'
-              - 'sublime-text'
+              - hex-fiend
+              - sublime-text
 
 
 #- name: Install API dev stuff
@@ -75,8 +75,8 @@
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Development
             packages:
-              - 'sourcetree'
-              - 'iterm2'
+              - sourcetree
+              - iterm2
 #    - name: '[Debian/Ubuntu] Install flatpak packages'
 #      community.general.flatpak:
 #        name:
