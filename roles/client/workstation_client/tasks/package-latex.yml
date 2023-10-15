@@ -4,7 +4,7 @@
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
-          - texlive-latex-extra              # OG: `texlive-full` (too large)    (OVERVIEW different versions: https://tex.stackexchange.com/a/504566)
+          - texlive-full #texlive-latex-base #extra              # TODO: Use -extra version    (OVERVIEW different versions: https://tex.stackexchange.com/a/504566)
         state: present
       when: ansible_facts.os_family != 'Darwin'
       become: true
@@ -12,12 +12,12 @@
     - name: '[Darwin]'
       block:
         - name: '[Darwin] Install homebrew packages'
-          ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
           vars:
             packages_homebrew_casks:
               - dir: Office/LaTeX
                 packages:
-                  - basictex
+                  - mactex # basictex
                   - bibdesk
         - name: '[Darwin] Install latexmk'
           ansible.builtin.shell: tlmgr install latexmk
@@ -54,7 +54,7 @@
         - name: '[Darwin]'
           block:
             - name: Install
-              ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
+              ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
               vars:
                 packages_homebrew_casks:
                   - dir: Office/LaTeX
@@ -89,43 +89,51 @@
   become: false
 
 
-- name: Install packages (globally)      # Can't be installed in user-mode
-  ansible.builtin.include_tasks: package-latex-install_globally.yml
-  loop_control:
-    loop_var: latex_package
-  with_items:
-    - xindy
-    - biber
-
-
-# Derived from: https://github.com/zestedesavoir/ansible-zestedesavoir/blob/main/roles/latex/tasks/packages.yml
-- name: Install packages (in user mode)
-  block:
-    - ansible.builtin.set_fact:
-        tlmgr_usertree: "{{ os_homedir }}/{{ user.name }}/{{ 'Library' if ansible_facts.os_family == 'Darwin' else '' }}/texmf"
-    - name: Create tlmgr usertree
-      ansible.builtin.command: tlmgr init-usertree
-      args:
-        creates: '{{ tlmgr_usertree }}'
-      register: tlmgr_usertree_created
-    - name: Setup             # VERIFY: `tlmgr repository list`  (NOTE: macOS always installs the latest version which is compatible w/ the default repo)
-      ansible.builtin.shell: >
-        texlive_year=$(tlmgr --version) &&
-        texlive_year=$(echo -n $texlive_year | tail -c 4) &&
-        tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/$texlive_year/tlnet-final &&
-        updmap-user
-      when:
-        - ansible_facts.os_family != 'Darwin'
-        - tlmgr_usertree_created.changed == True
-    - name: Determine installed packages
-      ansible.builtin.slurp: 'src={{ tlmgr_usertree }}/ansible-state'
-      failed_when: false
-      register: tlmgr_usertree_packages
-    - name: Update + Install packages    # VERIFY: `tlmgr list`
-      ansible.builtin.shell: >
-        tlmgr --usermode update --list &&
-        tlmgr --usermode install {{ ' '.join(latex_packages) }} &&
-        echo {{ ' '.join(latex_packages) }} > {{ tlmgr_usertree }}/ansible-state
-      when: tlmgr_usertree_packages.content is not defined  or  tlmgr_usertree_packages.content|b64decode|trim != latex_packages|join(" ")
-  become: false
-  when: latex_packages is defined and latex_packages|length > 0
+# TODO: Following tasks are only required when using 'smaller' distro
+#- name: Install packages (globally)      # Can't be installed in user-mode
+#  ansible.builtin.include_tasks: package-latex-install_globally.yml
+#  loop_control:
+#    loop_var: latex_package
+#  with_items:
+#    - xindy
+#    - biber
+#
+#
+## Derived from: https://github.com/zestedesavoir/ansible-zestedesavoir/blob/main/roles/latex/tasks/packages.yml
+#- name: Install packages (in user mode)
+#  block:
+#    - ansible.builtin.set_fact:
+#        tlmgr_usertree: "/{{ os_homedir }}/{{ user.name }}/{{ 'Library' if ansible_facts.os_family == 'Darwin' else '' }}/texmf"
+#    - name: Setup (I)
+#      ansible.builtin.command: tlmgr init-usertree
+#      args:
+#        creates: '{{ tlmgr_usertree }}'
+#      register: tlmgr_usertree_created
+#    - name: Setup (II)             # VERIFY: `tlmgr repository list`  (NOTE: macOS always installs the latest version which is compatible w/ the default repo)
+#      block:
+#        - name: Set repo
+#          ansible.builtin.shell: >
+#            texlive_year=$(tlmgr --version) &&
+#            texlive_year=$(echo -n $texlive_year | tail -c 4) &&
+#            tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/$texlive_year/tlnet-final
+#          when: ansible_facts.os_family != 'Darwin'
+#        - name: Switch 2 usermode
+#          ansible.builtin.shell: updmap-user
+#        - name: '[Darwin] Fix missing backup dir'
+#          ansible.builtin.file:
+#            path: '{{ tlmgr_usertree }}/tlpkg/backups'
+#            state: directory
+#          when: ansible_facts.os_family == 'Darwin'
+#      when: tlmgr_usertree_created.changed == True
+#    - name: Determine installed packages
+#      ansible.builtin.slurp: 'src={{ tlmgr_usertree }}/ansible-state'
+#      failed_when: false
+#      register: tlmgr_usertree_packages
+#    - name: Update + Install packages    # VERIFY: `tlmgr list`
+#      ansible.builtin.shell: >
+#        tlmgr --usermode update --list &&
+#        tlmgr --usermode install {{ ' '.join(latex_packages) }} &&
+#        echo {{ ' '.join(latex_packages) }} > {{ tlmgr_usertree }}/ansible-state
+#      when: tlmgr_usertree_packages.content is not defined  or  tlmgr_usertree_packages.content|b64decode|trim != latex_packages|join(" ")
+#  become: false
+#  when: latex_packages is defined and latex_packages|length > 0

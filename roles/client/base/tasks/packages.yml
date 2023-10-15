@@ -139,9 +139,6 @@
           - ocrmypdf              # NOTE: Based on tesseract (and its lang packs -> e.g., `ocrmypdf -l eng+deu …`)
           - img2pdf
 
-    - name: Install Latex
-      ansible.builtin.include_tasks: package-latex.yml
-
     - name: '[Debian/Ubuntu] Install vscodium'
       ansible.builtin.include_tasks: linux/package-vscodium.yml
       when: ansible_facts.os_family != 'Darwin'

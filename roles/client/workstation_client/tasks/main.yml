@@ -109,6 +109,10 @@
               - bitwarden
 
 
+- name: Install Latex
+  ansible.builtin.include_tasks: package-latex.yml
+
+
 
 
 - name: 'Apps: config'
