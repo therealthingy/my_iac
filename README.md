@@ -1,4 +1,4 @@
-# Playbook for GNU/Linux (currently only Debian based) machines
+# Ansible playbook for setting up my machines
 
 
 
@@ -88,7 +88,6 @@
 
 
 ### *dev-client*
-* initial setup: Muting audio doesn't work  (4 some reason ??!)
 * not indempotent ISSUE:
    * Firefox settings after restart
    * TASK [petermosmans.customize-gnome : Download GNOME Shell extensions]
@@ -116,7 +115,8 @@
 
 
 
-## Setup steps
+## "Usage"
+### Pre ansible-run setup steps
 * Install "dependencies" for playbook: **`ansible-galaxy install -r requirements.yml`**
 * OPTIONAL: Add own systems to be managed in dedicated local inventory:
   * `cp inventory.yml ~/.ansible-inventory.yml`
@@ -130,7 +130,7 @@
       * (1.3.) Copy new key to new system: **`ssh-copy-id -i ~/.ssh/<identity-file>.pub <user>@<ip>`**
       * (1.4.) IF SSH PORT SHALL BE CHANGED: Add AFTER initial ansible run: `Port 2233`
 
-## RUN Playbook
+### RUN Playbook
 * Cache SSH passphrase: `eval `ssh-agent` && ssh-add ~/.ssh/<cert-file>`
 * Exec 4 specific client: **`ansible-playbook --vault-pass-file ~/.ansible-vault main.yml`**
   * Flags:
@@ -142,7 +142,7 @@
     * `-e "<key>=<value>"`: Overwrite vars
     * `--list-hosts`: Only list matching hosts
 
-### POST ansible run (i.e., not automated steps)
+#### POST ansible run (i.e., not automated steps)
 * *Home servers*:
   * traefik: SSL certs gen
   * transmission & samba: Directory structure (e.g., on (encrypted luks) sparse file)
