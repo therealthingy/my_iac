@@ -29,7 +29,17 @@
 ## TODOs
 * Debian:
   * Nautilus show hidden not working
-* LaTeX
+  * GNOME display desktop icons using an extension OR nemo
+  * Weird issue:
+    ```
+    ❯ echo $XDG_SESSION_TYPE
+    wayland
+    ❯ xdg-open .latexmkrc
+    ~  Authorization required, but no authorization protocol specified
+   [3030:1018/155622.586976:ERROR:ozone_platform_x11.cc(240)] Missing X server or $DISPLAY
+   [3030:1018/155622.587008:ERROR:env.cc(255)] The platform failed to initialize.  Exiting.
+   The futex facility returned an unexpected error code.
+   ```
 
 
 ### General
