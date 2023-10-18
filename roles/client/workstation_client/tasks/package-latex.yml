@@ -5,7 +5,7 @@
       ansible.builtin.apt:
         name:
           - texlive-full #texlive-latex-base #extra              # TODO: Use -extra version    (OVERVIEW different versions: https://tex.stackexchange.com/a/504566)
-          - xindy       # TODO: REVISE (mac distro includes it, linux distro not)
+          - xindy       # TODO: REVISE (mac distro includes it, linux distro doesn't)
         state: present
       when: ansible_facts.os_family != 'Darwin'
       become: true

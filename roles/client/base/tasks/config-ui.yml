@@ -263,8 +263,8 @@
       become: false
 
     - name: Set installed apps as default
-      ansible.builtin.copy:
-        src: linux/gnome-registered_default_apps.list
+      ansible.builtin.template:
+        src: linux/gnome-registered_default_apps.list.j2
         dest: '/home/{{ user.name }}/.config/mimeapps.list'
       become: false
   when:
