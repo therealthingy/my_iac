@@ -26,6 +26,10 @@ if [ -f /var/run/reboot-required ]; then
   echo ""
 fi
 
+if [ -f /run/systemd/shutdown/scheduled ]; then
+  echo -ne "\033[1;31mScheduled $(sed -n 3p /run/systemd/shutdown/scheduled |cut -c6-) @ $(date --date @$(head -1 /run/systemd/shutdown/scheduled |cut -c6-15))\033[0m\n"
+fi
+
 top -bn1 | grep load | awk '{printf "CPU Load: %.2f", $(NF-2)}'
 {% if hw_is_rpi == True %}
 awk '{printf(", temperature: %.1f°C",$1/1e3)}' /sys/class/thermal/thermal_zone0/temp

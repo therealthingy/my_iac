@@ -366,6 +366,8 @@
 
 
 
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
 # Must be enabled via: System Settings -> Privacy & Security -> Extensions -> Finder
 - name: Finder services
   ansible.builtin.copy:
@@ -384,6 +386,7 @@
     loop_var: workflow_file
   become: false
   when: ansible_facts.os_family == 'Darwin'
+
 
 - name: 'Config (changes will take effect after logging in again)'
   community.general.osx_defaults:

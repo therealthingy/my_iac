@@ -1,116 +1,108 @@
 ---
-- name: Install audio apps      # TODO: Mv in `media_client` role
+- name: Install packages
   block:
-    - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Audio
-            packages:
-              - mediahuman-audio-converter
-#              - musicbrainz-picard
-              - ocenaudio
-#              - xld                                              # TODO
-#              - mediainfo
+    - name: Install audio apps      # TODO: Mv in `media_client` role
+      block:
+        - name: '[Darwin] Install homebrew packages'
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          vars:
+            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+              - dir: Audio
+                packages:
+                  - mediahuman-audio-converter
+#                  - musicbrainz-picard
+                  - ocenaudio
+#                  - xld                                              # TODO
+#                  - mediainfo
 
+    - name: Install note taking apps
+      block:
+        - name: '[Darwin] Install homebrew packages'
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          vars:
+            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+              - dir: Notes
+                packages:
+                  - fsnotes
+                  - joplin
 
-- name: Install note taking apps
-  block:
-    - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Notes
-            packages:
-              - fsnotes
-              - joplin
+    - name: Install design apps
+      block:
+        - name: '[Darwin] Install homebrew packages'
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          vars:
+            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+              - dir: Design
+                packages:
+                  - inkscape
+                  - paintbrush
+                  - imageoptim
 
+    - name: 'Install "services" apps'
+      block:
+        - name: '[Darwin] Install homebrew packages'
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          vars:
+            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+              - dir: Internet/Services
+                packages:
+                  - eddie
+                  - maestral
 
-- name: Install design apps
-  block:
-    - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Design
-            packages:
-              - inkscape
-              - paintbrush
-              - imageoptim
+#    - name: Install streaming apps      # TODO: Mv in `media_client` role
+#      block:
+#        - name: '[Darwin] Install homebrew packages'
+#          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+#          vars:
+#            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+#              - dir: Music
+#                packages: ['spotify']                                  # TODO:
 
+    - name: Install social stuff
+      block:
+        - name: '[Darwin] Install homebrew packages'
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          vars:
+            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+              - dir: Social
+                packages: ['signal']
 
+    - name: 'Install "conferencing" apps'
+      block:
+        - name: '[Darwin] Install homebrew packages'
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          vars:
+            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+              - dir: Internet/Conferencing
+                packages: ['discord']                                   # 'textual'  (IRC client)
 
-- name: 'Install "services" apps'
-  block:
-    - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Internet/Services
-            packages:
-              - eddie
-              - maestral
+    - name: 'Install "inet" tools'
+      block:
+        - name: '[Darwin] Install homebrew packages'
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          vars:
+            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+              - dir: Internet/Tools
+                packages:
+                  - cyberduck
+                  - netnewswire
+                  - syncthing
+                  - qbittorrent
 
+    - name: Install misc. tools
+      block:
+        - name: '[Darwin] Install homebrew packages'
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          vars:
+            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+              - dir: Tools
+                packages:
+                  - betterdisplay
+                  - keycastr
+                  - bitwarden
 
-#- name: Install streaming apps      # TODO: Mv in `media_client` role
-#  block:
-#    - name: '[Darwin] Install homebrew packages'
-#      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
-#      vars:
-#        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-#          - dir: Music
-#            packages: ['spotify']                                  # TODO:
-
-
-- name: Install social stuff
-  block:
-    - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Social
-            packages: ['signal']
-
-
-- name: 'Install "conferencing" apps'
-  block:
-    - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Internet/Conferencing
-            packages: ['discord']                                   # 'textual'  (IRC client)
-
-
-- name: 'Install "inet" tools'
-  block:
-    - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Internet/Tools
-            packages:
-              - cyberduck
-              - netnewswire
-              - syncthing
-              - qbittorrent
-
-
-- name: Install misc. tools
-  block:
-    - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Tools
-            packages:
-              - betterdisplay
-              - keycastr
-              - bitwarden
-
-
-- name: Install Latex
-  ansible.builtin.include_tasks: package-latex.yml
+    - name: Install Latex
+      ansible.builtin.include_tasks: package-latex.yml
 
 
 

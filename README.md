@@ -45,14 +45,14 @@
 ### General
 #### Darwin
 * [Mac App Store apps](https://github.com/mas-cli/mas/blob/main/README.md):
-  * Uninstall iMovie, Pages, , Numbers, GarageBand
+  * Uninstall iMovie, Pages, Numbers, GarageBand
   * Install Keynote, dict.cc, DjVu Viewer + DjVu to PDF
 
 * Install X11
 
 * SW:
   * https://github.com/Lymphatus/caesium-image-compressor  (once stable)
-  * Android emulator 4 Whatsapp  (BlueStacks ??)
+
 
 ##### OS setup
 * SYSTEM:
@@ -76,6 +76,7 @@
     `defaults write com.apple.screencapture type JPG` (JPG, PNG, TIFF, PDF)
   * **Disable shadow for window Screenshots** (via `Command + Shift + 4` &rarr; `Space`):
     `defaults write com.apple.screencapture disable-shadow -bool TRUE; killall SystemUIServer`
+
 
 ##### Apps
 * **Blackhole**: Record Sysaudio

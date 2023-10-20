@@ -5,14 +5,14 @@
 
 - name: Configure git (II)
   community.general.git_config:
-    name:  '{{ git_config_var.name }}'
-    value:  '{{ git_config_var.value }}'
-    scope:  '{{ git_config_var.scope }}'
+    name: '{{ git_config_var.name }}'
+    value: '{{ git_config_var.value }}'
+    scope: '{{ git_config_var.scope }}'
   with_items:
-    - name: 'user.name'
+    - name: user.name
       value: '{{ git_config.name }}'
       scope: global
-    - name: 'user.email'
+    - name: user.email
       value: '{{ git_config.email }}'
       scope: global
   loop_control:

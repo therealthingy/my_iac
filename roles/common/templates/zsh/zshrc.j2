@@ -132,6 +132,9 @@ fi
 ################################################################################################
 # --- Misc.
 ################################################################################################
+# - Completions
+autoload -Uz compinit && compinit
+
 {% if ansible_facts.os_family == 'Darwin' and cpu_arch == 'arm64' %}
 # -- homebrew (due 2 ARM) --
 export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH
@@ -142,9 +145,8 @@ export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH
 export XAUTHORITY=$HOME/.Xauthority
 {% endif %}
 
-## - zsh-integrations
+## - iTerm integration
 #test -e "${ZDOTDIR}/.iterm2_shell_integration.zsh" && source "${ZDOTDIR}/.iterm2_shell_integration.zsh"
-#source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # -- !! TODO: SHOULD BE GLOBAL !! --
 export PATH="$HOME/.local/bin:$PATH"       # NOTE: ~/.local/bin contains Python pip stuff
