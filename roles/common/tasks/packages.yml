@@ -94,7 +94,7 @@
     - name: '[Darwin / Debian/Ubuntu]'
       ansible.builtin.include_tasks: '{{ item }}'
       loop:
-        - package-ssh.yml
+        - ssh.yml
         - package-zsh.yml
         - packages-python.yml
 #         - linux/package-nala.yml

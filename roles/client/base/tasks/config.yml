@@ -388,6 +388,25 @@
   when: ansible_facts.os_family == 'Darwin'
 
 
+# TODO: Merge following stuff w/ GNU/Linux based on type using `block`
+
+
+
+
+- name: Set wallpaper
+  block:
+    - name: Get current wallpaper
+      ansible.builtin.shell: osascript -e 'tell app "Finder" to get posix path of (get desktop picture as alias)'
+      register: result_current_wallpaper
+      failed_when: false
+      changed_when: false     # NOTE: Doesn't work seem 2 work w/ dynamic wallpapers or Ventura live wallpapers
+    - name: Set new wallpaper
+      ansible.builtin.command: osascript -e 'tell app "Finder" to set desktop picture to POSIX file "{{ wallpaper }}"'
+      when: result_current_wallpaper.rc != 0  or  wallpaper != result_current_wallpaper.stdout
+  become: false
+  when: ansible_facts.os_family == 'Darwin'
+
+
 - name: 'Config (changes will take effect after logging in again)'
   community.general.osx_defaults:
     domain: '{{ item.domain }}'
@@ -396,13 +415,246 @@
     value: '{{ item.value }}'
     state: present
   with_items:
-    - domain: 'com.apple.Dock'        # Apps hidden in Dock;          TODO: `killall Dock`
+    # --  UI/UX  --
+    - domain: 'com.apple.PowerChime'                 # Disable startup chime;  TODO: `killall PowerChime`
+      key: 'ChimeOnNoHardware'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'NSGlobalDomain'                       # Expand save panel by default
+      key: 'NSNavPanelExpandedStateForSaveMode'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'NSGlobalDomain'                       # Expand print panel by default
+      key: 'PMPrintingExpandedStateForPrint'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'NSGlobalDomain'                       # Save to disk (not to iCloud) by default
+      key: 'NSDocumentSaveNewDocumentsToCloud'
+      value: 'false'
+      type: 'boolean'
+    - domain: 'com.apple.print.PrintingPrefs'        # Automatically quit printer app once the print jobs complete
+      key: 'Quit When Finished'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'NSGlobalDomain'                       # Disable smart quotes
+      key: 'NSAutomaticQuoteSubstitutionEnabled'
+      value: 'false'
+      type: 'boolean'
+    - domain: 'NSGlobalDomain'                       # Disable smart dashes
+      key: 'NSAutomaticDashSubstitutionEnabled'
+      value: 'false'
+      type: 'boolean'
+    # --  Trackpad, mouse, keyboard, Bluetooth accessories, & input  --
+    - domain: 'NSGlobalDomain'                       # ENABLE press-and-hold (e.g., ń popup after long pressing n, …) for keys in favor of key repeat
+      key: 'ApplePressAndHoldEnabled'
+      value: 'true'
+      type: 'boolean'
+      # Set a blazingly fast keyboard repeat rate, and make it happen more quickly   (doesn't make a difference as of now, as press-and-hold is enabled)
+    - domain: 'NSGlobalDomain'
+      key: 'InitialKeyRepeat'
+      value: '20'
+      type: 'int'
+    - domain: 'NSGlobalDomain'
+      key: 'KeyRepeat'
+      value: '1'
+      type: 'int'
+    # Disable auto-correct
+    - domain: 'NSGlobalDomain'
+      key: 'NSAutomaticSpellingCorrectionEnabled'
+      value: 'false'
+      type: 'boolean'
+    # --  Screen  --
+#    - domain: 'com.apple.screencapture'              # Save screenshots to Downloads folder
+#      key: 'location'
+#      value: '/Users/{{ user.name }}/Downloads'
+#      type: 'string'
+#    - domain: 'com.apple.screencapture'              # Save screenshots in PNG format
+#      key: 'type'
+#      value: 'png'                                   # Other options: BMP, GIF, JPG, PDF, TIFF
+#      type: 'string'
+#    - domain: 'com.apple.screencapture'              # Disable shadow in screenshots;     TODO: `killall SystemUIServer`
+#      key: 'disable-shadow'
+#      value: 'true'
+#      type: 'boolean'
+    # --  Finder  --
+    - domain: 'com.apple.finder'                      # Set Downloads as the default location for new Finder windows
+      key: 'NewWindowTarget'
+      value: 'PfLo'
+      type: 'string'
+    - domain: 'com.apple.finder'
+      key: 'NewWindowTargetPath'
+      value: 'file:///Users/{{ user.name }}/Downloads/'
+      type: 'string'
+    # Show icons for hard drives, servers, and removable media on the desktop
+    - domain: 'com.apple.finder'
+      key: 'ShowExternalHardDrivesOnDesktop'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'com.apple.finder'
+      key: 'ShowHardDrivesOnDesktop'
+      value: 'false'
+      type: 'boolean'
+    - domain: 'com.apple.finder'
+      key: 'ShowMountedServersOnDesktop'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'com.apple.finder'
+      key: 'ShowRemovableMediaOnDesktop'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'com.apple.finder'                      # Finder: show hidden files by default
+      key: 'AppleShowAllFiles'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'NSGlobalDomain'                        # Finder: show all filename extensions
+      key: 'AppleShowAllExtensions'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'com.apple.finder'                      # Disable the warning when changing a file extension
+      key: 'FXEnableExtensionChangeWarning'
+      value: 'false'
+      type: 'boolean'
+    - domain: 'com.apple.finder'                      # Finder: DON'T show status bar
+      key: 'ShowStatusBar'
+      value: 'false'
+      type: 'boolean'
+    - domain: 'com.apple.finder'                      # Finder: allow text selection in Quick Look
+      key: 'QLEnableTextSelection'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'com.apple.finder'                      # DON'T Display full POSIX path as Finder window title
+      key: '_FXShowPosixPathInTitle'
+      value: 'false'
+      type: 'boolean'
+    - domain: 'NSGlobalDomain'                        # Enable spring loading for directories
+      key: 'com.apple.springing.enabled'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'NSGlobalDomain'                        # Remove the spring loading delay for directories
+      key: 'com.apple.springing.delay'
+      value: '0.1'
+      type: 'float'
+    - domain: 'com.apple.desktopservices'             # Avoid creating .DS_Store files on network volumes
+      key: 'DSDontWriteNetworkStores'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'com.apple.finder'                      # Use column view in all Finder windows by default
+      key: 'FXPreferredViewStyle'
+      value: 'clmv'                                   # 4-letter codes for the other view modes: `icnv`, `Nlsv`, `clmv`, `Flwv`
+      type: 'string'
+    # --  Dock, Dashboard, & hot corners  --
+    - domain: 'com.apple.Dock'                       # Make Dock icons of hidden applications translucent;  TODO: `killall Dock`
       key: 'showhidden'
       value: 'true'
       type: 'boolean'
-    - domain: 'com.apple.dock'        # Eliminate Dock reveal delay
+    - domain: 'com.apple.dock'                       # Eliminate Dock reveal delay
       key: 'autohide-time-modifier'
       value: '0'
       type: 'int'
+    - domain: 'com.apple.dock'                       # Set the icon size of Dock items
+      key: 'tilesize'
+      value: '22'
+      type: 'int'
+    - domain: 'com.apple.dock'                       # Speed up Mission Control animations
+      key: 'expose-animation-duration'
+      value: '0.15'
+      type: 'float'
+    - domain: 'com.apple.universalaccess'            # DISABLE the 'reduce transparency' option (wastes more GPU cycles, but looks slick)
+      key: 'reduceTransparency'
+      value: 'false'
+      type: 'boolean'
+    # Hot corners
+    # Possible values:
+    #  0: no-op
+    #  2: Mission Control
+    #  3: Show application windows
+    #  4: Desktop
+    #  5: Start screen saver
+    #  6: Disable screen saver
+    #  7: Dashboard
+    # 10: Put display to sleep
+    # 11: Launchpad
+    # 12: Notification Center
+    # Bottom right screen corner → Mission Control
+    - domain: 'com.apple.dock'
+      key: 'wvous-br-corner'
+      value: '0'
+      type: 'int'
+    - domain: 'com.apple.dock'
+      key: 'wvous-br-modifier'
+      value: '0'
+      type: 'int'
+    - domain: 'com.apple.dock'
+      key: 'wvous-tr-corner'
+      value: '0'
+      type: 'int'
+    - domain: 'com.apple.dock'
+      key: 'wvous-tr-modifier'
+      value: '0'
+      type: 'int'
+    - domain: 'com.apple.dock'
+      key: 'wvous-bl-corner'
+      value: '0'
+      type: 'int'
+    - domain: 'com.apple.dock'
+      key: 'wvous-bl-modifier'
+      value: '0'
+      type: 'int'
+#    # --  Safari & WebKit  --                                                # TODO: Doesn't work
+#    # Enable the Develop menu and the Web Inspector in Safari
+#    - domain: 'com.apple.Safari'
+#      key: 'IncludeDevelopMenu'
+#      value: 'true'
+#      type: 'boolean'
+#    - domain: 'com.apple.Safari'
+#      key: 'WebKitDeveloperExtrasEnabledPreferenceKey'
+#      value: 'true'
+#      type: 'boolean'
+#    - domain: 'com.apple.Safari'
+#      key: 'com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled'
+#      value: 'true'
+#      type: 'boolean'
+#    # Add a context menu item for showing the Web Inspector in web views
+#    - domain: 'NSGlobalDomain'
+#      key: 'WebKitDeveloperExtras'
+#      value: 'true'
+#      type: 'boolean'
+#    # --  Mail  --
+#    - domain: 'com.apple.mail'                       # Copy email addresses as `foo@example.com` instead of `Foo Bar <foo@example.com>` in Mail.app
+#      key: 'AddressesIncludeNameOnPasteboard'
+#      value: 'false'
+#      type: 'boolean'
+    # --  Activity Monitor  --
+    - domain: 'com.apple.ActivityMonitor'            # Show the main window when launching Activity Monitor
+      key: 'OpenMainWindow'
+      value: 'true'
+      type: 'boolean'
+    - domain: 'com.apple.ActivityMonitor'            # Show all processes in Activity Monitor
+      key: 'ShowCategory'
+      value: '0'
+      type: 'int'
+    # -- TODO:  Messages  --
+    ## Disable smart quotes as it’s annoying for messages that contain code
+    #defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
+    ## Disable continuous spell checking
+    #defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
   become: false
   when: ansible_facts.os_family == 'Darwin'
+
+
+- name: '[Darwin] `systemsetup` settings'
+  ansible.builtin.include_tasks: darwin/systemsetup.yml
+  loop_control:
+    loop_var: systemsetup_setting
+  with_items:
+    - setting: restartfreeze
+      value: true
+    - setting: computersleep
+      value: 1
+      type: int
+    - setting: harddisksleep
+      value: 0
+      type: string
+    - setting: displaysleep
+      value: 60
+      type: int

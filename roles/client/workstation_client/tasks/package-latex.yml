@@ -13,7 +13,7 @@
     - name: '[Darwin]'
       block:
         - name: '[Darwin] Install homebrew packages'
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks:
               - dir: Office/LaTeX
@@ -55,7 +55,7 @@
         - name: '[Darwin]'
           block:
             - name: Install
-              ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+              ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
               vars:
                 packages_homebrew_casks:
                   - dir: Office/LaTeX

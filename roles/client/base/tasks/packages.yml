@@ -143,7 +143,7 @@
       ansible.builtin.include_tasks: linux/package-vscodium.yml
       when: ansible_facts.os_family != 'Darwin'
     - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
+      ansible.builtin.include_tasks: darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Office
@@ -163,7 +163,7 @@
 - name: Install internet related stuff
   block:
     - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
+      ansible.builtin.include_tasks: darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:
           - dir: Internet/Browsers
@@ -183,7 +183,7 @@
 - name: Install security related stuff
   block:
     - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
+      ansible.builtin.include_tasks: darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:
           - dir: Security
@@ -200,7 +200,7 @@
 - name: Install archiving related stuff
   block:
     - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: darwin/install_homebrew_casks.yml
+      ansible.builtin.include_tasks: darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Package

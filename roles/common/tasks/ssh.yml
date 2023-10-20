@@ -6,14 +6,19 @@
 #    key: {{ user_ssh_key }}
 
 
-- name: Install + change sshd settings
+- name: Install/Enable + change sshd settings
   block:
     - name: Install ssh server
-      ansible.builtin.apt:
-        name: ssh               # Contains server AND client
-      when: ansible_facts.os_family != 'Darwin'
-
-    # TODO: Enable ssh server  (Darwin: `sudo systemsetup -setremotelogin on`)
+      block:
+        - name: '[Debian/Ubuntu]'
+          ansible.builtin.apt:
+            name: ssh               # Contains server AND client
+          when: ansible_facts.os_family != 'Darwin'
+        - name: '[Darwin]'
+          ansible.builtin.include_tasks: ../../client/base/tasks/darwin/systemsetup.yml
+          vars:
+            systemsetup_setting: { setting: remotelogin, value: true }
+          when: ansible_facts.os_family == 'Darwin'
 
     - name: Harden
       block:
@@ -57,17 +62,20 @@
         validate: '/usr/sbin/sshd -T -f %s'
   notify: restart ssh daemon
   become: true
-  when:
-    - sshd_disabled is not defined or not sshd_disabled
-
-    - ansible_facts.os_family != 'Darwin'         # TODO: RMV once ssh added in Darwin
+  when: sshd_disabled is not defined or not sshd_disabled
 
 
-- name: Uninstall ssh server
-  ansible.builtin.apt:          # TODO: Darwin: `sudo systemsetup -setremotelogin off`
-    name: openssh-server
-    state: absent
+- name: Uninstall/Disable ssh server
+  block:
+    - name: '[Debian/Ubuntu]'
+      ansible.builtin.apt:
+        name: openssh-server
+        state: absent
+      when: ansible_facts.os_family != 'Darwin'
+    - name: '[Darwin]'
+      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/systemsetup.yml
+      vars:
+        systemsetup_setting: { setting: remotelogin, value: false }
+      when: ansible_facts.os_family == 'Darwin'
   become: true
-  when:
-    - ansible_facts.os_family != 'Darwin'
-    - sshd_disabled is defined and sshd_disabled
+  when: sshd_disabled is defined and sshd_disabled

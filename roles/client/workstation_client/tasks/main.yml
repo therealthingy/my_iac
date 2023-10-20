@@ -4,9 +4,9 @@
     - name: Install audio apps      # TODO: Mv in `media_client` role
       block:
         - name: '[Darwin] Install homebrew packages'
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
-            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+            packages_homebrew_casks:         # TODO: Add `flatpak` counterparts 4 linux & check whether VM
               - dir: Audio
                 packages:
                   - mediahuman-audio-converter
@@ -18,7 +18,7 @@
     - name: Install note taking apps
       block:
         - name: '[Darwin] Install homebrew packages'
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Notes
@@ -29,7 +29,7 @@
     - name: Install design apps
       block:
         - name: '[Darwin] Install homebrew packages'
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Design
@@ -41,7 +41,7 @@
     - name: 'Install "services" apps'
       block:
         - name: '[Darwin] Install homebrew packages'
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Internet/Services
@@ -52,7 +52,7 @@
 #    - name: Install streaming apps      # TODO: Mv in `media_client` role
 #      block:
 #        - name: '[Darwin] Install homebrew packages'
-#          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+#          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
 #          vars:
 #            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
 #              - dir: Music
@@ -61,7 +61,7 @@
     - name: Install social stuff
       block:
         - name: '[Darwin] Install homebrew packages'
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Social
@@ -70,7 +70,7 @@
     - name: 'Install "conferencing" apps'
       block:
         - name: '[Darwin] Install homebrew packages'
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Internet/Conferencing
@@ -79,7 +79,7 @@
     - name: 'Install "inet" tools'
       block:
         - name: '[Darwin] Install homebrew packages'
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Internet/Tools
@@ -92,7 +92,7 @@
     - name: Install misc. tools
       block:
         - name: '[Darwin] Install homebrew packages'
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/install_homebrew_casks.yml
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Tools

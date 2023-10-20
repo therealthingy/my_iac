@@ -158,7 +158,7 @@
           - coreutils                     # `shred`
           - ccrypt                        # ENCs/DECs files/streams
     - name: '[Darwin] Install homebrew package'
-      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/install_homebrew_casks.yml
+      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:           # TODO: Add flatpak counterpart 4 linux & check whether VM
           - dir: Privacy
@@ -261,7 +261,7 @@
 - name: Install benchmark tools
   block:
     - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/install_homebrew_casks.yml
+      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Benchmark
@@ -271,7 +271,7 @@
 - name: Install maintenance tools
   block:
     - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/install_homebrew_casks.yml
+      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Maintenance
@@ -285,7 +285,7 @@
 - name: Install virtualization tools
   block:
     - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/install_homebrew_casks.yml
+      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Tools/Virtualization
@@ -297,7 +297,7 @@
 - name: Install misc tools
   block:
     - name: '[Darwin] Install homebrew packages'
-      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/install_homebrew_casks.yml
+      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Misc

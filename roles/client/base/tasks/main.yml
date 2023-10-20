@@ -29,7 +29,7 @@
 - ansible.builtin.include_tasks: '{{ included_workstation_task }}'
   loop:
     - packages.yml
-    - config-ui.yml
+    - config.yml
   loop_control:
     loop_var: included_workstation_task
 

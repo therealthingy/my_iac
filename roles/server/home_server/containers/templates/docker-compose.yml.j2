@@ -106,7 +106,7 @@ services:
 {%   endif %}
     labels:
       - com.centurylinklabs.watchtower.enable=true
-{%   if container.compose.autoupdate_disabled is defined  and  container.compose.autoupdate_disabled %}
+{%   if service.autoupdate_disabled is defined  and  service.autoupdate_disabled %}
       - com.centurylinklabs.watchtower.monitor-only=true
 {%   endif %}
 {%   if service.network is defined  and  service.network.reverse_proxy_mappings is defined %}

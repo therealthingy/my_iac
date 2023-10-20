@@ -29,7 +29,9 @@
   when: ansible_facts.os_family != 'Darwin'
 
 
-# Check result: `sudo dpkg-reconfigure tzdata`
+# Check result:
+#   GNU/Linux `sudo dpkg-reconfigure tzdata`
+#   macOS: `sudo systemsetup -gettimezone`
 - name: "Set timezone to '{{ timezone }}'"
   community.general.timezone:
     name: '{{ timezone }}'
@@ -45,6 +47,7 @@
       when: ansible_facts.os_family != 'Darwin'
 
     - name: "Set hostname to '{{ hostname }}'"
+      # macOS equivalent command: `sudo systemsetup -setcomputername <string>`
       ansible.builtin.hostname:
         name: '{{ hostname }}'
       become: true

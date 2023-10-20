@@ -44,6 +44,38 @@
 
 ### General
 #### Darwin
+* SYSTEM settings:
+  * **Add message to lock-screen**
+  `sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText “ENTER HERE”`
+  * SOUND:
+    ```
+    defaults write -g "com.apple.sound.beep.feedback" -int 0
+    defaults write "com.apple.systemsound" "com.apple.sound.uiaudio.enabled" -int 0
+    killall -HUP SystemUIServer
+    ```
+
+  * **Disable usb drive not properly ejected warning**:
+    `sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.DiskArbitration.diskarbitrationd.plist DADisableEjectNotification -bool YES && sudo pkill diskarbitrationd`
+
+  * **Change scroll direction**
+    `defaults write -g com.apple.swipescrolldirection -bool FALSE`
+
+* `systemsetup (get|set)wakeonmodem <bool>`
+
+* FINDER settings:
+  ```
+  # Enable snap-to-grid for icons on the desktop and in other icon views
+  /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
+  /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
+  /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
+
+  # Set the size of icons on the desktop and in other icon views
+  /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
+  /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
+  /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
+  ```
+
+
 * [Mac App Store apps](https://github.com/mas-cli/mas/blob/main/README.md):
   * Uninstall iMovie, Pages, Numbers, GarageBand
   * Install Keynote, dict.cc, DjVu Viewer + DjVu to PDF
@@ -52,30 +84,6 @@
 
 * SW:
   * https://github.com/Lymphatus/caesium-image-compressor  (once stable)
-
-
-##### OS setup
-* SYSTEM:
-  * **Disable usb drive not properly ejected warning**:
-    `sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.DiskArbitration.diskarbitrationd.plist DADisableEjectNotification -bool YES && sudo pkill diskarbitrationd`
-  * **Add message to lock-screen**
-    `sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText “ENTER HERE”`
-   * **Disable chime**:
-     `defaults write com.apple.PowerChime ChimeOnNoHardware -bool true;killall PowerChime`
-  * `sudo systemsetup -setremotelogin on`
-* USER:
-  * **Print-Dialog always expanded**
-    `defaults write -g PMPrintingExpandedStateForPrint -bool TRUE`
-  * **Change scroll direction**
-    `defaults write -g com.apple.swipescrolldirection -bool FALSE`
-  * **Show full file path in Finder**
-    `defaults write com.apple.finder _FXShowPosixPathInTitle -bool YES; killall Finder`
-  * **Disable ń popup after long pressing n, &mldr;**
-    `defaults write -g ApplePressAndHoldEnabled -bool FALSE`
-  * **Change Screenshot format**
-    `defaults write com.apple.screencapture type JPG` (JPG, PNG, TIFF, PDF)
-  * **Disable shadow for window Screenshots** (via `Command + Shift + 4` &rarr; `Space`):
-    `defaults write com.apple.screencapture disable-shadow -bool TRUE; killall SystemUIServer`
 
 
 ##### Apps
