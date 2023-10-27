@@ -650,11 +650,11 @@
     - setting: restartfreeze
       value: true
     - setting: computersleep
-      value: 1
+      value: '{{ power_computersleep_min|default(1)|int }}'
       type: int
     - setting: harddisksleep
       value: 0
-      type: string
+      type: int
     - setting: displaysleep
-      value: 60
+      value: 15
       type: int

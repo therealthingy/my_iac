@@ -16,6 +16,7 @@ all:
           ansible_host: 127.0.0.1
           ansible_user: gary          # TODO: should be 'gg'
 
+#          power_computersleep_min: 0
           sshd_disabled: true
           git_config:
             name: !vault |
