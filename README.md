@@ -79,6 +79,54 @@
   /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
   ```
 
+* APP settings:
+  ```
+  ch.sudo.cyberduck, com.colliderli.iina, com.ranchero.NetNewsWire-Evergreen, org.wireshark.Wireshark, org.videolan.vlc, net.freemacsoft.AppCleaner:
+    SUAutomaticallyUpdate: false
+    SUEnableAutomaticChecks: false
+
+  org.tempel.prefseditor:
+    SUEnableAutomaticChecks
+
+  org.m0k.transmission:
+    BlocklistAutoUpdate
+    BlocklistURL: http://john.bitsurge.net/public/biglist.p2p.gz
+    DownloadFolder: /Users/gg/Downloads/torrents
+    IncompleteDownloadFolder: /Users/gg/Downloads/torrents
+    SUEnableAutomaticChecks
+
+  net.tunnelblick.tunnelblick:
+    updateCheckAutomatically
+    SUEnableAutomaticChecks
+
+  de.pascalbraband.SlidePilot:
+    SUEnableAutomaticChecks
+    SUSendProfileInfo
+
+  com.ridiculousfish.HexFriend, com.torusknot.SourceTreeNotMAS:
+    SUSendProfileInfo
+    SUEnableAutomaticChecks
+    SUAutomaticallyUpdate
+
+  com.samscott.maestral / com.samscott.maestral-cocoa, com.soggywaffles.paintbrush:
+    SUEnableAutomaticChecks
+
+  com.readdle.PDFExpert-Mac:
+    SUAutomaticallyUpdate
+
+  com.raycast.macos:
+    amplitudePulseAnalyticsTracker_didSendInstallationEvent
+    emojiPicker_skinTone: standard
+
+  com.ranchero.NetNewsWire-Evergreen:
+    openInBrowserInBackground: No
+
+  com.googlecode.iterm2:
+    PromptOnQuit: No
+    PrefsCustomFolder: /Users/gary/.config/iterm2/
+    SUSendProfileInfo
+  ```
+
 
 * [Mac App Store apps](https://github.com/mas-cli/mas/blob/main/README.md):
   * Uninstall iMovie, Pages, Numbers, GarageBand
@@ -123,6 +171,11 @@
 * !!!!!!!!!!!!!!!!!!!     Add restricted www user     !!!!!!!!!!!!!!!!!!!
 
 ### *home_server*
+* pihole + unbound:
+  * https://git.bln41.win/b30/pudc/src/branch/main/docker-compose.yml
+  * https://hub.docker.com/r/klutchell/unbound
+  * https://github.com/pi-hole/docker-pi-hole#environment-variables
+
 * **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/
 * Containers:
   * ( filebrowser: restart container iff config file has changed AND container is ALREADY RUNNING  ( see traefik, BUT ONLY IF CONFIG FILE HAS CHANGED ) )

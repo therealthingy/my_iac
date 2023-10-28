@@ -21,46 +21,47 @@
       when: ansible_facts.distribution == 'Ubuntu'
       become: true
 
-#    # NOTE: List extensions: `gnome-extensions list --enabled`
-#    - name: Install GNOME extensions
-#      block:
-#        - name: Install dependencies for GNOME extensions
-#          ansible.builtin.apt:
-#            name:
-#              - gir1.2-gtop-2.0                     # Top Hat  (like iStats menu 4 mac)
-#            state: present
-#          become: true
-#
-#        - name: "'Determine' which extensions shall be installed"
-#          block:
-#            - name: Set config as vars
-#              ansible.builtin.set_fact:
-#                gnome_extensions:  # (ids are derived from URL, e.g., https://extensions.gnome.org/extension/307/dash-to-dock/)
-#                    - id: 2087                      # Desktop Icons NG (DING)
-#                      enable: true       # TODO: Currently not working ??!!
-#                    - id: 3193                      # Blur my Shell
+    # NOTE: List extensions: `gnome-extensions list --enabled`
+    - name: Install GNOME extensions
+      block:
+        - name: Install dependencies for GNOME extensions
+          ansible.builtin.apt:
+            name:
+              - gir1.2-gtop-2.0                     # Top Hat  (like iStats menu 4 mac)
+            state: present
+          become: true
+
+        - name: "'Determine' which extensions shall be installed"
+          block:
+            - name: Set config as vars
+              ansible.builtin.set_fact:
+                gnome_extensions:  # (ids are derived from URL, e.g., https://extensions.gnome.org/extension/307/dash-to-dock/)
+                    - id: 2087                      # Desktop Icons NG (DING)
+                      enable: true       # TODO: Currently not working ??!!
+                    - id: 3193                      # Blur my Shell
+                      enable: true
+                    - id: 5219                      # Top Hat  (like iStats menu 4 mac)
+                      enable: true
+                    - id: 2                         # Move Clock  (Move clock to left of status menu button)
+                      enable: true
+                    - id: 4839                      # Clipboard history
+                      enable: true
+                    - id: 2236                      # Night Theme Switcher     (TODO: ALLEGEDLY NOT WORKING ON UBUNTU, BUT WORKS IN PRAXIS) ??
+                      enable: true
+#                    - id: 3438                      # Jiggle  (highlights the cursor position when the mouse is moved rapidly like on mac)   $$$$$$$$$$$$$$$$$$$  TOOD: ADD BACK ONCE SUPPORTED (https://github.com/jeffchannell/jiggle/pull/68)  $$$$$$$$$$$$$$$$$$$
 #                      enable: true
-#                    - id: 5219                      # Top Hat  (like iStats menu 4 mac)
-#                      enable: true
-#                    - id: 2                         # Move Clock  (Move clock to left of status menu button)
-#                      enable: true
-#                    - id: 4839                      # Clipboard history
-#                      enable: true
-#                    - id: 2236                      # Night Theme Switcher     (TODO: ALLEGEDLY NOT WORKING ON UBUNTU, BUT WORKS IN PRAXIS) ??
-#                      enable: true
-##                    - id: 3438                      # Jiggle  (highlights the cursor position when the mouse is moved rapidly like on mac)   $$$$$$$$$$$$$$$$$$$  TOOD: ADD BACK ONCE SUPPORTED (https://github.com/jeffchannell/jiggle/pull/68)  $$$$$$$$$$$$$$$$$$$
-##                      enable: true
-#                    # TODO (for non-vms): caffeine, cpufreq, wireguard-indicator
-#
-#            - name: Debian - Set distro specific stuff
-#              ansible.builtin.set_fact:
-#                # Dash to Dock
-#                gnome_extensions: "{{ gnome_extensions + [ { 'id': 307, 'enable': true } ]  }}"
-#              when: ansible_facts.distribution == 'Debian'
-#
-#        - name: "Run 'petermosmans.customize-gnome' role"
-#          ansible.builtin.include_role:
-#            name: petermosmans.customize-gnome
+                    # TODO (for non-vms): caffeine, cpufreq, wireguard-indicator
+
+            - name: Debian - Set distro specific stuff
+              ansible.builtin.set_fact:
+                # Dash to Dock
+                gnome_extensions: "{{ gnome_extensions + [ { 'id': 307, 'enable': true } ]  }}"
+              when: ansible_facts.distribution == 'Debian'
+
+        - name: "Run 'petermosmans.customize-gnome' role"
+          ansible.builtin.include_role:
+            name: petermosmans.customize-gnome
+      when: False             # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$        TODO: DOESN'T WORK
 
     # HOW2: gesettings tool  (e.g., `gsettings get org.gnome.desktop.input-sources sources`); example: https://gist.github.com/carlwgeorge/c560a532b6929f49d9c0df52f75a68ae
     - name: GNOME
@@ -652,9 +653,10 @@
     - setting: computersleep
       value: '{{ 1 if workstation_is_a_macbook else 0 }}'
       type: int
+    - setting: displaysleep
+      value: '{{ 5 if workstation_is_a_macbook else 15 }}'
+      type: int
     - setting: harddisksleep
       value: 0
       type: int
-    - setting: displaysleep
-      value: 15
-      type: int
+  when: ansible_facts.os_family == 'Darwin'
