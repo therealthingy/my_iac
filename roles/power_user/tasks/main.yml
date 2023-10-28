@@ -45,7 +45,7 @@
   become: true
   when: ansible_facts.os_family != 'Darwin'
 
-- name: Install backup tools
+- name: Install backup tools          # macOS has TimeMachine
   ansible.builtin.apt:
     name:
       - borgbackup
@@ -102,6 +102,7 @@
           - speedtest-cli
           - wget
           - aria2                         # Download tool  (SEE: https://aria2.github.io/); cmd: `aria2c`
+          - wrk                           # HTTP benchmarking tool
 #          - openvpn
       become: "{{ 'true' if ansible_facts.os_family != \"Darwin\" else 'false' }}"
     - name: '[Debian/Ubuntu]'
@@ -156,7 +157,20 @@
       ansible.builtin.package:
         name:
           - coreutils                     # `shred`
-          - ccrypt                        # ENCs/DECs files/streams
+          - mcrypt                        # ENCs/DECs files/streams
+          - openssl
+    - name: '[Debian/Ubuntu]'
+      ansible.builtin.apt:
+        name:
+          - gnupg                         # Encryption & signing tool
+        state: present
+      when: ansible_facts.os_family != 'Darwin'
+    - name: '[Darwin]'
+      community.general.homebrew:
+        name:
+          - gpg
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
     - name: '[Darwin] Install homebrew package'
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
@@ -236,7 +250,7 @@
     - name: '[Darwin / Ubuntu/Debian]'
       ansible.builtin.package:
         name:
-          - moreutils
+          - moreutils                     # `sponge`, `parallel`, …
           - parallel                      # NOTE: Installs also `parallel` like `moreutils`  (but seems 2 be newer version)
           - pv
       become: '{{ package_manager_become }}'

@@ -8,10 +8,25 @@
     loop_var: included_dev_server_task
 
 
-- name: '[Darwin / Debian/Ubuntu] Install misc tools'
-  ansible.builtin.package:
-    name:
-      - flashrom
-      - graphviz
-      - jq
-  become: '{{ package_manager_become }}'
+- name: Install misc tools
+  block:
+    - name: '[Darwin / Debian/Ubuntu]'
+      ansible.builtin.package:
+        name:
+          - flashrom
+          - graphviz
+          - jq
+          - httpie                   # Human-friendly HTTP client for the API era
+      become: '{{ package_manager_become }}'
+#    - name: '[Debian/Ubuntu]'
+#      ansible.builtin.apt:
+#        name:
+#          - sqlite3                   # SQLite CLI
+#        state: present
+#      when: ansible_facts.os_family != 'Darwin'
+#    - name: '[Darwin]'
+#      community.general.homebrew:
+#        name:
+#          - sqlite
+#      become: false
+#      when: ansible_facts.os_family == 'Darwin'

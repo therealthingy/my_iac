@@ -13,7 +13,7 @@
               # Build tools
               - gcc
               - cmake
-              - autoconf
+              - autoconf              # Tool 4 producing configure script 4 building, installing & packing SW
               - automake              # Automates parts of the compilation process
               - pkg-config
               # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
@@ -38,7 +38,6 @@
               # Build tools
               - cmake-curses-gui
               - autotools-dev
-              - autoconf              # Tool 4 producing configure script 4 building, installing & packing SW
               - ninja-build
               # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
               - gdb
@@ -69,6 +68,7 @@
               - libcap-dev            # Implements user-space interfaces 2 the POSIX 1003.1e capabilities
               - libnuma-dev           # Allows controlling specific NUMA (Non-Uniform Memory Architecture) scheduling or memory placement policies
               - libncurses5-dev       # ncurses  (terminal-independent method of updating character screens w/ reasonable optimization)
+              - libreadline-dev       # Provides a set of functions for use by applications that allow users to edit command lines as they are typed in
               - libssl-dev            # OpenSSL  (libcrypto)
               - zlib1g-dev            # (zlib)
               - liblzma-dev           # (lzma)
@@ -95,6 +95,8 @@
               - ncurses               # API 4 writing text-based user interfaces (TUI) in a terminal-independent manner
               # Build tools
               - ninja
+              # Libs
+              - readline
           become: false
           when: ansible_facts.os_family == 'Darwin'
         - name: '[Debian/Ubuntu x64]'
