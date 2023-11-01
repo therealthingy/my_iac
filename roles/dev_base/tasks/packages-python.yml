@@ -10,6 +10,7 @@
       with_items:
         - ansible
         - pdm            # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
+        - jupyterlab
       loop_control:
         loop_var: pip_package
     - name: Inject packages
