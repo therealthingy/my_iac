@@ -5,7 +5,7 @@
   ansible.builtin.template:
     src: vpn--netplan_rules.yml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
     dest: /etc/netplan/10-wireguard_vpn.yaml
-    mode: 0644
+    mode: 0600
   notify: Applying Netplan Configuration
   when: ansible_facts.distribution == 'Ubuntu'
   become: true
