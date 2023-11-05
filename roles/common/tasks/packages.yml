@@ -98,9 +98,6 @@
         - package-zsh.yml
         - packages-python.yml
 #         - linux/package-nala.yml
-#    - name: '[Debian/Ubuntu]'
-#      ansible.builtin.include_tasks: linux/package-nala.yml
-#      when: ansible_facts.os_family != 'Darwin'
 
 
 

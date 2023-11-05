@@ -241,7 +241,9 @@
                 name: fuse-t
                 state: latest
         # …
-      when: ansible_facts.os_family == 'Darwin'
+      when:
+        - ansible_facts.os_family == 'Darwin'
+        - false                                                                       # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DISABLED 4 NOW DUE 2 BUGINESS
   become: '{{ package_manager_become }}'
 
 
