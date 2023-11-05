@@ -22,6 +22,8 @@
       with_items:
         - name: 'ansible'
           packages: ['ansible-lint[yamllint]']
+        - name: 'jupyterlab'
+          packages: ['pip']                                       # Otherwise update fails …
       loop_control:
         loop_var: package
   become: false
