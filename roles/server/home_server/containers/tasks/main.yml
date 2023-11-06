@@ -46,24 +46,32 @@
             env_vars:
               -  TZ={{ timezone }}
 
-    - name: baikal
-      volumes:
-        - 'config'
-        - 'user'
+    - name: watchtower
       compose:
         services:
-          - name: baikal
-            security:
-              use_root: True
-            image: ckulka/baikal:nginx
+          - name: watchtower
+            image: containrrr/watchtower
             network:
-              reverse_proxy_mappings:
-                - subdomain: baikal
-                  port: 80
+              mode: bridge
             volumes:
-              - path: '{{ docker_container.data_basedir }}/baikal/config/:/var/www/baikal/config'
-              - path: './dynamic-conf.yml:/config/dynamic-conf.yml'
-              - path: '{{ docker_container.data_basedir }}/baikal/user/:/var/www/baikal/Specific'
+              - path: '/var/run/docker.sock:/var/run/docker.sock'
+            # TESTING: `--run-once`
+            # - WATCHTOWER_SCHEDULE="<watchtower_cron_schedule>"
+            # FORMAT: Seconds, Minutes, Hours, Day of month, Month, Day of week  (see https://pkg.go.dev/github.com/robfig/cron@v1.2.0#hdr-CRON_Expression_Format)
+            command: ['--schedule "{{ watchtower_cron_schedule|default("0 30 3 * * WED,SAT", true) }}"']
+            env_vars:
+              - TZ={{ timezone }}
+              - WATCHTOWER_CLEANUP=true
+              - WATCHTOWER_LABEL_ENABLE=true                            # Filter by enable label
+              - WATCHTOWER_NO_STARTUP_MESSAGE=true
+              # - Emailing
+              - WATCHTOWER_NOTIFICATIONS=email
+              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ notifications_mail.smtp_host }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT={{ notifications_mail.smtp_port }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER={{ notifications_mail.smtp_username }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD={{ notifications_mail.smtp_password }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_FROM={{ notifications_mail.smtp_username }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail.system_admin_mail }}
 
     - name: bitwarden
       volumes:
@@ -81,8 +89,6 @@
                   port: 3012
             volumes:
               - path: '{{ docker_container.data_basedir }}/bitwarden/:/data/'
-              - path: './dynamic-conf.yml:/config/dynamic-conf.yml'
-              - path: '{{ docker_container.data_basedir }}/bitwarden/user/:/var/www/baikal/Specific'
             env_vars:
               - TZ={{ timezone }}
               # --- General
@@ -91,6 +97,7 @@
               - WEBSOCKET_ENABLED=true
               - SIGNUPS_ALLOWED={{ bitwarden_signups_allowed|default('false', true) }}
               - SIGNUPS_VERIFY={{ 'true' if notifications_mail is defined else 'false' }}
+              - DOMAIN=https://bitwarden.{{ domainname }}
               # --- Emailing
               - SMTP_HOST={{ notifications_mail.smtp_host }}
               - SMTP_FROM={{ notifications_mail.smtp_username }}
@@ -205,27 +212,6 @@
               - PUID={{ www_user.uid }}
               - PGID={{ www_user.gid }}
 
-    - name: freshrss
-      volumes:
-        - 'config'
-      startup: False
-      compose:
-        services:
-          - name: freshrss
-            security:
-              use_root: True
-            image: lscr.io/linuxserver/freshrss:latest
-            network:
-              reverse_proxy_mappings:
-                - subdomain: freshrss
-                  port: 80
-            volumes:
-              - path: '{{ docker_container.data_basedir }}/freshrss/:/config/'
-            env_vars:
-              - TZ={{ timezone }}
-              - PUID={{ www_user.uid }}
-              - PGID={{ www_user.gid }}
-
     - name: helloworld
       startup: False
       compose:
@@ -297,32 +283,48 @@
               - path: '/etc/localtime:/etc/localtime'
                 ro: True
 
-    - name: watchtower
+
+
+
+# TODO: REPLACE W/ NEXTCLOUD !!!!
+    - name: baikal
+      volumes:
+        - 'config'
+        - 'user'
       compose:
         services:
-          - name: watchtower
-            image: containrrr/watchtower
+          - name: baikal
+            security:
+              use_root: True
+            image: ckulka/baikal:nginx
             network:
-              mode: bridge
+              reverse_proxy_mappings:
+                - subdomain: baikal
+                  port: 80
             volumes:
-              - path: '/var/run/docker.sock:/var/run/docker.sock'
-            # TESTING: `--run-once`
-            # - WATCHTOWER_SCHEDULE="<watchtower_cron_schedule>"
-            # FORMAT: Seconds, Minutes, Hours, Day of month, Month, Day of week  (see https://pkg.go.dev/github.com/robfig/cron@v1.2.0#hdr-CRON_Expression_Format)
-            command: ['--schedule "{{ watchtower_cron_schedule|default("0 30 3 * * WED,SAT", true) }}"']
+              - path: '{{ docker_container.data_basedir }}/baikal/config/:/var/www/baikal/config'
+              - path: '{{ docker_container.data_basedir }}/baikal/user/:/var/www/baikal/Specific'
+
+    - name: freshrss
+      volumes:
+        - 'config'
+      startup: False
+      compose:
+        services:
+          - name: freshrss
+            security:
+              use_root: True
+            image: lscr.io/linuxserver/freshrss:latest
+            network:
+              reverse_proxy_mappings:
+                - subdomain: freshrss
+                  port: 80
+            volumes:
+              - path: '{{ docker_container.data_basedir }}/freshrss/:/config/'
             env_vars:
               - TZ={{ timezone }}
-              - WATCHTOWER_CLEANUP=true
-              - WATCHTOWER_LABEL_ENABLE=true                            # Filter by enable label
-              - WATCHTOWER_NO_STARTUP_MESSAGE=true
-              # - Emailing
-              - WATCHTOWER_NOTIFICATIONS=email
-              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ notifications_mail.smtp_host }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT={{ notifications_mail.smtp_port }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER={{ notifications_mail.smtp_username }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD={{ notifications_mail.smtp_password }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_FROM={{ notifications_mail.smtp_username }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail.system_admin_mail }}
+              - PUID={{ www_user.uid }}
+              - PGID={{ www_user.gid }}
 
 
 - name: VPN
