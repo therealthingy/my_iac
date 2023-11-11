@@ -30,7 +30,7 @@
         - name: Download package as deb
           ansible.builtin.get_url:
             # TODO: Always fetch latest version
-            url: 'https://github.com/mi-g/vdhcoapp/releases/download/v{{ downloadhelper_coapp_ver }}/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ cpu_arch }}.deb'
+            url: 'https://github.com/aclap-dev/vdhcoapp/releases/download/v{{ downloadhelper_coapp_ver }}/vdhcoapp-{{ downloadhelper_coapp_ver }}-linux-{{ cpu_arch }}.deb'
             dest: '/tmp/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ cpu_arch }}.deb'
           become: false
 

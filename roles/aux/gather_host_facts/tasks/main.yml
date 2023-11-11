@@ -21,7 +21,7 @@
 
         # --  System info  --
         - name: Determine CPU architecture   # (NOTE: on GNU/Linux deb cpu arch)
-          ansible.builtin.shell: "{{ 'dpkg --print-architecture' if ansible_facts.os_family != 'Darwin' else 'uname -m' }}"            # ALTERNATIVE for arch.: ansible_architecture
+          ansible.builtin.shell: uname -m                             # ALTERNATIVE for arch.: ansible_architecture
           register: result_cpu_architecture                           # We need 2 different vars (https://github.com/ansible/ansible/issues/15710)
           changed_when: false
 
@@ -36,6 +36,11 @@
               changed_when: false
 
             # --  System info  --
+            - name: Determine deb cpu arch
+              ansible.builtin.shell: dpkg --print-architecture
+              register: result_deb_cpu_architecture
+              changed_when: false
+
             - name: Determine kernel release
               ansible.builtin.shell: uname -r
               register: result_kernel_release
@@ -82,6 +87,7 @@
             www_user:
               uid: '{{ result_uid.stdout }}'           # $$$$$$$$$$$$$$$$$$$$$  TODO: CREATE EXTRA USER …  $$$$$$$$$$$$$$$$$$$$$
               gid: '{{ result_docker_gid.stdout }}'
+            deb_cpu_arch: '{{ result_deb_cpu_architecture.stdout }}'
             kernel_release: '{{ result_kernel_release.stdout }}'
             hw_is_rpi: '{{ True if result_rpi.rc == 0 else False }}'
             networking_service: "{{ 'networking' if ansible_facts.distribution == 'Debian' else ubuntu_networking_service }}"

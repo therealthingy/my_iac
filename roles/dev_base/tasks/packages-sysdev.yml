@@ -155,7 +155,7 @@
 #        state: present
 #    - name: bazel - Add apt repo and update cache
 #      ansible.builtin.apt_repository:
-#        repo: "deb [arch={{ cpu_arch }} signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8"
+#        repo: "deb [arch={{ deb_cpu_arch }} signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8"
 #        filename: bazel
 #        state: present
 #        update_cache: true
