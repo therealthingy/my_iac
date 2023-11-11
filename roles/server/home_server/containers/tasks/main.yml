@@ -5,6 +5,48 @@
   loop_control:
     loop_var: container
   with_items:
+    - name: watchtower
+      compose:
+        services:
+          - name: watchtower
+            image: containrrr/watchtower
+            network:
+              mode: bridge
+            volumes:
+              - path: '/var/run/docker.sock:/var/run/docker.sock'
+            # TESTING: `--run-once`
+            # - WATCHTOWER_SCHEDULE="<watchtower_cron_schedule>"
+            # FORMAT: Seconds, Minutes, Hours, Day of month, Month, Day of week  (see https://pkg.go.dev/github.com/robfig/cron@v1.2.0#hdr-CRON_Expression_Format)
+            command: ['--schedule "{{ watchtower_cron_schedule|default("0 30 3 * * WED,SAT", true) }}"']
+            env_vars:
+              - TZ={{ timezone }}
+              - WATCHTOWER_CLEANUP=true
+              - WATCHTOWER_LABEL_ENABLE=true                            # Filter by enable label
+              - WATCHTOWER_NO_STARTUP_MESSAGE=true
+              # - Emailing
+              - WATCHTOWER_NOTIFICATIONS=email
+              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ notifications_mail.smtp_host }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT={{ notifications_mail.smtp_port }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER={{ notifications_mail.smtp_username }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD={{ notifications_mail.smtp_password }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_FROM={{ notifications_mail.smtp_username }}
+              - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail.system_admin_mail }}
+
+
+    - name: helloworld
+      startup: False
+      compose:
+        services:
+          - name: nginx-helloworld
+            security:
+              use_root: True
+            image: nginxdemos/hello:latest
+            restart_policy: "no"
+            network:
+              ports:
+                - '{{ host_port|default(8080, true) }}:80'
+
+
     - name: traefik
       config_files:
         - name: ssl-certgen
@@ -46,34 +88,7 @@
             env_vars:
               -  TZ={{ timezone }}
 
-    - name: watchtower
-      compose:
-        services:
-          - name: watchtower
-            image: containrrr/watchtower
-            network:
-              mode: bridge
-            volumes:
-              - path: '/var/run/docker.sock:/var/run/docker.sock'
-            # TESTING: `--run-once`
-            # - WATCHTOWER_SCHEDULE="<watchtower_cron_schedule>"
-            # FORMAT: Seconds, Minutes, Hours, Day of month, Month, Day of week  (see https://pkg.go.dev/github.com/robfig/cron@v1.2.0#hdr-CRON_Expression_Format)
-            command: ['--schedule "{{ watchtower_cron_schedule|default("0 30 3 * * WED,SAT", true) }}"']
-            env_vars:
-              - TZ={{ timezone }}
-              - WATCHTOWER_CLEANUP=true
-              - WATCHTOWER_LABEL_ENABLE=true                            # Filter by enable label
-              - WATCHTOWER_NO_STARTUP_MESSAGE=true
-              # - Emailing
-              - WATCHTOWER_NOTIFICATIONS=email
-              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ notifications_mail.smtp_host }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT={{ notifications_mail.smtp_port }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER={{ notifications_mail.smtp_username }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD={{ notifications_mail.smtp_password }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_FROM={{ notifications_mail.smtp_username }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail.system_admin_mail }}
-
-    - name: bitwarden
+    - name: bitwarden                                                               # TODO SSO: https://github.com/dani-garcia/vaultwarden/pull/3899
       volumes:
         - '.'
       compose:
@@ -142,9 +157,9 @@
 ##                - 8389:8389/tcp   # Gluetun-Shadowsocks?
 ##                - 8889:8889/tcp   # Gluetun
               reverse_proxy_mappings:
-                - subdomain: 'prowlarr'
+                - subdomain: prowlarr
                   port: 9696
-                - subdomain: 'qbit'
+                - subdomain: qbit
                   port: 8090
 #            volumes:
 #              - path: '{{ docker_container.config_basedir }}/dl_services/gluetun/:/gluetun'
@@ -176,7 +191,7 @@
               - QBITTORRENT_WEBUI_PORT="8090"
               - QBITTORRENT_USERNAME="{{ dl_services.web_ui.username }}"
               - QBITTORRENT_PASSWORD="{{ dl_services.web_ui.password }}"
-          - name: qbittorrent
+          - name: qbittorrent                                                   # TODO SSO: https://github.com/qbittorrent/qBittorrent/issues/13238
             image: linuxserver/qbittorrent:latest
             restart_policy: '{{ dl_services.restart_policy }}'
             security:
@@ -194,7 +209,7 @@
               - PGID={{ www_user.gid }}
               - UMASK=022
               - WEBUI_PORT=8090
-          - name: prowlarr
+          - name: prowlarr                                                    # TODO SSO: N/A atm
             image: hotio/prowlarr:testing
             restart_policy: '{{ dl_services.restart_policy }}'
             security:
@@ -212,20 +227,7 @@
               - PUID={{ www_user.uid }}
               - PGID={{ www_user.gid }}
 
-    - name: helloworld
-      startup: False
-      compose:
-        services:
-          - name: nginx-helloworld
-            security:
-              use_root: True
-            image: nginxdemos/hello:latest
-            restart_policy: "no"
-            network:
-              ports:
-                - '{{ host_port|default(8080, true) }}:80'
-
-    - name: portainer
+    - name: portainer                                             # TODO SSO: https://docs.portainer.io/admin/settings/authentication/oauth  //  https://helgeklein.com/blog/portainer-setup-guide-with-automatic-https-oauth-sso-via-authelia/
       volumes:
         - '.'
       startup: False
@@ -244,6 +246,7 @@
               - path: '{{ docker_container.data_basedir }}/portainer/:/data'
               - path: '/etc/localtime:/etc/localtime'
                 ro: True
+
 
     - name: samba
 
@@ -287,7 +290,7 @@
 
 
 # TODO: REPLACE W/ NEXTCLOUD !!!!
-    - name: baikal
+    - name: baikal                                                                      # TODO SSO: https://github.com/sabre-io/Baikal/pull/1124
       volumes:
         - 'config'
         - 'user'
@@ -305,26 +308,26 @@
               - path: '{{ docker_container.data_basedir }}/baikal/config/:/var/www/baikal/config'
               - path: '{{ docker_container.data_basedir }}/baikal/user/:/var/www/baikal/Specific'
 
-    - name: freshrss
-      volumes:
-        - 'config'
-      startup: False
-      compose:
-        services:
-          - name: freshrss
-            security:
-              use_root: True
-            image: lscr.io/linuxserver/freshrss:latest
-            network:
-              reverse_proxy_mappings:
-                - subdomain: freshrss
-                  port: 80
-            volumes:
-              - path: '{{ docker_container.data_basedir }}/freshrss/:/config/'
-            env_vars:
-              - TZ={{ timezone }}
-              - PUID={{ www_user.uid }}
-              - PGID={{ www_user.gid }}
+#    - name: freshrss
+#      volumes:
+#        - 'config'
+#      startup: False
+#      compose:
+#        services:
+#          - name: freshrss
+#            security:
+#              use_root: True
+#            image: lscr.io/linuxserver/freshrss:latest
+#            network:
+#              reverse_proxy_mappings:
+#                - subdomain: freshrss
+#                  port: 80
+#            volumes:
+#              - path: '{{ docker_container.data_basedir }}/freshrss/:/config/'
+#            env_vars:
+#              - TZ={{ timezone }}
+#              - PUID={{ www_user.uid }}
+#              - PGID={{ www_user.gid }}
 
 
 - name: VPN

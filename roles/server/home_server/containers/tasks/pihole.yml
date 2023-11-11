@@ -19,7 +19,7 @@
   loop_control:
     loop_var: container
   with_items:
-    - name: pihole
+    - name: pihole                                           # TODO SSO: N/A atm
       compose:
         services:
           - name: pihole

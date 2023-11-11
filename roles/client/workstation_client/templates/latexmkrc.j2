@@ -39,6 +39,7 @@
 # ======================================================================================
 
 #$pdf_update_method = 2;                                    # Send SIGHUP on change 2 viewer (required by some pdf viewers like MuPDF (https://superuser.com/a/707484))
+#$pvc_view_file_via_temporary = 0;                           # Prevent `latexmk` from removing PDF after typeset (enables Skim to chase the update in PDF automatically)     … Doesn't make ANY difference
 $pdf_previewer = '{{ "open -a Skim" if ansible_facts.os_family == 'Darwin' else "start evince" }}';                            # TODO: skim is only invoked after 2nd `latexmk` invocation (if doc already has been built)  ???
 
 
