@@ -281,6 +281,15 @@ all:
 
           samba:
             shares:
+              - name: shared
+                bind_mounts:
+                  - '{{docker_container.data_basedir}}/samba-filebrowser/share/public:/mnt/share/public/'
+                path: /mnt/share/public
+                browsable: 'yes'
+                readonly: 'no'
+                guest: 'no'
+                users:
+                  - 'all'
               - name: private
                 bind_mounts:
                   - '{{docker_container.data_basedir}}/samba-filebrowser/share/private:/mnt/share/private/'
@@ -291,15 +300,6 @@ all:
                 guest: 'no'
                 users:
                   - 'gtg'
-              - name: shared
-                bind_mounts:
-                  - '{{docker_container.data_basedir}}/samba-filebrowser/share/public:/mnt/share/public/'
-                path: /mnt/share/public
-                browsable: 'yes'
-                readonly: 'no'
-                guest: 'no'
-                users:
-                  - 'all'
             users:
               - name: gtg
                 pass: !vault |
@@ -309,8 +309,14 @@ all:
                           32646536616338316331386664363830313635323665613663366132373361613238653863316562
                           6531363636383339390a646638356432653037383238626239326535383566383836333464396132
                           6236
-#              - name: family
-#                pass: '1'
+              - name: anonymous
+                pass: !vault |
+                          $ANSIBLE_VAULT;1.1;AES256
+                          35663061363234613432323835333962303637356432626530666538313831653061663234303963
+                          3066313466663636303234353430663932326162633331330a383665356561356536666532316437
+                          34313432363861613663336435316630366330626334346634373661356631396235336137303962
+                          3135326235313131300a616132356362343531613264306465633133633361656266326634373166
+                          6438
 
 
     # --  "HW specific"  --

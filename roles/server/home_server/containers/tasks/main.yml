@@ -88,7 +88,7 @@
             env_vars:
               -  TZ={{ timezone }}
 
-    - name: bitwarden                                                               # TODO SSO: https://github.com/dani-garcia/vaultwarden/pull/3899
+    - name: bitwarden                                                         # TODO SSO: https://github.com/dani-garcia/vaultwarden/pull/3899
       volumes:
         - '.'
       compose:
@@ -191,7 +191,7 @@
               - QBITTORRENT_WEBUI_PORT="8090"
               - QBITTORRENT_USERNAME="{{ dl_services.web_ui.username }}"
               - QBITTORRENT_PASSWORD="{{ dl_services.web_ui.password }}"
-          - name: qbittorrent                                                   # TODO SSO: https://github.com/qbittorrent/qBittorrent/issues/13238
+          - name: qbittorrent                                                 # TODO SSO: https://github.com/qbittorrent/qBittorrent/issues/13238
             image: linuxserver/qbittorrent:latest
             restart_policy: '{{ dl_services.restart_policy }}'
             security:
@@ -227,7 +227,7 @@
               - PUID={{ www_user.uid }}
               - PGID={{ www_user.gid }}
 
-    - name: portainer                                             # TODO SSO: https://docs.portainer.io/admin/settings/authentication/oauth  //  https://helgeklein.com/blog/portainer-setup-guide-with-automatic-https-oauth-sso-via-authelia/
+    - name: portainer                                                         # TODO SSO: https://docs.portainer.io/admin/settings/authentication/oauth  //  https://helgeklein.com/blog/portainer-setup-guide-with-automatic-https-oauth-sso-via-authelia/
       volumes:
         - '.'
       startup: False
@@ -290,7 +290,7 @@
 
 
 # TODO: REPLACE W/ NEXTCLOUD !!!!
-    - name: baikal                                                                      # TODO SSO: https://github.com/sabre-io/Baikal/pull/1124
+    - name: baikal                                                            # TODO SSO: https://github.com/sabre-io/Baikal/pull/1124
       volumes:
         - 'config'
         - 'user'
