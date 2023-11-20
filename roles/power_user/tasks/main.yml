@@ -180,7 +180,7 @@
               - cryptomator
           - packages:                 # Need 2 be in base-dir
             - little-snitch
-            - tunnelblick
+#            - tunnelblick
 
     - name: '[Darwin / Debian/Ubuntu] hblock'
       block:
