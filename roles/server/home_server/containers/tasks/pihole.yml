@@ -39,7 +39,7 @@
                 #- 80:80/tcp
                 #- 443:443/tcp
               reverse_proxy_mappings:
-                - subdomain: pihole
+                - subdomain: dns
                   port: 80
             volumes:
               - path: '{{ docker_container.data_basedir }}/pihole/hole/:/etc/pihole/'

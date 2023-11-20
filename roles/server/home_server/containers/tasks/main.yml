@@ -48,10 +48,10 @@
 
 
     - name: traefik
-      config_files:
-        - name: ssl-certgen
-          mode: '0755'
-        - name: dynamic-conf.yml      # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
+#      config_files:
+#        - name: ssl-certgen
+#          mode: '0755'
+#        - name: dynamic-conf.yml      # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
       compose:
         services:
           - name: traefik
@@ -79,6 +79,16 @@
               - "--providers.file.directory=/config/"
               - "--providers.file.watch=true"
 #             - "--ping=false"
+              # LetsEncrypt cert
+#              - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+              - "--certificatesresolvers.myresolver.acme.dnschallenge=true"
+              - "--certificatesresolvers.myresolver.acme.dnschallenge.provider={{ cert_acme.provider }}"
+              - "--certificatesresolvers.myresolver.acme.email={{ cert_acme.email }}"
+              - "--certificatesresolvers.myresolver.acme.storage=/config/certs/acme.json"
+              - "--certificatesResolvers.myresolver.acme.dnsChallenge.delayBeforeCheck=5" # To delay DNS check & reduce LE hitrate
+              - "--entrypoints.websecure.http.tls.domains[0].main={{ domainname }}"       # Wildcard cert
+              - "--entrypoints.websecure.http.tls.domains[0].sans=*.{{ domainname }}"
+              - "--entrypoints.websecure.http.tls.certresolver=myresolver"
             volumes:
               - path: '/var/run/docker.sock:/var/run/docker.sock'
                 ro: true
@@ -87,6 +97,7 @@
               - path: '{{ docker_container.data_basedir }}/traefik/:/config/certs/'
             env_vars:
               -  TZ={{ timezone }}
+              - "DUCKDNS_TOKEN={{ cert_acme.token }}"
 
     - name: bitwarden                                                         # TODO SSO: https://github.com/dani-garcia/vaultwarden/pull/3899
       volumes:
