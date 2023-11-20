@@ -26,7 +26,7 @@
           - dir: Development/DB
             packages:
               - db-browser-for-sqlite
-              - mysqlworkbench
+#              - mysqlworkbench
               - sequel-ace
     - name: '[Debian/Ubuntu] Install flatpak packages'
       community.general.flatpak:
