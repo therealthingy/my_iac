@@ -39,6 +39,8 @@
           # File archiving tools
           - xz
           - gnu-tar
+          # git
+          - git-crypt
       become: false
       when: ansible_facts.os_family == 'Darwin'
     - name: '[Debian/Ubuntu]'
