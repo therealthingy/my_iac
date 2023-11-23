@@ -184,7 +184,7 @@
               # -  wireguard specific stuff  -
               - WIREGUARD_ADDRESSES={{ dl_services.gluetun.wireguard_vpn_service.addresses }}
 #              - DNS_ADDRESS=xxx.xxx.xxx.xxx
-              - FIREWALL_VPN_INPUT_PORTS={{ dl_services.gluetun.forward_port }}      # Port forwarding ~~(must be also mentioned as port ???!)~~  -> validate w/ (run in container): `nc -l -p <port>`
+              - FIREWALL_VPN_INPUT_PORTS={{ dl_services.gluetun.forward_port }}      # Port forwarding ~~(must be also mentioned as port ???!)~~  -> validate w/ (run in container): `nc -6 -l -p <port> [<ip>]`  (VERIFY: `sudo lsof -i -P -n`)
 #              - WIREGUARD_PUBLIC_KEY={{ dl_services.gluetun.wireguard_vpn_service.pk }}
               - WIREGUARD_PRIVATE_KEY={{ dl_services.gluetun.wireguard_vpn_service.sk }}
               - WIREGUARD_PRESHARED_KEY={{ dl_services.gluetun.wireguard_vpn_service.preshared_key }}

@@ -22,8 +22,13 @@
 
 
 ## VERIFY
-##   - … on server: `ping 8.8.8.8` on client & `sudo tcpdump -envi wg0 host 8.8.8.8` (… on server)
-##   - … on different network (whether port open + service running): `ncat -uvz <public-ip> <udp-port>`
+##   - ACCESSABILITY (whether port open + service running):
+##     - MOCK (if wireguard isn't running):
+##       - NATIVE: `sudo -b sh -c 'ncat -6 -u -l -p 123'`
+##       - DOCKER CONTAINER: `docker run [--network=host] --name test_avail -p 123:123/udp nicolaka/netshoot nc -6 -u -l -p 123`
+##     - VERIFY port 'binding' on server: `sudo lsof -i -P -n |grep 123`
+##     - VERIFY from client (!! from different network, e.g., cellular network !!): `ncat -6 -u <domain> 123`
+##   - TRAFFIC: `ping 8.8.8.8` on client  &  `sudo tcpdump -envi wg0 host 8.8.8.8` (… on server)
 #- name: Ensure container is running
 #  community.docker.docker_compose:
 #    project_src: '{{ docker_container.config_basedir }}/{{ container.name }}/'
