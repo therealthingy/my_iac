@@ -56,7 +56,7 @@
     name: '{{ reverse_proxy_docker_network }}'
     enable_ipv6: true
     ipam_config:
-      - subnet: '{{ ipv6_conf.prefix }}:1::/{{ (ipv6_conf.prefix_cidr + 16)|int }}'
+      - subnet: '{{ docker_ipv6_conf.prefix }}:1::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}'
   become: false
   when: "'home_servers' in group_names"
 

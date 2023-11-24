@@ -18,5 +18,7 @@
 
 # Custom host records are listed here.
 {% for host in hblock.overwrite %}
-{{ host.ip }} {{ host.domains|join(' ') }}
+{%   for ip in host.ips %}
+{{ ip }} {{ host.domains|join(' ') }}
+{%   endfor %}
 {% endfor %}

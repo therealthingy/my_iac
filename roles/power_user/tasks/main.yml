@@ -203,7 +203,7 @@
                 dest: '/etc/hblock.d/{{ config_file }}'
                 owner: root
                 group: wheel
-                mode: 0755
+                mode: 0644
               with_items:
                 - header
                 - blacklist.list
@@ -226,7 +226,7 @@
                     dow: "*"
                     user: root
                     job: '{{ result_hblock.stdout }} -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list -q'
-              become: true
+          become: true
       when: 'hypervisor is not defined or not hypervisor'
 
     - name: '[Darwin]'

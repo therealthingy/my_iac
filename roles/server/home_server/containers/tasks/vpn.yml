@@ -24,9 +24,10 @@
 ## VERIFY
 ##   - ACCESSABILITY (whether port open + service running):
 ##     - MOCK (if wireguard isn't running):
-##       - NATIVE: `sudo -b sh -c 'ncat -6 -u -l -p 123'`
-##       - DOCKER CONTAINER: `docker run [--network=host] --name test_avail -p 123:123/udp nicolaka/netshoot nc -6 -u -l -p 123`
+##       - NATIVE: `sudo -b sh -c 'ncat -6 -u -l -p 123   -e /bin/cat -k'`   (on client: `ncat -6 -u <IPv6-addr> 123`)
+##       - DOCKER CONTAINER: `docker run -d --network=wireguard_vpn --name test_avail -p 123:123/udp nicolaka/netshoot nc -6 -u -l -p 123`
 ##     - VERIFY port 'binding' on server: `sudo lsof -i -P -n |grep 123`
+##     - VERIFY via tcpdump: `sudo tcpdump -n -i eth0  udp port 123  -XAvvv`
 ##     - VERIFY from client (!! from different network, e.g., cellular network !!): `ncat -6 -u <domain> 123`
 ##   - TRAFFIC: `ping 8.8.8.8` on client  &  `sudo tcpdump -envi wg0 host 8.8.8.8` (… on server)
 #- name: Ensure container is running
@@ -44,16 +45,17 @@
 #        - name: ddclient.conf
 #          target_dir: ddclient
         - name: dyndns-update
-          mode: '0755'
+          mode: 0755
         - name: dyndns-Dockerfile
       startup: False
       compose:
         networks: |+
           vpn:
+              name: wireguard_vpn
               enable_ipv6: true
               ipam:
                 config:
-                  - subnet: '{{ ipv6_conf.prefix }}:2::/{{ (ipv6_conf.prefix_cidr + 16)|int }}'
+                  - subnet: '{{ docker_ipv6_conf.prefix }}:2::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}'
         services:
           - name: ddclient
 #            image: lscr.io/linuxserver/ddclient:latest

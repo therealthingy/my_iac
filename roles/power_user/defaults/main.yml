@@ -6,9 +6,11 @@ hblock:
   block:
     - superimad.com
   overwrite:
-    - ip: 10.38.170.1
+    - ips: [10.38.170.1]
       domains: ['fritz.box']
-    - ip: 10.38.170.2
+    - ips:
+        - 10.38.170.2
+#        - fd4b:49fb:a80c:29ba:40b3:8c93:9122:52c7
       domains:
         - 'gg-rpi0'
         - 'gg-rpi0-pre'
