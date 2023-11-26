@@ -1,8 +1,12 @@
 ---
 {{ ansible_managed|comment }}
+#
+# REFERENCE: https://netplan.readthedocs.io/en/latest/netplan-yaml/
+#
 network:
   version: 2
   renderer: networkd
+
   ethernets:
     {{ vpn.if }}:
 #        dhcp4: false
@@ -10,4 +14,4 @@ network:
         accept-ra: true
         ipv6-privacy: true
 {#        ipv6-address-generation: eui64 #}
-        ipv6-address-token: "{{ vpn.ipv6_if_id }}"   # Equivalent cmd: `ip token set {{ vpn.ipv6_if_id }} dev eth0`     $$$$$$$$$$$$$  TODO: PROBLEM: will also affect ULA addr.s  (`pihole.ipv6_ula`)
+        ipv6-address-token: "{{ vpn.ipv6_if_id }}"   # Equivalent cmd: `ip token set {{ vpn.ipv6_if_id }} dev eth0;      NOTE: will also affect ULA addr.s  (`pihole.ipv6_ula`)

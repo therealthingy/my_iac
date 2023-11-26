@@ -145,7 +145,7 @@
             image: qmcgaw/gluetun
             restart_policy: '{{ dl_services.restart_policy }}'
             sysctls:
-              - net.ipv6.conf.all.disable_ipv6=0
+              - net.ipv6.conf.all.disable_ipv6=0        # ( CAPTAIN OBVIOUS: Enable IPv6 )
             security:
               use_root: True
               allow_priv_esc: True

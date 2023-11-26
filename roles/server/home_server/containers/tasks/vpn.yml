@@ -1,22 +1,21 @@
 ---
-# REFERENCE: https://netplan.readthedocs.io/en/latest/netplan-yaml/
-# VERIFY: `networkctl status`
-- name: "[netplan] Add 'stable' global IPv6 addr"
-  ansible.builtin.template:
-    src: vpn--netplan_rules.yml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
-    dest: /etc/netplan/10-wireguard_vpn.yaml
-    mode: 0600
-  notify: Applying Netplan Configuration
-  when: ansible_facts.distribution == 'Ubuntu'
-  become: true
-
-# VERIFY: `sudo lsmod |grep ip6table_filter`
-# EQUIVALENT COMMAND: `sudo modprobe <module>` & adding entry in `/etc/modules` (or `/etc/modprobe.d/`)
-- name: Add kernel module 4 IPv6 connectivity
-  community.general.modprobe:
-    name: ip6table_filter
-    state: present
-    persistent: present
+- name: Networking
+  block:
+    # VERIFY: `networkctl status`
+    - name: "[netplan] Add 'stable' global IPv6 addr"
+      ansible.builtin.template:
+        src: vpn--netplan_rules.yml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
+        dest: /etc/netplan/10-wireguard_vpn.yaml
+        mode: 0600
+      notify: Applying Netplan Configuration
+      when: ansible_facts.distribution == 'Ubuntu'
+    # VERIFY: `sudo lsmod |grep ip6table_filter`
+    # EQUIVALENT COMMAND: `sudo modprobe <module>` & adding entry in `/etc/modules` (or `/etc/modprobe.d/`)
+    - name: Add kernel module 4 IPv6 connectivity
+      community.general.modprobe:
+        name: ip6table_filter
+        state: present
+        persistent: present
   become: true
 
 
@@ -24,7 +23,7 @@
 ## VERIFY
 ##   - ACCESSABILITY (whether port open + service running):
 ##     - MOCK (if wireguard isn't running):
-##       - NATIVE: `sudo -b sh -c 'ncat -6 -u -l -p 123   -e /bin/cat -k'`   (on client: `ncat -6 -u <IPv6-addr> 123`)
+##       - NATIVE: `sudo -b sh -c 'ncat -6 -u -l [<IPv6-addr>] 123   -e /bin/cat -k'`   (on client: `ncat -6 -u <IPv6-addr> 123`)
 ##       - DOCKER CONTAINER: `docker run -d --network=wireguard_vpn --name test_avail -p 123:123/udp nicolaka/netshoot nc -6 -u -l -p 123`
 ##     - VERIFY port 'binding' on server: `sudo lsof -i -P -n |grep 123`
 ##     - VERIFY via tcpdump: `sudo tcpdump -n -i eth0  udp port 123  -XAvvv`
@@ -45,7 +44,7 @@
 #        - name: ddclient.conf
 #          target_dir: ddclient
         - name: dyndns-update
-          mode: 0755
+          mode: '0755'
         - name: dyndns-Dockerfile
       startup: False
       compose:
@@ -70,8 +69,11 @@
 #                ro: true
             env_vars:
               -  TZ={{ timezone }}
+
           - name: wireguard
             image: linuxserver/wireguard:latest
+            volumes:
+              - path: '{{ docker_container.data_basedir }}/vpn/wg/:/config/'
             security:
               use_root: True
               cap_add:
@@ -80,36 +82,38 @@
             network:
               nets: ['vpn']
               ports:
-                # Port of the wireguard server
-                - '{{ vpn.port }}:{{ vpn.port }}/udp'        # DEFAULT PORT: 51820
-                # Wireguard UI   -->  Access GUI via: `ssh -L 8080:127.0.0.1:8080 gg-rpi0`  (ALTERNATIVE: use traefik ––––––––  WHICH DOESN't WORK aS LONG AS We DON'T USE ITS NETWORK)
+                # Wireguard server   (DEFAULT PORT: 51820)
+                - '{{ vpn.port }}:{{ vpn.port }}/udp'
+                # Wireguard UI   -->  Access GUI via: `ssh -L 8080:127.0.0.1:8080 gg-rpi0`  (ALTERNATIVE: use traefik ––––––––  WHICH WON't WORK aS LONG AS We DON'T USE ITS NETWORK)
                 - '127.0.0.1:{{ vpn.wireguard_ui.local_port|default(8080, true) }}:5000/tcp'
-            volumes:
-              - path: '{{ docker_container.data_basedir }}/vpn/wireguard/:/config/'
             sysctls:
+              #  $$$$$$   TODO: ONLY AFFECTS CONTAINER (NOT HOST-SYSTEM)  => NAMESPACE CGROUPS ???    $$$$$$
               # REFERENCE: https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html
               #            https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt
+              # Enable IPv6
               - net.ipv6.conf.all.disable_ipv6=0
               # Enable packet forwarding
               - net.ipv4.ip_forward=1
               - net.ipv6.conf.all.forwarding=1
               # ?
               - net.ipv4.conf.all.src_valid_mark=1
-              # Accept Router Advertisements (RAs)
-              - net.ipv6.conf.eth0.accept_ra=2
-              # Disable Privacy Extensions
-              - net.ipv6.conf.eth0.use_tempaddr=0
-              - net.ipv6.conf.default.use_tempaddr=0
-              - net.ipv6.conf.all.use_tempaddr=0
+              # Accept Router Advertisements (RAs;  0 = don't accept, 1 = accept if forwarding is DISABLED; 2 = accept even IF forwarding is enabled)
+              - 'net.ipv6.conf.{{ vpn.if }}.accept_ra=2'
               # How link-local- & autoconf addresses are generated (`0` = EUI64)
               - net.ipv6.conf.default.addr_gen_mode=0
-              - net.ipv6.conf.eth0.addr_gen_mode=0
+              - 'net.ipv6.conf.{{ vpn.if }}.addr_gen_mode=0'
+              # Disable *Privacy Extensions*
+              - 'net.ipv6.conf.{{ vpn.if }}.use_tempaddr=0'
+              - net.ipv6.conf.default.use_tempaddr=0
+              - net.ipv6.conf.all.use_tempaddr=0
             env_vars:
               - TZ={{ timezone }}
               - PUID={{ www_user.uid }}
               - PGID={{ www_user.gid }}
+
           - name: wireguard-ui
             image: ngoduykhanh/wireguard-ui:latest
+            entrypoint: ./wg-ui --disable-login
             security:
               use_root: True
               cap_add:
@@ -117,37 +121,19 @@
             network:
               mode: service:wireguard
             volumes:
-              - path: '{{ docker_container.data_basedir }}/vpn/wireguard/:/config/'
-            sysctls:
-              # REFERENCE: https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html
-              #            https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt
-              - net.ipv6.conf.all.disable_ipv6=0
-              # Enable packet forwarding
-              - net.ipv4.ip_forward=1
-              - net.ipv6.conf.all.forwarding=1
-              # ?
-              - net.ipv4.conf.all.src_valid_mark=1
-              # Accept Router Advertisements (RAs)
-              - net.ipv6.conf.eth0.accept_ra=2
-              # Disable Privacy Extensions
-              - net.ipv6.conf.eth0.use_tempaddr=0
-              - net.ipv6.conf.default.use_tempaddr=0
-              - net.ipv6.conf.all.use_tempaddr=0
-              # How link-local- & autoconf addresses are generated (`0` = EUI64)
-              - net.ipv6.conf.default.addr_gen_mode=0
-              - net.ipv6.conf.eth0.addr_gen_mode=0
+              - path: '{{ docker_container.data_basedir }}/vpn/wg-ui/:/app/db/'
+              - path: '{{ docker_container.data_basedir }}/vpn/wg/:/etc/wireguard/'
             # REFERENCE: https://github.com/ngoduykhanh/wireguard-ui#environment-variables
             env_vars:
-              # TODO: SSO -->  disable-login
+              # TODO: SSO
               # UI
-              - 'WGUI_USERNAME={{ vpn.wireguard_ui.user|default("gg", true) }}'
+              - 'WGUI_USERNAME={{ vpn.wireguard_ui.user|default("gg", true) }}'   # Required 4 db init
               - 'WGUI_PASSWORD={{ vpn.wireguard_ui.pass|default("1", true) }}'
 #              - 'SESSION_SECRET=XX vpn.wireguard_ui.session_secret XX'
               - 'WGUI_LOG_LEVEL={{ vpn.wireguard_ui.log_level }}'
               # Start / restart wireguard container w/ this container
-              # $$  TODO: WORKAROUND  (https://github.com/ngoduykhanh/wireguard-ui/issues/381#issuecomment-1582258804)  $$
-              - WGUI_MANAGE_START=false
-              - WGUI_MANAGE_RESTART=false
+              - WGUI_MANAGE_START=true
+              - WGUI_MANAGE_RESTART=true
               # Wireguard conf file (wg0.conf)
 #              - WG_CONF_TEMPLATE
               # Server Tunnel
@@ -160,8 +146,8 @@
               # ( Don't route inet traffic (by default) through tunnel   --> {# `{% for network in vpn.networks %}{{ network.subnet }},{{ "%s0/%s"|format(network.server[:-4], network.server.split("/")[1]) }}{{ "" if loop.last else "," }}{% endfor %}` ) #}
               - WGUI_DEFAULT_CLIENT_ALLOWED_IPS=0.0.0.0/0,::/0
               # Rules 4 forwarding from VPN subnet 2 actual network
-              - WGUI_SERVER_POST_UP_SCRIPT=iptables -A FORWARD -i %i -j ACCEPT; ip6tables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; ip6tables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE; ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-              - WGUI_SERVER_POST_DOWN_SCRIPT=iptables -D FORWARD -i %i -j ACCEPT; ip6tables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; ip6tables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE; ip6tables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+              - WGUI_SERVER_POST_UP_SCRIPT=iptables -A FORWARD -i %i -j ACCEPT; ip6tables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; ip6tables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ vpn.if }} -j MASQUERADE; ip6tables -t nat -A POSTROUTING -o {{ vpn.if }} -j MASQUERADE
+              - WGUI_SERVER_POST_DOWN_SCRIPT=iptables -D FORWARD -i %i -j ACCEPT; ip6tables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; ip6tables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ vpn.if }} -j MASQUERADE; ip6tables -t nat -D POSTROUTING -o {{ vpn.if }} -j MASQUERADE
               # MAILING
               - SMTP_HOSTNAME={{ notifications_mail.smtp_host }}
               - SMTP_PORT={{ notifications_mail.smtp_port }}

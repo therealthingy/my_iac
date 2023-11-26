@@ -1,13 +1,17 @@
 ---
 {{ ansible_managed|comment }}
+#
+# REFERENCE: https://netplan.readthedocs.io/en/latest/netplan-yaml/
+#
 network:
   version: 2
   renderer: networkd
+
   ethernets:
     {{ pihole.if }}:
         dhcp4: false
         addresses:
           - {{ pihole.ipv4 }}
-          - {{ pihole.ipv6_ula }}   # Add unique local IPv6 addresses  (equivalent command (for adding IPv6 address): `sudo ip addr add {{ pihole.ipv6_ula }} dev {{ pihole.if }}`)
+          - {{ pihole.ipv6_ula }}   # Add unique local IPv6 addresses  (equivalent command (4 adding IPv6 address): `sudo ip addr add {{ pihole.ipv6_ula }} dev {{ pihole.if }}`)
         nameservers:
           addresses: [{{ dns_servers|join(',') }}]

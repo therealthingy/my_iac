@@ -2,14 +2,24 @@
 # Equivalent command (for adding IPv6 address): `sudo ip addr add {{ pihole.ipv6_ula }} dev {{ pihole.if }}`
 # VALIDATE (show ip addresses): `ip -6 address show dev eth0`
 # NOTE: DNS entries here affect name resolution capabilities of docker containers !!  (containers 'inherit' config from host)
-- name: Add static DNS entries + static IPv6 ULA addr
-  # REFERENCE: https://netplan.readthedocs.io/en/latest/netplan-yaml/
-  # VERIFY: `networkctl status`
-  ansible.builtin.template:
-    src: pihole--netplan_rules.yml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
-    dest: /etc/netplan/01-pihole.yaml
-    mode: 0600
-  notify: Applying Netplan Configuration
+- name: Network config
+  block:
+    - name: Add static DNS entries + static IPv6 ULA addr
+      # VERIFY: `networkctl status`
+      ansible.builtin.template:
+        src: pihole--netplan_rules.yml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
+        dest: /etc/netplan/01-pihole.yaml
+        mode: 0600
+      notify: Applying Netplan Configuration
+    # NOTE: IPv6:
+    #   - `net.ipv6.conf.<interface>.temp_valid_lft`:  Default: 604800 (7 days)
+    #   - `   "        "            .temp_prefered_lft`: Default: 86400 (1 day)
+    #   - `   "        "            .use_tempaddr`: Preference 4 *Privacy Extensions* (0 = disabled, 1 = enabled, but prefer public, > 1 = enable, but prefer temporary)
+    - name: Netplan workaround unsupported settings     # TODO: Merge in netplan once supported (or remove if default no longer causes ULA 2 be removed)
+      ansible.posix.sysctl:
+        name: 'net.ipv6.conf.{{ pihole.if }}.temp_valid_lft'   # Otherwise ULA gets removed ??
+        value: 129600
+        state: present
   become: true
 
 
@@ -27,17 +37,16 @@
             autoupdate_disabled: true
             network:
               ports:
-                - "{{ pihole.ipv4[:-3] }}:53:53/udp"         # IP addr is required as Ubuntu uses the local DNS-server systemd-resolve  (SEE: https://github.com/sameersbn/docker-bind/issues/65)
+                - "{{ pihole.ipv4[:-3] }}:53:53/udp"         # IP addr must be specified as Ubuntu Server uses systemd-resolve which binds 2 `localhost:53` => by binding 2 IF_ANY we get a conflict  (SEE: https://github.com/sameersbn/docker-bind/issues/65)
                 - "[{{ pihole.ipv6_ula[:-3] }}]:53:53/udp"
                 - "{{ pihole.ipv4[:-3] }}:53:53/tcp"
                 - "[{{ pihole.ipv6_ula[:-3] }}]:53:53/tcp"
                 # 67 = DHCP  (-> TODO: could be uncommented  ???)
                 - "{{ pihole.ipv4[:-3] }}:67:67/udp"
                 - "[{{ pihole.ipv6_ula[:-3] }}]:67:67/udp"
-                # TODO: " if 'home_servers' not in group_names %}
-                # Admin-interface  (ports not necessary since we use reverse proxy)
-                #- 80:80/tcp
-                #- 443:443/tcp
+#                # Admin-interface  (ports not necessary since we use reverse proxy)
+#                - 80:80/tcp
+#                - 443:443/tcp
               reverse_proxy_mappings:
                 - subdomain: dns
                   port: 80
@@ -56,12 +65,12 @@
               - 'DNSMASQ_LISTENING=single'
               - 'INTERFACE={{ pihole.if }}'
               - 'IPv6=true'
-              - FTLCONF_RATE_LIMIT='0/0'             #  TODO: Workaround as all IPv6 requests arrive w/ same saddr (due 2 sNAT)
+              - FTLCONF_RATE_LIMIT='0/0'                       #  TODO: Workaround as all IPv6 requests arrive w/ same saddr (due 2 sNAT); NOTE: Might still hit limit on inet outage
               - 'WEBPASSWORD={{ pihole.web_pw }}'
               - 'PROXY_LOCATION={{ container_name }}'
               - 'VIRTUAL_HOST={{ container_name }}.{{ domainname }}'
               - VIRTUAL_PORT=80
-              - 'REV_SERVER=true'                              # Makes only sense when pihole isn't acting as DHCP server
+              - 'REV_SERVER=true'                              # NOTE: Makes only sense when pihole isN'T acting as DHCP server
               - REV_SERVER_TARGET={{ pihole.router_ip }}
               - REV_SERVER_DOMAIN={{ pihole.router_domain }}
               - REV_SERVER_CIDR={{ pihole.router_reverse_dns_zone }}

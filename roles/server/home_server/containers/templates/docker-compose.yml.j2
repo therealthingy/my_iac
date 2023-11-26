@@ -15,6 +15,9 @@ services:
 {% for service in container.compose.services %}
   {{ service.name }}:
     image: {{ service.image }}
+{%   if service.entrypoint is defined %}
+    entrypoint: {{ service.entrypoint }}
+{%   endif %}
 {%   if service.image_build is defined %}
     build:
       context: {{ service.image_build.ctx }}
