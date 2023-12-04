@@ -117,6 +117,12 @@
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
+    - name: '[Darwin]'
+      community.general.homebrew:
+        name:
+          - wireguard-tools
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
 
 - name: Administration tools
   block:
