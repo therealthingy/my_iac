@@ -12,6 +12,15 @@ network:
 #        dhcp4: false
         dhcp6: false
         accept-ra: true
-        ipv6-privacy: true
+
+        # TODO: ENABLE AGAIN ONCE SOLUTION HAS BEEN FOUND
+        #   - PROBLEM (when using UDP + PE):
+        #     - Client sends request 2 static IPv6 address
+        #     - Server responds w/ PE IPv6 address
+        #   - WORKAROUNDs:
+        #     - Bind 2 socket (via `<static-ipv6>:port/udp` in docker-compose)  => CON: IPv6 prefix MIGHT change
+        #     - Disable IPv6 PE  => CON: Privacy reduced
+        ipv6-privacy: false
+
 {#        ipv6-address-generation: eui64 #}
         ipv6-address-token: "{{ vpn.ipv6_if_id }}"   # Equivalent cmd: `ip token set {{ vpn.ipv6_if_id }} dev eth0;      NOTE: will also affect ULA addr.s  (`pihole.ipv6_ula`)
