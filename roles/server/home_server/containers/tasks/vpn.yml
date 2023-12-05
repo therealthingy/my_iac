@@ -1,4 +1,10 @@
 ---
+#
+# TODO: KNOWN ISSUES:
+#   - No IPv6 Privacy Extensions (SEE vpn--netplan_rules.yml.j2)
+#   - Occasional ddns outages   (SOLUTION: Buy an own domain e.g., on https://namecheap.com / CON: Requires ddclient rewrite)
+#   - wireguard-ui BUG: ALL clients must be created BEFORE the initial 'apply config' + first restart (via `docker compose down` & `up` again)  (otherwise the newly created client (after the initial 'apply config') isn't considered ??!)
+#
 - name: Networking
   block:
     # VERIFY: `networkctl status`
@@ -74,6 +80,7 @@
             image: linuxserver/wireguard:latest
             volumes:
               - path: '{{ docker_container.data_basedir }}/vpn/wg/:/config/'
+            restart_policy: unless-stopped          # Required 4 wireguard-ui 2 manage the container (`WGUI_MANAGE_START`)
             security:
               use_root: True
               cap_add:
@@ -106,6 +113,7 @@
               - 'net.ipv6.conf.{{ vpn.if }}.use_tempaddr=0'
               - net.ipv6.conf.default.use_tempaddr=0
               - net.ipv6.conf.all.use_tempaddr=0
+            # REFERENCE: https://docs.linuxserver.io/images/docker-wireguard/#environment-variables-e
             env_vars:
               - TZ={{ timezone }}
               - PUID={{ www_user.uid }}
