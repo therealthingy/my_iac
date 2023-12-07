@@ -2,7 +2,7 @@
 {{ ansible_managed|comment }}
 version: '3.7'
 
-{# $$$$$$$  TODO: Check whether service actually uses reverse-proxy  $$$$$$$ #}
+{# $$$$$$$  TODO: Check whether service actually uses reverse-proxy & leave out network if so  $$$$$$$ #}
 networks:
   {{ reverse_proxy_docker_network }}:
     external: true
@@ -27,7 +27,7 @@ services:
     container_name: {{ service.name }}
 {%     if service.network.mode is not defined %}
     hostname: {{ service.name }}-docker
-    domainname: {{ domainname }}
+#    domainname: {{ domainname }}           # Causes e.g., pihole 2 return its internal Docker IP when queried w/ matching hostname.domainname
 {%     endif %}
     restart: '{{ service.restart_policy|default("always", true) }}'
 {%     if service.dependencies is defined %}
@@ -109,7 +109,7 @@ services:
 {%       endif %}
 {%     endif %}
     labels:
-      - com.centurylinklabs.watchtower.enable=true
+      - com.centurylinklabs.watchtower.enable={{ 'false' if service.image_build is defined else 'true' }}
 {%     if service.autoupdate_disabled is defined  and  service.autoupdate_disabled %}
       - com.centurylinklabs.watchtower.monitor-only=true
 {%     endif %}
