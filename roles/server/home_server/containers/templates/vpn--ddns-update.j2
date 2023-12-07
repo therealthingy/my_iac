@@ -1,8 +1,10 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 {{ ansible_managed|comment }}
 """
-Essentially only updates IPv6 prefix   (as we use Privacy Extensions, but Fritzbox allows only fixed IF-ID)
+Essentially only updates IPv6 prefix   (as we ~~use Privacy Extensions~~, but Fritzbox allows only fixed IF-ID)
+
+                !!!  IMPORTANT: Must run (if run in Docker) w/ `network_mode: host`  !!!
 """
 
 import os
@@ -22,20 +24,21 @@ if __name__ == "__main__":
     while True:
         print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Checking …")
         for ip in ni.ifaddresses('{{ vpn.if }}')[ni.AF_INET6]:
-            if any(x in ip['addr'] for x in ['fd00', 'fe80'])   or   '{{ vpn.ipv6_if_id }}'.replace('::', '') not in ip['addr']: continue
+            if any( ip['addr'].startswith(x) for x in ['fd', 'fe80'] )   or   '{{ vpn.ddns.if_ipv6_id }}'.replace('::', '') not in ip['addr']: continue
+
             if last_updated_ip != ip['addr']:
                 try:
-                    update_url = "{{ vpn.dyndns.update_url }}".format(domain="{{ vpn.dyndns.domain }}", token="{{ vpn.dyndns.pass }}", ip6addr=ip['addr'])
-                    with requests.get(update_url, timeout=3) as r:
+                    with requests.get(  "{{ vpn.ddns.update_url }}".format(domain="{{ vpn.ddns.domain }}", token="{{ vpn.ddns.pass }}", ip6addr=ip['addr']),
+                                        timeout=3  ) as r:
                         r.raise_for_status()
                 except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
                     print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Couldn't update  --  ", e, file=sys.stderr)
                     break
                 last_updated_ip = ip['addr']
-                print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Updated '{{ vpn.dyndns.domain }}' -- new addr: { last_updated_ip }")
+                print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Updated '{{ vpn.ddns.domain }}' -- new addr: { last_updated_ip }")
             break
 
         if last_updated_ip == None:
-            print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Found no matching address (expected IF ID \"{{ vpn.ipv6_if_id }}\")", e, file=sys.stderr)
+            print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] NO MATCHING ADDRESS 'ON' IF {{ vpn.if }}  (expected IF ID \"{{ vpn.ddns.if_ipv6_id }}\")", e, file=sys.stderr)
 
-        time.sleep({{ vpn.dyndns.update_interval_sec }})
+        time.sleep({{ vpn.ddns.update_interval_sec }})

@@ -160,7 +160,7 @@ all:
 
           pihole:
             if: eth0
-            ipv6_ula: fd4b:49fb:a80c:29ba:40b3:8c93:9122:52c7/64      # $$$$$$$$$$$$$$$$  TODO: IF-ID MUST overlap atm w/ `vpn.ipv6_if_id`  $$$$$$$$$$$$$$$$
+            ipv6_ula: fd4b:49fb:a80c:29ba:40b3:8c93:9122:52c7/64      # $$$$$$$$$$$$$$$$  TODO: IF-ID MUST overlap atm w/ `vpn.ddns.if_ipv6_id`  $$$$$$$$$$$$$$$$
             ipv4: 10.38.170.2/24
             router_reverse_dns_zone: 10.38.170.0/24
             router_ip: 10.38.170.1
@@ -251,24 +251,25 @@ all:
                           6337316139376432626438323636623765616333663033626135
 
           vpn:
+            endpoint:
+              port: 123                                                       # NTP port    (default: 51820)
+              domain: !vault |
+                        $ANSIBLE_VAULT;1.1;AES256
+                        63346535663639633966633839663262353366643263393930346630396131653036326463323838
+                        6535653033623738303963353135616331363239303464390a616236653565313932363834616434
+                        62373235623036346433656237643036616334616532616534396132303566663131396361373936
+                        3865313864623239310a613331396235643938656333336637356163613165656665653231336632
+                        3065
             if: eth0
-            port: 123      # NTP port    (default: 51820)
-            ipv6_if_id: '::{{ pihole.ipv6_ula[20:-3] }}'
             wireguard_mtu: 1380
-            networks:
+            internal_networks:                                                # !!  May NOT overlap w/ remote or local network  !!
               - server: 10.196.92.1/24
                 dns: '{{ pihole.ipv4[:-3] }}'
               - server: fa93:eb85:93cd:56be::1/64
                 dns: '{{ pihole.ipv6_ula[:-3] }}'
-            server_domain: !vault |
-                      $ANSIBLE_VAULT;1.1;AES256
-                      63346535663639633966633839663262353366643263393930346630396131653036326463323838
-                      6535653033623738303963353135616331363239303464390a616236653565313932363834616434
-                      62373235623036346433656237643036616334616532616534396132303566663131396361373936
-                      3865313864623239310a613331396235643938656333336637356163613165656665653231336632
-                      3065
-            dyndns:
+            ddns:
               update_interval_sec: 300
+              if_ipv6_id: '::{{ pihole.ipv6_ula[20:-3] }}'                    # Use same as pihole does
               update_url: https://dynv6.com/api/update?hostname={domain}&token={token}&ipv4=&ipv6={ip6addr}
               pass: !vault |
                         $ANSIBLE_VAULT;1.1;AES256

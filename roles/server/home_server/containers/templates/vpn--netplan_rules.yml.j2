@@ -9,6 +9,7 @@ network:
 
   ethernets:
     {{ vpn.if }}:
+{% if vpn.ddns is defined %}
 #        dhcp4: false
         dhcp6: false
         accept-ra: true
@@ -23,4 +24,7 @@ network:
         ipv6-privacy: false
 
 {#        ipv6-address-generation: eui64 #}
-        ipv6-address-token: "{{ vpn.ipv6_if_id }}"   # Equivalent cmd: `ip token set {{ vpn.ipv6_if_id }} dev eth0;      NOTE: will also affect ULA addr.s  (`pihole.ipv6_ula`)
+        ipv6-address-token: "{{ vpn.ddns.if_ipv6_id }}"   # Equivalent cmd: `ip token set {{ vpn.ddns.if_ipv6_id }} dev eth0;      NOTE: will also affect ULA addr.s  (`pihole.ipv6_ula`)
+{% else %}
+# TODO: Add static IPv4 / IPv6 address
+{% endif %}

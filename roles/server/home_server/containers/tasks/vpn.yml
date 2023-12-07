@@ -47,9 +47,9 @@
   with_items:
     - name: vpn
       config_files:
-        - name: dyndns-update
+        - name: ddns-update
           mode: '0755'
-        - name: dyndns-Dockerfile
+        - name: ddns-Dockerfile
       startup: False
       compose:
         networks: |+
@@ -61,12 +61,12 @@
                   - subnet: '{{ docker_ipv6_conf.prefix }}:2::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}'
         services:
           - name: ddclient
-            _include_in_compose: '{{ vpn.dyndns is defined|bool }}'
+            _include_in_compose: '{{ vpn.ddns is defined|bool }}'
 #            image: lscr.io/linuxserver/ddclient:latest
             image: ddclient
             image_build:
               ctx: .
-              df: dyndns-Dockerfile
+              df: ddns-Dockerfile
             network:
               mode: host
             env_vars:
@@ -86,7 +86,7 @@
               nets: ['vpn']
               ports:
                 # Wireguard server   (DEFAULT PORT: 51820)
-                - '{{ vpn.port }}:{{ vpn.port }}/udp'
+                - '{{ vpn.endpoint.port }}:{{ vpn.endpoint.port }}/udp'
                 # Wireguard UI   -->  Access GUI via: `ssh -L 8080:127.0.0.1:8080 gg-rpi0`  (ALTERNATIVE: use traefik ––––––––  WHICH WON't WORK aS LONG AS We DON'T USE ITS NETWORK)
                 - '127.0.0.1:{{ vpn.wireguard_ui.local_port|default(8080, true) }}:5000/tcp'
             sysctls:
@@ -141,13 +141,13 @@
               # Wireguard conf file (wg0.conf)
 #              - WG_CONF_TEMPLATE
               # Server Tunnel
-              - WGUI_SERVER_LISTEN_PORT={{ vpn.port }}
-              - WGUI_ENDPOINT_ADDRESS={{ vpn.server_domain }}:{{ vpn.port }}
-              - WGUI_SERVER_INTERFACE_ADDRESSES={{ vpn.networks|map(attribute='server')|join(',') }}
-              - WGUI_DNS={{ vpn.networks|map(attribute='dns')|join(',') }}
+              - WGUI_SERVER_LISTEN_PORT={{ vpn.endpoint.port }}
+              - WGUI_ENDPOINT_ADDRESS={{ vpn.endpoint.domain }}:{{ vpn.endpoint.port }}
+              - WGUI_SERVER_INTERFACE_ADDRESSES={{ vpn.internal_networks|map(attribute='server')|join(',') }}
+              - WGUI_DNS={{ vpn.internal_networks|map(attribute='dns')|join(',') }}
               # OVERHEAD: IPv4: 20 bytes / IPv6: 40 bytes, UDP: 8 bytes, WG: 32 bytes   //   MTU: Cable = 1500, DSL = 1492
               - WGUI_MTU={{ vpn.wireguard_mtu|default(1450, true) }}
-              # ( Don't route inet traffic (by default) through tunnel   --> {# `{% for network in vpn.networks %}{{ network.subnet }},{{ "%s0/%s"|format(network.server[:-4], network.server.split("/")[1]) }}{{ "" if loop.last else "," }}{% endfor %}` ) #}
+              # ( Don't route inet traffic (by default) through tunnel   --> {# `{% for network in NETWORK_VAR %}{{ network.subnet }},{{ "%s0/%s"|format(network.server[:-4], network.server.split("/")[1]) }}{{ "" if loop.last else "," }}{% endfor %}` ) #}
               - WGUI_DEFAULT_CLIENT_ALLOWED_IPS=0.0.0.0/0,::/0
               # Rules 4 forwarding from VPN subnet 2 actual network
               - WGUI_SERVER_POST_UP_SCRIPT=iptables -A FORWARD -i %i -j ACCEPT; ip6tables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; ip6tables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ vpn.if }} -j MASQUERADE; ip6tables -t nat -A POSTROUTING -o {{ vpn.if }} -j MASQUERADE
