@@ -96,8 +96,9 @@
               - path: './dynamic-conf.yml:/config/dynamic-conf.yml'
               - path: '{{ docker_container.data_basedir }}/traefik/:/config/certs/'
             env_vars:
-              - "DUCKDNS_TOKEN={{ cert_acme.token }}"
               - TZ={{ timezone }}
+              - "NAMECHEAP_API_USER={{ cert_acme.user }}"
+              - "NAMECHEAP_API_KEY={{ cert_acme.token }}"
 
     - name: bitwarden                                                         # TODO SSO: https://github.com/dani-garcia/vaultwarden/pull/3899
       volumes:
