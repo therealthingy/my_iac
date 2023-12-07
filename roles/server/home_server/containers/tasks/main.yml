@@ -81,12 +81,12 @@
 #             - "--ping=false"
               # LetsEncrypt cert
 #              - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-              - "--certificatesresolvers.myresolver.acme.dnschallenge=true"
+              - "--certificatesresolvers.myresolver.acme.dnschallenge=true"                                   # DNS 101 -> Necessary when unreachable (e.g., private IP address)
               - "--certificatesresolvers.myresolver.acme.dnschallenge.provider={{ cert_acme.provider }}"
               - "--certificatesresolvers.myresolver.acme.email={{ cert_acme.email }}"
               - "--certificatesresolvers.myresolver.acme.storage=/config/certs/acme.json"
-              - "--certificatesResolvers.myresolver.acme.dnsChallenge.delayBeforeCheck=5" # To delay DNS check & reduce LE hitrate
-              - "--entrypoints.websecure.http.tls.domains[0].main={{ domainname }}"       # Wildcard cert
+              - "--certificatesResolvers.myresolver.acme.dnsChallenge.delayBeforeCheck=5"                     # To delay DNS check & reduce LE hitrate
+              - "--entrypoints.websecure.http.tls.domains[0].main={{ domainname }}"                           # Wildcard cert
               - "--entrypoints.websecure.http.tls.domains[0].sans=*.{{ domainname }}"
               - "--entrypoints.websecure.http.tls.certresolver=myresolver"
             volumes:
@@ -96,8 +96,8 @@
               - path: './dynamic-conf.yml:/config/dynamic-conf.yml'
               - path: '{{ docker_container.data_basedir }}/traefik/:/config/certs/'
             env_vars:
-              -  TZ={{ timezone }}
               - "DUCKDNS_TOKEN={{ cert_acme.token }}"
+              - TZ={{ timezone }}
 
     - name: bitwarden                                                         # TODO SSO: https://github.com/dani-garcia/vaultwarden/pull/3899
       volumes:
