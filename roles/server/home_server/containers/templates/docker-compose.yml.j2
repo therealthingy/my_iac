@@ -13,7 +13,7 @@ networks:
 
 services:
 {% for service in container.compose.services %}
-{%   if service._include_in_compose is not defined  or  not service._include_in_compose %}
+{%   if service._include_in_compose is not defined  or  service._include_in_compose %}
   {{ service.name }}:
     image: {{ service.image }}
 {%     if service.entrypoint is defined %}

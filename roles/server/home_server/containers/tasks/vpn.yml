@@ -61,6 +61,7 @@
                   - subnet: '{{ docker_ipv6_conf.prefix }}:2::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}'
         services:
           - name: ddclient
+            _include_in_compose: '{{ vpn.dyndns is defined|bool }}'
 #            image: lscr.io/linuxserver/ddclient:latest
             image: ddclient
             image_build:
@@ -141,7 +142,7 @@
 #              - WG_CONF_TEMPLATE
               # Server Tunnel
               - WGUI_SERVER_LISTEN_PORT={{ vpn.port }}
-              - WGUI_ENDPOINT_ADDRESS={{ vpn.dyndns.domain }}:{{ vpn.port }}
+              - WGUI_ENDPOINT_ADDRESS={{ vpn.server_domain }}:{{ vpn.port }}
               - WGUI_SERVER_INTERFACE_ADDRESSES={{ vpn.networks|map(attribute='server')|join(',') }}
               - WGUI_DNS={{ vpn.networks|map(attribute='dns')|join(',') }}
               # OVERHEAD: IPv4: 20 bytes / IPv6: 40 bytes, UDP: 8 bytes, WG: 32 bytes   //   MTU: Cable = 1500, DSL = 1492

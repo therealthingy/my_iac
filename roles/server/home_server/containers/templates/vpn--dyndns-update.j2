@@ -25,8 +25,8 @@ if __name__ == "__main__":
             if any(x in ip['addr'] for x in ['fd00', 'fe80'])   or   '{{ vpn.ipv6_if_id }}'.replace('::', '') not in ip['addr']: continue
             if last_updated_ip != ip['addr']:
                 try:
-                    #f"http://dynv6.com/api/update?hostname={{ vpn.dyndns.domain }}
-                    with requests.get(f"https://www.duckdns.org/update?domains={{ vpn.dyndns.domain }}&ip=%02%03&ipv6={ ip['addr'] }&token={{ vpn.dyndns.pass }}", timeout=3) as r:
+                    update_url = "{{ vpn.dyndns.update_url }}".format(domain="{{ vpn.dyndns.domain }}", token="{{ vpn.dyndns.pass }}", ip6addr=ip['addr'])
+                    with requests.get(update_url, timeout=3) as r:
                         r.raise_for_status()
                 except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
                     print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Couldn't update  --  ", e, file=sys.stderr)
