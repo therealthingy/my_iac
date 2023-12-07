@@ -47,8 +47,6 @@
   with_items:
     - name: vpn
       config_files:
-#        - name: ddclient.conf
-#          target_dir: ddclient
         - name: dyndns-update
           mode: '0755'
         - name: dyndns-Dockerfile
@@ -70,9 +68,6 @@
               df: dyndns-Dockerfile
             network:
               mode: host
-#            volumes:
-#              - path: '{{ docker_container.config_basedir }}/vpn/ddclient/:/config/'
-#                ro: true
             env_vars:
               -  TZ={{ timezone }}
 
