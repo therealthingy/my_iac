@@ -2,30 +2,6 @@
 
 
 
-## GUIDELINEs
-* SECURE SERVER:
-  * (1.) Use secure & encrypted communication
-  * (2.) Disable root login & use `sudo`
-  * (3.) Remove unused software, open only required ports
-  * (4.) Use the principle of least privilege
-  * (5.) Update the OS & installed software
-  * (6.) Use a properly-configured firewall
-  * (7.) Make sure log files are populated & rotated
-  * (8.) Monitor logins & block suspect IP addresses
-
-
-## References (Ex.s)
-### Darwin
-* EX.s: https://github.com/geerlingguy/mac-dev-playbook
-* `defaults` command:
-  * List all the domains available: `defaults domains > domainslist.txt`
-  * List all its current key-value pairs: `defaults read com.apple.finder > finderdefaults.txt`
-  * Write setting: `defaults write com.apple.finder AppleShowAllFiles true`
-  * Delete setting: &mldr;
-* ALTERNATIVELY: `prefs-editor` cask
-
-
-
 ## TODOs
 * Debian:
   * Nautilus show hidden not working
@@ -219,9 +195,6 @@
     * `--list-hosts`: Only list matching hosts
 
 #### POST ansible run (i.e., not automated steps)
-* *Home servers*:
-  * traefik: SSL certs gen
-  * transmission & samba: Directory structure (e.g., on (encrypted luks) sparse file)
 * *clients*:
   * Enable installed Gnome extensions (via 'Extensions app')  (!!  TODO: AUTOMATE  !!)
 * *Dev clients*:
@@ -236,17 +209,42 @@
 
 
 
-## Misc. commands
-### Dev
+
+---
+## References (Ex.s) / GUIDELINEs
+### SECURE SERVER
+* (1.) Use secure & encrypted communication
+* (2.) Disable root login & use `sudo`
+* (3.) Remove unused software, open only required ports
+* (4.) Use the principle of least privilege
+* (5.) Update the OS & installed software
+* (6.) Use a properly-configured firewall
+* (7.) Make sure log files are populated & rotated
+* (8.) Monitor logins & block suspect IP addresses
+
+### Darwin
+* EX.s: https://github.com/geerlingguy/mac-dev-playbook
+* `defaults` command:
+  * List all the domains available: `defaults domains > domainslist.txt`
+  * List all its current key-value pairs: `defaults read com.apple.finder > finderdefaults.txt`
+  * Write setting: `defaults write com.apple.finder AppleShowAllFiles true`
+  * Delete setting: &mldr;
+* ALTERNATIVELY: `prefs-editor` cask
+
+
+### Misc. Ansible Commands
+#### Dev
 * Validate playbook: `ansible-playbook main.yml --syntax-check`
 * Encrypt:
   * `ansible-vault encrypt <file>`   /   `ansible-vault decrypt <file>`
   * `ansible-vault encrypt_string <string>`
 
-### ( Ad-hoc commands )
+#### ( Ad-hoc commands )
 * `ansible <group>  -m <module>`
   * `--key-file ~/.ssh/rpi`
   * `-i inventory`
   * `--list-hosts`
   * `--become --ask-become-pass`: Privilege escalation
   * Useful modules: `ping` (not ICMP ping !!), `gather_facts`
+
+
