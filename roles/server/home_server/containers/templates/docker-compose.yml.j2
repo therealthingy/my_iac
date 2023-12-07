@@ -26,7 +26,7 @@ services:
 {%     endif %}
     container_name: {{ service.name }}
 {%     if service.network.mode is not defined %}
-    hostname: {{ service.name }}
+    hostname: {{ service.name }}-docker
     domainname: {{ domainname }}
 {%     endif %}
     restart: '{{ service.restart_policy|default("always", true) }}'
