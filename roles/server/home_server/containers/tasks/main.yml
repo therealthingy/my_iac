@@ -33,7 +33,7 @@
               - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail.system_admin_mail }}
 
 
-    - name: helloworld
+    - name: nginx-helloworld
       startup: False
       compose:
         services:
@@ -265,7 +265,6 @@
     - name: syncthing
       volumes:
         - '.'
-      startup: False
       compose:
         services:
           - name: syncthing
@@ -323,7 +322,7 @@
 #    - name: freshrss
 #      volumes:
 #        - 'config'
-#      startup: False
+##      startup: False
 #      compose:
 #        services:
 #          - name: freshrss
