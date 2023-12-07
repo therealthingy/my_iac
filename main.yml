@@ -55,7 +55,7 @@
       tags:
         - media_client
 
-- hosts: workstation_clients, workstation_clients
+- hosts: workstation_clients
   roles:
     - role: client/workstation_client
       tags:
