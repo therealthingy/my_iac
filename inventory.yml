@@ -323,9 +323,9 @@ all:
                 readonly: 'no'
                 guest: 'no'
                 users:
-                  - 'gtg'
+                  - 'gg'
             users:
-              - name: gtg
+              - name: gg
                 pass: !vault |
                           $ANSIBLE_VAULT;1.1;AES256
                           33663564613033363663346538623237666233326238376361633734633163336133306338663031
