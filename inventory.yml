@@ -36,7 +36,7 @@ all:
     # -  "Headless" systems  -
     servers:
       hosts:
-        gg-rpi0:
+        l0-rpi0:
           swap:
             swappiness: 60
 
@@ -45,7 +45,7 @@ all:
 
     home_servers:
       hosts:
-        gg-rpi0:
+        l0-rpi0:
 #          timezone: Europe/Berlin
           domainname: !vault |
               $ANSIBLE_VAULT;1.1;AES256
@@ -84,7 +84,7 @@ all:
                 3062316164626330610a323832343737343538616432356562383363363739353363313665616462
                 63393066663633386334333133636534663166623163633436393837633361393036326132306434
                 6132373161333436303764303637623161663037323839643633
-          hostname: gg-rpi0
+          hostname: l0-rpi0
 
           ssh:
             port: 2233
@@ -331,7 +331,7 @@ all:
     # --  "HW specific"  --
     hw_specific:
       hosts:
-        gg-rpi0:
+        l0-rpi0:
           usb_enclosure:                  # USB NVME SSD enclosure  (FIDECO M.2 NVME -- JMicron Technology Corp.)
             vendor_id: "152d"
             product_id: "0562"

@@ -87,7 +87,7 @@
               ports:
                 # Wireguard server   (DEFAULT PORT: 51820)
                 - '{{ vpn.endpoint.port }}:{{ vpn.endpoint.port }}/udp'
-                # Wireguard UI   -->  Access GUI via: `ssh -L 8080:127.0.0.1:8080 gg-rpi0`  (ALTERNATIVE: use traefik ––––––––  WHICH WON't WORK aS LONG AS We DON'T USE ITS NETWORK)
+                # Wireguard UI   -->  Access GUI via: `ssh -L 8080:127.0.0.1:8080 l0-rpi0`  (ALTERNATIVE: use traefik ––––––––  WHICH WON't WORK aS LONG AS We DON'T USE ITS NETWORK)
                 - '127.0.0.1:{{ vpn.wireguard_ui.local_port|default(8080, true) }}:5000/tcp'
             sysctls:
               #  $$$$$$   TODO: ONLY AFFECTS CONTAINER (NOT HOST-SYSTEM)  => NAMESPACE CGROUPS ???    $$$$$$
