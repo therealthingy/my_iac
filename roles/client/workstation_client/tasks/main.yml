@@ -23,7 +23,7 @@
             packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Notes
                 packages:
-                  - fsnotes
+#                  - fsnotes
                   - joplin
 
     - name: Install design apps
@@ -34,7 +34,8 @@
             packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Design
                 packages:
-                  - inkscape
+                  - digikam
+#                  - inkscape
                   - paintbrush
                   - imageoptim
 
