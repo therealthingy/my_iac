@@ -70,8 +70,13 @@
             network:
               mode: host
             env_vars:
-              -  TZ={{ timezone }}
-
+              - TZ={{ timezone }}
+              - IF_NAME={{ vpn.if }}
+              - IPV6_IF_ID={{ vpn.ddns.if_ipv6_id }}
+              - DDNS_UPDATE_URL={{ vpn.ddns.update_url }}
+              - DDNS_DOMAIN={{ vpn.ddns.domain if vpn.ddns.domain is defined else vpn.endpoint.domain }}
+              - DDNS_TOKEN={{ vpn.ddns.pass }}
+              - CHECK_INTERVAL_SEC={{ vpn.ddns.update_interval_sec }}
           - name: wireguard
             image: linuxserver/wireguard:latest
             volumes:

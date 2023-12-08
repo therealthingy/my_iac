@@ -2,9 +2,9 @@
 
 {{ ansible_managed|comment }}
 """
-Essentially only updates IPv6 prefix   (as we ~~use Privacy Extensions~~, but Fritzbox allows only fixed IF-ID)
+Essentially only updates IPv6 prefix   ~~(as we use Privacy Extensions, but Fritzbox allows only fixed IF-ID)~~
 
-                !!!  IMPORTANT: Must run (if run in Docker) w/ `network_mode: host`  !!!
+                !!!  IMPORTANT: Must run (if run as Docker container) w/ `network_mode: host`  !!!
 """
 
 import os
@@ -18,27 +18,41 @@ import datetime
 LOG_DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 if __name__ == "__main__":
-    print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Running as user '{os.path.split(os.path.expanduser('~'))[-1]}' on '{os.uname()[1]}'")
+    try:
+        if_name = os.environ['IF_NAME']
+        ipv6_if_id = os.environ['IPV6_IF_ID'].replace('::', '')
+        ddns_update_url = os.environ['DDNS_UPDATE_URL']
+        ddns_domain = os.environ['DDNS_DOMAIN']
+        ddns_token = os.environ['DDNS_TOKEN']
+        check_interval_sec = int( os.environ['CHECK_INTERVAL_SEC'] )
+    except (KeyError, ValueError) as e:
+        print("Mising env var(s) -- ", e)
+        exit(1)
+
+    print(f"\n\n\n[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Running as user '{os.path.split(os.path.expanduser('~'))[-1]}' on '{os.uname()[1]}'")
 
     prior_ip = None
     while True:
-        print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Checking 4 IPv6 IF-ID \"{ {{ vpn.ddns.if_ipv6_id }}'.replace('::', '') }\" on \"{{ vpn.if }}\" …")
-        for ip in ni.ifaddresses('{{ vpn.if }}')[ni.AF_INET6]:
-            if any( ip['addr'].startswith(x) for x in ['fd', 'fe80'] )   or   '{{ vpn.ddns.if_ipv6_id }}'.replace('::', '') not in ip['addr']: continue
+        print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Checking 4 IPv6 IF-ID \"{ ipv6_if_id }\" on \"{ if_name }\" …")
+        for ip in ni.ifaddresses(if_name)[ni.AF_INET6]:
+            if any( ip['addr'].startswith(x) for x in ['fd', 'fe80'] )   or   ipv6_if_id not in ip['addr']:
+                continue
 
             if prior_ip != ip['addr']:
                 try:
-                    with requests.get(  "{{ vpn.ddns.update_url }}".format(domain="{{ vpn.ddns.domain }}", token="{{ vpn.ddns.pass }}", ip6addr=ip['addr']),
+                    with requests.get(  ddns_update_url.format(domain=ddns_domain, token=ddns_token, ip6addr=ip['addr']),
                                         timeout=3  ) as r:
                         r.raise_for_status()
                 except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
-                    print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Update failed:  ", e, file=sys.stderr)
+                    print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] ↳ ERROR: Update failed:  ", e, file=sys.stderr)
                     break
                 prior_ip = ip['addr']
-                print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] Updated '{{ vpn.ddns.domain }}' -- new addr: { prior_ip }")
+                print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] ↳ Updated AAAA record 4 domain zone \"{ ddns_domain }\": { prior_ip }")
+
             break
 
         if prior_ip == None:
-            print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] NO MATCHING ADDRESS ON IF \"{{ vpn.if }}\"  (expected IPv6 IF-ID \"{{ vpn.ddns.if_ipv6_id }}\")", file=sys.stderr)
+            print(f"[{ datetime.datetime.now().strftime(LOG_DATE_FORMAT) }] ↳ ERROR: NO MATCHING ADDRESS w/ expected IPv6 IF-ID \"{ ipv6_if_id }\" ON IF \"{ if_name }\"", file=sys.stderr)
+            exit(1)
 
-        time.sleep({{ vpn.ddns.update_interval_sec }})
+        time.sleep( check_interval_sec )
