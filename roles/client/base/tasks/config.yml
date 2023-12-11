@@ -554,8 +554,8 @@
       type: 'int'
     - domain: 'com.apple.dock'                       # Set the icon size of Dock items
       key: 'tilesize'
-      value: '22'
-      type: 'int'
+      value: '22.0'
+      type: 'float'
     - domain: 'com.apple.dock'                       # Speed up Mission Control animations
       key: 'expose-animation-duration'
       value: '0.15'
