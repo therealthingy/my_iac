@@ -1,6 +1,6 @@
 ---
 # SEE: https://github.com/geerlingguy/internet-pi/blob/master/example.config.yml
-container_name: inet-monitoring
+container_name: inetstat
 
 config_dir: /home/{{ user.name }}/monitoring/
 
