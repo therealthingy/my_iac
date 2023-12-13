@@ -260,7 +260,7 @@
                 ro: True
 
 
-    - name: samba
+    - name: samba                                                         # TODO SSO (LDAP)
 
     - name: syncthing
       volumes:

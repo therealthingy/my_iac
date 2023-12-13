@@ -7,8 +7,8 @@ services:
   {{ container.name }}:
     image: quay.io/unixfox/samba
     container_name: {{ container.name }}
+    hostname: {{ container.name }}-docker
     restart: unless-stopped
-    hostname: {{ container.name }}
 
     network_mode: bridge
 
