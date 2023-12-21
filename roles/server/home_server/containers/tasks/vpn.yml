@@ -134,7 +134,6 @@
               - path: '{{ docker_container.data_basedir }}/vpn/wg/:/etc/wireguard/'
             # REFERENCE: https://github.com/ngoduykhanh/wireguard-ui#environment-variables
             env_vars:
-              # TODO: SSO
               # UI
               - 'WGUI_USERNAME={{ vpn.wireguard_ui.user|default("gg", true) }}'   # Required 4 db init
               - 'WGUI_PASSWORD={{ vpn.wireguard_ui.pass|default("1", true) }}'

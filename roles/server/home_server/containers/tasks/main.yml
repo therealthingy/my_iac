@@ -111,9 +111,6 @@
               reverse_proxy_mappings:
                 - subdomain: bitwarden
                   port: 80
-                - subdomain: bitwarden
-                  path: '/notifications/hub'
-                  port: 3012
             volumes:
               - path: '{{ docker_container.data_basedir }}/bitwarden/:/data/'
             env_vars:
@@ -319,7 +316,7 @@
               - path: '{{ docker_container.data_basedir }}/baikal/config/:/var/www/baikal/config'
               - path: '{{ docker_container.data_basedir }}/baikal/user/:/var/www/baikal/Specific'
 
-#    - name: freshrss
+#    - name: freshrss                       # TODO SSO: https://goauthentik.io/integrations/services/freshrss/
 #      volumes:
 #        - 'config'
 ##      startup: False
