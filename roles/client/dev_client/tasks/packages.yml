@@ -90,6 +90,7 @@
         dest: /Applications/Development/Sourcetree.app/Contents/Resources/git_local/bin/git-crypt
         state: link
       become: false
+      when: ansible_facts.os_family == 'Darwin'
 
 
 - name: Install misc. tools
