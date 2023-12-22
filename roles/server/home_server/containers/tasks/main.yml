@@ -85,7 +85,7 @@
               - "--certificatesresolvers.myresolver.acme.dnschallenge.provider={{ cert_acme.provider }}"
               - "--certificatesresolvers.myresolver.acme.email={{ cert_acme.email }}"
               - "--certificatesresolvers.myresolver.acme.storage=/config/certs/acme.json"
-              - "--certificatesResolvers.myresolver.acme.dnsChallenge.delayBeforeCheck=5"                     # To delay DNS check & reduce LE hitrate
+              - "--certificatesResolvers.myresolver.acme.dnsChallenge.delayBeforeCheck=5"                     # 2 delay DNS check & reduce LE hitrate
               - "--entrypoints.websecure.http.tls.domains[0].main={{ domainname }}"                           # Wildcard cert
               - "--entrypoints.websecure.http.tls.domains[0].sans=*.{{ domainname }}"
               - "--entrypoints.websecure.http.tls.certresolver=myresolver"
