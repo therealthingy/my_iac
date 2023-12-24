@@ -329,7 +329,11 @@
               - prefs-editor
               - qlmarkdown
               - raycast
-
+    - name: '[Darwin]'
+      ansible.builtin.package:
+        name:
+          - spek                        # No cask, despite being an UI app  -> opened via `spek`
+      when: ansible_facts.os_family == 'Darwin'
 
 
 
