@@ -108,7 +108,7 @@
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
-          - iproute2                      # `ip`;   NOTE: package 'net-tools' has been deprecated
+          - iproute2                      # `ip`;   NOTE: Package 'net-tools' has been deprecated
           - traceroute
           - netcat-openbsd
           - dnsutils                      # `dig`
@@ -136,7 +136,7 @@
       ansible.builtin.apt:
         name:
 #          - aptitude
-          - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu`, `lspci`, …)
+          - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu`, `lspci`, `hexdump`, …)
           - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
           #- initramfs-tools
           #- stow                         # See https://www.gnu.org/software/stow/
@@ -258,6 +258,7 @@
     - name: '[Darwin / Ubuntu/Debian]'
       ansible.builtin.package:
         name:
+          - tldr
           - moreutils                     # `sponge`, `parallel`, …
           - parallel                      # NOTE: Installs also `parallel` like `moreutils`  (but seems 2 be newer version)
           - pv

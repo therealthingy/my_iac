@@ -1,8 +1,7 @@
 ---
 - name: '[Darwin / Debian/Ubuntu] Install CLI tools'
   block:
-    - name: apt
-      ansible.builtin.package:
+    - ansible.builtin.package:
         name:
           - exiftool
           - ffmpeg

@@ -58,7 +58,7 @@
 
 
 
-- name: Install required ansible-related packages
+- name: Install required Ansible related packages
   block:
     - name: apt
       ansible.builtin.apt:
