@@ -88,26 +88,27 @@ alias-add() {
 #  => Can be fixed by telling shell to check next word after the alias (i.e 'sudo') by adding a space to the end of the alias value
 alias sudo='sudo '
 
-alias ls='ls -G'
-
 {% if ansible_facts.os_family == 'Darwin' %}
 alias stat='stat -x'
+{% else %}
+alias dmesg='/bin/dmesg --decode --nopager --color --ctime'
 {% endif %}
+
+#alias rm='rm -i'
+alias mv='mv -i'
+alias cp='cp -i'
 
 # - 'Shortcuts' -
 #alias zsh-update="source ~/.zshrc"
 
-alias d='dirs -v | head -10'    # To use: cd ~<number> -or- enter <number> directly
+alias d='dirs -v | head -10'    # USAGE: cd ~<number> -or- enter <number> directly
+
+alias l='ls -lahF {{ "--color=auto" if ansible_facts.os_family != "Darwin" else "-G" }}'
+alias ll='ls -lhF {{ "--color=auto" if ansible_facts.os_family != "Darwin" else "-G" }}'
 
 {% if ansible_facts.os_family == 'Darwin' %}
-alias l='ls -lah --color=auto'
-alias ll='ls -lh --color=auto'
-
 alias-add gsed decolorize='gsed -r "s/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"'
 {% else %}
-alias l='ls -lah'
-alias ll='ls -lh'
-
 alias decolorize='sed -r "s/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"'
 {% endif %}
 
@@ -118,10 +119,17 @@ alias inet-pip="echo 'Public IP:' && curl -4 icanhazip.com && curl -6 icanhazip.
 
 
 # --- Installed tools  ---
+# -  git  -
+alias gitdiff='git diff -r'
+alias gitfiles='git diff --name-status -r'
+alias gitstat='git status ; echo ; git diff --stat -r'
+alias giturl='git remote get-url --all origin'
+alias gitlog='git log --graph --pretty=format:"%h: %ar: %s" --abbrev-commit'
+
 {% if 'media_clients' in group_names    or ansible_facts.os_family == 'Darwin' %}
-alias-add yt-dlp   vid-download="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"   vid-download_audio="yt-dlp -f 'bestaudio[ext=m4a]'"
-alias-add vid-download vid-download-channel="vid-download  -o '%(channel)s - %(title)s-%(id)s.%(ext)s'"
-alias-add vid-download vid-download-workaround_fname="vid-download  -o '%(title).200s  [%(id)s].%(ext)s'"         # Workaround for: https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195
+alias-add yt-dlp   video-dl="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"   vid-download_audio="yt-dlp -f 'bestaudio[ext=m4a]'"
+alias-add video-dl video-dl-channel="video-dl  -o '%(channel)s - %(title)s-%(id)s.%(ext)s'"
+alias-add video-dl video-dl-workaround_fname="video-dl  -o '%(title).200s  [%(id)s].%(ext)s'"         # Workaround for: https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195
 {% endif %}
 
 {% if ansible_facts.os_family == 'Darwin' %}
@@ -160,18 +168,28 @@ export LSCOLORS=ExFxCxDxBxegedabagacad  # Default (only brighter)
 
 # =========================== Aliases ===========================
 {%   if ansible_facts.os_family != 'Darwin' %}
-alias journal-clear='sudo journalctl --vacuum-time=2d' # --vacuum-size=500M
-
-{%   if hw_is_rpi == True %}
+{%     if hw_is_rpi == True %}
 # --- RPi specific ---
 alias temp='vcgencmd measure_temp'
-{%   endif %}
+{%     endif %}
 
-{%   if 'dev_clients' in group_names or 'dev_servers' in group_names %}
+{%     if 'dev_clients' in group_names or 'dev_servers' in group_names %}
 alias-add objdump obj="objdump -M intel -C --visualize-jumps -d "               # Note: Used 2 be fct. w/ (now removed) suffix: `$@ | nvim -`
-{%   endif %}
+{%     endif %}
 
-{%   if ansible_facts.os_family == 'Debian' %}
+{%     if ansible_facts.os_family == 'Debian' %}
+# - journalctl aliases -
+# jlog: current boot only, everything
+alias jlog='/bin/journalctl -b --all --catalog --no-pager'
+# jlogr: current boot only, everything, *reverse* chronological order
+alias jlogr='/bin/journalctl -b --all --catalog --no-pager --reverse'
+# jlogall: *everything*, all time; --merge => _all_ logs merged
+alias jlogall='/bin/journalctl --all --catalog --merge --no-pager'
+# jlogf: *watch* log, 'tail -f' mode
+alias jlogf='journalctl -f'
+# jlogk: only kernel messages, this boot
+alias jlogk='journalctl -b -k --no-pager'
+
 # - apt aliases -
 alias agi='sudo apt-get install' #<packages>
 alias agu='sudo apt-get update'
@@ -183,8 +201,8 @@ alias agc='sudo apt-get clean'
 alias agac='sudo apt-get autoclean'
 
 alias agud='agu && agd'
+{%     endif %}
 {%   endif %}
-{% endif %}
 
 
 
