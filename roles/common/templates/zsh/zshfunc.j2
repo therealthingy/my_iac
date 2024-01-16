@@ -119,7 +119,7 @@ alias inet-pip="echo 'Public IP:' && curl -4 icanhazip.com && curl -6 icanhazip.
 
 
 # --- Installed tools  ---
-# -  git  -
+# - `git` aliases -
 alias gitdiff='git diff -r'
 alias gitfiles='git diff --name-status -r'
 alias gitstat='git status ; echo ; git diff --stat -r'
@@ -127,12 +127,14 @@ alias giturl='git remote get-url --all origin'
 alias gitlog='git log --graph --pretty=format:"%h: %ar: %s" --abbrev-commit'
 
 {% if 'media_clients' in group_names    or ansible_facts.os_family == 'Darwin' %}
+# - `yt-dlp` aliases -
 alias-add yt-dlp   video-dl="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"   vid-download_audio="yt-dlp -f 'bestaudio[ext=m4a]'"
 alias-add video-dl video-dl-channel="video-dl  -o '%(channel)s - %(title)s-%(id)s.%(ext)s'"
 alias-add video-dl video-dl-workaround_fname="video-dl  -o '%(title).200s  [%(id)s].%(ext)s'"         # Workaround for: https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195
 {% endif %}
 
 {% if ansible_facts.os_family == 'Darwin' %}
+# - `hblock` aliases -
 alias-add hblock hblock-enable="hblock -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list"
 alias-add hblock hblock-disable="hblock -S none -D none"
 {% endif %}
@@ -149,6 +151,13 @@ alias xz='xz -T 0'
 
 {% if 'dev_clients' in group_names or 'dev_servers' in group_names    or ansible_facts.os_family == 'Darwin'%}
 alias pmake='time nice make -j$(nproc) --load-average=$(nproc)'               # Taken from: https://stackoverflow.com/a/4778475
+{% endif %}
+
+
+{% if ansible_facts.os_family == 'Darwin' %}
+# - GNU/Linux commands -
+alias poweroff='/sbin/shutdown -h now'
+alias reboot='/sbin/shutdown -r now'
 {% endif %}
 
 
@@ -178,7 +187,7 @@ alias-add objdump obj="objdump -M intel -C --visualize-jumps -d "               
 {%     endif %}
 
 {%     if ansible_facts.os_family == 'Debian' %}
-# - journalctl aliases -
+# - `journalctl` aliases -
 # jlog: current boot only, everything
 alias jlog='/bin/journalctl -b --all --catalog --no-pager'
 # jlogr: current boot only, everything, *reverse* chronological order
@@ -199,7 +208,6 @@ alias agr='sudo apt-get remove' #<packages>
 alias agd='sudo apt-get dist-upgrade'
 alias agc='sudo apt-get clean'
 alias agac='sudo apt-get autoclean'
-
 alias agud='agu && agd'
 {%     endif %}
 {%   endif %}
@@ -301,7 +309,7 @@ fi
 {% endif %}
 
 
-{% if ansible_facts.os_family == 'Darwin' %}
+{% if 'media_clients' in group_names    or ansible_facts.os_family == 'Darwin' %}
 {%   set DEFAULT_OUTPUT_FNAME = "output-$(date +'%F-%H_%m_%S')" %}
 {%   set FILE_NOT_FOUND_MSG = "File(s) not found" %}
 
@@ -402,18 +410,17 @@ if command -v gifsicle > /dev/null; then
     }
 
 fi
+{% endif %}
 
 
+{% if ansible_facts.os_family == 'Darwin' %}
 # =========================== Aliases  (which SHOULD be in '.zshenv') ===========================
 alias-add brew brew-up="brew update && brew upgrade ; brew cleanup ; brew doctor"
-
 
 alias dns-flush="sudo dscacheutil -flushcache ; sudo killall -HUP mDNSResponder"
 alias network-disable_packet_filter="sudo pfctl -d"    # Disable Eddie network lock
 
-
 alias backup_poweroff="sudo sh -c 'tmutil startbackup --block && shutdown -h +1'"
-
 
 alias clipbrd-text_2_lower='echo $(pbpaste) | tr "[A-Z]" "[a-z]" | pbcopy'
 alias clipbrd-text_2_upper='echo $(pbpaste) | tr "[a-z]" "[A-Z]" | pbcopy'
@@ -422,21 +429,6 @@ alias clipbrd-text_2_upper='echo $(pbpaste) | tr "[a-z]" "[A-Z]" | pbcopy'
 
 #alias finder-show_hiddenfiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
 #alias finder-hide_hiddenfiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
-
-
-{%   if ansible_architecture != "arm64" %}
-# - Hackintosh specific -
-if command -v mountefi > /dev/null; then
-  # alias esp-mount_open='sudo mkdir /Volumes/EFI ; sudo mount -t msdos /dev/disk1s1 /Volumes/EFI && open /Volumes/EFI'
-  alias-add mountefi esp-mount_open='mountefi / && open /Volumes/EFI'
-fi
-{%   endif %}
-
-
-# - GNU/Linux commands -
-alias poweroff='/sbin/shutdown -h now'
-alias reboot='/sbin/shutdown -r now'
-
 
 
 # =========================== Actual functions ===========================
