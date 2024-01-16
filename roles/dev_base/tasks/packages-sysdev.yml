@@ -12,8 +12,8 @@
               - shellcheck            # Lint bash scripts
               - flawfinder            # Finds potential security flaws in C src
               - cppcheck              # Static analysis 4 detecting bugs (undefined behavior & dangerous coding constructs) in C src
-#              - exuberant-ctags       # Parses code, producing an index mapping the names of significant entities
-#              - cscope                # Interactive, text screen based source browsing tool
+              - exuberant-ctags       # Parses code, producing an index mapping the names of significant entities
+              - cscope                # Interactive, text screen based source browsing tool
 #              - indent                # Format C code by indenting it
               # Build tools
               - gcc
