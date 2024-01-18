@@ -304,6 +304,36 @@ if command -v ssh-keygen > /dev/null; then
         cat $export_file_path.pub
     }
 fi
+
+
+{%   if ansible_facts.os_family != "Darwin" %}
+# DERIVED FROM: https://github.com/kaiwan/usefulsnips/blob/d8dc243fbd22b4190ab7418864d346b7cf119a17/common.sh#L376
+# Given a process name, determines the # of threads currently alive
+# within it _and_ other processes of the same name.
+# Params:
+#   $1 = process name
+#   Ret: # of threads curr alive in the given process
+#    -the 'return' is an artifact; we echo the value; the caller is to
+#     pick it up using the usual quoting technique.
+proc-nthreads() {
+    if [ "$#" -ne 1 ]; then
+        echo "Usage: proc-nthreads pid" >&2      # TODO: `$FUNCNAME` doesn't work ??!
+        return 1
+    fi
+
+    local pid total_thrds
+    #for pidrec in $(ps -LA|egrep "^$1")
+    # Loop over all processes by given name
+    for pid in $(pgrep "$1"); do
+        #echo "pid: ${pid}"
+        # get # threads within this pid
+        local nthrd=$(ls /proc/${pid}/task |wc -w)
+        #echo "${pid}:${nthrd}"
+        let total_thrds+=nthrd
+    done
+    echo "${total_thrds}"
+}
+{%   endif %}
 {% endif %}
 
 diff-strings () {
