@@ -42,6 +42,7 @@
               - cmake-curses-gui
               - autotools-dev
               - ninja-build
+              - debhelper            # 4 creating `deb`ian packages
               # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
               - gdb
               - bpftrace
