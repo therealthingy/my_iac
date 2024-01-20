@@ -42,7 +42,6 @@
               - cmake-curses-gui
               - autotools-dev
               - ninja-build
-              - debhelper            # 4 creating `deb`ian packages
               # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
               - gdb
               - bpftrace
@@ -110,6 +109,7 @@
               - bc                    # Bench calculator (uses own algebraic language)
               - gnuplot
               - virt-what             # Script which detects whether it's running in a VM
+              - debhelper             # 4 creating `deb`ian packages (`bindeb-pkg` target)
             state: present
           when: ansible_facts.os_family != 'Darwin'
         - name: '[Darwin]'
@@ -127,7 +127,7 @@
         - name: '[Debian/Ubuntu x64]'
           ansible.builtin.apt:
             name:
-              - gcc-multilib          # Useful for cross-compiling
+              - gcc-multilib          # Useful 4 cross-compiling
             state: present
           when: ansible_architecture == 'x86_64' and ansible_facts.os_family != 'Darwin'
         - name: '[Ubuntu]'

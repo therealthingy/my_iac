@@ -31,7 +31,7 @@
         - name: gcc
           ansible.builtin.apt:
             name:
-              - gcc-x86-64-linux-gnu
+              - crossbuild-essential-amd64
               - gdb-x86-64-linux-gnu
             state: present
         - name: Rust
