@@ -91,7 +91,7 @@
               # Kernel dev -- "missing stuff"
               - exuberant-ctags       # Parses code, producing an index mapping the names of significant entities
               - cscope                # Interactive, text screen based source browsing tool
-#              - indent                # Format C code by indenting it
+              - indent                # Format C code 2 follow kernel "styleguide"
               - "linux-headers-{{ ansible_kernel }}"
               - "linux-tools-{{ ansible_kernel }}"
               - sparse                # Semantic checker 4 finding potential problems w/ C kernel code (e.g., mixing pointers 2 user address space & pointers 2 kernel address space)
