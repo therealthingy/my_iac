@@ -6,31 +6,31 @@
         - name: '[Darwin / Debian/Ubuntu]'
           ansible.builtin.package:
             name:
-              # Misc.
+            # Misc.:
               - bison                 # Parser generator
               - flex                  # Generates lexical analyzers
               - shellcheck            # Lint bash scripts
               - flawfinder            # Finds potential security flaws in C src
               - cppcheck              # Static analysis 4 detecting bugs (undefined behavior & dangerous coding constructs) in C src
-              # Build tools
+            # Build tools:
               - gcc
               - cmake
               - autoconf              # Tool 4 producing configure script 4 building, installing & packing SW
               - automake              # Automates parts of the compilation process
               - pkg-config
-              # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
+            # Debuggers & Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
               - binutils              # Contains `readelf`, `gprof`, …
               - cloc                  # Count loc
               - doxygen               # Generates documentation from annotated C++ sources
               - sphinx-doc
               - binwalk
-#              - poke                  # GNU poke: Extensible editor for structured binary data
+#              - poke                  # Extensible editor 4 structured binary data
             state: present
           become: '{{ package_manager_become }}'
         - name: '[Debian/Ubuntu]'
           ansible.builtin.apt:
             name:
-              # Compilers
+            # Compilers:
               - manpages-dev
               - build-essential       # Includes GDB, g++/GNU compiler collection, & some tools (`make`) & libraries required 2 compile a program
               - clang
@@ -38,11 +38,11 @@
 #              - nasm
               - rustc
               - cargo
-              # Build tools
+            # Build tools:
               - cmake-curses-gui
               - autotools-dev
               - ninja-build
-              # Debuggers / Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
+            # Debuggers & Tools  (NOTE: binutils, util-linux & gdb are most likely already installed):
               - gdb
               - bpftrace
               - strace
@@ -50,7 +50,7 @@
               - bpfcc-tools           # BPF Compiler Collection (BCC) is a toolkit 4 creating efficient kernel tracing & manipulation programs
               - valgrind
               - massif-visualizer
-              # 'Performance' analysis
+            # 'Performance' analysis:
               - kcachegrind           # KDE GUI 2 visualize profiling data (mainly used as visualization frontend for data measured by Cachegrind/Callgrind tools from the Valgrind package)
               - hotspot               # UI (similar 2 KCachegrind 4 valgrind, BUT) around `perf`  (SEE: https://github.com/KDAB/hotspot)
               - heaptrack             # Heap analysis tool (from KDE)
@@ -58,9 +58,9 @@
               - graphviz              # TODO: Apparently required by kcachegrind  ??
               - time                  # NOTE: Usually implemented as shell builtin  (hence must be called directly via `/usr/bin/time`)
               - pahole                # Shows & manipulates data structure layout
-              # Utils
+            # Utils:
               - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
-              # Libs
+            # Libs:
               - libc6-dbg             # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
               - binutils-dev          # Necessary 2 build programs which use the GNU BFD library  (which is part of binutils); also includes libbfd
               - libelf-dev            # Allows reading & writing of ELF files on a high level
@@ -85,10 +85,11 @@
               #- python2-dev
               #- python-setuptools
               - libseccomp-dev        # Provides high level iface 4 constructing, analyzing & installing seccomp filters via a BPF (passed 2 kernel's `prctl`)
-              # Misc.
+            # Misc.:
               - fakeroot              # Provides a fake root environment (2 remove the need 2 become root 4 a package build)
               - checksec              # Used 2 check properties of executables (like PIE, RELRO, PaX, Canaries, ASLR, Fortify Source) & kernel security options (like  GRSecurity & SELinux)
-              # Kernel dev -- "missing stuff"
+              - yad                   # Tool 4 creating graphical dialogs from shell scripts
+            # Kernel dev -- "missing stuff":
               - exuberant-ctags       # Parses code, producing an index mapping the names of significant entities
               - cscope                # Interactive, text screen based source browsing tool
               - indent                # Format C code 2 follow kernel "styleguide"
@@ -103,7 +104,7 @@
 #              - lttng-modules-dkms
 #              - liblttng-ust-dev
               - sysfsutils            # Sysfs query tool & boot-time setup   ????
-              - perf-tools-unstable   # ???????
+#              - perf-tools-unstable   # ???????
               - smem                  # Reports on memory usage on Linux systems
               - hwloc                 # Hardware Locality -- Provides a hierarchical view of the machine, NUMA memory nodes, sockets, shared caches, cores & simultaneous multithreading
               - bc                    # Bench calculator (uses own algebraic language)
@@ -112,19 +113,7 @@
               - debhelper             # 4 creating `deb`ian packages (`bindeb-pkg` target)
             state: present
           when: ansible_facts.os_family != 'Darwin'
-        - name: '[Darwin]'
-          community.general.homebrew:
-            name:
-              - boost
-              - rust
-              - ncurses               # API 4 writing text-based user interfaces (TUI) in a terminal-independent manner
-              # Build tools
-              - ninja
-              # Libs
-              - readline
-          become: false
-          when: ansible_facts.os_family == 'Darwin'
-        - name: '[Debian/Ubuntu x64]'
+        - name: '[Debian/Ubuntu amd64]'
           ansible.builtin.apt:
             name:
               - gcc-multilib          # Useful 4 cross-compiling
@@ -138,6 +127,18 @@
 #              - linux-tools-generic   # Kernel modules required 4 `perf`
 #              - linux-tools-common    # `perf`  (Performance analysis tools for Linux)
           when: ansible_facts.os_family == 'Ubuntu'
+        - name: '[Darwin]'
+          community.general.homebrew:
+            name:
+              - boost
+              - rust
+              - ncurses               # Text-based UIs (TUIs)
+            # Build tools:
+              - ninja
+            # Libs:
+              - readline
+          become: false
+          when: ansible_facts.os_family == 'Darwin'
 
     - name: '[Ubuntu] Install proprietary extra stuff (codecs, fonts, …)'
       ansible.builtin.apt:
