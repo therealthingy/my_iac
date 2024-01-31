@@ -5,8 +5,7 @@
       ansible.builtin.set_fact:
         firefox_profiles:
           default:
-            extensions:
-              # URL on addons.mozilla.org
+            extensions:                 # URL on addons.mozilla.org
               - foxyproxy-standard
 
     - name: "Run 'staticdev.firefox' role"

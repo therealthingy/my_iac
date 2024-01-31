@@ -5,8 +5,7 @@
       ansible.builtin.set_fact:
         firefox_profiles:
           default:
-            extensions:
-              # URL on addons.mozilla.org
+            extensions:                     # NOTE: URL on addons.mozilla.org
               - video-downloader-profession
               - video-downloadhelper
               - buster-captcha-solver

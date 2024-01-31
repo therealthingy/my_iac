@@ -41,10 +41,10 @@
                 - "[{{ pihole.ipv6_ula[:-3] }}]:53:53/udp"
                 - "{{ pihole.ipv4[:-3] }}:53:53/tcp"
                 - "[{{ pihole.ipv6_ula[:-3] }}]:53:53/tcp"
-                # 67 = DHCP  (-> TODO: could be uncommented  ???)
+              # 67 = DHCP  (-> TODO: could be uncommented  ???):
                 - "{{ pihole.ipv4[:-3] }}:67:67/udp"
                 - "[{{ pihole.ipv6_ula[:-3] }}]:67:67/udp"
-#                # Admin-interface  (ports not necessary since we use reverse proxy)
+#              # Admin-interface  (ports not necessary since we use reverse proxy):
 #                - 80:80/tcp
 #                - 443:443/tcp
               reverse_proxy_mappings:
@@ -59,7 +59,7 @@
               cap_add:
                 - NET_ADMIN
             env_vars:
-              # See: https://github.com/pi-hole/docker-pi-hole#environment-variables
+              # REFERENCE: https://github.com/pi-hole/docker-pi-hole#environment-variables
               - TZ={{ timezone }}
               - 'PIHOLE_DNS_={{ dns_servers|join(";") }}'
               - 'DNSMASQ_LISTENING=single'

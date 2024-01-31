@@ -29,21 +29,21 @@
             line: '{{ common_ssh_item.key }} {{ common_ssh_item.value }}'
             validate: '/usr/sbin/sshd -T -f %s'
           with_items:
-            # Disable root login
+          # Disable root login:
             - key: 'PermitRootLogin'
               value: 'no'
-            # Enable public key authentication
+          # Enable public key authentication:
             - key: 'PubkeyAuthentication'
               value: 'yes'
-            # Disable password login
+          # Disable password login:
             - key: 'PasswordAuthentication'
               value: 'no'
             - key: 'ChallengeResponseAuthentication'
               value: 'no'
-            # Enable/Disable X11 forwarding
+          # Enable/Disable X11 forwarding:
             - key: 'X11Forwarding'
               value: "{{ ssh.x11_enabled|default('no', true) }}"
-            # Change ssh port
+          # Change ssh port:
             - key: 'Port'
               value: "{{ ssh.port|default('22', true) }}"
           loop_control:

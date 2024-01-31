@@ -17,9 +17,9 @@ volact:
 
 
 dns_servers:
-  # DNS server 1: https://www.quad9.net/service/service-addresses-and-features
+# DNS server 1 (https://www.quad9.net/service/service-addresses-and-features):
   - 9.9.9.10
   - 2620:fe::10
-  # DNS server 2
+# DNS server 2:
   - 149.112.112.10
   - 2620:fe::fe:10

@@ -3,7 +3,7 @@
   block:
     - name: Gather data
       block:
-        # --  User data  --
+      # --  User data  --
         - name: Get username of current user
           ansible.builtin.shell: whoami                               # ALTERNATIVE 4 username: `id -u -n` OR ansible_user_id
           register: result_username
@@ -19,7 +19,7 @@
           register: result_gid
           changed_when: false
 
-        # --  System info  --
+      # --  System info  --
         - name: Determine CPU architecture   # (NOTE: on GNU/Linux deb cpu arch)
           ansible.builtin.shell: uname -m                             # ALTERNATIVE for arch.: ansible_architecture
           register: result_cpu_architecture                           # We need 2 different vars (https://github.com/ansible/ansible/issues/15710)
@@ -35,7 +35,7 @@
               register: result_docker_gid
               changed_when: false
 
-            # --  System info  --
+          # --  System info  --
             - name: Determine deb cpu arch
               ansible.builtin.shell: dpkg --print-architecture
               register: result_deb_cpu_architecture

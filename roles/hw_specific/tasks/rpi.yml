@@ -23,7 +23,7 @@
   become: true
 
 
-# FIRMWARE SETTINGS: https://www.raspberrypi.com/documentation/computers/config_txt.html
+# FIRMWARE SETTINGS REFERENCE: https://www.raspberrypi.com/documentation/computers/config_txt.html
 - name: Determine path of config file
   block:
     - name: '[Raspberry Pi OS]'

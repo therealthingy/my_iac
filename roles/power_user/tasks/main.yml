@@ -138,14 +138,15 @@
 #          - aptitude
           - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu`, `lspci`, `hexdump`, …)
           - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
-          #- initramfs-tools
-          #- stow                         # See https://www.gnu.org/software/stow/
-          # FS stuff
+#          - initramfs-tools
+#          - stow                         # See https://www.gnu.org/software/stow/
+        # FS stuff:
           - cloud-guest-utils             # `growpart`
           - btrfs-compsize                # `compsize <file>` -> Compare size of files (2 see effect of compression)
-          #- fuse
-          #- ntfs-3g                       # Read/write NTFS driver 4 FUSE
-          #- libapfs-utils                 # Contains `fsapfsinfo`, an APFS information retrieval utility, & `fpafsmount`, a FUSE-based APFS filesystem implementation
+#          - fuse
+#          - ntfs-3g                       # Read/write NTFS driver 4 FUSE
+#          - libapfs-utils                 # Contains `fsapfsinfo`, an APFS information retrieval utility, & `fpafsmount`, a FUSE-based APFS filesystem implementation
+#          - smb4k                         # UI network neighborhood browser & Samba share mounting utility
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
@@ -347,7 +348,7 @@
     mode: 0644
   become: false
   with_items:
-    # tmux
+  # tmux:
     - src: tmux.conf
       dest: '{{ os_homedir }}/{{ user.name }}/.tmux.conf'
   loop_control:

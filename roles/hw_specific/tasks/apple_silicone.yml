@@ -42,4 +42,3 @@
   when:
     - hypervisor is defined and hypervisor
     - hypervisor != 'vmware'      # TODO: Doesn't work (yet) on VMWare Fusion ??  ("Error mounting /media/rosetta: mount: /media/rosetta: wrong fs type, bad option, bad superblock on rosetta, missing codepage or helper program, or other error.")
-

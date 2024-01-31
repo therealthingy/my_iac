@@ -84,12 +84,12 @@
             state: '{{ gnome_setting.state }}'
           with_items:
             # !!  BE AWARE: Schema for gtk (used by `gsettings`): `org.gtk.Settings.FileChooser` v.s. Path (used by dconf editor and Ansible module): `org.gtk.settings.file-chooser`  !!
-            # --  General settings  --
+          # --  General settings  --
             - key: '/org/gnome/desktop/input-sources/sources'
               value: "[('xkb', '{{ keyboard.layout }}')]"
               state: present
 
-            # --  General Behavior  --
+          # --  General Behavior  --
             - key: '/org/gnome/desktop/privacy/show-full-name-in-top-bar'
               value: 'true'
               state: present
@@ -114,19 +114,19 @@
             - key: '/org/gnome/gnome-session/logout-prompt'
               value: 'false'
               state: present
-            # -  Privacy  -
+          # -  Privacy  -
             - key: '/org/gnome/desktop/privacy/report-technical-problems'
               value: 'false'
               state: present
             - key: '/org/gnome/desktop/privacy/send-software-usage-stats'
               value: 'false'
               state: present
-            # -  Security  -
+          # -  Security  -
             - key: '/org/gnome/desktop/media-handling/automount-open'
               value: 'false'
               state: present
 
-            # --  General UI  --
+          # --  General UI  --
             - key: '/org/gnome/desktop/wm/preferences/button-layout'
               value: "'{{ gnome_button_layout }}'"
               state: present
@@ -139,8 +139,8 @@
             - key: '/org/gnome/shell/favorite-apps'                                # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
               value: "[{{ dock_fav_apps|join(', ') }}]"
               state: present
-            # --  Extensions  --
-            # -  Dock  -
+          # --  Extensions  --
+          # -  Dock  -
             - key: '/org/gnome/shell/extensions/dash-to-dock/extend-height'
               value: 'false'
               state: present
@@ -156,7 +156,7 @@
             - key: '/org/gnome/shell/extensions/dash-to-dock/click-action'
               value: "'minimize'"
               state: present
-            # -  Desktop  -
+          # -  Desktop  -
             - key: '/org/gnome/shell/extensions/ding/show-home'
               value: 'false'
               state: present
@@ -172,13 +172,13 @@
             - key: '/org/gnome/shell/extensions/ding/start-corner'
               value: "'top-left'"
               state: present
-            # - gnome-clipboard-history -
+          # - gnome-clipboard-history -
             - key: '/org/gnome/shell/extensions/clipboard-history/confirm-clear'
               value: 'false'
               state: present
 
-            # --  Apps  --
-            # -  Nautilus  --
+          # --  Apps  --
+          # -  Nautilus  --
             - key: '/org/gnome/nautilus/preferences/show-delete-permanently'
               value: 'true'
               state: present
@@ -206,7 +206,7 @@
             - key: '/org/gtk/settings/file-chooser/show-hidden'
               value: 'true'
               state: present
-            # -  System monitor  -
+          # -  System monitor  -
             - key: '/org/gnome/gnome-system-monitor/show-dependencies'
               value: 'true'
               state: present
@@ -216,7 +216,7 @@
             - key: '/org/gnome/gnome-system-monitor/proctree/col-4-visible'
               value: 'true'
               state: present
-            # -  dconf  -
+          # -  dconf  -
             - { key: '/ca/desrt/dconf-editor/show-warning', value: 'false', state: present }
           loop_control:
             loop_var: gnome_setting
@@ -230,14 +230,14 @@
             - key: '/org/gnome/settings-daemon/plugins/color/night-light-enabled'
               value: 'true'
               state: present
-            # - General Behavior -
+          # - General Behavior -
             - key: '/org/gnome/desktop/peripherals/mouse/natural-scroll'
               value: 'true'
               state: present
             - key: '/org/gnome/desktop/peripherals/touchpad/natural-scroll'
               value: 'true'
               state: present
-            # - Power -
+          # - Power -
             - key: '/org/gnome/desktop/session/idle-delay'
               value: 'uint32 900'
               state: present
@@ -251,7 +251,7 @@
             value: '{{ gnome_setting.value }}'
             state: '{{ gnome_setting.state }}'
           with_items:
-            # -  Power  -
+          # -  Power  -
             - key: '/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type'
               value: "'nothing'"
               state: present
@@ -416,7 +416,7 @@
     value: '{{ item.value }}'
     state: present
   with_items:
-    # --  UI/UX  --
+  # --  UI/UX  --
     - domain: 'com.apple.PowerChime'                 # Disable startup chime;  TODO: `killall PowerChime`
       key: 'ChimeOnNoHardware'
       value: 'true'
@@ -445,12 +445,12 @@
       key: 'NSAutomaticDashSubstitutionEnabled'
       value: 'false'
       type: 'boolean'
-    # --  Trackpad, mouse, keyboard, Bluetooth accessories, & input  --
+  # --  Trackpad, mouse, keyboard, Bluetooth accessories, & input  --
     - domain: 'NSGlobalDomain'                       # ENABLE press-and-hold (e.g., ń popup after long pressing n, …) for keys in favor of key repeat
       key: 'ApplePressAndHoldEnabled'
       value: 'true'
       type: 'boolean'
-      # Set a blazingly fast keyboard repeat rate, and make it happen more quickly   (doesn't make a difference as of now, as press-and-hold is enabled)
+    # Set a blazingly fast keyboard repeat rate, and make it happen more quickly   (doesn't make a difference as of now, as press-and-hold is enabled)
     - domain: 'NSGlobalDomain'
       key: 'InitialKeyRepeat'
       value: '20'
@@ -459,12 +459,12 @@
       key: 'KeyRepeat'
       value: '1'
       type: 'int'
-    # Disable auto-correct
+  # Disable auto-correct
     - domain: 'NSGlobalDomain'
       key: 'NSAutomaticSpellingCorrectionEnabled'
       value: 'false'
       type: 'boolean'
-    # --  Screen  --
+  # --  Screen  --
 #    - domain: 'com.apple.screencapture'              # Save screenshots to Downloads folder
 #      key: 'location'
 #      value: '/Users/{{ user.name }}/Downloads'
@@ -477,7 +477,7 @@
 #      key: 'disable-shadow'
 #      value: 'true'
 #      type: 'boolean'
-    # --  Finder  --
+  # --  Finder  --
     - domain: 'com.apple.finder'                      # Set Downloads as the default location for new Finder windows
       key: 'NewWindowTarget'
       value: 'PfLo'
@@ -486,7 +486,7 @@
       key: 'NewWindowTargetPath'
       value: 'file:///Users/{{ user.name }}/Downloads/'
       type: 'string'
-    # Show icons for hard drives, servers, and removable media on the desktop
+  # Show icons for hard drives, servers, and removable media on the desktop
     - domain: 'com.apple.finder'
       key: 'ShowExternalHardDrivesOnDesktop'
       value: 'true'
@@ -543,7 +543,7 @@
       key: 'FXPreferredViewStyle'
       value: 'clmv'                                   # 4-letter codes for the other view modes: `icnv`, `Nlsv`, `clmv`, `Flwv`
       type: 'string'
-    # --  Dock, Dashboard, & hot corners  --
+  # --  Dock, Dashboard, & hot corners  --
     - domain: 'com.apple.Dock'                       # Make Dock icons of hidden applications translucent;  TODO: `killall Dock`
       key: 'showhidden'
       value: 'true'
@@ -601,7 +601,7 @@
       key: 'wvous-bl-modifier'
       value: '0'
       type: 'int'
-#    # --  Safari & WebKit  --                                                # TODO: Doesn't work
+#  # --  Safari & WebKit  --                                                # TODO: Doesn't work
 #    # Enable the Develop menu and the Web Inspector in Safari
 #    - domain: 'com.apple.Safari'
 #      key: 'IncludeDevelopMenu'
@@ -615,17 +615,17 @@
 #      key: 'com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled'
 #      value: 'true'
 #      type: 'boolean'
-#    # Add a context menu item for showing the Web Inspector in web views
+#  # Add a context menu item for showing the Web Inspector in web views
 #    - domain: 'NSGlobalDomain'
 #      key: 'WebKitDeveloperExtras'
 #      value: 'true'
 #      type: 'boolean'
-#    # --  Mail  --
+#  # --  Mail  --
 #    - domain: 'com.apple.mail'                       # Copy email addresses as `foo@example.com` instead of `Foo Bar <foo@example.com>` in Mail.app
 #      key: 'AddressesIncludeNameOnPasteboard'
 #      value: 'false'
 #      type: 'boolean'
-    # --  Activity Monitor  --
+  # --  Activity Monitor  --
     - domain: 'com.apple.ActivityMonitor'            # Show the main window when launching Activity Monitor
       key: 'OpenMainWindow'
       value: 'true'
@@ -634,7 +634,7 @@
       key: 'ShowCategory'
       value: '0'
       type: 'int'
-    # -- TODO:  Messages  --
+  # -- TODO:  Messages  --
     ## Disable smart quotes as it’s annoying for messages that contain code
     #defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
     ## Disable continuous spell checking

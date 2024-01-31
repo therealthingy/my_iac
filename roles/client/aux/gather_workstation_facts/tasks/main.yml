@@ -28,7 +28,7 @@
 
     - name: Set variables (as facts)
       block:
-        # --  Set workstation facts  --
+      # --  Set workstation facts  --
         - name: '[Debian/Ubuntu]'
           ansible.builtin.set_fact:
             desktop_envs: "{{ ['GNOME' if result_gnome_command.rc == 0] }}"
