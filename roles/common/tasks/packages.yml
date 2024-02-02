@@ -55,7 +55,6 @@
         # Files:
           - lsof
           - nano
-          - neovim
         # File archiving/Compression:
           - tar
           - pbzip2
@@ -81,6 +80,50 @@
         # Networking:
           - curl
       become: '{{ package_manager_become }}'
+
+    - name: nvim
+      block:
+        - name: '[Darwin / Debian/Ubuntu] Install'
+          ansible.builtin.package:
+            name: neovim
+          become: '{{ package_manager_become }}'
+        # NOTE: REQUIRE CLEANUP (if previously used): `rm -rf .config/nvim .local/share/nvim .cache/nvim`
+        - name: Install NvChad
+          block:
+            # TODO: Font in Gnome Terminal  (atm only iTerm)
+            - name: Install NerdFont
+              block:
+                - name: '[Debian/Ubuntu] Install deps'
+                  ansible.builtin.apt:
+                    name: fontconfig                        # Required 4 handler which rebuilds fonts cache
+                    state: present
+                  become: true
+                  when: ansible_facts.os_family != 'Darwin'
+                - name: Set fact(s)
+                  ansible.builtin.set_fact:
+                    nf_fonts_dir: "{{ os_homedir }}/{{ user.name }}/{{ (ansible_facts['os_family'] == 'Darwin')|ternary('Library/Fonts', '.local/share/fonts') }}/"
+                - name: Check already installed
+                  ansible.builtin.shell: "ls {{ nf_fonts_dir }}/JetBrainsMonoNerdFont*.ttf"
+                  failed_when: false
+                  changed_when: false
+                  register: result_nerdfont_installed
+                - name: Download & install
+                  ansible.builtin.unarchive:
+                    src: "https://github.com/ryanoasis/nerd-fonts/releases/download/v{{ nerdfont_version }}/JetBrainsMono.zip"
+                    dest: "{{ nf_fonts_dir }}"
+                    remote_src: true
+                  when: result_nerdfont_installed is failed
+              notify: rebuild fonts cache
+            - name: Download & Install
+              ansible.builtin.git:
+                repo: https://github.com/NvChad/NvChad.git
+                dest: '{{ os_homedir }}/{{ user.name }}/.config/nvim/'
+                clone: true
+                depth: 1
+                update: true
+          when: ansible_facts.os_family == 'Darwin'                  # $$$   TODO: RMV ONCE DEBIAN APT REPOS HAVE version 0.9.3 (atm 0.6 which isn't supported by nvchad)
+          become: false
+    # TODO: $$$$$$$$$$$$$$$$$$$$$     config
 
 #    - name: Install luks sparse file helper
 #      ansible.builtin.template:
@@ -109,25 +152,25 @@
   block:
     - name: nvim
       block:
-        - name: Copy config
-          block:
-            - name: Create config dir
-              ansible.builtin.file:
-                path: '{{ os_homedir }}/{{ user.name }}/.config/nvim'
-                state: directory
-            - name: Copy config files
-              ansible.builtin.template:
-                src: '{{ common_nvim_conf_file.src }}.j2'
-                dest: '{{ os_homedir }}/{{ user.name }}/{{ common_nvim_conf_file.dest }}'
-                mode: 0644
-              with_items:
-                - src: 'nvim'
-                  dest: '.vimrc'
-                - src: 'init.vim'              # TODO: INLINE ONCE SUPPORTED BY MODULE
-                  dest: '.config/nvim/init.vim'
-              loop_control:
-                loop_var: common_nvim_conf_file
-          become: false
+#        - name: Copy config
+#          block:
+#            - name: Create config dir
+#              ansible.builtin.file:
+#                path: '{{ os_homedir }}/{{ user.name }}/.config/nvim'
+#                state: directory
+#            - name: Copy config files
+#              ansible.builtin.template:
+#                src: '{{ common_nvim_conf_file.src }}.j2'
+#                dest: '{{ os_homedir }}/{{ user.name }}/{{ common_nvim_conf_file.dest }}'
+#                mode: 0644
+#              with_items:
+#                - src: 'nvim'
+#                  dest: '.vimrc'
+#                - src: 'init.vim'              # TODO: INLINE ONCE SUPPORTED BY MODULE
+#                  dest: '.config/nvim/init.vim'
+#              loop_control:
+#                loop_var: common_nvim_conf_file
+#          become: false
         - name: '[Linux] Set "alternatives"'
           community.general.alternatives:
             name: '{{ common_nvim_alt.name }}'
