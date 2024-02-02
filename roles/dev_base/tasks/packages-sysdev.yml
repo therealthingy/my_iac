@@ -61,6 +61,7 @@
             # Utils:
               - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
             # Libs:
+              - libbsd-dev            # Provides `strlcat`(3), …
               - libc6-dbg             # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
               - binutils-dev          # Necessary 2 build programs which use the GNU BFD library  (which is part of binutils); also includes libbfd
               - libelf-dev            # Allows reading & writing of ELF files on a high level
