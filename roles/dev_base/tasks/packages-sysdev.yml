@@ -91,6 +91,7 @@
               - checksec              # Used 2 check properties of executables (like PIE, RELRO, PaX, Stack Canaries, PIE, RPATH, RUNPATH & compiler fortification) & kernel security options (like  GRSecurity & SELinux)
               - yad                   # Tool 4 creating graphical dialogs from shell scripts
             # Kernel dev -- "missing stuff":
+              - crash                 # Kernel debugging utility (allowing gdb like syntax)
               - exuberant-ctags       # Parses code, producing an index mapping the names of significant entities
               - cscope                # Interactive, text screen based source browsing tool
               - indent                # Format C code 2 follow kernel "styleguide"
