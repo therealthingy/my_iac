@@ -12,12 +12,14 @@
               - shellcheck            # Lint bash scripts
               - flawfinder            # Finds potential security flaws in C src
               - cppcheck              # Static analysis 4 detecting bugs (undefined behavior & dangerous coding constructs) in C src
-            # Build tools:
+            # Build tools/Compilers:
               - gcc
               - cmake
               - autoconf              # Tool 4 producing configure script 4 building, installing & packing SW
               - automake              # Automates parts of the compilation process
               - pkg-config
+            # Assemblers:
+              - nasm
             # Debuggers & Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
               - binutils              # Contains `readelf`, `gprof`, …
               - cloc                  # Count loc
@@ -35,7 +37,6 @@
               - build-essential       # Includes GDB, g++/GNU compiler collection, & some tools (`make`) & libraries required 2 compile a program
               - clang
               - clang-tools           # Includes `clang-check`, `clang-format` ~~& `clang-tidy`~~
-#              - nasm
               - rustc
               - cargo
             # Build tools:
