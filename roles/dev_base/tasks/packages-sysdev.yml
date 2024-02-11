@@ -81,11 +81,12 @@
               - libaio-dev            # (Linux kernel AIO access -> Enables userspace 1 use Linux kernel asynchronous I/O system calls, important 4 the performance of dbs & other advanced apps)
               - libboost-all-dev      # Boost
               - libomp-dev            # OpenMP
-              #- libperl-dev           # Assists in developing applications which embed a Perl interpreter
+              - libcurl4-gnutls-dev
+#              - libperl-dev           # Assists in developing applications which embed a Perl interpreter
               - libevent-dev          # Event notification library  (SEE: https://libevent.org/)
-              #- python2
-              #- python2-dev
-              #- python-setuptools
+#              - python2
+#              - python2-dev
+#              - python-setuptools
               - libseccomp-dev        # Provides high level iface 4 constructing, analyzing & installing seccomp filters via a BPF (passed 2 kernel's `prctl`)
             # Misc.:
               - fakeroot              # Provides a fake root environment (2 remove the need 2 become root 4 a package build)
