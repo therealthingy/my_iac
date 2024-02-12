@@ -32,11 +32,13 @@
         - name: '[Debian/Ubuntu]'
           ansible.builtin.apt:
             name:
-            # Compilers:
+            # Compilers, static analysis tools, …:
               - manpages-dev
               - build-essential       # Includes GDB, g++/GNU compiler collection, & some tools (`make`) & libraries required 2 compile a program
               - clang
-              - clang-tools           # Includes `clang-check`, `clang-format` ~~& `clang-tidy`~~
+              - clang-tools           # Includes `clang-check`~~, `clang-format` & `clang-tidy`~~
+              - clang-tidy            # TODO: macOS: `brew install llvm` -> `alias clang-tidy=/opt/homebrew/opt/llvm/bin/clang-tidy`
+              - clang-format
               - rustc
               - cargo
             # Build tools:
