@@ -136,7 +136,7 @@
       ansible.builtin.apt:
         name:
 #          - aptitude
-          - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu`, `lspci`, `hexdump`, …)
+          - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu`, `lspci`, `hexdump`, `choom`, …)
           - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
 #          - initramfs-tools
 #          - stow                         # See https://www.gnu.org/software/stow/

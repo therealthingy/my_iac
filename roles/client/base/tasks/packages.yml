@@ -114,14 +114,14 @@
     - name: '[Darwin]'
       community.general.homebrew:
         name:
-          - poppler           # `pdfimages`, `pdftotext`
-          - tesseract         # Validate via: `tesseract --list-langs`
+          - poppler               # `pdfimages`, `pdftotext`
+          - tesseract             # Validate via: `tesseract --list-langs`
           - tesseract-lang
       when: ansible_facts.os_family == 'Darwin'
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
-          - poppler-utils
+          - poppler-utils         # Pdf utils
           - tesseract-ocr
           - tesseract-ocr-deu
         state: present

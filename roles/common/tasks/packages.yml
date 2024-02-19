@@ -124,6 +124,7 @@
           when: ansible_facts.os_family == 'Darwin'                  # $$$   TODO: RMV ONCE DEBIAN APT REPOS HAVE version 0.9.3 (atm 0.6 which isn't supported by nvchad)
           become: false
     # TODO: $$$$$$$$$$$$$$$$$$$$$     config
+    # TODO: Plugins --   DrawIt (ascii diagrams)
 
 #    - name: Install luks sparse file helper
 #      ansible.builtin.template:
