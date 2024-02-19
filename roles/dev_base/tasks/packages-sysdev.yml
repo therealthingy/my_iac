@@ -95,28 +95,35 @@
               - checksec              # Used 2 check properties of executables (like PIE, RELRO, PaX, Stack Canaries, PIE, RPATH, RUNPATH & compiler fortification) & kernel security options (like  GRSecurity & SELinux)
               - yad                   # Tool 4 creating graphical dialogs from shell scripts
             # Kernel dev -- "missing stuff":
-              - crash                 # Kernel debugging utility (allowing gdb like syntax)
-              - exuberant-ctags       # Parses code, producing an index mapping the names of significant entities
-              - cscope                # Interactive, text screen based source browsing tool
-              - indent                # Format C code 2 follow kernel "styleguide"
+            #  - LKM dev:
               - "linux-headers-{{ ansible_kernel }}"
               - "linux-tools-{{ ansible_kernel }}"
+            #  - Deps:
+              - bc                    # Bench calculator (uses own algebraic language)
+              - debhelper             # 4 creating `deb`ian packages (`bindeb-pkg` target)
+              - cscope                # Interactive, text screen based source browsing tool
+              - indent                # Format C code 2 follow kernel "styleguide"
+            # - "Convenience" tools:
+              - exuberant-ctags       # Parses code, producing an index mapping the names of significant entities
+            # - Static analysis:
               - sparse                # Semantic checker 4 finding potential problems w/ C kernel code (e.g., mixing pointers 2 user address space & pointers 2 kernel address space)
-              - stress                # Imposes load on & stress test a computer system
-              - rt-tests              # Programs that test & measure various components of real-time kernel behavior (timer, signal & HW latency) + functioning of priority-inheritance mutexes
-              - tuna                  # Low-level system performance tuning 4 realtime systems (change the attributes of application & kernel threads, IRQs, CPUs, & CPU sockets => can change scheduling policy, scheduler priority & processor affinity 4 processes & process threads, processor affinity 4 interrupts, isolate CPUs, & spread threads or IRQs across CPUs)
+            # - Debugging:
+              - crash                 # Kernel debugging utility (allowing gdb like syntax)
               - trace-cmd             # Retrieve & analyze function traces from the kernel
 #              - lttng-tools           # Linux Trace Toolkit next generation (LTTng)    $$$$$  TODO: COMPILATION ERROR ON AARCH64  +  Visualization via *Eclipse Trace Compass* (https://projects.eclipse.org/projects/tools.tracecompass/downloads)
 #              - lttng-modules-dkms
 #              - liblttng-ust-dev
-              - sysfsutils            # Sysfs query tool & boot-time setup   ????
-#              - perf-tools-unstable   # ???????
-              - smem                  # Reports on memory usage on Linux systems
-              - hwloc                 # Hardware Locality -- Provides a hierarchical view of the machine, NUMA memory nodes, sockets, shared caches, cores & simultaneous multithreading
-              - bc                    # Bench calculator (uses own algebraic language)
+            # - Performance analysis:
+              - stress                # Imposes load on & stress test a computer system
+              - rt-tests              # Programs that test & measure various components of real-time kernel behavior (timer, signal & HW latency) + functioning of priority-inheritance mutexes
+              - tuna                  # Low-level system performance tuning 4 realtime systems (change the attributes of application & kernel threads, IRQs, CPUs, & CPU sockets => can change scheduling policy, scheduler priority & processor affinity 4 processes & process threads, processor affinity 4 interrupts, isolate CPUs, & spread threads or IRQs across CPUs)
+              - perf-tools-unstable   # ???????
+            # - Misc.
               - gnuplot
+              - sysfsutils            # Sysfs query tool & boot-time setup   ????
+              - smem                  # Reports memory usage
+              - hwloc                 # HW Locality -- Provides a hierarchical view of the machine, NUMA memory nodes, sockets, shared caches, cores & simultaneous multithreading
               - virt-what             # Script which detects whether it's running in a VM
-              - debhelper             # 4 creating `deb`ian packages (`bindeb-pkg` target)
             state: present
           when: ansible_facts.os_family != 'Darwin'
         - name: '[Debian/Ubuntu amd64]'
