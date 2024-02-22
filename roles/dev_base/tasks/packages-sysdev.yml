@@ -110,7 +110,7 @@
             # - Debugging:
               - crash                 # Kernel debugging utility (allowing gdb like syntax)
               - trace-cmd             # Retrieve & analyze function traces from the kernel
-#              - lttng-tools           # Linux Trace Toolkit next generation (LTTng)    $$$$$  TODO: COMPILATION ERROR ON AARCH64  +  Visualization via *Eclipse Trace Compass* (https://projects.eclipse.org/projects/tools.tracecompass/downloads)
+#              - lttng-tools           # Linux Trace Toolkit next generation (LTTng)    $$$$$  TODO: COMPILATION ERROR ON AARCH64  +  Visualization via *Eclipse Trace Compass*
 #              - lttng-modules-dkms
 #              - liblttng-ust-dev
             # - Performance analysis:
@@ -180,35 +180,49 @@
 
 - name: Install Eclipse Trace Compass
   block:
-    - name: Install OpenJDK 17
-      ansible.builtin.apt:
-        name: openjdk-17-jdk
-      become: true
+    - name: Determine stuff
+      block:
+        - name: '[Darwin]'
+          ansible.builtin.set_fact:
+            java_package: openjdk
+            tracecompass_package_os: macosx.cocoa
+            tracecompass_package_arch: '{{ "aarch64" if cpu_arch == "arm64" else cpu_arch }}'
+            tracecompass_install_path: /Applications/Development/
+            tracecompass_install_become: false
+          when: ansible_facts.os_family == 'Darwin'
+        - name: '[Ubuntu/Debian]'
+          ansible.builtin.set_fact:
+            java_package: openjdk-17-jdk
+            tracecompass_package_os: linux.gtk
+            tracecompass_package_arch: '{{ cpu_arch }}'
+            tracecompass_install_path: /opt/
+            tracecompass_install_become: true
+          when: ansible_facts.os_family != 'Darwin'
+        -  ansible.builtin.debug:
+            msg:
+              URL=https://www.eclipse.org/downloads/download.php?file=/tracecompass/stable/rcp/trace-compass-{{ tracecompass_version }}-{{ tracecompass_package_os }}.{{ tracecompass_package_arch }}.tar.gz,
+    - name: Install Java
+      ansible.builtin.package:
+        name: '{{ java_package }}'
+      become: '{{ package_manager_become }}'
     - name: Check if already installed
-      ansible.builtin.command: 'which /home/{{ user.name }}/bin/tracecompass'
-      failed_when: false
-      changed_when: false
-      check_mode: false
-      register: result_tracecompass_command
+      ansible.builtin.stat:
+        path: '{{ tracecompass_install_path }}/trace-compass'
+      register: result_tracecompass_exists
       become: false
     - name: Install it
       block:
         - name: "Download & 'install'"
           ansible.builtin.unarchive:
-            src: 'https://mirrors.dotsrc.org/eclipse//tracecompass/releases/9.2.0/rcp/trace-compass-{{ tracecompass_version }}-linux.gtk.{{ ansible_architecture }}.tar.gz'
-            dest: '/home/{{ user.name }}/bin/'
+            src: 'https://www.eclipse.org/downloads/download.php?file=/tracecompass/stable/rcp/trace-compass-{{ tracecompass_version }}-{{ tracecompass_package_os }}.{{ tracecompass_package_arch }}.tar.gz'
+            dest: '{{ tracecompass_install_path }}'
             remote_src: yes
-        - name: Create symlink
-          ansible.builtin.file:
-            src: '/home/{{ user.name }}/bin/trace-compass/tracecompass'
-            dest: '/home/{{ user.name }}/bin/tracecompass'
-            state: link
-            force: true
-      become: false
-      when: result_tracecompass_command.rc != 0
+          become: '{{ tracecompass_install_become }}'
+        # TODO: Create .desktop file on Gnome
+      when: result_tracecompass_exists.stat.exists == false
   when:
-    - ansible_facts.os_family != 'Darwin'
-    - ansible_architecture == 'x86_64'        # $$$$$$$$$$$$$$$$$ TODO: ONCE ARM IS SUPPORTED
+    - not ansible_facts.os_family == 'Darwin'     # DON'T install on Darwin atm
+    - not (ansible_facts.os_family != 'Darwin' and ansible_architecture != 'x86_64')  # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED
 
 
 

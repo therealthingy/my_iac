@@ -20,7 +20,7 @@
           changed_when: false
 
       # --  System info  --
-        - name: Determine CPU architecture   # (NOTE: on GNU/Linux deb cpu arch)
+        - name: Determine CPU architecture
           ansible.builtin.shell: uname -m                             # ALTERNATIVE for arch.: ansible_architecture
           register: result_cpu_architecture                           # We need 2 different vars (https://github.com/ansible/ansible/issues/15710)
           changed_when: false
