@@ -45,7 +45,7 @@
   become: true
   when: ansible_facts.os_family != 'Darwin'
 
-- name: Install backup tools          # macOS has TimeMachine
+- name: Install backup tools              # macOS has TimeMachine
   ansible.builtin.apt:
     name:
       - borgbackup
@@ -61,12 +61,12 @@
           ansible.builtin.apt:
             name:
               - atop
-              - dstat                         # System monitoring tool  (allows monitoring system resources such as cpu, memory, disk & network stats) -> replacement 4 `vmstat`, `iostat` & `ifstat`
-              - psmisc                        # Utilities that use the proc file-system (`fuser` - Identifies processes using files or sockets, `killall` - kills processes by name, `prtstat` - prints process statistics, `pslog` - prints log path(s) of a process, `pstree` - shows currently running processes as a tree, `peekfd` - shows data travelling over a fildes)
+              - dstat                     # System monitoring tool  (allows monitoring system resources such as cpu, memory, disk & network stats) -> replacement 4 `vmstat`, `iostat` & `ifstat`
+              - psmisc                    # Utilities that use the proc file-system (`fuser` - Identifies processes using files or sockets, `killall` - kills processes by name, `prtstat` - prints process statistics, `pslog` - prints log path(s) of a process, `pstree` - shows currently running processes as a tree, `peekfd` - shows data travelling over a fildes)
               - iotop
               - powertop
-              - sysstat                       # `sar` (can be used 2 monitor Linux system’s resources like CPU usage, memory utilization, I/O devices consumption, etc.), `iostat`
-              - usbutils                      # `lsusb`
+              - sysstat                   # `sar` (can be used 2 monitor Linux system’s resources like CPU usage, memory utilization, I/O devices consumption, etc.), `iostat`
+              - usbutils                  # `lsusb`
             state: present
           when: ansible_facts.os_family != 'Darwin'
         - name: '[Darwin]'
@@ -139,7 +139,7 @@
           - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu`, `lspci`, `hexdump`, `choom`, …)
           - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
 #          - initramfs-tools
-#          - stow                         # See https://www.gnu.org/software/stow/
+#          - stow                         # SEE https://www.gnu.org/software/stow/
         # FS stuff:
           - cloud-guest-utils             # `growpart`
           - btrfs-compsize                # `compsize <file>` -> Compare size of files (2 see effect of compression)
@@ -181,11 +181,11 @@
     - name: '[Darwin] Install homebrew package'
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:           # TODO: Add flatpak counterpart 4 linux & check whether VM
+        packages_homebrew_casks:          # TODO: Add flatpak counterpart 4 linux & check whether VM
           - dir: Privacy
             packages:
               - cryptomator
-          - packages:                 # Need 2 be in base-dir
+          - packages:                      # Need 2 be in base-dir
             - little-snitch
 #            - tunnelblick
 
@@ -250,7 +250,7 @@
         # …
       when:
         - ansible_facts.os_family == 'Darwin'
-        - false                                                                       # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DISABLED 4 NOW DUE 2 BUGINESS
+        - false                           # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DISABLED 4 NOW DUE 2 BUGINESS
   become: '{{ package_manager_become }}'
 
 
@@ -287,7 +287,7 @@
     - name: '[Darwin] Install homebrew packages'
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks:          # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Benchmark
             packages: ['amorphousdiskmark']
 
@@ -297,13 +297,13 @@
     - name: '[Darwin] Install homebrew packages'
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks:          # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Maintenance
             packages:
               - appcleaner
               - omnidisksweeper
               - onyx
-#              - aldente                                          # TODO
+#              - aldente                   # TODO
 
 
 - name: Install virtualization tools
@@ -311,10 +311,10 @@
     - name: '[Darwin] Install homebrew packages'
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks:          # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Tools/Virtualization
             packages:
-              - vmware-fusion     # TODO: Install w/ option `--no-quarantine`, otherwise: '“vmware-id” is an app downloaded from the Internet. Are you sure you want to open it?'
+              - vmware-fusion             # TODO: Install w/ option `--no-quarantine`, otherwise: '“vmware-id” is an app downloaded from the Internet. Are you sure you want to open it?'
 #              - utm
 
 
@@ -323,7 +323,7 @@
     - name: '[Darwin] Install homebrew packages'
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks:          # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Misc
             packages:
               - apparency
@@ -334,7 +334,7 @@
     - name: '[Darwin]'
       ansible.builtin.package:
         name:
-          - spek                        # No cask, despite being an UI app  -> opened via `spek`
+          - spek                          # No cask, despite being an UI app  -> opened via `spek`
       when: ansible_facts.os_family == 'Darwin'
 
 
