@@ -166,7 +166,7 @@
             file_type: file
             use_regex: true
             hidden: true
-            patterns: '^\.gef-[0-9a-f]{40}\.py$'
+            patterns: '^\.gef-20\d{2}\.(0[1-9]|1[012])\.py$'
           register: gef_find_output
         - name: gef - Run install script
           ansible.builtin.shell:
