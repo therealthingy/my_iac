@@ -67,8 +67,8 @@
               - 'IPv6=true'
               - FTLCONF_RATE_LIMIT='0/0'                       #  TODO: Workaround as all IPv6 requests arrive w/ same saddr (due 2 sNAT); NOTE: Might still hit limit on inet outage
               - 'WEBPASSWORD={{ pihole.web_pw }}'
-              - 'PROXY_LOCATION={{ container_name }}'
-              - 'VIRTUAL_HOST={{ container_name }}.{{ domainname }}'
+              - 'PROXY_LOCATION=pihole'
+              - 'VIRTUAL_HOST=pihole.{{ domainname }}'
               - VIRTUAL_PORT=80
               - 'REV_SERVER=true'                              # NOTE: Makes only sense when pihole isN'T acting as DHCP server
               - REV_SERVER_TARGET={{ pihole.router_ip }}
