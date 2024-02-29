@@ -109,7 +109,7 @@
                   register: result_nerdfont_installed
                 - name: Download & install
                   ansible.builtin.unarchive:
-                    src: "https://github.com/ryanoasis/nerd-fonts/releases/download/v{{ nerdfont_version }}/JetBrainsMono.zip"
+                    src: "https://github.com/ryanoasis/nerd-fonts/releases/download/v{{ nerdfont_version }}/JetBrainsMono.zip"      # TODO: Always latest version
                     dest: "{{ nf_fonts_dir }}"
                     remote_src: true
                   when: result_nerdfont_installed is failed

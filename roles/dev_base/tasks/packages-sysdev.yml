@@ -109,9 +109,9 @@
               - sparse                # Semantic checker 4 finding potential problems w/ C kernel code (e.g., mixing pointers 2 user address space & pointers 2 kernel address space)
             # - Debugging:
               - crash                 # Kernel debugging utility (allowing gdb like syntax)
-              - trace-cmd             # Retrieve & analyze function traces from the kernel
 #              - lttng-tools           # Linux Trace Toolkit next generation (LTTng)    $$$$$  TODO: COMPILATION ERROR ON AARCH64  +  Visualization via *Eclipse Trace Compass*
 #              - lttng-modules-dkms
+              - trace-cmd             # Retrieve & analyze function traces from the kernel  (essentially a wrapper over ftrace)
 #              - liblttng-ust-dev
             # - Performance analysis:
               - stress                # Imposes load on & stress test a computer system
@@ -160,7 +160,7 @@
 
     - name: Install gef (4 `gdb`)
       block:
-        - name: gef - Check whether already installed
+        - name: gef - Check whether already installed     # TODO: Always update if not latest version
           ansible.builtin.find:
             paths: '/home/{{ user.name }}/'
             file_type: file
@@ -198,9 +198,6 @@
             tracecompass_install_path: /opt/
             tracecompass_install_become: true
           when: ansible_facts.os_family != 'Darwin'
-        -  ansible.builtin.debug:
-            msg:
-              URL=https://www.eclipse.org/downloads/download.php?file=/tracecompass/stable/rcp/trace-compass-{{ tracecompass_version }}-{{ tracecompass_package_os }}.{{ tracecompass_package_arch }}.tar.gz,
     - name: Install Java
       ansible.builtin.package:
         name: '{{ java_package }}'
@@ -214,7 +211,7 @@
       block:
         - name: "Download & 'install'"
           ansible.builtin.unarchive:
-            src: 'https://www.eclipse.org/downloads/download.php?file=/tracecompass/stable/rcp/trace-compass-{{ tracecompass_version }}-{{ tracecompass_package_os }}.{{ tracecompass_package_arch }}.tar.gz'
+            src: 'https://www.eclipse.org/downloads/download.php?file=/tracecompass/stable/rcp/trace-compass-{{ tracecompass_version }}-{{ tracecompass_package_os }}.{{ tracecompass_package_arch }}.tar.gz'   # TODO: ALWAYS LATEST VERSION
             dest: '{{ tracecompass_install_path }}'
             remote_src: yes
           become: '{{ tracecompass_install_become }}'
