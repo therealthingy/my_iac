@@ -75,11 +75,12 @@
               - libcap-dev            # Implements user-space interfaces 2 the POSIX 1003.1e capabilities
               - libnuma-dev           # Allows controlling specific NUMA (Non-Uniform Memory Architecture) scheduling or memory placement policies
               - libncurses5-dev       # ncurses  (terminal-independent method of updating character screens w/ reasonable optimization)
+              - ncurses-dev
               - libreadline-dev       # Provides a set of functions for use by applications that allow users to edit command lines as they are typed in
-              - libssl-dev            # OpenSSL  (libcrypto)
+              - openssl
               - zlib1g-dev            # (zlib)
               - liblzma-dev           # (lzma)
-              - libzstd-dev           # (Zstandard - Fast real-time compression algorithm)
+              - zstd
               - libaio-dev            # (Linux kernel AIO access -> Enables userspace 1 use Linux kernel asynchronous I/O system calls, important 4 the performance of dbs & other advanced apps)
               - libboost-all-dev      # Boost
               - libomp-dev            # OpenMP
@@ -107,20 +108,26 @@
               - exuberant-ctags       # Parses code, producing an index mapping the names of significant entities
             # - Static analysis:
               - sparse                # Semantic checker 4 finding potential problems w/ C kernel code (e.g., mixing pointers 2 user address space & pointers 2 kernel address space)
+              - coccinelle
             # - Debugging:
               - crash                 # Kernel debugging utility (allowing gdb like syntax)
-#              - lttng-tools           # Linux Trace Toolkit next generation (LTTng)    $$$$$  TODO: COMPILATION ERROR ON AARCH64  +  Visualization via *Eclipse Trace Compass*
-#              - lttng-modules-dkms
               - trace-cmd             # Retrieve & analyze function traces from the kernel  (essentially a wrapper over ftrace)
+#              - lttng-tools           # Linux Trace Toolkit next generation (LTTng)
+#              - lttng-modules-dkms        $$$$$  TODO: COMPILATION ERROR ON AARCH64
 #              - liblttng-ust-dev
             # - Performance analysis:
               - stress                # Imposes load on & stress test a computer system
+              - stress-ng
               - rt-tests              # Programs that test & measure various components of real-time kernel behavior (timer, signal & HW latency) + functioning of priority-inheritance mutexes
               - tuna                  # Low-level system performance tuning 4 realtime systems (change the attributes of application & kernel threads, IRQs, CPUs, & CPU sockets => can change scheduling policy, scheduler priority & processor affinity 4 processes & process threads, processor affinity 4 interrupts, isolate CPUs, & spread threads or IRQs across CPUs)
               - perf-tools-unstable   # ???????
             # - Misc.
+              - man-db                # ???????
+              - kmod                  # 4 controlling Linux Kernel modules
+              - asciidoc
               - gnuplot
               - sysfsutils            # Sysfs query tool & boot-time setup   ????
+              - bsdextrautils         # BSD utilities like `col`, `colcrt`, `colrm`, `column`, `hd`, `hexdump`, `look`, `ul` & `write`
               - smem                  # Reports memory usage
               - hwloc                 # HW Locality -- Provides a hierarchical view of the machine, NUMA memory nodes, sockets, shared caches, cores & simultaneous multithreading
               - virt-what             # Script which detects whether it's running in a VM

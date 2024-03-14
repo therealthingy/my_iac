@@ -62,7 +62,7 @@
             name:
               - atop
               - dstat                     # System monitoring tool  (allows monitoring system resources such as cpu, memory, disk & network stats) -> replacement 4 `vmstat`, `iostat` & `ifstat`
-              - psmisc                    # Utilities that use the proc file-system (`fuser` - Identifies processes using files or sockets, `killall` - kills processes by name, `prtstat` - prints process statistics, `pslog` - prints log path(s) of a process, `pstree` - shows currently running processes as a tree, `peekfd` - shows data travelling over a fildes)
+              - psmisc                    # Utilities that use the procfs (`fuser` - Identifies processes using files or sockets, `killall` - kills processes by name, `prtstat` - prints process statistics, `pslog` - prints log path(s) of a process, `pstree` - shows currently running processes as a tree, `peekfd` - shows data traveling over a fildes)
               - iotop
               - powertop
               - sysstat                   # `sar` (can be used 2 monitor Linux system’s resources like CPU usage, memory utilization, I/O devices consumption, etc.), `iostat`
