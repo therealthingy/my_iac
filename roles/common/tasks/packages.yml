@@ -116,11 +116,15 @@
               notify: rebuild fonts cache
             - name: Download & Install
               ansible.builtin.git:
-                repo: https://github.com/NvChad/NvChad.git
+                repo: https://github.com/NvChad/starter.git
                 dest: '{{ os_homedir }}/{{ user.name }}/.config/nvim/'
                 clone: true
                 depth: 1
                 update: true
+              register: repo_clone
+              failed_when:
+                - repo_clone.failed
+                - not 'Local modifications exist in the destination' in repo_clone.msg
           when: ansible_facts.os_family == 'Darwin'                  # $$$   TODO: RMV ONCE DEBIAN APT REPOS HAVE version 0.9.3 (atm 0.6 which isn't supported by nvchad)
           become: false
     # TODO: $$$$$$$$$$$$$$$$$$$$$     config
@@ -153,25 +157,38 @@
   block:
     - name: nvim
       block:
-#        - name: Copy config
-#          block:
-#            - name: Create config dir
-#              ansible.builtin.file:
-#                path: '{{ os_homedir }}/{{ user.name }}/.config/nvim'
-#                state: directory
-#            - name: Copy config files
-#              ansible.builtin.template:
-#                src: '{{ common_nvim_conf_file.src }}.j2'
-#                dest: '{{ os_homedir }}/{{ user.name }}/{{ common_nvim_conf_file.dest }}'
-#                mode: 0644
-#              with_items:
-#                - src: 'nvim'
+        - name: Copy config
+          block:
+            - name: vimrc
+              ansible.builtin.lineinfile:
+                dest: '{{ os_homedir }}/{{ user.name }}/.config/nvim/lua/{{ vimrc_setting.file }}'
+                line: '{{ vimrc_setting.line }}'
+                regexp: '{{ vimrc_setting.regexp }}'
+              with_items:
+                - regexp: 'vim\\.opt\\.relativenumber'
+                  line: 'vim.opt.relativenumber = true'     # `:set rnu`
+                  file: 'options.lua'
+                - regexp: 'theme = "\w+",$'
+                  line: 'theme = "catppuccin",'
+                  file: 'chadrc.lua'
+              loop_control:
+                loop_var: vimrc_setting
+
+            - name: Copy config files
+              ansible.builtin.template:
+                src: '{{ common_nvim_conf_file.src }}.j2'
+                dest: '{{ os_homedir }}/{{ user.name }}/{{ common_nvim_conf_file.dest }}'
+                mode: 0644
+              with_items:
+#                - src: nvim/vimrc
 #                  dest: '.vimrc'
-#                - src: 'init.vim'              # TODO: INLINE ONCE SUPPORTED BY MODULE
-#                  dest: '.config/nvim/init.vim'
-#              loop_control:
-#                loop_var: common_nvim_conf_file
-#          become: false
+                - src: nvim/lspconfig.lua
+                  dest: .config/nvim/lua/configs/lspconfig.lua
+                - src: nvim/plugins.lua
+                  dest: .config/nvim/lua/plugins/init.lua
+              loop_control:
+                loop_var: common_nvim_conf_file
+          become: false
         - name: '[Linux] Set "alternatives"'
           community.general.alternatives:
             name: '{{ common_nvim_alt.name }}'
