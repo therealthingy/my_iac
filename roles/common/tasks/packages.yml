@@ -166,7 +166,13 @@
                 regexp: '{{ vimrc_setting.regexp }}'
               with_items:
                 - regexp: 'vim\\.opt\\.relativenumber'
-                  line: 'vim.opt.relativenumber = true'     # `:set rnu`
+                  line: 'vim.opt.relativenumber = true'     # SHORTHAND: `:set rnu`
+                  file: 'options.lua'
+                - regexp: 'vim\\.opt\\.tabstop'
+                  line: 'vim.opt.tabstop = 4'
+                  file: 'options.lua'
+                - regexp: 'vim\\.opt\\.shiftwidth'          # Autoindent (`e.g., if (val)` -> Enter => autoindents next line n spaces)
+                  line: 'vim.opt.shiftwidth = 4'
                   file: 'options.lua'
                 - regexp: 'theme = "\w+",$'
                   line: 'theme = "catppuccin",'
