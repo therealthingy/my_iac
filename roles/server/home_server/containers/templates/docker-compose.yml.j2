@@ -1,7 +1,5 @@
 ---
 {{ ansible_managed|comment }}
-version: '3.7'
-
 {# $$$$$$$  TODO: Check whether service actually uses reverse-proxy & leave out network if so  $$$$$$$ #}
 networks:
   {{ reverse_proxy_docker_network }}:
