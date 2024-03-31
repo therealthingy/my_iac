@@ -81,54 +81,10 @@
           - curl
       become: '{{ package_manager_become }}'
 
-    - name: nvim
-      block:
-        - name: '[Darwin / Debian/Ubuntu] Install'
-          ansible.builtin.package:
-            name: neovim
-          become: '{{ package_manager_become }}'
-        # NOTE: REQUIRE CLEANUP (if previously used): `rm -rf .config/nvim .local/share/nvim .cache/nvim`
-        - name: Install NvChad
-          block:
-            # TODO: Font in Gnome Terminal  (atm only iTerm)
-            - name: Install NerdFont
-              block:
-                - name: '[Debian/Ubuntu] Install deps'
-                  ansible.builtin.apt:
-                    name: fontconfig                        # Required 4 handler which rebuilds fonts cache
-                    state: present
-                  become: true
-                  when: ansible_facts.os_family != 'Darwin'
-                - name: Set fact(s)
-                  ansible.builtin.set_fact:
-                    nf_fonts_dir: "{{ os_homedir }}/{{ user.name }}/{{ (ansible_facts['os_family'] == 'Darwin')|ternary('Library/Fonts', '.local/share/fonts') }}/"
-                - name: Check already installed
-                  ansible.builtin.shell: "ls {{ nf_fonts_dir }}/JetBrainsMonoNerdFont*.ttf"
-                  failed_when: false
-                  changed_when: false
-                  register: result_nerdfont_installed
-                - name: Download & install
-                  ansible.builtin.unarchive:
-                    src: "https://github.com/ryanoasis/nerd-fonts/releases/download/v{{ nerdfont_version }}/JetBrainsMono.zip"      # TODO: Always latest version
-                    dest: "{{ nf_fonts_dir }}"
-                    remote_src: true
-                  when: result_nerdfont_installed is failed
-              notify: rebuild fonts cache
-            - name: Download & Install
-              ansible.builtin.git:
-                repo: https://github.com/NvChad/starter.git
-                dest: '{{ os_homedir }}/{{ user.name }}/.config/nvim/'
-                clone: true
-                depth: 1
-                update: true
-              register: repo_clone
-              failed_when:
-                - repo_clone.failed
-                - not 'Local modifications exist in the destination' in repo_clone.msg
-          when: ansible_facts.os_family == 'Darwin'                  # $$$   TODO: RMV ONCE DEBIAN APT REPOS HAVE version 0.9.3 (atm 0.6 which isn't supported by nvchad)
-          become: false
-    # TODO: $$$$$$$$$$$$$$$$$$$$$     config
-    # TODO: Plugins --   DrawIt (ascii diagrams)
+    - name: '[Darwin / Debian/Ubuntu] Install nvim'
+      ansible.builtin.package:
+        name: neovim
+      become: '{{ package_manager_become }}'
 
 #    - name: Install luks sparse file helper
 #      ansible.builtin.template:
@@ -155,62 +111,22 @@
 
 - name: Config
   block:
-    - name: nvim
-      block:
-        - name: Copy config
-          block:
-            - name: vimrc
-              ansible.builtin.lineinfile:
-                dest: '{{ os_homedir }}/{{ user.name }}/.config/nvim/lua/{{ vimrc_setting.file }}'
-                line: '{{ vimrc_setting.line }}'
-                regexp: '{{ vimrc_setting.regexp }}'
-              with_items:
-                - regexp: 'vim\\.opt\\.relativenumber'
-                  line: 'vim.opt.relativenumber = true'     # SHORTHAND: `:set rnu`
-                  file: 'options.lua'
-                - regexp: 'vim\\.opt\\.tabstop'
-                  line: 'vim.opt.tabstop = 4'
-                  file: 'options.lua'
-                - regexp: 'vim\\.opt\\.shiftwidth'          # Autoindent (`e.g., if (val)` -> Enter => autoindents next line n spaces)
-                  line: 'vim.opt.shiftwidth = 4'
-                  file: 'options.lua'
-                - regexp: 'theme = "\w+",$'
-                  line: 'theme = "catppuccin",'
-                  file: 'chadrc.lua'
-              loop_control:
-                loop_var: vimrc_setting
-
-            - name: Copy config files
-              ansible.builtin.template:
-                src: '{{ common_nvim_conf_file.src }}.j2'
-                dest: '{{ os_homedir }}/{{ user.name }}/{{ common_nvim_conf_file.dest }}'
-                mode: 0644
-              with_items:
-#                - src: nvim/vimrc
-#                  dest: '.vimrc'
-                - src: nvim/lspconfig.lua
-                  dest: .config/nvim/lua/configs/lspconfig.lua
-                - src: nvim/plugins.lua
-                  dest: .config/nvim/lua/plugins/init.lua
-              loop_control:
-                loop_var: common_nvim_conf_file
-          become: false
-        - name: '[Linux] Set "alternatives"'
-          community.general.alternatives:
-            name: '{{ common_nvim_alt.name }}'
-            link: '{{ common_nvim_alt.link }}'
-            path: '{{ common_nvim_alt.path }}'
-          with_items:
-            - name: editor
-              link: /usr/bin/editor
-              path: /usr/bin/nvim
-            - name: vi
-              link: /usr/bin/vi
-              path: /usr/bin/nvim
-          loop_control:
-            loop_var: common_nvim_alt
-          when: ansible_facts.os_family != 'Darwin'
-          become: true
+    - name: '[Linux] nvim -- Set "alternatives"'
+      community.general.alternatives:
+        name: '{{ common_nvim_alt.name }}'
+        link: '{{ common_nvim_alt.link }}'
+        path: '{{ common_nvim_alt.path }}'
+      with_items:
+        - name: editor
+          link: /usr/bin/editor
+          path: /usr/bin/nvim
+        - name: vi
+          link: /usr/bin/vi
+          path: /usr/bin/nvim
+      loop_control:
+        loop_var: common_nvim_alt
+      when: ansible_facts.os_family != 'Darwin'
+      become: true
 
 #    - name: Other packages
 #      ansible.builtin.template:
