@@ -158,6 +158,32 @@
       when: ansible_facts.os_family == 'Darwin'
 
 
+- name: Install oh-my-tmux
+  block:
+    - name: Download & Install
+      ansible.builtin.git:
+        repo: https://github.com/gpakosz/.tmux.git
+        dest: '{{ os_homedir }}/{{ user.name }}/.tmux/'
+        clone: true
+        depth: 1
+        update: true
+      register: repo_clone
+      failed_when:
+        - repo_clone.failed
+        - not 'Local modifications exist in the destination' in repo_clone.msg
+    - name: tmux.conf
+      ansible.builtin.file:
+        src: '{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf'
+        dest: '{{ os_homedir }}/{{ user.name }}/.tmux.conf'
+        state: link
+    - name: "TODO: Own config    (TODO: fix font)"
+      ansible.builtin.file:
+        src: '{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf.local'
+        dest: '{{ os_homedir }}/{{ user.name }}/.tmux.conf.local'
+        state: link
+  become: false
+
+
 - name: Install privacy tools
   block:
     - name: '[Darwin / Debian/Ubuntu]'
@@ -336,20 +362,3 @@
         name:
           - spek                          # No cask, despite being an UI app  -> opened via `spek`
       when: ansible_facts.os_family == 'Darwin'
-
-
-
-- name: Copy config for packages
-  ansible.builtin.template:
-    src: '{{ common_package_file.src }}.j2'
-    dest: '{{ common_package_file.dest }}'
-    owner: '{{ user.name }}'
-    group: '{{ user.group_name }}'
-    mode: 0644
-  become: false
-  with_items:
-  # tmux:
-    - src: tmux.conf
-      dest: '{{ os_homedir }}/{{ user.name }}/.tmux.conf'
-  loop_control:
-    loop_var: common_package_file
