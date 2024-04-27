@@ -152,7 +152,8 @@
           community.general.homebrew:
             name:
               - boost
-              - rust
+              - rust                  # TODO: Switch 2 `rustup`
+              - rust-analyzer         # TODO: Install also on Debian
               - ncurses               # Text-based UIs (TUIs)
             # Build tools:
               - ninja
