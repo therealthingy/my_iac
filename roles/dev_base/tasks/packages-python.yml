@@ -27,19 +27,3 @@
       loop_control:
         loop_var: package
   become: false
-
-
-# USAGE:
-#   - `source ~/.venvs/science/bin/activate`
-#   - `deactivate`
-#   - ( `python3 -m venv --upgrade ~/.venvs/science` )
-- name: Install Python scientific packages
-  ansible.builtin.pip:
-    name:
-      - numpy
-      - pandas
-      - matplotlib
-#      - scipy
-    virtualenv: '{{ os_homedir }}/{{ user.name }}/.venvs/science'
-    virtualenv_command: python -m venv
-  become: false               # NOTE: sudo installs it for ALL users (otherwise only local user)
