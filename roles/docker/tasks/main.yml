@@ -26,15 +26,6 @@
 
 
 
-- name: Install docker-compose v1 (deprecated) using pip       # $$$$$$$$$$$$$$$$$$$$   Still required (docker-compose plugin relies on it)  => TODO: CHANGE ONCE RESOLVED: https://github.com/ansible-collections/community.docker/issues/216
-  ansible.builtin.pip:
-    name: docker-compose
-    state: present
-    executable: pip3
-#    extra_args: --break-system-packages   # TODO: Workaround 4 now
-  become: false
-
-
 
 # --------------------------------------------------  IPv6 support  --------------------------------------------------
 # TODO: WORKAROUND -- Fix routing:  Currently IPv6 w/ NAT (https://blog.widodh.nl/2017/04/docker-containers-with-ipv6-behind-nat/) since network prefix (provided by ISP) changes constantly :/
