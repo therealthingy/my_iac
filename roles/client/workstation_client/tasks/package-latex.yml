@@ -27,7 +27,7 @@
           become: true
       when: ansible_facts.os_family == 'Darwin'
 
-    - name: Install make
+    - name: Install (c)make
       ansible.builtin.package:
         name:
           - make

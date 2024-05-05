@@ -105,6 +105,7 @@
 
     - name: Install Latex
       ansible.builtin.include_tasks: package-latex.yml
+      when: exclude_latex is not defined  or  not exclude_latex
 
 
 
