@@ -3,7 +3,7 @@
   block:
     - name: restart ssh daemon
       ansible.builtin.service:
-        name: sshd
+        name: ssh
         state: restarted
       when: ansible_facts.os_family != 'Darwin'
     - name: restart ssh daemon

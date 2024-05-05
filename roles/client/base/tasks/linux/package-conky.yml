@@ -1,7 +1,7 @@
 ---
 - name: conky - Install
   ansible.builtin.apt:
-    name: conky
+    name: conky-all
     state: present
   become: true
 
