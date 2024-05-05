@@ -164,9 +164,8 @@
         regexp: '^INVERT_PWM_SIGNAL=False$'
         line: 'INVERT_PWM_SIGNAL=True'
     - name: Ensure container is running
-      community.docker.docker_compose:              # TODO: Conditional docker dependency  ????????
+      community.docker.docker_compose_v2:              # TODO: Conditional docker dependency  ????????
         project_src: '{{ rpi_fan_pwm_container_dir }}'
-        build: true
   become: false
 
 #- name: Setup as systemd service

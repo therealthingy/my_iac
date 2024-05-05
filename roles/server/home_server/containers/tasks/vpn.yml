@@ -35,7 +35,7 @@
 ##     - VERIFY from client (!! from different network, e.g., cellular network !!): `ncat -6 -u <domain> 123`
 ##   - TRAFFIC: `ping 8.8.8.8` on client  &  `sudo tcpdump -envi wg0 host 8.8.8.8` (… on server)
 #- name: Ensure container is running
-#  community.docker.docker_compose:
+#  community.docker.docker_compose_v2:
 #    project_src: '{{ docker_container.config_basedir }}/{{ container.name }}/'
 #    build: true
 #  become: false

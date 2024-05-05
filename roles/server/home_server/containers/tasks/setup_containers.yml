@@ -48,8 +48,8 @@
   when: container.volumes is defined
 
 - name: 'Container {{ container.name }}: Ensure container is running'         # TODO: CONSIDER CHECKing IF ALREADY RUNNING & RESTART IF SO (https://docs.ansible.com/ansible/2.9/modules/docker_container_info_module.html)
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_src: '{{ docker_container.config_basedir }}/{{ container.name }}/'
-    build: false
+    build: never
   become: false
   when: container.startup is not defined or container.startup
