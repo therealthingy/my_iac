@@ -9,7 +9,8 @@
         executable: pipx
       with_items:
         - pdm            # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
-        - black          # Python code formatter
+        - ruff           # Python formatter + linter
+        - ruff-lsp
         - ansible
         - jupyterlab
       loop_control:
