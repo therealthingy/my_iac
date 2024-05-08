@@ -18,6 +18,7 @@
               - autoconf              # Tool 4 producing configure script 4 building, installing & packing SW
               - automake              # Automates parts of the compilation process
               - pkg-config
+              - rustfmt               # NOTE: Already "recommended" by `cargo` package
             # Assemblers:
               - nasm
             # Debuggers & Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
