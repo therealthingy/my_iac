@@ -31,7 +31,7 @@
       - "'gnome-system-monitor.desktop'"
   tags: client_base
 
-- hosts: dev_clients, workstation_clients
+- hosts: dev_clients, dev_servers
   roles:
     - role: client/dev_client
       tags:

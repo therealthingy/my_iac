@@ -166,6 +166,10 @@ path-add "/sbin"               "after"
 {%   if 'workstation_client' in group_names %}
 path-add "/Library/TeX/texbin/" "after"
 {%   endif %}
+{%   if 'dev_clients' in group_names or 'dev_servers' in group_names %}
+# `clang-format` & `clang-tidy`   (CHECK VIA: `brew --prefix llvm`)
+path-add "/opt/homebrew/opt/llvm/bin" "after"
+{%   endif %}
 #path-add "/opt/homebrew/opt/sphinx-doc/bin" "before"
 {% endif %}
 

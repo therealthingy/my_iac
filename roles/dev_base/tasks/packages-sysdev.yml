@@ -37,7 +37,7 @@
               - build-essential       # Includes GDB, g++/GNU compiler collection, & some tools (`make`) & libraries required 2 compile a program
               - clang
               - clang-tools           # Includes `clang-check`~~, `clang-format` & `clang-tidy`~~
-              - clang-tidy            # TODO: macOS: `brew install llvm` -> `alias clang-tidy=/opt/homebrew/opt/llvm/bin/clang-tidy`
+              - clang-tidy
               - clang-format
               - rustc
               - cargo
@@ -151,6 +151,7 @@
         - name: '[Darwin]'
           community.general.homebrew:
             name:
+              - llvm                  # TODO: Install only `clang[++]`, `clang-format`, `clang-tidy`
               - boost
               - rust                  # TODO: Switch 2 `rustup`
               - rust-analyzer         # TODO: Install also on Debian

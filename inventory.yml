@@ -5,12 +5,6 @@ all:
   # --  "System specific"  --
     dev_clients:
       hosts:
-
-    media_clients:
-      hosts:
-
-    workstation_clients:
-      hosts:
         local_mac:
           ansible_connection: local
           ansible_host: 127.0.0.1
@@ -32,6 +26,13 @@ all:
                     31396630326461336138386434343535663932323839373030653139306136636563303234346662
                     6261343138653733350a333136626364613734333637373866396436633630396237393164336262
                     30333466326132643138353338633439646262383561653535613934333330306436
+
+    media_clients:
+      hosts:
+
+    workstation_clients:
+      hosts:
+        local_mac:
 
   # -  "Headless" systems  -
     servers:
