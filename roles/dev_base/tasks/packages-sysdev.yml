@@ -40,6 +40,7 @@
               - clang-tools           # Includes `clang-check`~~, `clang-format` & `clang-tidy`~~
               - clang-tidy
               - clang-format
+              - clangd                # Language server
               - rustc
               - cargo
             # Build tools:
@@ -152,9 +153,9 @@
         - name: '[Darwin]'
           community.general.homebrew:
             name:
-              - llvm                  # TODO: Install only `clang[++]`, `clang-format`, `clang-tidy`
+              - llvm                  # TODO: Install only `clang[++]`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
               - boost
-              - rust                  # TODO: Switch 2 `rustup`
+              - rust                  # TODO: Switch 2 `rustup`   +  install clippy
               - rust-analyzer         # TODO: Install also on Debian
               - ncurses               # Text-based UIs (TUIs)
             # Build tools:
