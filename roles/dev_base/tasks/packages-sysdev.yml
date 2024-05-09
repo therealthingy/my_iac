@@ -10,8 +10,9 @@
               - bison                 # Parser generator
               - flex                  # Generates lexical analyzers
               - shellcheck            # Lint bash scripts
-              - flawfinder            # Finds potential security flaws in C src
+              - bear                  # Generate compilation dbs  (when using e.g., `make`)
               - cppcheck              # Static analysis 4 detecting bugs (undefined behavior & dangerous coding constructs) in C src
+              - flawfinder            # Finds potential security flaws in C src
             # Build tools/Compilers:
               - gcc
               - cmake
