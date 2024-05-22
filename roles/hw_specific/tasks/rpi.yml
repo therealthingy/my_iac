@@ -28,11 +28,13 @@
   block:
     - name: '[Raspberry Pi OS]'
       ansible.builtin.set_fact:
-        firmware_config_file: /boot/config.txt
+        firmware_config_file: '/boot/config.txt'
+        cmdline_txt_path: '/boot/cmdline.txt'
       when: ansible_facts.distribution != 'Ubuntu'
     - name: '[Ubuntu]'
       ansible.builtin.set_fact:
-        firmware_config_file: /boot/firmware/config.txt
+        firmware_config_file: '/boot/firmware/config.txt'
+        cmdline_txt_path: '/boot/firmware/cmdline.txt'
       when: ansible_facts.distribution == 'Ubuntu'
 
 - name: Disable HW
@@ -110,7 +112,16 @@
   become: true
 
 
-
+#
+- name: Optimize scheduler 4 server workloads
+  block:
+# TODO: MV 2 server role  +  check whether target host is in group *-client
+    - include_tasks: rpi-cmdline.yml
+      vars:
+        key: preempt
+        value: none
+        update: true
+  become: true
 
 
 
