@@ -1,6 +1,25 @@
 # Ansible playbook for setting up my machines
 
 
+- FIX mute audio
+
+- GNU Terminal
+
+- GNome Extensions ??
+
+- INSTALLING UI on Ubuntu-Servers installs network-manager, breaking NETWORKING:
+  - UNINSTALL network-manager
+  - Remove duplicate systemd-networkd config files in `/etc/systemd/network`
+  /etc/systemd/network/25-wireless.network
+  [Match]
+  Name=wlp2s0
+
+  [Network]
+  DHCP=ipv4
+
+
+
+
 
 ## TODOs
 * Debian:
