@@ -82,6 +82,7 @@
               - libreadline-dev       # Provides a set of functions for use by applications that allow users to edit command lines as they are typed in
               - libgtest-dev          # Google Test
               - openssl
+              - libssl-dev
               - zlib1g-dev            # (zlib)
               - liblzma-dev           # (lzma)
               - zstd
