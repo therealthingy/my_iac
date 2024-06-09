@@ -47,7 +47,6 @@
           - dir: Development/Editors
             packages:
               - hex-fiend
-              - sublime-text
 
 
 #- name: Install API dev stuff
