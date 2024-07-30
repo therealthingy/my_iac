@@ -138,6 +138,7 @@ autoload -Uz compinit && compinit
 {% if ansible_facts.os_family == 'Darwin' and cpu_arch == 'arm64' %}
 # -- homebrew (due 2 ARM) --
 export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH
+export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/lib"
 {% endif %}
 
 {% if ansible_facts.os_family != 'Darwin' %}
