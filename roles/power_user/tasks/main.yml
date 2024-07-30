@@ -190,7 +190,6 @@
       ansible.builtin.package:
         name:
           - coreutils                     # `shred`
-          - mcrypt                        # ENCs/DECs files/streams
           - openssl
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
