@@ -173,6 +173,15 @@
         name: ubuntu-restricted-extras
       when: ansible_facts.os_family == 'Ubuntu'
 
+    - name: '`clang-format` config'
+      ansible.builtin.template:
+        src: clang-format.j2
+        dest: '/{{ os_homedir }}/{{ user.name }}/.clang-format'
+        owner: '{{ user.name }}'
+        group: '{{ user.group_name }}'
+        mode: 0644
+      become: false
+
     - name: Install gef (4 `gdb`)
       block:
         - name: gef - Check whether already installed     # TODO: Always update if not latest version

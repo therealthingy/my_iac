@@ -1,0 +1,53 @@
+---
+# {{ ansible_managed }}
+{# REFERENCEs:
+    - https://clang-format-configurator.site/
+    - https://clang.llvm.org/docs/ClangFormatStyleOptions.html #}
+BasedOnStyle: LLVM
+
+ColumnLimit: 120
+
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortBlocksOnASingleLine: Empty
+# TODO: Empty loop body on single line, e.g., while (xx) { }
+#AllowShortLoopsOnASingleLine: true
+
+IndentWidth: 4
+IndentPPDirectives: AfterHash
+
+SpacesBeforeTrailingComments: 4
+
+# TODO: one declaration per line
+#       E.G.: long a = 3, b = 6;  << each declarator should be in own line
+
+#TODO: DEPRECATED  (in clang-format 19:   BreakTemplateDeclarations: Yes)
+AlwaysBreakTemplateDeclarations: Yes
+
+AlignArrayOfStructures: Right
+
+AlignConsecutiveBitFields:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+
+#AlignConsecutiveAssignments:
+#  Enabled: true
+#  AcrossEmptyLines: true
+#  AcrossComments: true
+
+#AlignConsecutiveDeclarations:
+#  Enabled: true
+#  AcrossEmptyLines: true
+#  AcrossComments: true
+
+AlignConsecutiveMacros:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+
+AlignEscapedNewlines: Left
+
+# TODO: AlignEscapedNewlines
+# TODO: AlignTrailingComments --  OverEmptyLines
+
+# TODO: BinPackArguments, BinPackParameters
