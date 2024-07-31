@@ -142,9 +142,6 @@
               with_items: '{{ blocked_pkgs }}'
               loop_control:
                 loop_var: package_name
-            -  ansible.builtin.debug:
-                msg:
-                  apt_pin_packages={{ apt_pin_packages }},
             - name: Pass 2 template
               ansible.builtin.template:
                 src: linux/apt-pin.pref.j2
