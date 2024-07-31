@@ -16,7 +16,9 @@
               - ublock-origin
               - consent-o-matic
             # Privacy friendly settings reference: https://github.com/arkenfox/user.js/blob/master/user.js
-            # TODO: Rmv 'Import bookmarks from another browser to Firefox' from bookmarks bar  (`browser.uiCustomization.state` -> ""PersonalToolbar":["import-button","personal-bookmarks"]")
+            # TODOs:
+            #   - Rmv 'Import bookmarks from another browser to Firefox' from bookmarks bar  (`browser.uiCustomization.state` -> ""PersonalToolbar":["import-button","personal-bookmarks"]")
+            #   - DEFAULT SEARCH ENGINE  (https://superuser.com/questions/1372679/how-to-set-duckduckgo-as-default-search-engine-using-user-js)
             preferences:
               browser.aboutConfig.showWarning: false
               browser.discovery.enabled: false                                             # Disable "Recommend extensions / features as you browse"
