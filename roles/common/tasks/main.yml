@@ -112,7 +112,7 @@
 - name: '[Debian/Ubuntu]'
   block:
     # See https://vitux.com/how-to-disable-enable-automatic-error-reporting-in-ubuntu/
-    - name: '[Ubuntu] Post packages - Uninstall Telemetry/error reporting services'
+    - name: '[Ubuntu] Post packages - Uninstall Telemetry/error reporting/misc. services'
       block:
         - name: Set package names
           ansible.builtin.set_fact:
@@ -148,7 +148,7 @@
             - name: Pass 2 template
               ansible.builtin.template:
                 src: linux/apt-pin.pref.j2
-                dest: /etc/apt/preferences.d/ubuntu-telemetry-block.pref
+                dest: /etc/apt/preferences.d/ubuntu-block.pref
                 mode: 0644
       when: ansible_facts.distribution == 'Ubuntu'
       become: true
