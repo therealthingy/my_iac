@@ -53,19 +53,6 @@
               changed_when: false
               register: result_rpi
 
-            - name: '[Ubuntu] Check whether NetworkManager is used'        # Ubuntu Desktop = NetworkManager, Server = systemd-networkd
-              block:
-                - name: Check for nmcli
-                  ansible.builtin.command: which nmcli
-                  failed_when: false
-                  changed_when: false
-                  check_mode: false
-                  register: result_ubuntu_nmcli
-                - name: Set networking service name
-                  ansible.builtin.set_fact:
-                    ubuntu_networking_service: "{{ 'NetworkManager' if result_ubuntu_nmcli == 0 else 'systemd-networkd' }}"
-              when: ansible_facts.distribution == 'Ubuntu'
-
             - name: Determine whether running in hypervisor
               block:
                 - name: Install required tools (4 checking)
@@ -90,7 +77,6 @@
             deb_cpu_arch: '{{ result_deb_cpu_architecture.stdout }}'
             kernel_release: '{{ result_kernel_release.stdout }}'
             hw_is_rpi: '{{ True if result_rpi.rc == 0 else False }}'
-            networking_service: "{{ 'networking' if ansible_facts.distribution == 'Debian' else ubuntu_networking_service }}"
             hypervisor: '{{ "vmware" if result_smbios.rc == 0 else None }}'
           when: ansible_facts.os_family != 'Darwin'
         - name: '[Darwin / Debian/Ubuntu]'
@@ -116,5 +102,4 @@
 ##      www_user={{ www_user }},
 ##      kernel_release={{ kernel_release }},
 ##      docker_gid={{ docker_gid }},
-##      networking_service={{ networking_service }},
 ##      hypervisor={{ hypervisor }}

@@ -13,6 +13,6 @@
 
 - name: restart networking daemon
   ansible.builtin.service:
-    name: '{{ networking_service }}'
+    name: systemd-networkd
     state: restarted
   become: true

@@ -117,10 +117,11 @@
         - name: Set package names
           ansible.builtin.set_fact:
             blocked_pkgs:
+              - network-manager   # Dep of `task-gnome-desktop`  => Will break Wi-Fi settings
               - apport
               - ubuntu-report
               - ubuntu-advantage-tools
-              - whoopsie   # (NOTE: `whoopsie-preferences` is a dependency of `gnome-control-center` (Settings app))
+              - whoopsie   # (NOTE: `whoopsie-preferences` is a dep of `gnome-control-center` (Settings app))
 
         - name: Uninstall
           ansible.builtin.apt:
