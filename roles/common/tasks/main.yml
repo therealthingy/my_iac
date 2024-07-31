@@ -134,10 +134,17 @@
 
         - name: Block packages
           block:
+            - ansible.builtin.set_fact:
+                apt_pin_packages: []   # TODO: ` | default([])` doesn't work ??!
             - name: Construct list
               ansible.builtin.set_fact:
-                apt_pin_packages: "{{ packages|default([]) + [{'name': item, 'priority': -1}] }}"
-              with_items:  '{{ blocked_pkgs }}'
+                apt_pin_packages: "{{ apt_pin_packages + [{'name': package_name, 'priority': -1}] }}"
+              with_items: '{{ blocked_pkgs }}'
+              loop_control:
+                loop_var: package_name
+            -  ansible.builtin.debug:
+                msg:
+                  apt_pin_packages={{ apt_pin_packages }},
             - name: Pass 2 template
               ansible.builtin.template:
                 src: linux/apt-pin.pref.j2
