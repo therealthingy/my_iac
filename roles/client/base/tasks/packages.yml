@@ -3,24 +3,27 @@
 # ---------------------------------------------------------
 - name: Cleanup
   block:
+    # ( Deps of `task-gnome-desktop` )
     - name: '[Debian/Ubuntu] Uninstall unnecessary apt packages (mostly Gnome stuff)'
       ansible.builtin.apt:
         name:
+          - gnome-shell-extension-prefs
+          - ubuntu-advantage-desktop-daemon
         # --  Games  --
           - aisleriot
+          - gnome-2048
+          - gnome-chess
           - gnome-mahjongg
           - gnome-mines
           - gnome-sudoku
-          - gnome-2048
-          - gnome-chess
+          - gnome-klotski
+          - gnome-robots
           - five-or-more
           - four-in-a-row
           - hitori
-          - gnome-klotski
           - lightsoff
           - gnome-nibbles
           - quadrapassel
-          - gnome-robots
           - swell-foop
           - iagno
           - tali
@@ -44,13 +47,16 @@
           - simple-scan
           - cheese                    # NOTE: 'cheese-common', 'libcheese-gtk25' & 'libcheese8' are required by the Settings app (package 'unity-control-center')
           - 'shotwell*'
+          - zutty                     # Useless terminal emulator
         state: absent
         purge: true
         clean: true
         autoremove: true
-    - name: '[Debian/Ubuntu] (Re)Install nautilus'        # Gets rmved mysteriously …
+    - name: '[Debian/Ubuntu] (Re)Install missing stuff'
       ansible.builtin.apt:
-        name: nautilus
+        name:
+          - nautilus                 # Gets rmved mysteriously …
+          - gnome-terminal
         state: present
   become: true
   when: ansible_facts.os_family == 'Debian'

@@ -7,17 +7,10 @@
         state: present
       become: true
 
-    - name: '[Ubuntu] Replace GNOME extension manager'
+    - name: '[Ubuntu] Install GNOME extension manager'
       ansible.builtin.apt:
-        name: '{{ ui_shell_ext.package }}'
-        state: '{{ ui_shell_ext.state }}'
-      loop_control:
-        loop_var: ui_shell_ext
-      with_items:
-        - package: gnome-shell-extension-manager
-          state: present
-        - package: gnome-shell-extension-prefs
-          state: absent
+        name: gnome-shell-extension-manager
+        state: present
       when: ansible_facts.distribution == 'Ubuntu'
       become: true
 

@@ -17,8 +17,8 @@
         - name: Install
           ansible.builtin.apt:
             name:
-              - gdm3            # Display Manager
               - ubuntu-desktop
+              - task-gnome-desktop
               # TODO: vanilla-gnome-desktop vanilla-gnome-default-settings
             state: present
           when: "'ubuntu-desktop' in ansible_facts.packages"
