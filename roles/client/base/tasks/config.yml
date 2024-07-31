@@ -54,7 +54,6 @@
         - name: "Run 'petermosmans.customize-gnome' role"
           ansible.builtin.include_role:
             name: petermosmans.customize-gnome
-      when: False             # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$        TODO: DOESN'T WORK
 
     # HOW2: gesettings tool  (e.g., `gsettings get org.gnome.desktop.input-sources sources`); example: https://gist.github.com/carlwgeorge/c560a532b6929f49d9c0df52f75a68ae
     - name: GNOME
