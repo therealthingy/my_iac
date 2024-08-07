@@ -46,6 +46,7 @@
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
+          - irqbalance     # Daemon to balance interrupts for SMP systems
         # Administration:
           - sudo
           - openssh-client
