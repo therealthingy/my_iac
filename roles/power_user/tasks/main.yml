@@ -214,7 +214,7 @@
             - little-snitch
 #            - tunnelblick
 
-    - name: '[Darwin / Debian/Ubuntu] hblock'
+    - name: '[Darwin] hblock'
       block:
         - name: Install
           community.general.homebrew:
@@ -259,7 +259,9 @@
                     user: root
                     job: '{{ result_hblock.stdout }} -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list -q'
           become: true
-      when: 'hypervisor is not defined or not hypervisor'
+      when:
+        - 'hypervisor is not defined or not hypervisor'
+        - ansible_facts.os_family == 'Darwin'               # TODO: Add Ubuntu
 
     - name: '[Darwin]'
       block:
