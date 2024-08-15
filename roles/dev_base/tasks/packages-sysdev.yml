@@ -206,48 +206,49 @@
 
 
 
-- name: Install Eclipse Trace Compass
-  block:
-    - name: Determine stuff
-      block:
-        - name: '[Darwin]'
-          ansible.builtin.set_fact:
-            java_package: openjdk
-            tracecompass_package_os: macosx.cocoa
-            tracecompass_package_arch: '{{ "aarch64" if cpu_arch == "arm64" else cpu_arch }}'
-            tracecompass_install_path: /Applications/Development/
-            tracecompass_install_become: false
-          when: ansible_facts.os_family == 'Darwin'
-        - name: '[Ubuntu/Debian]'
-          ansible.builtin.set_fact:
-            java_package: openjdk-17-jdk
-            tracecompass_package_os: linux.gtk
-            tracecompass_package_arch: '{{ cpu_arch }}'
-            tracecompass_install_path: /opt/
-            tracecompass_install_become: true
-          when: ansible_facts.os_family != 'Darwin'
-    - name: Install Java
-      ansible.builtin.package:
-        name: '{{ java_package }}'
-      become: '{{ package_manager_become }}'
-    - name: Check if already installed
-      ansible.builtin.stat:
-        path: '{{ tracecompass_install_path }}/trace-compass'
-      register: result_tracecompass_exists
-      become: false
-    - name: Install it
-      block:
-        - name: "Download & 'install'"
-          ansible.builtin.unarchive:
-            src: 'https://www.eclipse.org/downloads/download.php?file=/tracecompass/stable/rcp/trace-compass-{{ tracecompass_version }}-{{ tracecompass_package_os }}.{{ tracecompass_package_arch }}.tar.gz'   # TODO: ALWAYS LATEST VERSION
-            dest: '{{ tracecompass_install_path }}'
-            remote_src: yes
-          become: '{{ tracecompass_install_become }}'
-        # TODO: Create .desktop file on Gnome
-      when: result_tracecompass_exists.stat.exists == false
-  when:
-    - not ansible_facts.os_family == 'Darwin'     # DON'T install on Darwin atm
-    - not (ansible_facts.os_family != 'Darwin' and ansible_architecture != 'x86_64')  # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED
+# TODO: …
+#- name: Install Eclipse Trace Compass
+#  block:
+#    - name: Determine stuff
+#      block:
+#        - name: '[Darwin]'
+#          ansible.builtin.set_fact:
+#            java_package: openjdk
+#            tracecompass_package_os: macosx.cocoa
+#            tracecompass_package_arch: '{{ "aarch64" if cpu_arch == "arm64" else cpu_arch }}'
+#            tracecompass_install_path: /Applications/Development/
+#            tracecompass_install_become: false
+#          when: ansible_facts.os_family == 'Darwin'
+#        - name: '[Ubuntu/Debian]'
+#          ansible.builtin.set_fact:
+#            java_package: openjdk-17-jdk
+#            tracecompass_package_os: linux.gtk
+#            tracecompass_package_arch: '{{ cpu_arch }}'
+#            tracecompass_install_path: /opt/
+#            tracecompass_install_become: true
+#          when: ansible_facts.os_family != 'Darwin'
+#    - name: Install Java
+#      ansible.builtin.package:
+#        name: '{{ java_package }}'
+#      become: '{{ package_manager_become }}'
+#    - name: Check if already installed
+#      ansible.builtin.stat:
+#        path: '{{ tracecompass_install_path }}/trace-compass'
+#      register: result_tracecompass_exists
+#      become: false
+#    - name: Install it
+#      block:
+#        - name: "Download & 'install'"
+#          ansible.builtin.unarchive:
+#            src: 'https://www.eclipse.org/downloads/download.php?file=/tracecompass/stable/rcp/trace-compass-{{ tracecompass_version }}-{{ tracecompass_package_os }}.{{ tracecompass_package_arch }}.tar.gz'   # TODO: ALWAYS LATEST VERSION
+#            dest: '{{ tracecompass_install_path }}'
+#            remote_src: yes
+#          become: '{{ tracecompass_install_become }}'
+#        # TODO: Create .desktop file on Gnome
+#      when: result_tracecompass_exists.stat.exists == false
+#  when:
+#    - not ansible_facts.os_family == 'Darwin'     # DON'T install on Darwin atm
+#    - not (ansible_facts.os_family != 'Darwin' and ansible_architecture != 'x86_64')  # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED
 
 
 
