@@ -173,11 +173,12 @@ path-add "/opt/homebrew/opt/llvm/bin" "after"
 {%   endif %}
 #path-add "/opt/homebrew/opt/sphinx-doc/bin" "before"
 {% endif %}
+{% if 'dev_clients' in group_names or 'dev_servers' in group_names %}
+path-add "$HOME/.cargo/bin" "after"
+{% endif %}
 
 {% if 'dev_clients' in group_names or 'dev_servers' in group_names   or
       'workstation_clients' in group_names %}
 path-add "$HOME/bin" "before"
-{%   if ansible_facts.os_family == 'Darwin' %}
 #path-add "$HOME/.npm-global/bin" "before"
-{%   endif %}
 {% endif %}
