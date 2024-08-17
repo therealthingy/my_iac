@@ -186,6 +186,15 @@
         mode: 0644
       become: false
 
+    - name: Ensure cargo bin dir exists    # (2 avoid shell errors)
+      ansible.builtin.file:
+        path: '/{{ os_homedir }}/{{ user.name }}/.cargo/bin/'
+        owner: '{{ user.name }}'
+        group: '{{user.group_name}}'
+        state: directory
+        mode: 0775
+      become: false
+
     - name: Install gef (4 `gdb`)
       block:
         - name: gef - Check whether already installed     # TODO: Always update if not latest version
