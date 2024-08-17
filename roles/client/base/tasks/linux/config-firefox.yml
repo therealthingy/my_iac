@@ -128,13 +128,13 @@
 - name: 'Copy default suggested bookmarks  (TODO: AUTO IMPORT INTO FF  !!)'
   ansible.builtin.copy:
     src: firefox-dev_bookmarks.json
-    dest: '/home/{{ user.name }}/.firefox-default_dev_bookmarks.json'
+    dest: '/{{ os_homedir }}/{{ user.name }}/.firefox-default_dev_bookmarks.json'
   become: false
 
 
 - name: Autostart Firefox on login
   ansible.builtin.file:
     src: /usr/share/applications/firefox.desktop
-    dest: '/home/{{ user.name }}/.config/autostart/firefox.desktop'
+    dest: '/{{ os_homedir }}/{{ user.name }}/.config/autostart/firefox.desktop'
     state: link
   become: false

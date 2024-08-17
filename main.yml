@@ -77,8 +77,8 @@
 - hosts: home_servers
   vars:
     docker_container:
-      data_basedir: /home/{{ user.name }}/homeserver/data/
-      config_basedir: /home/{{ user.name }}/homeserver/config/
+      data_basedir: /{{ os_homedir }}/{{ user.name }}/homeserver/data/
+      config_basedir: /{{ os_homedir }}/{{ user.name }}/homeserver/config/
   roles:
   # -- Docker containers --
     - role: server/3rd-party/internet-pi

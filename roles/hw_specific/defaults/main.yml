@@ -1,5 +1,5 @@
 ---
-rpi_fan_pwm_container_dir: /home/{{ user.name }}/rpi_fan_controller
+rpi_fan_pwm_container_dir: /{{ os_homedir }}/{{ user.name }}/rpi_fan_controller
 
 
 vm_shares_setup: true

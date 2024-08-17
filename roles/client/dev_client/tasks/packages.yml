@@ -125,7 +125,7 @@
       block:
         - name: Create dir
           ansible.builtin.file:
-            path: '/Users/{{ user.name }}/.config/iterm2'
+            path: '/{{ os_homedir }}/{{ user.name }}/.config/iterm2'
             state: directory
             owner: '{{ user.name }}'
             group: '{{ user.group_name }}'
@@ -133,7 +133,7 @@
         - name: Copy config
           ansible.builtin.copy:
             src: apps/com.googlecode.iterm2.plist
-            dest: '/Users/{{ user.name }}/.config/iterm2/com.googlecode.iterm2.plist'
+            dest: '/{{ os_homedir }}/{{ user.name }}/.config/iterm2/com.googlecode.iterm2.plist'
             mode: 0755
         - name: Set config
           community.general.osx_defaults:
@@ -144,7 +144,7 @@
             state: present
           with_items:
             - key: 'PrefsCustomFolder'
-              value: '/Users/{{ user.name }}/.config/iterm2/'
+              value: '/{{ os_homedir }}/{{ user.name }}/.config/iterm2/'
               type: 'string'
             - key: 'LoadPrefsFromCustomFolder'
               value: 'true'

@@ -17,7 +17,7 @@
             group: '{{ user.group_name }}'
             mode: 0755
         - name: Hide dir
-          ansible.builtin.shell: chflags hidden '/Users/{{ user.name }}/bin'
+          ansible.builtin.shell: chflags hidden '/{{ os_homedir }}/{{ user.name }}/bin'
           changed_when: false       # !!!!!!!!!!!!!!!!                            TODO: REVISE
           when: ansible_facts.os_family == 'Darwin'
     - name: Copy scripts

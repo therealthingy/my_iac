@@ -315,7 +315,7 @@
   block:
     - name: Check whether tasks should be performed
       ansible.builtin.stat:
-        path: '/home/{{ user.name }}/.ansible_first_run_completed'
+        path: '/{{ os_homedir }}/{{ user.name }}/.ansible_first_run_completed'
       register: first_run_completed
 
     - name: Perform ACTUAL tasks
@@ -349,7 +349,7 @@
 
     - name: Store initial-run completed
       ansible.builtin.file:
-        path: '/home/{{ user.name }}/.ansible_first_run_completed'
+        path: '/{{ os_homedir }}/{{ user.name }}/.ansible_first_run_completed'
         state: touch
       when: first_run_completed.stat.exists == False
   become: false
@@ -459,7 +459,7 @@
   # --  Screen  --
 #    - domain: 'com.apple.screencapture'              # Save screenshots to Downloads folder
 #      key: 'location'
-#      value: '/Users/{{ user.name }}/Downloads'
+#      value: '/{{ os_homedir }}/{{ user.name }}/Downloads'
 #      type: 'string'
 #    - domain: 'com.apple.screencapture'              # Save screenshots in PNG format
 #      key: 'type'
@@ -476,7 +476,7 @@
       type: 'string'
     - domain: 'com.apple.finder'
       key: 'NewWindowTargetPath'
-      value: 'file:///Users/{{ user.name }}/Downloads/'
+      value: 'file:///{{ os_homedir }}/{{ user.name }}/Downloads/'
       type: 'string'
   # Show icons for hard drives, servers, and removable media on the desktop
     - domain: 'com.apple.finder'

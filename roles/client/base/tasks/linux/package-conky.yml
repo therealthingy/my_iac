@@ -9,7 +9,7 @@
 - name: conky - Copy config file
   ansible.builtin.template:
     src: linux/conkyrc.j2
-    dest: '/home/{{ user.name }}/.conkyrc'
+    dest: '/{{ os_homedir }}/{{ user.name }}/.conkyrc'
     owner: '{{ user.name }}'
     group: '{{ user.group_name }}'
     mode: 0644
@@ -18,7 +18,7 @@
 
 - name: conky - Create autostart dir
   ansible.builtin.file:
-    path: '/home/{{ user.name }}/.config/autostart/'
+    path: '/{{ os_homedir }}/{{ user.name }}/.config/autostart/'
     state: directory
     owner: '{{ user.name }}'
     group: '{{ user.group_name }}'
@@ -28,7 +28,7 @@
 - name: conky - Create autostart entry
   ansible.builtin.template:
     src: linux/conky.desktop.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
-    dest: '/home/{{ user.name }}/.config/autostart/conky.desktop'
+    dest: '/{{ os_homedir }}/{{ user.name }}/.config/autostart/conky.desktop'
     owner: '{{ user.name }}'
     group: '{{ user.group_name }}'
     mode: 0644

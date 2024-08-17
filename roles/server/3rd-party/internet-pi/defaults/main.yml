@@ -2,7 +2,7 @@
 # SEE: https://github.com/geerlingguy/internet-pi/blob/master/example.config.yml
 container_name: inetstat
 
-config_dir: /home/{{ user.name }}/monitoring/
+config_dir: /{{ os_homedir }}/{{ user.name }}/monitoring/
 
 domain_name_enable: false
 pihole_enable: false

@@ -190,7 +190,7 @@
       block:
         - name: gef - Check whether already installed     # TODO: Always update if not latest version
           ansible.builtin.find:
-            paths: '/home/{{ user.name }}/'
+            paths: '/{{ os_homedir }}/{{ user.name }}/'
             file_type: file
             use_regex: true
             hidden: true
