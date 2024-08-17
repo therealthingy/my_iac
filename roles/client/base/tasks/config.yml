@@ -258,7 +258,7 @@
     - name: Set installed apps as default
       ansible.builtin.template:
         src: linux/gnome-registered_default_apps.list.j2
-        dest: '/home/{{ user.name }}/.config/mimeapps.list'
+        dest: '/{{ os_homedir }}/{{ user.name }}/.config/mimeapps.list'
       become: false
   when:
     - ansible_facts.os_family != 'Darwin'
