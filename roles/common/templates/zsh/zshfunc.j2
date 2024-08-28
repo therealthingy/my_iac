@@ -263,18 +263,13 @@ if command -v ssh-keygen > /dev/null; then
         readonly GLOBAL_SSH_KEYS_PATH="$HOME/.ssh"
         readonly SSH_CONFIG_FILE="$GLOBAL_SSH_KEYS_PATH/config"
 
-        local ssh_comment=''
         local ssh_filename=''
-        local ssh_username=''
-        local ssh_host=''
-
-        local add_identity_file='y'
-        local export_file_path=/dev/null
-
-        read "add_identity_file?Store keys in $SSH_CONFIG_FILE and add entry in config [Y/n]? "
         vared -p 'Enter filename for ssh-key pair: ' -c ssh_filename
 
-        if [ "$add_identity_file" = "n" ]; then
+        local q_add_identity_file='y'
+        read "q_add_identity_file?Store keys in $SSH_CONFIG_FILE and add entry in config [Y/n]? "
+        local export_file_path=/dev/null
+        if [ "$q_add_identity_file" = "n" ]; then
             export_file_path=$(pwd)/$ssh_filename
         else
             export_file_path=$GLOBAL_SSH_KEYS_PATH/$ssh_filename
@@ -286,17 +281,28 @@ if command -v ssh-keygen > /dev/null; then
             chmod 644 $SSH_CONFIG_FILE $GLOBAL_SSH_KEYS_PATH/authorized_keys $GLOBAL_SSH_KEYS_PATH/known_hosts
         fi
 
+        local ssh_comment=''
         vared -p 'Enter comment for ssh-key pair: ' -c ssh_comment
         ssh-keygen -t ed25519 -C $ssh_comment -f $export_file_path
 
-        if [ "$add_identity_file" != "n" ]; then
+        if [ "$q_add_identity_file" != "n" ]; then
             chmod 600 $export_file_path
             chmod 644 $export_file_path.pub
 
+            local ssh_username=''
             vared -p 'Enter username for config file: ' -c ssh_username
+            local ssh_host=''
             vared -p 'Enter host for config file: ' -c ssh_host
 
-            printf "\n\nHost $ssh_host\n  User $ssh_username\n  IdentityFile $GLOBAL_SSH_KEYS_PATH/$ssh_filename" >> $SSH_CONFIG_FILE
+            local keyring_entry='n'
+            read "keyring_entry?Shall we store pw in keyring (if encrypted) [y/N]? "
+            echo "XXXXXXXXXX:     $keyring_entry"
+            if [ "$keyring_entry" != "y" ]; then
+                keyring_entry=""
+            else
+                keyring_entry="  UseKeychain yes\n  AddKeysToAgent yes\n"
+            fi
+            printf "\n\nHost $ssh_host\n$keyring_entry  User $ssh_username\n  IdentityFile $GLOBAL_SSH_KEYS_PATH/$ssh_filename" >> $SSH_CONFIG_FILE
             echo "Added entry for ssh-key pair in config."
         fi
 
