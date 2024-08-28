@@ -29,10 +29,10 @@
   when: ansible_facts.os_family != 'Darwin'
 
 
-# Check result:
-#   GNU/Linux `sudo dpkg-reconfigure tzdata`
-#   macOS: `sudo systemsetup -gettimezone`
 - name: "Set timezone to '{{ timezone }}'"
+  # ( NOTE: VERIFY: )
+  #   GNU/Linux `sudo dpkg-reconfigure tzdata`
+  #   macOS: `sudo systemsetup -gettimezone`
   community.general.timezone:
     name: '{{ timezone }}'
   become: true
