@@ -296,13 +296,18 @@ if command -v ssh-keygen > /dev/null; then
 
             local keyring_entry='n'
             read "keyring_entry?Shall we store pw in keyring (if encrypted) [y/N]? "
-            echo "XXXXXXXXXX:     $keyring_entry"
             if [ "$keyring_entry" != "y" ]; then
                 keyring_entry=""
             else
+                # NOTE: - AddKeysToAgent = Automatically "do" ssh-add
+{% if ansible_facts.os_family == 'Darwin' %}
+                #       - UseKeychain = Store passphrases in the macOS keychain
                 keyring_entry="  UseKeychain yes\n  AddKeysToAgent yes\n"
+{% else %}
+                keyring_entry="  AddKeysToAgent yes\n"
+{% endif %}
             fi
-            printf "\n\nHost $ssh_host\n$keyring_entry  User $ssh_username\n  IdentityFile $GLOBAL_SSH_KEYS_PATH/$ssh_filename" >> $SSH_CONFIG_FILE
+            printf "\nHost $ssh_host\n$keyring_entry  User $ssh_username\n  IdentityFile $GLOBAL_SSH_KEYS_PATH/$ssh_filename\n" >> $SSH_CONFIG_FILE
             echo "Added entry for ssh-key pair in config."
         fi
 
