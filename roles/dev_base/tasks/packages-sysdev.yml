@@ -19,7 +19,6 @@
               - autoconf              # Tool 4 producing configure script 4 building, installing & packing SW
               - automake              # Automates parts of the compilation process
               - pkg-config
-              - rustfmt               # NOTE: Already "recommended" by `cargo` package
             # Assemblers:
               - nasm
             # Debuggers & Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
@@ -50,8 +49,6 @@
               - clang-tidy
               - clang-format
               - clangd                # Language server
-              - rustc
-              - cargo
             # Build tools:
               - cmake-curses-gui
               - autotools-dev
@@ -166,8 +163,6 @@
             name:
               - llvm                  # TODO: Install only `clang[++]`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
               - boost
-              - rust                  # TODO: Switch 2 `rustup`   +  install clippy
-              - rust-analyzer         # TODO: Install also on Debian
               - ncurses               # Text-based UIs (TUIs)
             # Build tools:
               - ninja
@@ -191,13 +186,40 @@
         mode: 0644
       become: false
 
-    - name: Ensure cargo bin dir exists    # (2 avoid shell errors)
-      ansible.builtin.file:
-        path: '/{{ os_homedir }}/{{ user.name }}/.cargo/bin/'
-        owner: '{{ user.name }}'
-        group: '{{user.group_name}}'
-        state: directory
-        mode: 0775
+    # TODO: Switch 2 `rustup`   +  install clippy
+    - name: Rust toolchain
+      block:
+        - name: Ensure cargo bin dir exists    # (2 avoid shell errors)
+          ansible.builtin.file:
+            path: '{{ os_homedir }}/{{ user.name }}/.cargo/bin/'
+            owner: '{{ user.name }}'
+            group: '{{user.group_name}}'
+            state: directory
+            mode: 0775
+        - name: "Check installed via `rustup`"
+          ansible.builtin.command: 'which {{ os_homedir }}/{{ user.name }}/.cargo/bin/rustup'
+          failed_when: false
+          changed_when: false
+          check_mode: false
+          register: result_rustup_command
+        - name: Install
+          block:
+            - name: '[Debian/Ubuntu]'
+              ansible.builtin.apt:
+                name:
+                  - rustc
+                  - cargo
+                  - rustfmt               # NOTE: Already "recommended" by `cargo` package
+              when: ansible_facts.os_family != 'Darwin'
+            - name: '[Darwin]'
+              community.general.homebrew:
+                name:
+                  - rust
+                  - rust-analyzer         # TODO: Install also on Debian
+                  - rustfmt
+              become: false
+              when: ansible_facts.os_family == 'Darwin'
+          when: result_rustup_command.rc == 1
       become: false
 
     - name: Install gef (4 `gdb`)
