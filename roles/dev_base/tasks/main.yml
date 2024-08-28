@@ -58,6 +58,11 @@
     - name: sendemail.transferencoding
       # Prevent Content-Transfer-Encoding from being set to quoted-printable
       value: "8bit"
+    #- name: sendemail.smtpPass // value: PASSWORD
+    - name: credential.helper
+      # ( NOTE: Store pws in `~/.git-credentials` )
+      value: "store"
+    # TODO: `git credential-store store`
 
 #    - name: web.browser
 #      value: brave-browser

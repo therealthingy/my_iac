@@ -41,6 +41,8 @@
         - name: '[Debian/Ubuntu]'
           ansible.builtin.apt:
             name:
+            # Git:
+              - git-email    # ( optional )
             # Compilers, static analysis tools, …:
               - manpages-dev
               - build-essential       # Includes GDB, g++/GNU compiler collection, & some tools (`make`) & libraries required 2 compile a program
