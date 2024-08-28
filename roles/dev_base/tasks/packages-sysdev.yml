@@ -34,6 +34,14 @@
         - name: '[Debian/Ubuntu]'
           ansible.builtin.apt:
             name:
+            #  - LKM dev:
+              - "linux-headers-{{ ansible_kernel }}"
+              - "linux-tools-{{ ansible_kernel }}"
+          ignore_errors: true                       # In case it's not a distro-kernel …
+          when: ansible_facts.os_family != 'Darwin'
+        - name: '[Debian/Ubuntu]'
+          ansible.builtin.apt:
+            name:
             # Compilers, static analysis tools, …:
               - manpages-dev
               - build-essential       # Includes GDB, g++/GNU compiler collection, & some tools (`make`) & libraries required 2 compile a program
@@ -101,9 +109,6 @@
               - checksec              # Used 2 check properties of executables (like PIE, RELRO, PaX, Stack Canaries, PIE, RPATH, RUNPATH & compiler fortification) & kernel security options (like  GRSecurity & SELinux)
               - yad                   # Tool 4 creating graphical dialogs from shell scripts
             # Kernel dev -- "missing stuff":
-            #  - LKM dev:
-              - "linux-headers-{{ ansible_kernel }}"
-              - "linux-tools-{{ ansible_kernel }}"
             #  - Deps:
               - bc                    # Bench calculator (uses own algebraic language)
               - debhelper             # 4 creating `deb`ian packages (`bindeb-pkg` target)
