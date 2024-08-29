@@ -189,6 +189,11 @@
       * (1.2.) Add `HostNamne <hostname>`
       * (1.3.) Copy new key to new system: **`ssh-copy-id -i ~/.ssh/<identity-file>.pub <user>@<ip>`**
       * (1.4.) IF SSH PORT SHALL BE CHANGED: Add AFTER initial ansible run: `Port 2233`
+    * UBUNTU SERVER -- extend llvm (if formatted incorrect):
+      ```bash
+      sudo  lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+      sudo resize2fs /dev/mapper/ubuntu–vg-ubuntu–lv
+      ```
 
 ### RUN Playbook
 * Cache SSH passphrase: `eval `ssh-agent` && ssh-add ~/.ssh/<cert-file>`
