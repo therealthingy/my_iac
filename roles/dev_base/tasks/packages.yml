@@ -8,13 +8,14 @@
     loop_var: included_dev_server_task
 
 
+
 - name: Install misc tools
   block:
     - name: '[Darwin / Debian/Ubuntu]'
       ansible.builtin.package:
         name:
+          - graphviz              # TODO: Apparently required by kcachegrind  ??
           - flashrom
-          - graphviz
           - jq
           - httpie                   # Human-friendly HTTP client for the API era
       become: '{{ package_manager_become }}'
