@@ -15,6 +15,7 @@
               - flawfinder            # Finds potential security flaws in C src
             # Build tools/Compilers:
               - gcc
+              - llvm                  # TODO: Install only `clang[++]`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
               - cmake
               - autoconf              # Tool 4 producing configure script 4 building, installing & packing SW
               - automake              # Automates parts of the compilation process
@@ -23,11 +24,11 @@
               - nasm
             # Debuggers & Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
               - binutils              # Contains `readelf`, `gprof`, …
+              - binwalk
+#              - poke                  # Extensible editor 4 structured binary data
               - cloc                  # Count loc
               - doxygen               # Generates documentation from annotated C++ sources
               - sphinx-doc
-              - binwalk
-#              - poke                  # Extensible editor 4 structured binary data
             state: present
           become: '{{ package_manager_become }}'
         - name: '[Debian/Ubuntu]'
@@ -36,6 +37,8 @@
             #  - LKM dev:
               - "linux-headers-{{ ansible_kernel }}"
               - "linux-tools-{{ ansible_kernel }}"
+#              - linux-tools-generic   # Kernel modules required 4 `perf`
+#              - linux-tools-common    # `perf`  (Performance analysis tools for Linux)
           ignore_errors: true                       # In case it's not a distro-kernel …
           when: ansible_facts.os_family != 'Darwin'
         - name: '[Debian/Ubuntu]'
@@ -57,6 +60,7 @@
               - ninja-build
             # Debuggers & Tools  (NOTE: binutils, util-linux & gdb are most likely already installed):
               - gdb
+              - lldb
               - bpftrace
               - strace
               - ltrace
@@ -114,11 +118,9 @@
               - cscope                # Interactive, text screen based source browsing tool
               - indent                # Format C code 2 follow kernel "styleguide"
             #  - Rust (LKM) deps:
+              - llvm-dev
               - libclang-dev
               - lld
-              - llvm
-              - llvm-dev
-              - lldb
             # - "Convenience" tools:
               - exuberant-ctags       # Parses code, producing an index mapping the names of significant entities
             # - Static analysis:
@@ -139,7 +141,6 @@
             # - Misc.
               - man-db                # ???????
               - kmod                  # 4 controlling Linux Kernel modules
-              - asciidoc
               - gnuplot
               - sysfsutils            # Sysfs query tool & boot-time setup   ????
               - bsdextrautils         # BSD utilities like `col`, `colcrt`, `colrm`, `column`, `hd`, `hexdump`, `look`, `ul` & `write`
@@ -148,24 +149,15 @@
               - virt-what             # Script which detects whether it's running in a VM
             state: present
           when: ansible_facts.os_family != 'Darwin'
-        - name: '[Debian/Ubuntu amd64]'
-          ansible.builtin.apt:
-            name:
-              - gcc-multilib          # Useful 4 cross-compiling
-            state: present
-          when: ansible_architecture == 'x86_64' and ansible_facts.os_family != 'Darwin'
         - name: '[Ubuntu]'
           ansible.builtin.apt:
             name:
               - glibc-tools                   # Contains ’libSigSegv’ library (SEE: https://lemire.me/blog/2023/05/01/under-linux-libsegfault-and-addr2line-are-underrated/)
               # 'Performance' analysis
-#              - linux-tools-generic   # Kernel modules required 4 `perf`
-#              - linux-tools-common    # `perf`  (Performance analysis tools for Linux)
           when: ansible_facts.os_family == 'Ubuntu'
         - name: '[Darwin]'
           community.general.homebrew:
             name:
-              - llvm                  # TODO: Install only `clang[++]`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
               - boost
               - ncurses               # Text-based UIs (TUIs)
             # Build tools:
