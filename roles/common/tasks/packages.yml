@@ -60,10 +60,10 @@
           - tar
           - pbzip2
           - xz-utils
-        # FS stuff:
-          - btrfs-progs                   # btrfs maintenance
         # Privacy:
           - cryptsetup
+        # FS stuff:
+          - btrfs-progs                   # btrfs maintenance
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
@@ -96,6 +96,12 @@
 #        mode: 0755
 #      become: true
 #      when: ansible_facts.os_family != 'Darwin'
+
+    - name: '[Ubuntu] Install proprietary extra stuff (codecs, fonts, …)'
+      ansible.builtin.apt:
+        name: ubuntu-restricted-extras
+      when: ansible_facts.os_family == 'Ubuntu'
+
 
 
 - name: Install packages

@@ -103,9 +103,6 @@
               - libcurl4-gnutls-dev
 #              - libperl-dev           # Assists in developing applications which embed a Perl interpreter
               - libevent-dev          # Event notification library  (SEE: https://libevent.org/)
-#              - python2
-#              - python2-dev
-#              - python-setuptools
               - libseccomp-dev        # Provides high level iface 4 constructing, analyzing & installing seccomp filters via a BPF (passed 2 kernel's `prctl`)
             # Misc.:
               - fakeroot              # Provides a fake root environment (2 remove the need 2 become root 4 a package build)
@@ -158,20 +155,32 @@
         - name: '[Darwin]'
           community.general.homebrew:
             name:
-              - boost
-              - ncurses               # Text-based UIs (TUIs)
             # Build tools:
               - ninja
             # Libs:
               - readline
+              - ncurses               # Text-based UIs (TUIs)
+              - boost
               - googletest            # Google Test
           become: false
           when: ansible_facts.os_family == 'Darwin'
 
-    - name: '[Ubuntu] Install proprietary extra stuff (codecs, fonts, …)'
-      ansible.builtin.apt:
-        name: ubuntu-restricted-extras
-      when: ansible_facts.os_family == 'Ubuntu'
+    - name: Install gef (4 `gdb`)
+      block:
+        - name: gef - Check whether already installed     # TODO: Always update if not latest version
+          ansible.builtin.find:
+            paths: '/{{ os_homedir }}/{{ user.name }}/'
+            file_type: file
+            use_regex: true
+            hidden: true
+            patterns: '^\.gef-20\d{2}\.(0[1-9]|1[012])\.py$'
+          register: gef_find_output
+        - name: gef - Run install script
+          ansible.builtin.shell:
+            cmd: 'bash -c "$(curl -fsSL https://gef.blah.cat/sh)"'
+          become: false
+          when: (gef_find_output.files | length == 0)
+      when: ansible_facts.os_family != 'Darwin'
 
     - name: '`clang-format` config'
       ansible.builtin.template:
@@ -218,22 +227,6 @@
           when: result_rustup_command.rc == 1
       become: false
 
-    - name: Install gef (4 `gdb`)
-      block:
-        - name: gef - Check whether already installed     # TODO: Always update if not latest version
-          ansible.builtin.find:
-            paths: '/{{ os_homedir }}/{{ user.name }}/'
-            file_type: file
-            use_regex: true
-            hidden: true
-            patterns: '^\.gef-20\d{2}\.(0[1-9]|1[012])\.py$'
-          register: gef_find_output
-        - name: gef - Run install script
-          ansible.builtin.shell:
-            cmd: 'bash -c "$(curl -fsSL https://gef.blah.cat/sh)"'
-          become: false
-          when: (gef_find_output.files | length == 0)
-      when: ansible_facts.os_family != 'Darwin'
   become: true
 
 
