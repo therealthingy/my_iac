@@ -112,7 +112,6 @@
         - ssh.yml
         - package-zsh.yml
         - packages-python.yml
-#         - linux/package-nala.yml
 
 
 
