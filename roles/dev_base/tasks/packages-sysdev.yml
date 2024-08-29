@@ -113,10 +113,12 @@
               - debhelper             # 4 creating `deb`ian packages (`bindeb-pkg` target)
               - cscope                # Interactive, text screen based source browsing tool
               - indent                # Format C code 2 follow kernel "styleguide"
-            #  - Rust LKM:
+            #  - Rust (LKM) deps:
               - libclang-dev
               - lld
+              - llvm
               - llvm-dev
+              - lldb
             # - "Convenience" tools:
               - exuberant-ctags       # Parses code, producing an index mapping the names of significant entities
             # - Static analysis:
