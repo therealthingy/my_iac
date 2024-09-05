@@ -135,6 +135,7 @@
               - tuna                  # Low-level system performance tuning 4 realtime systems (change the attributes of application & kernel threads, IRQs, CPUs, & CPU sockets => can change scheduling policy, scheduler priority & processor affinity 4 processes & process threads, processor affinity 4 interrupts, isolate CPUs, & spread threads or IRQs across CPUs)
               - perf-tools-unstable   # ???????
             # - Misc.
+              - kexec-tools           # Boot in2 different kernel (w/o HW re-init)
               - man-db                # ???????
               - kmod                  # 4 controlling Linux Kernel modules
               - gnuplot
