@@ -48,6 +48,9 @@
 
     - name: "Set hostname to '{{ hostname }}'"
       # macOS equivalent command: `sudo systemsetup -setcomputername <string>`
+      # GNU/LINUX:
+      #   TEMPORARILY: `hostname demo.example.com`
+      #   PERSISTENT:  `hostnamectl set-hostname server1.example.com`
       ansible.builtin.hostname:
         name: '{{ hostname }}'
       become: true
