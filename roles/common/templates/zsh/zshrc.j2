@@ -161,8 +161,11 @@ export XAUTHORITY=$HOME/.Xauthority
 ## - iTerm integration
 #test -e "${ZDOTDIR}/.iterm2_shell_integration.zsh" && source "${ZDOTDIR}/.iterm2_shell_integration.zsh"
 
-# ls -- LS_COLORS  (seems 2 work only w/ GNU ls)
+{% if ansible_facts.os_family != 'Darwin' %}
+# LS_COLORS 4 ls & completion suggestions{#   TODO -- DARWIN: Seems 2 work only w/ GNU ls  => must bind 2 GNU utils using gnu-utils#}
 source "${ZDOTDIR}/lscolors.sh"
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+{% endif %}
 
 
 
