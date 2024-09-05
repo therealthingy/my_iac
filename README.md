@@ -6,6 +6,8 @@
 - GNome Extensions ??
 - FIX coapp
 
+- macOS: FIX lscolors
+
 
 
 

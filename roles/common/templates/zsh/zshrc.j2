@@ -78,13 +78,14 @@ zstyle ':omz:update' mode auto      # update automatically without asking
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-{% if ansible_facts.os_family == 'Darwin' %}
-    macos
-{% endif %}
-    colored-man-pages
-    git
     zsh-autosuggestions
     zsh-syntax-highlighting
+    colored-man-pages
+    git
+{#{% if ansible_facts.os_family == 'Darwin' %}
+    gnu-utils   # TODO: DOESN'T WORK ?!??!?!?!?!
+    macos
+{% endif %}#}
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -159,6 +160,10 @@ export XAUTHORITY=$HOME/.Xauthority
 
 ## - iTerm integration
 #test -e "${ZDOTDIR}/.iterm2_shell_integration.zsh" && source "${ZDOTDIR}/.iterm2_shell_integration.zsh"
+
+# ls -- LS_COLORS  (seems 2 work only w/ GNU ls)
+source "${ZDOTDIR}/lscolors.sh"
+
 
 
 # - Custom functions + aliases
