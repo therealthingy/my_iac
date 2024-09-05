@@ -1,12 +1,12 @@
 # Ansible playbook for setting up my machines
 
 
+- macOS: FIX lscolors
+
 - FIX mute audio
 
 - GNome Extensions ??
 - FIX coapp
-
-- macOS: FIX lscolors
 
 
 

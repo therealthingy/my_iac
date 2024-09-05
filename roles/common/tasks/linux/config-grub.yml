@@ -21,14 +21,20 @@
     - name: Change config file and set no boot timeout
       ansible.builtin.lineinfile:
         dest: /etc/default/grub
-        regexp: '^#?{{ item.key }}=[0-9]+$'
+        regexp: '^#?{{ item.key }}={{ item.regexp }}$'
         line: '{{ item.key }}={{ item.value }}'
       with_items:
+        - key: 'GRUB_TIMEOUT_STYLE'
+          value: "{{ 'menu' if grub_menu_show else 'hidden' }}"
+          regexp: '\w+'
         - key: 'GRUB_TIMEOUT'
-          value: '0'
-        - key: 'GRUB_RECORDFAIL_TIMEOUT'         # when using btrfs  (SEE: https://askubuntu.com/a/1123295)
-          value: '0'
+          value: '3'
+          regexp: '[0-9]+'
+#        - key: 'GRUB_RECORDFAIL_TIMEOUT'         # when using btrfs  (SEE: https://askubuntu.com/a/1123295)
+#          value: '0'
+#          regexp: '[0-9]+'
       register: result_grub_timeout_updated
+      when: grub_menu_show is defined
 
     - name: grub makeconfig
       ansible.builtin.shell: update-grub
