@@ -16,7 +16,7 @@
 
 
 # --  "System specific"  --
-- hosts: dev_clients, media_clients, workstation_clients
+- hosts: clients_devel, clients_media, clients_workstation
   roles:
     - role: power_user
     - role: client/base
@@ -31,7 +31,7 @@
       - "'gnome-system-monitor.desktop'"
   tags: client_base
 
-- hosts: dev_clients, dev_servers
+- hosts: clients_devel, servers_dev
   roles:
     - role: client/dev_client
       tags:
@@ -49,32 +49,32 @@
           - darkreader
           - save-page-we
 
-- hosts: media_clients, workstation_clients
+- hosts: clients_media, clients_workstation
   roles:
     - role: client/media_client
       tags:
         - media_client
 
-- hosts: workstation_clients
+- hosts: clients_workstation
   roles:
     - role: client/workstation_client
       tags:
         - workstation_client
 
 
-- hosts: servers, dev_servers, home_servers
+- hosts: servers, servers_dev, servers_home
   roles:
     - role: server/base
       tags: server
 
-- hosts: dev_servers
+- hosts: servers_dev
   roles:
     - role: power_user
     - role: dev_base
   tags:
     - dev_server
 
-- hosts: home_servers
+- hosts: servers_home
   vars:
     docker_container:
       data_basedir: /{{ os_homedir }}/{{ user.name }}/homeserver/data/

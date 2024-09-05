@@ -106,7 +106,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
-{% if 'dev_clients' in group_names or 'dev_servers' in group_names %}
+{% if 'clients_devel' in group_names or 'servers_dev' in group_names %}
 #export MAKEFLAGS="-j$(nproc)"
 {% endif %}
 
@@ -146,7 +146,7 @@ export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH
 export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/lib"
 {% endif %}
 {% if ansible_facts.os_family != 'Darwin'  and
-      ('dev_clients' in group_names or 'dev_servers' in group_names) %}
+      ('clients_devel' in group_names or 'servers_dev' in group_names) %}
 # --  Launch GLOBAL ssh-agent  --
 # ( works in conjunction w/ '~/.config/systemd/user/ssh-agent.service' )
 # ( VERIFY: 'pgrep ssh-agent'  OR  'ssh-add -l' )
@@ -308,7 +308,7 @@ alias jlogk='journalctl -b -k --no-pager'
 alias temp='vcgencmd measure_temp'
 {%   endif %}
 
-{%   if 'dev_clients' in group_names or 'dev_servers' in group_names %}
+{%   if 'clients_devel' in group_names or 'servers_dev' in group_names %}
 alias-add objdump obj="objdump -M intel -C --visualize-jumps -d "               # Note: Used 2 be fct. w/ (now removed) suffix: `$@ | nvim -`
 {%   endif %}
 {% endif %}
@@ -341,7 +341,7 @@ alias dmesg='/bin/dmesg --decode --nopager --color --ctime'
 {% endif %}
 
 
-{% if 'dev_clients' in group_names or 'dev_servers' in group_names    or ansible_facts.os_family == 'Darwin'%}
+{% if 'clients_devel' in group_names or 'servers_dev' in group_names    or ansible_facts.os_family == 'Darwin'%}
 alias pmake='time nice make -j$(nproc) --load-average=$(nproc)'               # Taken from: https://stackoverflow.com/a/4778475
 {% endif %}
 
@@ -356,7 +356,7 @@ alias gitstat='git status ; echo ; git diff --stat -r'
 alias giturl='git remote get-url --all origin'
 alias gitlog='git log --graph --pretty=format:"%h: %ar: %s" --abbrev-commit'
 
-{% if 'media_clients' in group_names    or ansible_facts.os_family == 'Darwin' %}
+{% if 'clients_media' in group_names    or ansible_facts.os_family == 'Darwin' %}
 # - `yt-dlp` -
 alias-add yt-dlp   video-dl="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"   video-dl_audio="yt-dlp -f 'bestaudio[ext=m4a]'"
 alias-add video-dl video-dl-channel="video-dl  -o '%(channel)s - %(title)s-%(id)s.%(ext)s'"
@@ -409,7 +409,7 @@ fi
 {% endif %}
 
 
-{% if 'dev_clients' in group_names or 'dev_servers' in group_names    or ansible_facts.os_family == 'Darwin' %}
+{% if 'clients_devel' in group_names or 'servers_dev' in group_names    or ansible_facts.os_family == 'Darwin' %}
 if command -v ssh-keygen > /dev/null; then
     ssh-key_generate() {
         readonly GLOBAL_SSH_KEYS_PATH="$HOME/.ssh"
@@ -538,7 +538,7 @@ fi
 {% endif %}
 
 
-{% if 'media_clients' in group_names    or ansible_facts.os_family == 'Darwin' %}
+{% if 'clients_media' in group_names    or ansible_facts.os_family == 'Darwin' %}
 {%   set DEFAULT_OUTPUT_FNAME = "output-$(date +'%F-%H_%m_%S')" %}
 {%   set FILE_NOT_FOUND_MSG = "File(s) not found" %}
 # - `ffmpeg` -
@@ -647,17 +647,17 @@ path-add "/sbin"               "after"
 {%   if 'workstation_client' in group_names %}
 path-add "/Library/TeX/texbin/" "after"
 {%   endif %}
-{%   if 'dev_clients' in group_names or 'dev_servers' in group_names %}
+{%   if 'clients_devel' in group_names or 'servers_dev' in group_names %}
 # `clang-format` & `clang-tidy`   (CHECK VIA: `brew --prefix llvm`)
 path-add "/opt/homebrew/opt/llvm/bin" "after"
 {%   endif %}
 #path-add "/opt/homebrew/opt/sphinx-doc/bin" "before"
 {% endif %}
-{% if 'dev_clients' in group_names or 'dev_servers' in group_names %}
+{% if 'clients_devel' in group_names or 'servers_dev' in group_names %}
 path-add "$HOME/.cargo/bin" "after"
 {% endif %}
-{% if 'dev_clients' in group_names or 'dev_servers' in group_names   or
-      'workstation_clients' in group_names %}
+{% if 'clients_devel' in group_names or 'servers_dev' in group_names   or
+      'clients_workstation' in group_names %}
 
 path-add "$HOME/bin" "before"
 #path-add "$HOME/.npm-global/bin" "before"

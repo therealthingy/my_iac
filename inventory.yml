@@ -3,7 +3,7 @@
 all:
   children:
   # --  "System specific"  --
-    dev_clients:
+    clients_devel:
       hosts:
         local_mac:
           ansible_connection: local
@@ -36,10 +36,10 @@ all:
             smtp_port: 587
             smtp_encryption: tls
 
-    media_clients:
+    clients_media:
       hosts:
 
-    workstation_clients:
+    clients_workstation:
       hosts:
         local_mac:
 
@@ -50,10 +50,10 @@ all:
           swap:
             swappiness: 60
 
-    dev_servers:
+    servers_dev:
       hosts:
 
-    home_servers:
+    servers_home:
       hosts:
         l0-rpi0:
 #          timezone: Europe/Berlin

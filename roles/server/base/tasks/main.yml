@@ -58,7 +58,7 @@
     ipam_config:
       - subnet: '{{ docker_ipv6_conf.prefix }}:1::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}'
   become: false
-  when: "'home_servers' in group_names"
+  when: "'servers_home' in group_names"
 
 
 - name: Install login system stats script

@@ -42,6 +42,6 @@ Unattended-Upgrade::Allowed-Origins {
     "${distro_id} ${distro_codename}-updates";
 //  "${distro_id} ${distro_codename}-proposed-updates";
 {% endif %}
-{% if 'home_servers' in group_names %}
+{% if 'servers_home' in group_names %}
         "Docker:${distro_codename}";
 {% endif %}};

@@ -34,7 +34,7 @@
 #              browser.shell.checkDefaultBrowser: false
               browser.toolbars.bookmarks.visibility: 'always'                              # Show bookmarks bar (always, newtab, never)
               browser.startup.page: 1                                                      # 0=blank, 1=home (DEFAULT), 2=last visited page, 3=resume previous session
-              browser.startup.homepage: "{{ 'https://ipleak.net/' if 'media_clients' in group_names else 'about:home' }}"
+              browser.startup.homepage: "{{ 'https://ipleak.net/' if 'clients_media' in group_names else 'about:home' }}"
               browser.newtabpage.enabled: true
               browser.newtab.preload: false
               browser.newtabpage.activity-stream.feeds.topsites: false                     # We have already bookmark bar, hence shortcuts are useless
