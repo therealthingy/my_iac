@@ -127,8 +127,8 @@
 
 - name: 'Copy default suggested bookmarks  (TODO: AUTO IMPORT INTO FF  !!)'
   ansible.builtin.copy:
-    src: firefox-dev_bookmarks.json
-    dest: '/{{ os_homedir }}/{{ user.name }}/.firefox-default_dev_bookmarks.json'
+    src: firefox-devel_bookmarks.json
+    dest: '/{{ os_homedir }}/{{ user.name }}/.local/share/.firefox-default_devel_bookmarks.json'
   become: false
 
 
