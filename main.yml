@@ -33,10 +33,10 @@
 
 - hosts: clients_devel, servers_dev
   roles:
-    - role: client/dev_client
+    - role: client/client_devel
       tags:
-        - dev_client
-    - role: dev_base
+        - client_devel
+    - role: devel_base
 #    - role: docker
 #      tags:
 #        - docker
@@ -51,15 +51,15 @@
 
 - hosts: clients_media, clients_workstation
   roles:
-    - role: client/media_client
+    - role: client/client_media
       tags:
-        - media_client
+        - client_media
 
 - hosts: clients_workstation
   roles:
-    - role: client/workstation_client
+    - role: client/client_workstation
       tags:
-        - workstation_client
+        - client_workstation
 
 
 - hosts: servers, servers_dev, servers_home
@@ -70,7 +70,7 @@
 - hosts: servers_dev
   roles:
     - role: power_user
-    - role: dev_base
+    - role: devel_base
   tags:
     - dev_server
 

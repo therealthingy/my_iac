@@ -1,7 +1,7 @@
 ---
 - name: Install packages
   block:
-    - name: Install audio apps      # TODO: Mv in `media_client` role
+    - name: Install audio apps      # TODO: Mv in `client_media` role
       block:
         - name: '[Darwin] Install homebrew packages'
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
@@ -50,7 +50,7 @@
                   - eddie
                   - maestral
 
-#    - name: Install streaming apps      # TODO: Mv in `media_client` role
+#    - name: Install streaming apps      # TODO: Mv in `client_media` role
 #      block:
 #        - name: '[Darwin] Install homebrew packages'
 #          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml

@@ -644,7 +644,7 @@ path-add "/usr/sbin"           "after"
 path-add "/sbin"               "after"
 {% else %}
 #path-add "$HOME/.gem/ruby/2.6.0/bin" "before"
-{%   if 'workstation_client' in group_names %}
+{%   if 'client_workstation' in group_names %}
 path-add "/Library/TeX/texbin/" "after"
 {%   endif %}
 {%   if 'clients_devel' in group_names or 'servers_dev' in group_names %}
