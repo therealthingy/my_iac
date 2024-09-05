@@ -144,7 +144,7 @@
 
 
 
-### *dev-client*
+### *client-devel*
 * not indempotent ISSUE:
    * Firefox settings after restart
    * TASK [petermosmans.customize-gnome : Download GNOME Shell extensions]
