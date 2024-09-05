@@ -33,6 +33,7 @@
         - gnu-sed
         - gawk
         - grep
+        - findutils                     # GNU `find`
       become: false
       when: ansible_facts.os_family == 'Darwin'
 

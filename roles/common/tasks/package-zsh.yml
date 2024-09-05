@@ -77,8 +77,6 @@
     src: '{{ config_file.src }}'
     dest: '{{ os_homedir }}/{{ user.name }}/.config/zsh/{{ config_file.dest_file }}'
   with_items:
-    - src: 'zsh/zshfunc.j2'
-      dest_file: '.zshfunc'
     - src: 'zsh/zshrc.j2'
       dest_file: '.zshrc'
   loop_control:
