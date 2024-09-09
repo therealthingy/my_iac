@@ -40,14 +40,6 @@
 #    - role: docker
 #      tags:
 #        - docker
-  vars:
-    firefox_profiles:
-      default:
-        extensions:
-          - umatrix
-          - privacy-redirect
-          - darkreader
-          - save-page-we
 
 - hosts: clients_media, clients_workstation
   roles:
