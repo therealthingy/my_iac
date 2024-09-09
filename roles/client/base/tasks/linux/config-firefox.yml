@@ -122,6 +122,7 @@
               privacy.resistFingerprinting: true
               privacy.resistFingerprinting.block_mozAddonManager: true
               browser.messaging-system.whatsNewPanel.enabled: false
+              identity.fxaccounts.enabled: false
 
     - name: "Run 'staticdev.firefox' role"
       ansible.builtin.include_role:
