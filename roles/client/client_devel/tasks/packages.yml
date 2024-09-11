@@ -11,6 +11,7 @@
     - name: '[Debian/Ubuntu] Install apt packages'
       ansible.builtin.apt:
         name:
+          # NOTE: Reconfigure "capture packets as non-superuser" => `sudo dpkg-reconfigure wireshark-common`
           - wireshark
         state: present
       become: true

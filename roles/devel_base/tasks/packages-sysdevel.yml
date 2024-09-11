@@ -15,7 +15,9 @@
               - flawfinder            # Finds potential security flaws in C src
             # Build tools/Compilers:
               - gcc
-              - llvm                  # TODO: Install only `clang[++]`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
+#              - gcc-multilib          # Mechanism 4 building & running code 4 different ABIs 4 the same CPU family on a given system;
+#                                      # Most commonly used 2 support 32-bit code on 64-bit systems and 64-bit code on 32-bit systems w/ a 64-bit kernel
+              - llvm                  # `llvm-symbolizer`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
               - cmake
               - autoconf              # Tool 4 producing configure script 4 building, installing & packing SW
               - automake              # Automates parts of the compilation process
@@ -77,6 +79,7 @@
             # Utils:
               - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
             # Libs:
+              - libcap-dev            # POSIX capabilities API
               - libbsd-dev            # Provides `strlcat`(3), …
               - libc6-dbg             # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
               - binutils-dev          # Necessary 2 build programs which use the GNU BFD library  (which is part of binutils); also includes libbfd
