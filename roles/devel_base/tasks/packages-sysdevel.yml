@@ -25,6 +25,7 @@
             # Assemblers:
               - nasm
             # Debuggers & Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
+              - dwarves               # `pahole` (alignment of data structures => CPU CL), `codiff` (compare effects of src changes in bin files), `pfunct`, `pdwtags` (print DWARF info), …
               - binutils              # Contains `readelf`, `gprof`, …
               - binwalk
 #              - poke                  # Extensible editor 4 structured binary data
@@ -75,7 +76,6 @@
               - heaptrack             # Heap analysis tool (from KDE)
               - heaptrack-gui
               - time                  # NOTE: Usually implemented as shell builtin  (hence must be called directly via `/usr/bin/time`)
-              - pahole                # Shows & manipulates data structure layout
             # Utils:
               - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
             # Libs:
@@ -89,7 +89,7 @@
               - libunwind-dev         # (libunwind)
               - libiberty-dev         # De-mangles C++ function names
               - libcap-dev            # Implements user-space interfaces 2 the POSIX 1003.1e capabilities
-              - libnuma-dev           # Allows controlling specific NUMA (Non-Uniform Memory Architecture) scheduling or memory placement policies
+              - libnuma-dev           # Allows controlling specific NUMA scheduling or memory placement policies
               - libncurses5-dev       # ncurses  (terminal-independent method of updating character screens w/ reasonable optimization)
               - ncurses-dev
               - libreadline-dev       # Provides a set of functions for use by applications that allow users to edit command lines as they are typed in
@@ -134,19 +134,22 @@
             # - Performance analysis:
               - stress                # Imposes load on & stress test a computer system
               - stress-ng
-              - rt-tests              # Programs that test & measure various components of real-time kernel behavior (timer, signal & HW latency) + functioning of priority-inheritance mutexes
+              - rt-tests              # Programs that test & measure various components of RT kernel behavior (timer, signal & HW latency) + functioning of priority-inheritance mutexes
               - tuna                  # Low-level system performance tuning 4 realtime systems (change the attributes of application & kernel threads, IRQs, CPUs, & CPU sockets => can change scheduling policy, scheduler priority & processor affinity 4 processes & process threads, processor affinity 4 interrupts, isolate CPUs, & spread threads or IRQs across CPUs)
               - perf-tools-unstable   # ???????
             # - Misc.
-              - kexec-tools           # Boot in2 different kernel (w/o HW re-init)
               - man-db                # ???????
               - kmod                  # 4 controlling Linux Kernel modules
               - gnuplot
               - sysfsutils            # Sysfs query tool & boot-time setup   ????
-              - bsdextrautils         # BSD utilities like `col`, `colcrt`, `colrm`, `column`, `hd`, `hexdump`, `look`, `ul` & `write`
+              - bsdmainutils          # dep: `bsdutils` (`logger`, `renice`, `script`, `scriptlive`, `scriptreplay` & `wall`),  …
+              - bsdextrautils         # `col`, `colcrt`, `colrm`, `column`, `hd`, `hexdump`, `look`, `ul` & `write`
               - smem                  # Reports memory usage
               - hwloc                 # HW Locality -- Provides a hierarchical view of the machine, NUMA memory nodes, sockets, shared caches, cores & simultaneous multithreading
               - virt-what             # Script which detects whether it's running in a VM
+              - kexec-tools           # Boot in2 different kernel (w/o HW re-init)
+              - libjson-c-dev
+              - net-tools             # Deprecated  (SUCCESSOR: `iproute2`)
             state: present
           when: ansible_facts.os_family != 'Darwin'
         - name: '[Ubuntu]'
