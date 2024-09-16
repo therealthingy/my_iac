@@ -47,7 +47,14 @@
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Development/Editors
             packages:
-              - hex-fiend
+              - imhex
+    - name: '[Debian/Ubuntu] Install flatpak packages'
+      community.general.flatpak:
+        name:
+          - net.werwolv.ImHex
+        state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
 
 
 #- name: Install API dev stuff
