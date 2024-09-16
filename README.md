@@ -89,11 +89,6 @@
     SUEnableAutomaticChecks
     SUSendProfileInfo
 
-  com.ridiculousfish.HexFriend, com.torusknot.SourceTreeNotMAS:
-    SUSendProfileInfo
-    SUEnableAutomaticChecks
-    SUAutomaticallyUpdate
-
   com.samscott.maestral / com.samscott.maestral-cocoa, com.soggywaffles.paintbrush:
     SUEnableAutomaticChecks
 
