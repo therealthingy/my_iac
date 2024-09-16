@@ -25,7 +25,6 @@
             # Assemblers:
               - nasm
             # Debuggers & Tools  (NOTE: binutils, util-linux & gdb are most likely already installed)
-              - dwarves               # `pahole` (alignment of data structures => CPU CL), `codiff` (compare effects of src changes in bin files), `pfunct`, `pdwtags` (print DWARF info), …
               - binutils              # Contains `readelf`, `gprof`, …
               - binwalk
 #              - poke                  # Extensible editor 4 structured binary data
@@ -61,7 +60,8 @@
               - cmake-curses-gui
               - autotools-dev
               - ninja-build
-            # Debuggers & Tools  (NOTE: binutils, util-linux & gdb are most likely already installed):
+            # Debuggers & Tools
+              - dwarves               # `pahole` (alignment of data structures => CPU CL), `codiff` (compare effects of src changes in bin files), `pfunct`, `pdwtags` (print DWARF info), …
               - gdb
               - lldb
               - bpftrace
