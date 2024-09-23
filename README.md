@@ -1,7 +1,10 @@
 # Ansible playbook for setting up my machines
 
 
+## TODOs
+- nvchad
 - macOS: FIX lscolors
+- grub: cmdline  disable all cpu mitigations
 
 - FIX mute audio
 
@@ -9,10 +12,6 @@
 - FIX coapp
 
 
-
-
-
-## TODOs
 * Debian:
   * Nautilus show hidden not working
   * GNOME display desktop icons using an extension OR nemo
