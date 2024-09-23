@@ -6,6 +6,7 @@
         - name: '[Darwin / Debian/Ubuntu]'
           ansible.builtin.package:
             name:
+              - lua
             # Misc.:
               - bison                 # Parser generator
               - flex                  # Generates lexical analyzers
@@ -64,6 +65,7 @@
               - dwarves               # `pahole` (alignment of data structures => CPU CL), `codiff` (compare effects of src changes in bin files), `pfunct`, `pdwtags` (print DWARF info), …
               - gdb
               - lldb
+              #- gstack              # TODO: Not available 4 Ubuntu -- Wrapper around `gdb` 4 peeking into process's stack
               - bpftrace
               - strace
               - ltrace
