@@ -6,7 +6,6 @@
         - name: '[Darwin / Debian/Ubuntu]'
           ansible.builtin.package:
             name:
-              - lua
             # Misc.:
               - bison                 # Parser generator
               - flex                  # Generates lexical analyzers
@@ -47,6 +46,7 @@
         - name: '[Debian/Ubuntu]'
           ansible.builtin.apt:
             name:
+              - lua5.4                 # TODO: REVISE VERSION
             # Git:
               - git-email    # ( optional )
             # Compilers, static analysis tools, …:
@@ -163,6 +163,7 @@
         - name: '[Darwin]'
           community.general.homebrew:
             name:
+              - lua
             # Build tools:
               - ninja
             # Libs:
