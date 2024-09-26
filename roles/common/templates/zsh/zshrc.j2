@@ -145,6 +145,7 @@ autoload -Uz compinit && compinit
 export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH
 export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/lib"
 {% endif %}
+
 {% if ansible_facts.os_family != 'Darwin'  and
       ('clients_devel' in group_names or 'servers_dev' in group_names) %}
 # --  Launch GLOBAL ssh-agent  --
@@ -157,9 +158,6 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 # Fix annoying "bug": "X11 connection rejected because of wrong authentication.\n(timeshift-gtk:50030): Gtk-WARNING **: 14:33:10.933: cannot open display:"  (SEE: https://unix.stackexchange.com/a/742448)
 export XAUTHORITY=$HOME/.Xauthority
 {% endif %}
-
-## - iTerm integration
-#test -e "${ZDOTDIR}/.iterm2_shell_integration.zsh" && source "${ZDOTDIR}/.iterm2_shell_integration.zsh"
 
 {# TODO -- DARWIN: Seems 2 work only w/ GNU ls  => must bind 2 GNU utils using gnu-utils#}
 {% if ansible_facts.os_family != 'Darwin' %}
@@ -336,14 +334,14 @@ alias reboot='/sbin/shutdown -r now'
 {% endif %}
 
 
-{% if ansible_facts.os_family != 'Darwin' %}
-alias dmesg='/bin/dmesg --decode --nopager --color --ctime'
-{% endif %}
-
-
 
 # --- Installed tools  ---
 export PATH="$PATH:$HOME/.local/bin"
+
+{% if ansible_facts.os_family != 'Darwin' %}
+# - dmesg
+alias dmesg='/bin/dmesg --decode --nopager --color --ctime'
+{% endif %}
 
 # - `git` -
 alias gitdiff='git diff -r'
@@ -378,7 +376,6 @@ alias-add colordiff diff='colordiff'
 {% if ansible_facts.os_family == 'Darwin' %}
 dns-reset_server_for_service() {
     local network_service=${1:?"Network service may be provided."}
-
     sudo networksetup -setdnsservers $network_service "Empty"
 }
 
