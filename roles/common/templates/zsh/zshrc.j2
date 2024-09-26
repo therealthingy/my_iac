@@ -82,10 +82,10 @@ plugins=(
     zsh-syntax-highlighting
     colored-man-pages
     git
-{#{% if ansible_facts.os_family == 'Darwin' %}
-    gnu-utils   # TODO: DOESN'T WORK ?!??!?!?!?!
-    macos
-{% endif %}#}
+{% if ansible_facts.os_family == 'Darwin' %}
+#    gnu-utils   # TODO: DOESN'T WORK ?!??!?!?!?!
+##    macos
+{% endif %}
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -107,7 +107,7 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 {% if 'clients_devel' in group_names or 'servers_dev' in group_names %}
-#export MAKEFLAGS="-j$(nproc)"
+export MAKEFLAGS="-j$(nproc)"
 {% endif %}
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
@@ -340,10 +340,6 @@ alias reboot='/sbin/shutdown -r now'
 alias dmesg='/bin/dmesg --decode --nopager --color --ctime'
 {% endif %}
 
-
-{% if 'clients_devel' in group_names or 'servers_dev' in group_names    or ansible_facts.os_family == 'Darwin'%}
-alias pmake='time nice make -j$(nproc) --load-average=$(nproc)'               # Taken from: https://stackoverflow.com/a/4778475
-{% endif %}
 
 
 # --- Installed tools  ---
