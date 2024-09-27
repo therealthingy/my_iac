@@ -2,6 +2,11 @@
 # NOTE: REQUIRE CLEANUP (if previously used): `rm -rf .config/nvim .local/share/nvim .cache/nvim`
 - name: Install it
   block:
+    - name: '[Darwin / Debian/Ubuntu] Install deps'
+      ansible.builtin.package:
+        name: ripgrep
+      become: '{{ package_manager_become }}'
+
     # TODO: Font in Gnome Terminal  (atm only iTerm2)
     - name: Install NerdFont
       block:
