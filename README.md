@@ -2,7 +2,6 @@
 
 
 ## TODOs
-- nvchad
 - macOS: FIX lscolors
 - grub: cmdline  disable all cpu mitigations
 

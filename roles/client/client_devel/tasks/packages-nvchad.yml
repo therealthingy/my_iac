@@ -2,9 +2,9 @@
 # NOTEs:
 #   - !!!  IMPORTANT: On 1st launch: DON'T RUN AS ROOT  (otherwise permission errors)  !!!
 #   - "UNINSTALL" (if previously used): `rm -rf  ~/.config/nvim  ~/.local/share/nvim  ~/.cache/nvim`
-- name: Install it
+- name: Install deps
   block:
-    - name: '[Darwin / Debian/Ubuntu] Install deps'
+    - name: '[Darwin / Debian/Ubuntu] Install ripgrep'
       ansible.builtin.package:
         name: ripgrep
       become: '{{ package_manager_become }}'
@@ -33,19 +33,36 @@
             remote_src: true
           when: result_nerdfont_installed is failed
       notify: rebuild fonts cache
-
-    - name: Download & Install
-      ansible.builtin.git:
-        repo: git@github.com:therealthingy/nvim-config.git      #https://github.com/therealthingy/nvim-config.git
-        dest: '{{ os_homedir }}/{{ user.name }}/.config/nvim/'
-        clone: true
-        depth: 1
-        update: true
-      register: repo_clone
-      failed_when:
-        - repo_clone.failed
-        - not 'Local modifications exist in the destination' in repo_clone.msg
-  when: ansible_facts.os_family == 'Darwin'                  # $$$   TODO: RMV ONCE DEBIAN APT REPOS HAVE version 0.9.3 (atm 0.6 which isn't supported by nvchad)
   become: false
 
+# TODO: Ubuntu repos
+- name: Download & Install
+  ansible.builtin.git:
+    repo: git@github.com:therealthingy/nvim-config.git      #https://github.com/therealthingy/nvim-config.git
+    dest: '{{ os_homedir }}/{{ user.name }}/.config/nvim/'
+    clone: true
+    depth: 1
+    update: true
+  register: repo_clone
+  failed_when:
+    - repo_clone.failed
+    - not 'Local modifications exist in the destination' in repo_clone.msg
+  when: ansible_facts.os_family == 'Darwin'                  # $$$   TODO: RMV ONCE DEBIAN APT REPOS HAVE version 0.9.3 (atm 0.6 which isn't supported by nvchad)
+  become: false
 # TODO: `:MasonInstallAll`
+
+- name: Post Install
+  block:
+    - ansible.builtin.file:
+        path: '/Applications/Development/Editors'
+        state: directory
+        owner: '{{ user.name }}'
+        group: '{{user.group_name}}'
+        mode: 0755
+    - ansible.builtin.unarchive:
+        src: 'apps/NeoVim.app.tar.gz'
+        dest: '/Applications/Development/Editors/'
+        creates: NeoVim.app
+  become: false
+  when:
+    - ansible_facts.os_family == 'Darwin'
