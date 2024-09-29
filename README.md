@@ -2,6 +2,7 @@
 
 
 ## TODOs
+- NvChad: [Ubuntu/Debian] Install more recent neovim version
 - macOS: FIX lscolors
 - grub: cmdline  disable all cpu mitigations
 

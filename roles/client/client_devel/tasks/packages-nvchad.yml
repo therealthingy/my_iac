@@ -1,7 +1,7 @@
 ---
 # NOTEs:
 #   - !!!  IMPORTANT: On 1st launch: DON'T RUN AS ROOT  (otherwise permission errors)  !!!
-#   - "UNINSTALL" (if previously used): `rm -rf  ~/.config/nvim  ~/.local/share/nvim  ~/.cache/nvim`
+#   - "UNINSTALL" (if previously used): `rm -rf  ~/.config/nvim  ~/.local/share/nvim  ~/.cache/nvim  ~/.local/state/nvim/`
 - name: Install deps
   block:
     - name: '[Darwin / Debian/Ubuntu] Install ripgrep'
