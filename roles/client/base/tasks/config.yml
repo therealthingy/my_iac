@@ -363,9 +363,10 @@
 # ------------------------------------------------------------------------------------------------------------------------------------------------------
 # Must be enabled via: System Settings -> Privacy & Security -> Extensions -> Finder
 - name: Finder services
-  ansible.builtin.copy:
-    src: 'darwin/finder_workflows/{{ workflow_file }}/'
-    dest: '/Users/{{user.name}}/Library/Services/{{ workflow_file }}'
+  ansible.builtin.unarchive:
+    src: 'darwin/finder_workflows/{{ workflow_file }}.tar.gz'
+    dest: '/Users/{{user.name}}/Library/Services/'
+    creates: '{{ workflow_file }}'
     owner: '{{ user.name }}'
     group: '{{ user.group_name }}'
     mode: 0755
