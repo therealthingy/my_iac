@@ -1,17 +1,32 @@
 ---
-- name: Add apt repo and update cache
-  ansible.builtin.apt_repository:
-    repo: ppa:maveonair/helix-editor
-    state: present
-    update_cache: true
-  when: ansible_facts.distribution == 'Ubuntu'
-  become: true
+- name: Install
+  block:
+    - name: Add apt repo and update cache
+      ansible.builtin.apt_repository:
+        repo: ppa:maveonair/helix-editor
+        state: present
+        update_cache: true
+      when: ansible_facts.distribution == 'Ubuntu'
+      become: true
+    - name: Install it
+      ansible.builtin.package:
+        name: helix
+      become: '{{ package_manager_become }}'
 
-
-- name: Install it
-  ansible.builtin.package:
-    name: helix
-  become: '{{ package_manager_become }}'
+# TODO: UBUNTU
+- name: '[Darwin] Install LSPs'
+  community.general.homebrew:
+    name:
+      - texlab
+      - ansible-language-server
+      - yaml-language-server
+      - taplo
+      - bash-language-server
+      - sql-language-server
+      - lua-language-server
+      - python-lsp-server
+  become: false
+  when: ansible_facts.os_family == 'Darwin'
 
 
 #- name: Download & Install
