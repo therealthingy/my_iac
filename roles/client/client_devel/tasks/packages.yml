@@ -1,5 +1,5 @@
 ---
-- ansible.builtin.include_tasks: packages-nvchad.yml
+- ansible.builtin.include_tasks: packages-helix.yml
 
 - name: Install network tools
   block:

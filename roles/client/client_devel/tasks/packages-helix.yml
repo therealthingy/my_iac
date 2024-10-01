@@ -1,0 +1,49 @@
+---
+- name: Add apt repo and update cache
+  ansible.builtin.apt_repository:
+    repo: ppa:maveonair/helix-editor
+    state: present
+    update_cache: true
+  when: ansible_facts.distribution == 'Ubuntu'
+  become: true
+
+
+- name: Install it
+  ansible.builtin.package:
+    name: helix
+  become: '{{ package_manager_become }}'
+
+
+#- name: Download & Install
+#  ansible.builtin.git:
+#    repo: git@github.com:therealthingy/nvim-config.git      #https://github.com/therealthingy/nvim-config.git
+#    dest: '{{ os_homedir }}/{{ user.name }}/.config/nvim/'
+#    clone: true
+#    depth: 1
+#    update: true
+#  register: repo_clone
+#  failed_when:
+#    - repo_clone.failed
+#    - not 'Local modifications exist in the destination' in repo_clone.msg
+#  when: ansible_facts.os_family == 'Darwin'                  # $$$   TODO: RMV ONCE DEBIAN APT REPOS HAVE version 0.9.3 (atm 0.6 which isn't supported by nvchad)
+#  become: false
+
+# TODO: https://schembri.me/post/neovim-everywhere-on-macos/
+- name: "[Darwin] Post Install -- Finder integration"
+  block:
+    - name: Install app
+      block:
+        - ansible.builtin.file:
+            path: '/Applications/Development/Editors'
+            state: directory
+            owner: '{{ user.name }}'
+            group: '{{user.group_name}}'
+            mode: 0755
+        - ansible.builtin.unarchive:
+            src: 'apps/Helix-iTerm.app.tar.gz'
+            dest: '/Applications/Development/Editors/'
+            creates: Helix-iTerm.app
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
+  become: false
+  when: ansible_facts.os_family == 'Darwin'
