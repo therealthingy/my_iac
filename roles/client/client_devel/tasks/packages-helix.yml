@@ -24,7 +24,6 @@
       - bash-language-server
       - sql-language-server
       - lua-language-server
-      - python-lsp-server
   become: false
   when: ansible_facts.os_family == 'Darwin'
 
