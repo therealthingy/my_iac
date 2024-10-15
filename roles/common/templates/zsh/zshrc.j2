@@ -642,7 +642,7 @@ path-add "/Library/TeX/texbin/" "after"
 {%   endif %}
 {%   if 'clients_devel' in group_names or 'servers_dev' in group_names %}
 # `clang-format` & `clang-tidy`   (CHECK VIA: `brew --prefix llvm`)
-path-add "/opt/homebrew/opt/llvm/bin" "after"
+path-add "/opt/homebrew/opt/llvm/bin" "before"          # "Replace" AppleClang
 {%   endif %}
 #path-add "/opt/homebrew/opt/sphinx-doc/bin" "before"
 {% endif %}
