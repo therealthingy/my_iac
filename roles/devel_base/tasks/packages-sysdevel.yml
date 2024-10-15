@@ -90,7 +90,6 @@
               - libdwarf-dev          # Allows reading/consuming and writing/producing of DWARF debugging information from object files, shared libraries, and executables    --  basically the same as `libdw-dev` ??!
               - libunwind-dev         # (libunwind)
               - libiberty-dev         # De-mangles C++ function names
-              - libcap-dev            # Implements user-space interfaces 2 the POSIX 1003.1e capabilities
               - libnuma-dev           # Allows controlling specific NUMA scheduling or memory placement policies
               - libncurses5-dev       # ncurses  (terminal-independent method of updating character screens w/ reasonable optimization)
               - ncurses-dev
