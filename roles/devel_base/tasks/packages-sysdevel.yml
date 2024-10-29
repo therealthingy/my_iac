@@ -13,6 +13,7 @@
               - bear                  # Generate compilation dbs  (when using e.g., `make`)
               - cppcheck              # Static analysis 4 detecting bugs (undefined behavior & dangerous coding constructs) in C src
               - flawfinder            # Finds potential security flaws in C src
+              - lcov
             # Build tools/Compilers:
               - gcc
               - llvm                  # `clangd`, `llvm-symbolizer`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
