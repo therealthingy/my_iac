@@ -19,6 +19,7 @@
             name:
               - ubuntu-desktop
               - task-gnome-desktop
+              - baobab             # Disk space usage analyzer
               # TODO: vanilla-gnome-desktop vanilla-gnome-default-settings
             state: present
           when: "'ubuntu-desktop' in ansible_facts.packages"
