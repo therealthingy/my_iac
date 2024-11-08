@@ -179,10 +179,26 @@
               - librewolf
               - tor-browser
     - name: '[Debian/Ubuntu] Install flatpak packages'         # TODO: Add mac counterparts & check whether VM
-      community.general.flatpak:
-        name:
-          - com.brave.Browser
-        state: present
+       # Too buggy (https://github.com/flathub/com.brave.Browser/issues?q=is%3Aopen+is%3Aissue), hence we use the native package
+#      community.general.flatpak:
+#        name:
+#          - com.brave.Browser
+#        state: present
+      block:
+        - name: Brave - Add apt signing key
+          ansible.builtin.apt_key:
+            url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+            keyring: /usr/share/keyrings/brave-browser-archive-keyring.gpg
+            state: present
+        - name: Brave - Add apt repo and update cache
+          ansible.builtin.apt_repository:
+            repo: "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"
+            filename: brave-browser-release
+            state: present
+            update_cache: true
+        - name: Brave-  Install it
+          ansible.builtin.package:
+            name: brave-browser
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
