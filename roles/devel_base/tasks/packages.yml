@@ -4,7 +4,7 @@
     - packages-sysdevel.yml
     - packages-python.yml
 #    - packages-java.yml
-    - packages-helix.yml
+    - packages-helix.yml    # ( NOTE: requires python )
   loop_control:
     loop_var: included_dev_server_task
 

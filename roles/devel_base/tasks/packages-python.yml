@@ -8,18 +8,19 @@
         install_deps: true
         executable: pipx
       with_items:
-        - pdm            # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
-        # VSCode
+        # ~~VSCode~~
         - ruff           # Python formatter + linter
         - ruff-lsp
         # Helix
         - python-lsp-server
         - debugpy
         # MISC. tools
+        - pdm            # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
         - ansible
         - jupyterlab
       loop_control:
         loop_var: pip_package
+
     - name: Inject packages
       community.general.pipx:
         name: '{{ package.name }}'
@@ -27,12 +28,12 @@
         inject_packages: '{{ package.packages }}'
         executable: pipx
       with_items:
+        - name: 'python-lsp-server'
+          packages: ['python-lsp-ruff', 'python-lsp-black']
         - name: 'ansible'
           packages: ['ansible-lint[yamllint]']
         - name: 'jupyterlab'
           packages: ['pip']                                       # Otherwise update fails …
-        - name: 'python-lsp-server'
-          packages: ['python-lsp-ruff', 'python-lsp-black']
       loop_control:
         loop_var: package
   become: false
