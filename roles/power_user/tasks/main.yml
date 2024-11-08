@@ -155,6 +155,32 @@
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
+    - name: Ansible
+      block:
+        - name: Install package
+          community.general.pipx:
+            name: '{{ pip_package }}'
+            state: latest
+            install_deps: true
+            executable: pipx
+          with_items:
+            # MISC. tools
+            - ansible
+          loop_control:
+            loop_var: pip_package
+        - name: Inject linter
+          community.general.pipx:
+            name: '{{ package.name }}'
+            state: inject
+            inject_packages: '{{ package.packages }}'
+            executable: pipx
+          with_items:
+            - name: 'ansible'
+              packages: ['ansible-lint[yamllint]']
+          loop_control:
+            loop_var: package
+      become: false
+      when: 'hypervisor is not defined or not hypervisor'
 
 - name: Install oh-my-tmux
   block:

@@ -1,5 +1,5 @@
 ---
-- name: Python dev
+- name: Python devel
   block:
     - name: Install packages
       community.general.pipx:
@@ -16,7 +16,6 @@
         - debugpy
         # MISC. tools
         - pdm            # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
-        - ansible
       loop_control:
         loop_var: pip_package
 
@@ -29,8 +28,6 @@
       with_items:
         - name: 'python-lsp-server'
           packages: ['python-lsp-ruff', 'python-lsp-black']
-        - name: 'ansible'
-          packages: ['ansible-lint[yamllint]']
       loop_control:
         loop_var: package
   become: false
