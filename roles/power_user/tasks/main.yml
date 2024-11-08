@@ -182,30 +182,6 @@
       become: false
       when: 'hypervisor is not defined or not hypervisor'
 
-- name: Install oh-my-tmux
-  block:
-    - name: Download & Install
-      ansible.builtin.git:
-        repo: https://github.com/gpakosz/.tmux.git
-        dest: '{{ os_homedir }}/{{ user.name }}/.tmux/'
-        clone: true
-        depth: 1
-        update: true
-      register: repo_clone
-      failed_when:
-        - repo_clone.failed
-        - not 'Local modifications exist in the destination' in repo_clone.msg
-    - name: tmux.conf
-      ansible.builtin.file:
-        src: '{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf'
-        dest: '{{ os_homedir }}/{{ user.name }}/.tmux.conf'
-        state: link
-    - name: "TODO: Own config    (TODO: fix font)"
-      ansible.builtin.file:
-        src: '{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf.local'
-        dest: '{{ os_homedir }}/{{ user.name }}/.tmux.conf.local'
-        state: link
-  become: false
 
 
 - name: Privacy tools
@@ -320,6 +296,31 @@
           - duti                          # Set default app 4 opening file
       become: false
       when: ansible_facts.os_family == 'Darwin'
+
+    - name: Install oh-my-tmux
+      block:
+        - name: Download & Install
+          ansible.builtin.git:
+            repo: https://github.com/gpakosz/.tmux.git
+            dest: '{{ os_homedir }}/{{ user.name }}/.tmux/'
+            clone: true
+            depth: 1
+            update: true
+          register: repo_clone
+          failed_when:
+            - repo_clone.failed
+            - not 'Local modifications exist in the destination' in repo_clone.msg
+        - name: tmux.conf
+          ansible.builtin.file:
+            src: '{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf'
+            dest: '{{ os_homedir }}/{{ user.name }}/.tmux.conf'
+            state: link
+        - name: "TODO: Own config    (TODO: fix font)"
+          ansible.builtin.file:
+            src: '{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf.local'
+            dest: '{{ os_homedir }}/{{ user.name }}/.tmux.conf.local'
+            state: link
+      become: false
 
 
 
