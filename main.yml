@@ -31,15 +31,12 @@
       - "'gnome-system-monitor.desktop'"
   tags: client_base
 
-- hosts: clients_devel, servers_devel
+- hosts: clients_devel
   roles:
+    - role: devel_base
     - role: client/devel
       tags:
         - client_devel
-    - role: devel_base
-#    - role: docker
-#      tags:
-#        - docker
 
 - hosts: clients_media, clients_workstation
   roles:
