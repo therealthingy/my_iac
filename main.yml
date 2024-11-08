@@ -33,7 +33,7 @@
 
 - hosts: clients_devel, servers_dev
   roles:
-    - role: client/client_devel
+    - role: client/devel
       tags:
         - client_devel
     - role: devel_base
@@ -43,13 +43,13 @@
 
 - hosts: clients_media, clients_workstation
   roles:
-    - role: client/client_media
+    - role: client/media
       tags:
         - client_media
 
 - hosts: clients_workstation
   roles:
-    - role: client/client_workstation
+    - role: client/workstation
       tags:
         - client_workstation
 
