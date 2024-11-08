@@ -150,7 +150,7 @@
 #          - fuse
 #          - ntfs-3g                       # Read/write NTFS driver 4 FUSE
 #          - libapfs-utils                 # Contains `fsapfsinfo`, an APFS information retrieval utility, & `fpafsmount`, a FUSE-based APFS filesystem implementation
-#          - smb4k                         # UI network neighborhood browser & Samba share mounting utility
+          - smb4k                         # UI network neighborhood browser & Samba share mounting utility
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
