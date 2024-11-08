@@ -106,7 +106,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
-{% if 'clients_devel' in group_names or 'servers_dev' in group_names %}
+{% if 'clients_devel' in group_names or 'servers_devel' in group_names %}
 export MAKEFLAGS="-j"
 {% endif %}
 
@@ -147,7 +147,7 @@ export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/lib"
 {% endif %}
 
 {% if ansible_facts.os_family != 'Darwin'  and
-      ('clients_devel' in group_names or 'servers_dev' in group_names) %}
+      ('clients_devel' in group_names or 'servers_devel' in group_names) %}
 # --  Launch GLOBAL ssh-agent  --
 # ( works in conjunction w/ '~/.config/systemd/user/ssh-agent.service' )
 # ( VERIFY: 'pgrep ssh-agent'  OR  'ssh-add -l' )
@@ -306,7 +306,7 @@ alias jlogk='journalctl -b -k --no-pager'
 alias temp='vcgencmd measure_temp'
 {%   endif %}
 
-{%   if 'clients_devel' in group_names or 'servers_dev' in group_names %}
+{%   if 'clients_devel' in group_names or 'servers_devel' in group_names %}
 alias-add objdump obj="objdump -M intel -C --visualize-jumps -d "               # Note: Used 2 be fct. w/ (now removed) suffix: `$@ | nvim -`
 {%   endif %}
 {% endif %}
@@ -402,7 +402,7 @@ fi
 {% endif %}
 
 
-{% if 'clients_devel' in group_names or 'servers_dev' in group_names    or ansible_facts.os_family == 'Darwin' %}
+{% if 'clients_devel' in group_names or 'servers_devel' in group_names    or ansible_facts.os_family == 'Darwin' %}
 if command -v ssh-keygen > /dev/null; then
     ssh-key_generate() {
         readonly GLOBAL_SSH_KEYS_PATH="$HOME/.ssh"
@@ -640,16 +640,16 @@ path-add "/sbin"               "after"
 {%   if 'client_workstation' in group_names %}
 path-add "/Library/TeX/texbin/" "after"
 {%   endif %}
-{%   if 'clients_devel' in group_names or 'servers_dev' in group_names %}
+{%   if 'clients_devel' in group_names or 'servers_devel' in group_names %}
 # `clang-format` & `clang-tidy`   (CHECK VIA: `brew --prefix llvm`)
 path-add "/opt/homebrew/opt/llvm/bin" "before"          # "Replace" AppleClang
 {%   endif %}
 #path-add "/opt/homebrew/opt/sphinx-doc/bin" "before"
 {% endif %}
-{% if 'clients_devel' in group_names or 'servers_dev' in group_names %}
+{% if 'clients_devel' in group_names or 'servers_devel' in group_names %}
 path-add "$HOME/.cargo/bin" "after"
 {% endif %}
-{% if 'clients_devel' in group_names or 'servers_dev' in group_names   or
+{% if 'clients_devel' in group_names or 'servers_devel' in group_names   or
       'clients_workstation' in group_names %}
 
 path-add "$HOME/bin" "before"

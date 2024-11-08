@@ -50,7 +50,7 @@ all:
           swap:
             swappiness: 60
 
-    servers_dev:
+    servers_devel:
       hosts:
 
     servers_home:
