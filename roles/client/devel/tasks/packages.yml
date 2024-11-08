@@ -1,6 +1,4 @@
 ---
-- ansible.builtin.include_tasks: packages-helix.yml
-
 - name: Install network tools
   block:
     - name: '[Darwin] Install homebrew packages'
