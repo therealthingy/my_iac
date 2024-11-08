@@ -125,6 +125,7 @@
           - tesseract             # Validate via: `tesseract --list-langs`
           - tesseract-lang
       when: ansible_facts.os_family == 'Darwin'
+
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
@@ -133,6 +134,7 @@
           - tesseract-ocr-deu
         state: present
       when: ansible_facts.os_family == 'Debian'
+
     - name: '[Darwin / Debian/Ubuntu]'
       ansible.builtin.package:
         name:
@@ -149,6 +151,7 @@
     - name: '[Debian/Ubuntu] Install vscodium'
       ansible.builtin.include_tasks: linux/package-vscodium.yml
       when: ansible_facts.os_family != 'Darwin'
+
     - name: '[Darwin] Install homebrew packages'
       ansible.builtin.include_tasks: darwin/homebrew_casks.yml
       vars:
@@ -176,8 +179,9 @@
           - dir: Internet/Browsers
             packages:
               - brave-browser
-              - librewolf
+              - librewolf                                      # TODO: `xattr -d "com.apple.quarantine" /Applications/Internet/Browsers/LibreWolf.app`
               - tor-browser
+
     - name: '[Debian/Ubuntu] Install flatpak packages'         # TODO: Add mac counterparts & check whether VM
        # Too buggy (https://github.com/flathub/com.brave.Browser/issues?q=is%3Aopen+is%3Aissue), hence we use the native package
 #      community.general.flatpak:
