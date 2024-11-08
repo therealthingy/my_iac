@@ -62,7 +62,7 @@
     - name: '[Darwin] Install homebrew packages'
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks:
           - dir: Development
             packages:
               - sourcetree
@@ -90,7 +90,6 @@
         packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Development
             packages:
-              - sourcetree
               - iterm2
     - name: 'Apps: config'
       block:
@@ -124,8 +123,15 @@
   become: false
 
 
-- name: Install misc. tools
+- name:  Install ghidra
   block:
+    - name: '[Darwin]'
+      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
+      vars:
+        packages_homebrew_casks:
+          - dir: Development
+            packages:
+              - ghidra
     - name: '[Debian/Ubuntu]'
       block:
         - community.general.flatpak:
@@ -135,6 +141,9 @@
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
+
+- name: Install misc. tools
+  block:
     - name: '[Ubuntu]'                  # Repo: https://github.com/bkw777/mainline  (tool 4 downloading & installing pre-compiled kernels)
       block:
         - name: Add apt repo
