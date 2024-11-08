@@ -1,33 +1,15 @@
 ---
 - name: Python devel
   block:
-    - name: Install packages
+    - name: Install package(s)
       community.general.pipx:
         name: '{{ pip_package }}'
         state: latest
         install_deps: true
         executable: pipx
       with_items:
-        # ~~VSCode~~
-        - ruff           # Python formatter + linter
-        - ruff-lsp
-        # Helix
-        - python-lsp-server
-        - debugpy
         # MISC. tools
         - pdm            # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
       loop_control:
         loop_var: pip_package
-
-    - name: Inject packages
-      community.general.pipx:
-        name: '{{ package.name }}'
-        state: inject
-        inject_packages: '{{ package.packages }}'
-        executable: pipx
-      with_items:
-        - name: 'python-lsp-server'
-          packages: ['python-lsp-ruff', 'python-lsp-black']
-      loop_control:
-        loop_var: package
   become: false

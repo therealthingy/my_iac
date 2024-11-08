@@ -14,18 +14,49 @@
       become: '{{ package_manager_become }}'
 
 # TODO: UBUNTU
-- name: '[Darwin] Install LSPs'
-  community.general.homebrew:
-    name:
-      - texlab
-      - ansible-language-server
-      - yaml-language-server
-      - taplo
-      - bash-language-server
-      - sql-language-server
-      - lua-language-server
+- name: LSPs
+  block:
+    - name: '[Darwin]'
+      community.general.homebrew:
+        name:
+          - texlab
+          - ansible-language-server
+          - yaml-language-server
+          - taplo
+          - bash-language-server
+          - sql-language-server
+          - lua-language-server
+      when: ansible_facts.os_family == 'Darwin'
+
+    - name: '[Darwin / Debian/Ubuntu]'
+      block:
+        - name: Install packages
+          community.general.pipx:
+            name: '{{ pip_package }}'
+            state: latest
+            install_deps: true
+            executable: pipx
+          with_items:
+            # Helix
+            - python-lsp-server
+            - debugpy
+            # VSCode   (TODO: ALSO REQUIRED 4 HELIX ??!)
+            - ruff           # Python formatter + linter
+            - ruff-lsp
+          loop_control:
+            loop_var: pip_package
+        - name: Inject packages
+          community.general.pipx:
+            name: '{{ package.name }}'
+            state: inject
+            inject_packages: '{{ package.packages }}'
+            executable: pipx
+          with_items:
+            - name: 'python-lsp-server'
+              packages: ['python-lsp-ruff', 'python-lsp-black']
+          loop_control:
+            loop_var: package
   become: false
-  when: ansible_facts.os_family == 'Darwin'
 
 # TODO: https://schembri.me/post/neovim-everywhere-on-macos/
 - name: "[Darwin] Post Install -- Finder integration"
