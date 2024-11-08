@@ -1,5 +1,5 @@
 ---
-- name: Install python dev packages
+- name: Install python devel packages
   ansible.builtin.apt:
     update_cache: true
     name:

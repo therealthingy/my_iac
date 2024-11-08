@@ -18,15 +18,20 @@
           - rsync
           - rclone                        # Cloud storage management software
       become: '{{ package_manager_become }}'
+
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
           - libc-bin                      # Collection of helper programs, so called binary tools, that work in conjunction with libc  (`iconv`, ..)
           - file
           - zerofree                      # NOTE: Useful 4 sparse files
+          # -  File archiving tools  -
+          - zip
+          - unzip
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
+
     - name: '[Darwin]'
       community.general.homebrew:
         name:
@@ -37,14 +42,6 @@
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
-- name: '[Debian/Ubuntu] Install file archiving tools'
-  ansible.builtin.apt:
-    name:
-      - zip
-      - unzip
-    state: present
-  become: true
-  when: ansible_facts.os_family != 'Darwin'
 
 - name: Install backup tools              # macOS has TimeMachine
   ansible.builtin.apt:
@@ -53,6 +50,7 @@
     state: present
   become: true
   when: ansible_facts.os_family != 'Darwin'
+
 
 - name: Monitoring tools
   block:
@@ -91,6 +89,7 @@
         -  'hypervisor is not defined or not hypervisor'
   become: true
 
+
 - name: Install networking tools
   block:
     - name: '[Darwin / Debian/Ubuntu]'
@@ -106,6 +105,7 @@
           - wrk                           # HTTP benchmarking tool
 #          - openvpn
       become: "{{ 'true' if ansible_facts.os_family != \"Darwin\" else 'false' }}"
+
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
@@ -118,12 +118,14 @@
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
+
     - name: '[Darwin]'
       community.general.homebrew:
         name:
           - wireguard-tools
       become: false
       when: ansible_facts.os_family == 'Darwin'
+
 
 - name: Administration tools
   block:
@@ -133,6 +135,7 @@
           - mosh
           - tmux
       become: '{{ package_manager_become }}'
+
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
@@ -185,26 +188,29 @@
   become: false
 
 
-- name: Install privacy tools
+- name: Privacy tools
   block:
     - name: '[Darwin / Debian/Ubuntu]'
       ansible.builtin.package:
         name:
           - coreutils                     # `shred`
           - openssl
+
     - name: '[Debian/Ubuntu]'
       ansible.builtin.apt:
         name:
           - gnupg                         # Encryption & signing tool
         state: present
       when: ansible_facts.os_family != 'Darwin'
+
     - name: '[Darwin]'
       community.general.homebrew:
         name:
           - gpg
       become: false
       when: ansible_facts.os_family == 'Darwin'
-    - name: '[Darwin] Install homebrew package'
+
+    - name: '[Darwin]'
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:          # TODO: Add flatpak counterpart 4 linux & check whether VM
@@ -292,6 +298,7 @@
           - parallel                      # NOTE: Installs also `parallel` like `moreutils`  (but seems 2 be newer version)
           - pv
       become: '{{ package_manager_become }}'
+
     - name: '[Ubuntu/Debian]'
       ansible.builtin.apt:
         name:
@@ -300,6 +307,7 @@
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
+
     - name: '[Darwin]'
       community.general.homebrew:
         name:
