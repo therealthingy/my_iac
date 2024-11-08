@@ -154,12 +154,6 @@
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
-    - name: '[Darwin]'
-      community.general.homebrew:
-        name:
-          - terminal-notifier
-      become: false
-      when: ansible_facts.os_family == 'Darwin'
 
 
 - name: Install oh-my-tmux
@@ -269,22 +263,6 @@
       when:
         - 'hypervisor is not defined or not hypervisor'
         - ansible_facts.os_family == 'Darwin'               # TODO: Add Ubuntu
-
-    - name: '[Darwin]'
-      block:
-        - name: Install fuse-t
-          block:
-            - name: Add homebrew tap
-              community.general.homebrew_tap:
-                name: macos-fuse-t/homebrew-cask
-            - name: Install
-              community.general.homebrew_cask:
-                name: fuse-t
-                state: latest
-        # …
-      when:
-        - ansible_facts.os_family == 'Darwin'
-        - false                           # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DISABLED 4 NOW DUE 2 BUGINESS
   become: '{{ package_manager_become }}'
 
 
