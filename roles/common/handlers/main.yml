@@ -18,16 +18,3 @@
   command: /usr/sbin/dpkg-reconfigure -f noninteractive keyboard-configuration
   become: true
   when: ansible_os_family == 'Debian'
-
-
-
-- name: rebuild fonts cache
-  block:
-    - name: rebuild fonts cache
-      ansible.builtin.shell: 'fc-cache -v -f'
-      when: ansible_facts.os_family != 'Darwin'
-    - name: rebuild fonts cache
-      ansible.builtin.debug:
-        msg: …
-      when: ansible_facts.os_family == 'Darwin'
-  become: true
