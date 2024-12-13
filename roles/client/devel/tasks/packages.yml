@@ -18,6 +18,10 @@
       when: ansible_facts.os_family != 'Darwin'
 
 
+- name: Install VSCodium
+  ansible.builtin.include_tasks: package-vscodium.yml
+
+
 - name: Install GUI hexeditor
   block:
     - name: '[Darwin] Install homebrew packages'

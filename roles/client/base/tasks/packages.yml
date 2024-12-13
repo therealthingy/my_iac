@@ -148,10 +148,6 @@
           - ocrmypdf              # NOTE: Based on tesseract (and its lang packs -> e.g., `ocrmypdf -l eng+deu …`)
           - img2pdf
 
-    - name: '[Debian/Ubuntu] Install vscodium'
-      ansible.builtin.include_tasks: linux/package-vscodium.yml
-      when: ansible_facts.os_family != 'Darwin'
-
     - name: '[Darwin] Install homebrew packages'
       ansible.builtin.include_tasks: darwin/homebrew_casks.yml
       vars:
@@ -165,9 +161,6 @@
             packages:
               - geogebra
 #              - softmaker-freeoffice
-          - dir: Development/Editors                                # … as 'general purpose' text editor
-            packages:
-              - vscodium
   become: '{{ package_manager_become }}'
 
 - name: Install internet related stuff
@@ -200,7 +193,7 @@
             filename: brave-browser-release
             state: present
             update_cache: true
-        - name: Brave-  Install it
+        - name: Brave - Install it
           ansible.builtin.package:
             name: brave-browser
       become: true
