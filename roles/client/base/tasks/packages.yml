@@ -109,7 +109,7 @@
     - name: '[Darwin]'
       community.general.homebrew:
         name:
-          - ddcctl                 # DDC monitor controls for the OSX command line
+#          - ddcctl                 # DDC monitor controls for the OSX command line
           - trash
           - mas                    # Mac App Store CLI tool
       become: false
