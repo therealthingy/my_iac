@@ -647,7 +647,7 @@ path-add "/opt/homebrew/opt/llvm/bin" "before"          # "Replace" AppleClang
 #path-add "/opt/homebrew/opt/sphinx-doc/bin" "before"
 {% endif %}
 {% if 'clients_devel' in group_names or 'servers_devel' in group_names %}
-path-add "$HOME/.cargo/bin" "after"
+[ -f ~/.cargo/env ] && source $HOME/.cargo/env
 {% endif %}
 {% if 'clients_devel' in group_names or 'servers_devel' in group_names   or
       'clients_workstation' in group_names %}

@@ -202,43 +202,57 @@
         mode: 0644
       become: false
 
-    # TODO: Switch 2 `rustup`   +  install clippy
     - name: Rust toolchain
       block:
-        - name: Ensure cargo bin dir exists    # (2 avoid shell errors)
-          ansible.builtin.file:
-            path: '{{ os_homedir }}/{{ user.name }}/.cargo/bin/'
-            owner: '{{ user.name }}'
-            group: '{{user.group_name}}'
-            state: directory
-            mode: 0775
-        - name: "Check installed via `rustup`"
-          ansible.builtin.command: 'which {{ os_homedir }}/{{ user.name }}/.cargo/bin/rustup'
-          failed_when: false
-          changed_when: false
-          check_mode: false
-          register: result_rustup_command
-        - name: Install
+        - name: check if cargo is installed
+          ansible.builtin.shell: command -v cargo
+          ignore_errors: true
+          register: cargo_exists
+        - name: Install rustup + -toolchain
           block:
-            - name: '[Debian/Ubuntu]'
-              ansible.builtin.apt:
-                name:
-                  - rustc
-                  - cargo
-                  - rustfmt               # NOTE: Already "recommended" by `cargo` package
-              when: ansible_facts.os_family != 'Darwin'
-            - name: '[Darwin]'
-              community.general.homebrew:
-                name:
-                  - rust
-                  - rust-analyzer         # TODO: Install also on Debian
-                  - rustfmt
-              become: false
-              when: ansible_facts.os_family == 'Darwin'
-          when: result_rustup_command.rc == 1
+            - ansible.builtin.get_url:
+                url: https://sh.rustup.rs
+                dest: /tmp/sh.rustup.rs
+                mode: '0755'
+                force: true
+            - ansible.builtin.shell: /tmp/sh.rustup.rs -y --profile default -c rust-analyzer miri
+          when: cargo_exists is failed
       become: false
-
   become: true
+
+
+
+- name: Install G00g13 bazel
+  block:
+    - name: '[Ubuntu/Debian]'
+      block:
+        - name: bazel - Install dependencies
+          ansible.builtin.apt:
+            update_cache: true
+            name:
+              - apt-transport-https
+              - curl
+              - gnupg
+        - name: bazel - Add apt signing key
+          ansible.builtin.apt_key:
+            url: https://bazel.build/bazel-release.pub.gpg
+            keyring: /usr/share/keyrings/bazel-archive-keyring.gpg
+            state: present
+        - name: bazel - Add apt repo and update cache
+          ansible.builtin.apt_repository:
+            repo: "deb [arch={{ deb_cpu_arch }} signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8"
+            filename: bazel
+            state: present
+            update_cache: true
+      become: true
+      when:
+        - ansible_facts.os_family != 'Darwin'
+    - name: Install it
+      ansible.builtin.package:
+        name: bazel
+      become: '{{ package_manager_become }}'
+  when:
+    - not (ansible_facts.os_family != 'Darwin' and ansible_architecture != 'x86_64')  # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED
 
 
 
@@ -285,40 +299,6 @@
 #  when:
 #    - not ansible_facts.os_family == 'Darwin'     # DON'T install on Darwin atm
 #    - not (ansible_facts.os_family != 'Darwin' and ansible_architecture != 'x86_64')  # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED
-
-
-
-- name: Install G00g13 bazel
-  block:
-    - name: '[Ubuntu/Debian]'
-      block:
-        - name: bazel - Install dependencies
-          ansible.builtin.apt:
-            update_cache: true
-            name:
-              - apt-transport-https
-              - curl
-              - gnupg
-        - name: bazel - Add apt signing key
-          ansible.builtin.apt_key:
-            url: https://bazel.build/bazel-release.pub.gpg
-            keyring: /usr/share/keyrings/bazel-archive-keyring.gpg
-            state: present
-        - name: bazel - Add apt repo and update cache
-          ansible.builtin.apt_repository:
-            repo: "deb [arch={{ deb_cpu_arch }} signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8"
-            filename: bazel
-            state: present
-            update_cache: true
-      become: true
-      when:
-        - ansible_facts.os_family != 'Darwin'
-    - name: Install it
-      ansible.builtin.package:
-        name: bazel
-      become: '{{ package_manager_become }}'
-  when:
-    - not (ansible_facts.os_family != 'Darwin' and ansible_architecture != 'x86_64')  # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED
 
 
 #- name: Install Intel Pin Tools
