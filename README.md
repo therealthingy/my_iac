@@ -2,6 +2,8 @@
 
 
 ## TODOs
+- RPI: Replace [`timeshift-autosnap-apt`](https://github.com/wmutschl/timeshift-autosnap-apt/tree/main) w/ [`apt-btrfs-snapshot`](https://packages.ubuntu.com/search?keywords=apt-btrfs)
+
 - Ubuntu HELIX LSPs
 
 - macOS: FIX lscolors
