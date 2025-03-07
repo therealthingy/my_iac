@@ -172,7 +172,7 @@
           - dir: Internet/Browsers
             packages:
               - brave-browser
-              - librewolf                                      # TODO: `xattr -d "com.apple.quarantine" /Applications/Internet/Browsers/LibreWolf.app`
+#              - librewolf                                      # TODO: `xattr -d "com.apple.quarantine" /Applications/Internet/Browsers/LibreWolf.app`
               - tor-browser
 
     - name: '[Debian/Ubuntu] Install flatpak packages'         # TODO: Add mac counterparts & check whether VM
