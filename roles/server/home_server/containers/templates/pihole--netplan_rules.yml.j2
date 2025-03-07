@@ -9,9 +9,17 @@ network:
 
   ethernets:
     {{ pihole.if }}:
-        dhcp4: false
-        addresses:
-          - {{ pihole.ipv4 }}
-          - {{ pihole.ipv6_ula }}   # Add unique local IPv6 addresses  (equivalent command (4 adding IPv6 address): `sudo ip addr add {{ pihole.ipv6_ula }} dev {{ pihole.if }}`)
-        nameservers:
-          addresses: [{{ dns_servers|join(',') }}]
+      match:
+        macaddress: {{ pihole.if_mac_id }}
+
+      set-name: {{ pihole.if }}
+
+      critical: true
+      ignore-carrier: true
+
+      dhcp4: false
+      addresses:
+        - {{ pihole.ipv4 }}
+        - {{ pihole.ipv6_ula }}   # Add unique local IPv6 addresses  (equivalent command (4 adding IPv6 address): `sudo ip addr add {{ pihole.ipv6_ula }} dev {{ pihole.if }}`)
+      nameservers:
+        addresses: [{{ dns_servers|join(',') }}]
