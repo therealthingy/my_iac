@@ -105,19 +105,19 @@
       block:
         # VERIFY: `networkctl status`
         - ansible.builtin.template:
-           src: if--netplan_rules.yml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
+           src: if--netplan_rules.yaml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
            dest: /etc/netplan/999-server_if.yaml
            mode: 0600
 
-        # NOTE: IPv6:
-        #   - `net.ipv6.conf.<interface>.temp_valid_lft`:  Default: 604800 (7 days)
-        #   - `   "        "            .temp_prefered_lft`: Default: 86400 (1 day)
-        #   - `   "        "            .use_tempaddr`: Preference 4 *Privacy Extensions* (0 = disabled, 1 = enabled, but prefer public, > 1 = enable, but prefer temporary)
-        - name: Netplan workaround unsupported settings     # TODO: Merge in netplan once supported (or remove if default no longer causes ULA 2 be removed)
-          ansible.posix.sysctl:
-            name: 'net.ipv6.conf.{{ pif.if_name }}.temp_valid_lft'   # Otherwise ULA gets removed ??
-            value: 129600
-            state: present
+#        # NOTE: IPv6:
+#        #   - `net.ipv6.conf.<interface>.temp_valid_lft`:  Default: 604800 (7 days)
+#        #   - `   "        "            .temp_prefered_lft`: Default: 86400 (1 day)
+#        #   - `   "        "            .use_tempaddr`: Preference 4 *Privacy Extensions* (0 = disabled, 1 = enabled, but prefer public, > 1 = enable, but prefer temporary)
+#        - name: Netplan workaround unsupported settings     # TODO: Merge in netplan once supported (or remove if default no longer causes ULA 2 be removed)
+#          ansible.posix.sysctl:
+#            name: 'net.ipv6.conf.{{ pif.if_name }}.temp_valid_lft'   # Otherwise ULA gets removed ??
+#            value: 129600
+#            state: present
       notify: Applying Netplan Configuration
       when: 'pif is defined'
   become: true
