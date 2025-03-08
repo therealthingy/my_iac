@@ -112,6 +112,21 @@
   become: true
 
 
+## TODO:  SEE ALSO:
+##   - https://github.com/raspberrypi/Raspberry-Pi-OS-64bit/issues/178
+##   - https://forums.raspberrypi.com/viewtopic.php?t=305820
+##  ALTERNATIVELY: `sudo ethtool --set-eee eth0 eee off`  //  VALIDATE: `sudo ethtool --show-eee eth0`
+#- name: Fix unreliable ethernet due 2 EEE
+#  ansible.builtin.lineinfile:
+#    dest: '{{ firmware_config_file }}'
+#    regexp: '^(#)?dtparam={{ item.key }}={{ item.value }}'
+#    line: 'dtparam={{ item.key }}={{ item.value }}'
+#  with_items:
+#    - key: 'eee'
+#      value: 'off'
+#  become: true
+
+
 - name: Optimize scheduler 4 server workloads
   block:
 # TODO: MV 2 server role  +  check whether target host is in group *-client
