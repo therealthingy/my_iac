@@ -346,7 +346,7 @@
               - appcleaner
               - omnidisksweeper
               - onyx
-#              - aldente                   # TODO
+              - aldente
 
 
 - name: Install virtualization tools
@@ -370,7 +370,7 @@
           - dir: Misc
             packages:
               - apparency
-              - istat-menus
+#              - istat-menus
               - prefs-editor
               - qlmarkdown
               - raycast
