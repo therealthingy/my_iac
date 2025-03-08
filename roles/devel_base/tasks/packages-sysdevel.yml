@@ -16,7 +16,6 @@
               - lcov
             # Build tools/Compilers:
               - gcc
-              - llvm                  # `clangd`, `llvm-symbolizer`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
               - cmake
               - autoconf              # Tool 4 producing configure script 4 building, installing & packing SW
               - automake              # Automates parts of the compilation process
@@ -51,13 +50,6 @@
             # Compilers, static analysis tools, …:
               - manpages-dev
               - build-essential       # Includes GDB, g++/GNU compiler collection, & some tools (`make`) & libraries required 2 compile a program
-              - clang
-              - clang-tools           # Includes `clang-check`~~, `clang-format` & `clang-tidy`~~
-              - clang-tidy
-              - clang-format
-              - clangd                # LSP
-              - libc++-dev            # LLVM's C++ stdlib (alternative 2 GNU's libstdc++)
-              - libc++abi-dev
             # Build tools:
 #              - gcc-multilib          # Mechanism 4 building & running code 4 different ABIs 4 the same CPU family on a given system;
 #                                      # Most commonly used 2 support 32-bit code on 64-bit systems and 64-bit code on 32-bit systems w/ a 64-bit kernel
@@ -67,7 +59,6 @@
             # Debuggers & Tools
               - dwarves               # `pahole` (alignment of data structures => CPU CL), `codiff` (compare effects of src changes in bin files), `pfunct`, `pdwtags` (print DWARF info), …
               - gdb
-              - lldb
               #- gstack              # TODO: Not available 4 Ubuntu -- Wrapper around `gdb` 4 peeking into process's stack
               - bpftrace
               - strace
@@ -121,9 +112,9 @@
               - cscope                # Interactive, text screen based source browsing tool
               - indent                # Format C code 2 follow kernel "styleguide"
             #  - Rust (LKM) deps:
-              - llvm-dev
-              - libclang-dev
-              - lld
+#              - llvm-dev
+#              - libclang-dev
+#              - lld
             # - "Convenience" tools:
               - exuberant-ctags       # Parses code, producing an index mapping the names of significant entities
             # - Static analysis:
@@ -222,6 +213,49 @@
       become: false
   become: true
 
+
+- name: Install llvm
+  block:
+    - name: '[Darwin]'
+      ansible.builtin.package:
+        name:
+          - llvm                  # `clangd`, `llvm-symbolizer`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
+      when: ansible_facts.os_family == 'Darwin'
+    - name: '[Debian/Ubuntu]'
+      block:
+        - name: Install llvm repo version              # TODO: REVISE   (automatically install latest)
+          block:
+            - name: Check installed
+              ansible.builtin.command: which 'clang-{{ llvm_version }}'
+              failed_when: false
+              changed_when: false
+              check_mode: false
+              register: llvm_clang_command_result
+            - name: DL
+              ansible.builtin.get_url:
+                url: https://apt.llvm.org/llvm.sh
+                dest: /tmp/llvm.sh
+                mode: 0775
+              when: llvm_clang_command_result.rc == 1
+            - name: Install
+              ansible.builtin.command: "/tmp/llvm.sh {{ llvm_version }} all"
+              when: llvm_clang_command_result.rc == 1
+          when: llvm_install_distro_version == False
+        - name: Install distro version
+          ansible.builtin.package:
+            name:
+              - llvm
+              - clang
+              - clang-tools           # Includes `clang-check`~~, `clang-format` & `clang-tidy`~~
+              - clang-tidy
+              - clang-format
+              - clangd                # LSP
+              - libc++-dev            # LLVM's C++ stdlib (alternative 2 GNU's libstdc++)
+              - libc++abi-dev
+              - lldb
+          when: llvm_install_distro_version == True
+      when: ansible_facts.os_family != 'Darwin'
+  become: '{{ package_manager_become }}'
 
 
 - name: Install G00g13 bazel
