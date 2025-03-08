@@ -214,7 +214,7 @@
             packages:
               - cryptomator
           - packages:                      # Need 2 be in base-dir
-            - little-snitch
+            - little-snitch@5
 #            - tunnelblick
 
     - name: '[Darwin] hblock'
