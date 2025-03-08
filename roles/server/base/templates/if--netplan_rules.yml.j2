@@ -1,0 +1,45 @@
+---
+{{ ansible_managed|comment }}
+{# REFERENCE: https://netplan.readthedocs.io/en/latest/netplan-yaml/ #}
+network:
+  version: 2
+  renderer: networkd
+
+  ethernets:
+    {{ pif.if_name }}:
+      # NIC identification
+      match:
+        macaddress: {{ pif.if_match_mac }}
+      set-name: {{ pif.if_name }}
+
+      # "Operational settings"
+      critical: true
+      ignore-carrier: true
+
+      # DNS
+      nameservers:
+        addresses: [{{ pif.dns_servers|join(',') }}]
+
+      # Static ip-addr
+      addresses:
+        - {{ pif.ipv4 }}
+        - {{ pif.ipv6_ula }}   # Add unique local IPv6 addresses  (equivalent command (4 adding IPv6 address): `sudo ip addr add {{ pif.ipv6_ula }} dev {{ pif.if_name }}`)
+
+      # Disable DHCP
+      dhcp4: false
+
+      # IPv6 stuff
+      dhcp6: false
+      accept-ra: true
+
+{#      ipv6-address-generation: eui64 #}
+      ipv6-address-token: '::{{ pif.ipv6_ula[20:-3] }}'   # Equivalent cmd: `ip token set {{ pif.ipv6_ula[20:-3] }} dev eth0;      NOTE: will also affect ULA addr.s  (`pif.ipv6_ula`)
+
+      # TODO: ENABLE AGAIN ONCE SOLUTION HAS BEEN FOUND
+      #   - PROBLEM (when using UDP + PE):
+      #     - Client sends request 2 static IPv6 address
+      #     - Server responds w/ PE IPv6 address
+      #   - WORKAROUNDs:
+      #     - Bind 2 socket (via `<static-ipv6>:port/udp` in docker-compose)  => CON: IPv6 prefix MIGHT change
+      #     - Disable IPv6 PE  => CON: Privacy reduced
+      ipv6-privacy: false

@@ -1,26 +1,16 @@
 ---
 #
 # TODO: KNOWN ISSUES:
-#   - No IPv6 Privacy Extensions (SEE vpn--netplan_rules.yml.j2)
+#   - No IPv6 Privacy Extensions (SEE if--netplan_rules.yml.j2)
 #   - wireguard-ui BUG: ALL clients must be created BEFORE the initial 'apply config' + first restart (via `docker compose down` & `up` again)  (otherwise the newly created client (after the initial 'apply config') isn't considered ??!)
 #
-- name: Networking
-  block:
-    # VERIFY: `networkctl status`
-    - name: "[netplan] Add 'stable' global IPv6 addr"
-      ansible.builtin.template:
-        src: vpn--netplan_rules.yml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
-        dest: /etc/netplan/10-wireguard_vpn.yaml
-        mode: 0600
-      notify: Applying Netplan Configuration
-      when: ansible_facts.distribution == 'Ubuntu'
-    # VERIFY: `sudo lsmod |grep ip6table_filter`
-    # EQUIVALENT COMMAND: `sudo modprobe <module>` & adding entry in `/etc/modules` (or `/etc/modprobe.d/`)
-    - name: Add kernel module 4 IPv6 connectivity
-      community.general.modprobe:
-        name: ip6table_filter
-        state: present
-        persistent: present
+# VERIFY: `sudo lsmod |grep ip6table_filter`
+# EQUIVALENT COMMAND: `sudo modprobe <module>` & adding entry in `/etc/modules` (or `/etc/modprobe.d/`)
+- name: Add kernel module 4 IPv6 connectivity
+  community.general.modprobe:
+    name: ip6table_filter
+    state: present
+    persistent: present
   become: true
 
 
