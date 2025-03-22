@@ -9,7 +9,7 @@
             packages_homebrew_casks:         # TODO: Add `flatpak` counterparts 4 linux & check whether VM
               - dir: Audio
                 packages:
-                  - mediahuman-audio-converter
+#                  - mediahuman-audio-converter
 #                  - musicbrainz-picard
                   - ocenaudio
 #                  - xld                                              # TODO

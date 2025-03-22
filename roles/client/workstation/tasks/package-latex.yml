@@ -45,6 +45,7 @@
       ansible.builtin.include_tasks: package-latex-install_globally.yml
       vars:
         latex_package: latexmk
+
     - name: Install + configure auto-reloading pdf reader
       block:
         - name: '[Debian/Ubuntu]'

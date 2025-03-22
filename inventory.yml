@@ -42,6 +42,22 @@ all:
     clients_workstation:
       hosts:
         local_mac:
+          hblock:
+            allow:
+              - exe.io
+              - wl.spotify.com
+            block:
+              - superimad.com
+            overwrite:
+              - host_ips: [10.38.170.1]
+                domains: ['fritz.box']
+              - host_ips:
+                  - 10.38.170.2
+#                  - fd4b:49fb:a80c:29ba:40b3:8c93:9122:52c7
+                domains:
+                  - 'l0-rpi0'
+                  - 'l0-rpi0-pre'
+
 
   # -  "Headless" systems  -
     servers:
