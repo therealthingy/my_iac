@@ -16,9 +16,9 @@
       ansible.builtin.package:
         name:
           - graphviz              # TODO: Apparently required by kcachegrind  ??
-          - flashrom
-          - jq
-          - httpie                   # Human-friendly HTTP client for the API era
+#          - flashrom
+#          - jq
+#          - httpie                   # Human-friendly HTTP client for the API era
       become: '{{ package_manager_become }}'
 #    - name: '[Debian/Ubuntu]'
 #      ansible.builtin.apt:
