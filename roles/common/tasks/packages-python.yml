@@ -24,17 +24,12 @@
 
 
 - name: Update alternatives
-  block:
-    - name: Switch to python3
-      community.general.alternatives:
-        name: python
-        link: /usr/bin/python
-        path: /usr/bin/python3
-
-    - name: Switch to pip3
-      community.general.alternatives:
-        name: pip
-        link: /usr/bin/pip
-        path: /usr/bin/pip3
+  community.general.alternatives:
+    name: "{{ item }}"
+    link: "/usr/bin/{{ item }}"
+    path: "/usr/bin/{{ item }}3"
+  with_items:
+    - python
+    - pip
   become: true
   when: ansible_facts.os_family != 'Darwin'

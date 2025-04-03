@@ -242,17 +242,16 @@
               ansible.builtin.command: "/tmp/llvm.sh {{ llvm_version }} all"
               when: llvm_clang_command_result.rc == 1
             - name: Set as default
-              block:
-                - name: clang
-                  community.general.alternatives:
-                    name: clang
-                    link: /usr/bin/clang
-                    path: "/usr/bin/clang-{{ llvm_version }}"
-                - name: clang++
-                  community.general.alternatives:
-                    name: clang++
-                    link: /usr/bin/clang++
-                    path: "/usr/bin/clang++-{{ llvm_version }}"
+              community.general.alternatives:
+                name: "{{ item }}"
+                link: "/usr/bin/{{ item }}"
+                path: "/usr/bin/{{ item }}-{{ llvm_version }}"
+              with_items:
+                - clang
+                - clang++
+                - clangd
+                - clang-format
+                - clang-tidy
               become: true
           when: llvm_install_distro_version == False
 
