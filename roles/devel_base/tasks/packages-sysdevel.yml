@@ -220,6 +220,7 @@
       ansible.builtin.package:
         name:
           - llvm                  # `clangd`, `llvm-symbolizer`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
+          - lld
       when: ansible_facts.os_family == 'Darwin'
     - name: '[Debian/Ubuntu]'
       block:
