@@ -1,10 +1,18 @@
 ---
 - name: Install Java stuff
-  ansible.builtin.apt:
-    update_cache: true
-    name:
-      - default-jdk                  # OpenJDK
-      - maven
-      # TODO: Gradle
-    state: present
-  become: true
+  block:
+    - name: '[Darwin]'
+      ansible.builtin.package:
+        name:
+          - openjdk
+      when: ansible_facts.os_family == 'Darwin'
+
+    - name: '[Debian/Ubuntu]'
+      ansible.builtin.apt:
+        name:
+          - default-jre                   # Required 4 SonarCube VSCodium extension
+#          - default-jdk                  # OpenJDK
+#          - maven
+#          TODO: Gradle
+      when: ansible_facts.os_family != 'Darwin'
+  become: '{{ package_manager_become }}'
