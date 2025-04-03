@@ -9,8 +9,8 @@
   ansible.builtin.template:
     src: '{{ config_file.src }}.j2'
     dest: '{{ config_file.dest_dir }}/{{ config_file.src }}'
-    owner: '{{ config_file.owner }}'
-    group: '{{ config_file.group }}'
+#    owner: '{{ config_file.owner }}'
+#    group: '{{ config_file.group }}'
     mode: 0755
   with_items:
     - src: 'git-update_repos'
@@ -19,4 +19,4 @@
 #      group: '{{ user.group_name }}'
   loop_control:
     loop_var: config_file
-  become: '{{ package_manager_become }}'
+  become: true

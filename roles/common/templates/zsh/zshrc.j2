@@ -188,7 +188,7 @@ history-clear() {
 # Checks & adds path to `PATH` variable if path exists (warns otherwise that path doesn't exist)
 #
 # @param 1: Path to be added to PATH var
-# @param 2: Defines whether new path should be preprended or appended (by using 'after')
+# @param 2: Defines whether new path should be prepended or appended (by using 'after')
 #
 path-add() {
     newelement=${1%/}
@@ -631,27 +631,26 @@ fi
 
 # - PATH
 {% if ansible_facts.os_family != 'Darwin' %}
-# NOTE: 4 some inexplicable reason, those paths are already in $PATH on Ubuntu, but NOT on Debian
+# NOTE: 4 some inexplicable reason, those paths are "present" in on Ubuntu, but NOT on Debian
 path-add "/usr/local/sbin"     "after"
 path-add "/usr/sbin"           "after"
 path-add "/sbin"               "after"
 {% else %}
-#path-add "$HOME/.gem/ruby/2.6.0/bin" "before"
+{%   if 'clients_devel' in group_names or 'servers_devel' in group_names %}
+
+path-add "/opt/homebrew/opt/llvm/bin" "before"
+#path-add "/opt/homebrew/opt/sphinx-doc/bin" "before"
+{%   endif %}
 {%   if 'client_workstation' in group_names %}
+
 path-add "/Library/TeX/texbin/" "after"
 {%   endif %}
-{%   if 'clients_devel' in group_names or 'servers_devel' in group_names %}
-# `clang-format` & `clang-tidy`   (CHECK VIA: `brew --prefix llvm`)
-path-add "/opt/homebrew/opt/llvm/bin" "before"          # "Replace" AppleClang
-{%   endif %}
-#path-add "/opt/homebrew/opt/sphinx-doc/bin" "before"
 {% endif %}
 {% if 'clients_devel' in group_names or 'servers_devel' in group_names %}
+
 [ -f ~/.cargo/env ] && source $HOME/.cargo/env
 {% endif %}
-{% if 'clients_devel' in group_names or 'servers_devel' in group_names   or
-      'clients_workstation' in group_names %}
+{% if 'clients_devel' in group_names or 'servers_devel' in group_names   or  'clients_workstation' in group_names %}
 
 path-add "$HOME/bin" "before"
-#path-add "$HOME/.npm-global/bin" "before"
 {% endif %}
