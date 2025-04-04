@@ -162,7 +162,7 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 
 
-# =====================================   Function(I)- / Alias Definitions   ======================================
+# =====================================  Function(I)- / Alias Definitions  ======================================
 
 ####
 # Checks & adds path to `PATH` variable if path exists (warns otherwise that path doesn't exist)
@@ -232,9 +232,9 @@ alias-add() {
     done
 }
 
-# ===========================   Alias Definitions   ===========================
+# ===========================  Alias Definitions  ===========================
 #  TODO: SHOULD be in '.zshenv'
-# - 'Default' commands -
+# -  'Default' commands  -
 alias sudo='sudo '                 # ELABORATION: The trailing space makes the shell try alias expansion on the next word
                                    #              (fixes issue: "sudo: ll: command not found")
 {% if ansible_facts.os_family == 'Darwin' %}
@@ -245,7 +245,7 @@ alias stat='stat -x'
 alias mv='mv -i'
 alias cp='cp -i'
 
-# - Shortcuts -
+# -  Shortcuts  -
 #alias zsh-update="source ~/.zshrc"
 
 alias d='dirs -v | head -10'    # USAGE: cd ~<number> -or- enter <number> directly
@@ -255,7 +255,7 @@ alias ll='ls -lhF {{ "--color=auto" if ansible_facts.os_family != "Darwin" else 
 
 {% if ansible_facts.os_family == 'Darwin' %}
 {%   if cpu_arch == 'arm64' %}
-# -- ( "fix" homebrew (due 2 ARM) PATH ) --
+# --  ( "fix" homebrew (due 2 ARM) PATH )  --
 {%     set HOMEBREW_PREFIX = "/opt/homebrew" %}
 path-add '{{ HOMEBREW_PREFIX }}/sbin' "before"
 path-add '{{ HOMEBREW_PREFIX }}/bin' "before"
@@ -277,7 +277,7 @@ alias inet-pip="echo 'Public IP:' && curl -4 icanhazip.com && curl -6 icanhazip.
 
 {% if ansible_facts.os_family != 'Darwin' %}
 {%   if ansible_facts.os_family == 'Debian' %}
-# - apt -
+# -  apt  -
 alias agi='sudo apt-get install' #<packages>
 alias agu='sudo apt-get update'
 alias ags='sudo apt-cache search' #<string-in-package-name-or-descr>
@@ -288,7 +288,7 @@ alias agc='sudo apt-get clean'
 alias agac='sudo apt-get autoclean'
 alias agud='agu && agd'
 
-# - `journalctl` -
+# -  `journalctl`  -
 # jlog: current boot only, everything
 alias jlog='/bin/journalctl -b --all --catalog --no-pager'
 # jlogr: current boot only, everything, *reverse* chronological order
@@ -302,7 +302,7 @@ alias jlogk='journalctl -b -k --no-pager'
 {%   endif %}
 
 {%   if hw_is_rpi == True %}
-# --- RPi specific ---
+# ---  RPi specific  ---
 alias temp='vcgencmd measure_temp'
 {%   endif %}
 
@@ -324,23 +324,23 @@ alias backup_poweroff="sudo sh -c 'tmutil startbackup --block && shutdown -h +1'
 alias pb-text_2_lower='echo $(pbpaste) | tr "[A-Z]" "[a-z]" | pbcopy'
 alias pb-text_2_upper='echo $(pbpaste) | tr "[a-z]" "[A-Z]" | pbcopy'
 
-# - "Emulated" GNU/Linux commands -
+# -  "Emulated" GNU/Linux commands  -
 alias poweroff='/sbin/shutdown -h now'
 alias reboot='/sbin/shutdown -r now'
 {% endif %}
 
 
 
-# --- Installed Tools  ---
-# - pipx -
+# ---  Installed Tools  ---
+# -  pipx  -
 path-add "$HOME/.local/bin" "after"
 
 {% if ansible_facts.os_family != 'Darwin' %}
-# - dmesg -
+# -  dmesg  -
 alias dmesg='/bin/dmesg --decode --nopager --color --ctime'
 {% endif %}
 
-# - `git` -
+# -  git  -
 alias-add git git-diff='git diff -r'
 alias-add git git-files='git diff --name-status -r'
 alias-add git git-stat='git status ; echo ; git diff --stat -r'
@@ -349,21 +349,24 @@ alias-add git git-log='git log --graph --pretty=format:"%h: %ar: %s" --abbrev-co
 
 {% if 'clients_media' in group_names    or
       ansible_facts.os_family == 'Darwin' %}
-# - `yt-dlp` -
-alias-add yt-dlp video-dl="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best' -o '%(title)s [%(id)s].mp4'"\
-                 audio-dl="yt-dlp -f 'bestaudio[ext=m4a]' -o '%(title)s [%(id)s].%(ext)s'"
-alias-add video-dl video-dl-channel="video-dl  -o '%(channel)s - %(title)s [%(id)s].mp4'"
-alias-add video-dl video-dl-workaround_fname="video-dl -o '%(title).200s [%(id)s].mp4'"    # TODO: WORKAROUND ( SEE: https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195
-                                                                                           #                         https://github.com/ytdl-org/youtube-dl/pull/29989 )
+# -  yt-dlp  -
+{%   set YT_DLP_VIDEO_FORMAT = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" %}
+# TODO: WORKAROUND 4 "[Errno 36] File name too long":  '%(title).200s
+#   - https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195
+#   - https://github.com/ytdl-org/youtube-dl/pull/29989
+{%   set YT_DLP_WORKAROUND_FNAME_MAX_TITLE_LEN = 200 %}
+alias-add yt-dlp video-dl="yt-dlp -f '{{ YT_DLP_VIDEO_FORMAT }}' -o '%(title).{{ YT_DLP_WORKAROUND_FNAME_MAX_TITLE_LEN }}s [%(id)s].mp4'"\
+                 video-dl-channel="yt-dlp -f '{{ YT_DLP_VIDEO_FORMAT }}' -o '%(channel)s - %(title).{{ YT_DLP_WORKAROUND_FNAME_MAX_TITLE_LEN }}s [%(id)s].mp4'"\
+                 audio-dl="yt-dlp -f 'bestaudio[ext=m4a]' -o '%(title).{{ YT_DLP_WORKAROUND_FNAME_MAX_TITLE_LEN }}s [%(id)s].%(ext)s'"
 {% endif %}
 
 {% if ansible_facts.os_family == 'Darwin' %}
-# - `hblock` -
+# -  hblock  -
 alias-add hblock hblock-enable="hblock -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list"
 alias-add hblock hblock-disable="hblock -S none -D none"
 {% endif %}
 
-# - Replace existing commands -
+# -  Replace existing commands  -
 alias-add pigz gzip='pigz' gunzip='unpigz'
 alias-add pbzip2 bzip2='pbzip2' # bunzip2='pbunzip2' bzcat='pbzcat'
 {% if ansible_facts.os_family == 'Darwin' %}
@@ -538,7 +541,7 @@ fi
       ansible_facts.os_family == 'Darwin' %}
 {%   set DEFAULT_OUTPUT_FNAME = "output-$(date +'%F-%H_%m_%S')" %}
 {%   set FILE_NOT_FOUND_MSG = "File(s) not found" %}
-# - `ffmpeg` -
+# -  ffmpeg  -
 if command -v ffmpeg > /dev/null; then
     mp4-merge_video_audio_stream () {
         local video_stream=${1:?"The 'video_stream' may be specified."}
@@ -633,7 +636,7 @@ fi
 {% endif %}
 
 
-# - PATH
+# -  PATH  -
 {% if ansible_facts.os_family == 'Darwin' %}
 {%   if 'clients_devel' in group_names or
         'servers_devel' in group_names %}
