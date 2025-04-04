@@ -243,15 +243,17 @@
               when: llvm_clang_command_result.rc == 1
             - name: Set as default
               community.general.alternatives:
-                name: "{{ item }}"
-                link: "/usr/bin/{{ item }}"
-                path: "/usr/bin/{{ item }}-{{ llvm_version }}"
+                name: "{{ symlink }}"
+                link: "/usr/bin/{{ symlink }}"
+                path: "/usr/bin/{{ symlink }}-{{ llvm_version }}"
               with_items:
                 - clang
                 - clang++
                 - clangd
                 - clang-format
                 - clang-tidy
+              loop_control:
+                loop_var: symlink
               become: true
           when: llvm_install_distro_version == False
 
@@ -259,6 +261,7 @@
           ansible.builtin.package:
             name:
               - llvm
+              - lldb
               - clang
               - clang-tools           # Includes `clang-check`~~, `clang-format` & `clang-tidy`~~
               - clang-tidy
@@ -266,7 +269,6 @@
               - clangd                # LSP
               - libc++-dev            # LLVM's C++ stdlib (alternative 2 GNU's libstdc++)
               - libc++abi-dev
-              - lldb
           when: llvm_install_distro_version == True
       when: ansible_facts.os_family != 'Darwin'
   become: '{{ package_manager_become }}'

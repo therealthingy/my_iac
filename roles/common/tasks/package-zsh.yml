@@ -97,3 +97,11 @@
     name: '{{ user.name }}'
     shell: /bin/zsh
   become: true
+
+
+# GNU/Linux: `/etc/environment`, `/etc/profile.d`
+# ( NOTE: Darwin: `/etc/paths`, `/etc/paths.d/` )
+# TODO: Add the following paths on Debian (which are "present" on Ubuntu)
+#   - /usr/local/sbin
+#   - /usr/sbin
+#   - /sbin

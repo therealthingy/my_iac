@@ -139,15 +139,15 @@ fi
 # - Completions
 autoload -Uz compinit && compinit
 
-{% if ansible_facts.os_family == 'Darwin' and
-      cpu_arch == 'arm64' %}
+{% if ansible_facts.os_family == 'Darwin'  and  cpu_arch == 'arm64' %}
 # -- homebrew (due 2 ARM) --
-export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH
-export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/lib"
+{%   set HOMEBREW_PREFIX = "/opt/homebrew" %}
+export PATH={{ HOMEBREW_PREFIX }}/bin:{{ HOMEBREW_PREFIX }}/sbin:$PATH
+export LIBRARY_PATH="$LIBRARY_PATH:{{ HOMEBREW_PREFIX }}/lib"
 {% endif %}
 
-{% if ansible_facts.os_family != 'Darwin'  and
-      ('clients_devel' in group_names or 'servers_devel' in group_names) %}
+{% if ansible_facts.os_family != 'Darwin'  and  ('clients_devel' in group_names or
+                                                 'servers_devel' in group_names) %}
 # --  Launch GLOBAL ssh-agent  --
 # ( works in conjunction w/ '~/.config/systemd/user/ssh-agent.service' )
 # ( VERIFY: 'pgrep ssh-agent'  OR  'ssh-add -l' )
@@ -159,7 +159,7 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 export XAUTHORITY=$HOME/.Xauthority
 {% endif %}
 
-{# TODO -- DARWIN: Seems 2 work only w/ GNU ls  => must bind 2 GNU utils using gnu-utils#}
+{# TODO -- DARWIN: Seems 2 work only w/ GNU ls  => must bind 2 GNU utils using `gnu-utils`#}
 {% if ansible_facts.os_family != 'Darwin' %}
 # LS_COLORS 4 ls & completion suggestions
 source "${ZDOTDIR}/lscolors.sh"
@@ -197,7 +197,7 @@ path-add() {
         echo -e "\e[1;31;49mPath '$1' can't be added to path b/c it doesn't exist!\e[0m\n"
     fi
 
-    if ! echo $PATH | grep -E -q "(^|:)$newelement($|:)"; then
+    if ! echo "$PATH" | grep -E -q "(^|:)$newelement($|:)"; then
         if [ "$2" = "after" ]; then
             PATH="$PATH:$newelement"
         else
@@ -212,7 +212,7 @@ path-add() {
 # @param 1: Path to be removed from PATH var
 #
 path-rm() {
-    PATH="$(echo $PATH | sed -e "s;\(^\|:\)${1%/}\(:\|\$\);\1\2;g" -e 's;^:\|:$;;g' -e 's;::;:;g')"
+    PATH="$(echo "$PATH" | sed -e "s;\(^\|:\)${1%/}\(:\|\$\);\1\2;g" -e 's;^:\|:$;;g' -e 's;::;:;g')"
 }
 
 ####
@@ -243,10 +243,8 @@ alias-add() {
 
 # =========================== Aliases  (TODO: SHOULD be in '.zshenv') ===========================
 # - 'Default' commands -
-alias sudo='sudo '                 # Only 1st word of command is checked for aliases by shell, any following aren't checked
-                                   #  -> E.g. in 'sudo ll', only the first word ('sudo') is checked for alias, 'll' isn't checked
-                                   #  => Can be fixed by telling shell to check next word after the alias (i.e 'sudo') by adding a space to the end of the alias value
-
+alias sudo='sudo '                 # ELABORATION: The trailing space makes the shell try alias expansion on the next word
+                                   #              (fixes issue: "sudo: ll: command not found")
 {% if ansible_facts.os_family == 'Darwin' %}
 alias stat='stat -x'
 {% endif %}
@@ -306,8 +304,9 @@ alias jlogk='journalctl -b -k --no-pager'
 alias temp='vcgencmd measure_temp'
 {%   endif %}
 
-{%   if 'clients_devel' in group_names or 'servers_devel' in group_names %}
-alias-add objdump obj="objdump -M intel -C --visualize-jumps -d "               # Note: Used 2 be fct. w/ (now removed) suffix: `$@ | nvim -`
+{%   if 'clients_devel' in group_names or
+        'servers_devel' in group_names %}
+alias-add objdump obj="objdump -M intel -C --visualize-jumps -d "        # NOTE: Used 2 be fct. w/ (now removed) suffix: `$@ | nvim -`
 {%   endif %}
 {% endif %}
 
@@ -320,22 +319,17 @@ alias network-disable_packet_filter="sudo pfctl -d"    # Disable Eddie network l
 
 alias backup_poweroff="sudo sh -c 'tmutil startbackup --block && shutdown -h +1'"
 
-alias clipbrd-text_2_lower='echo $(pbpaste) | tr "[A-Z]" "[a-z]" | pbcopy'
-alias clipbrd-text_2_upper='echo $(pbpaste) | tr "[a-z]" "[A-Z]" | pbcopy'
+alias pb-text_2_lower='echo $(pbpaste) | tr "[A-Z]" "[a-z]" | pbcopy'
+alias pb-text_2_upper='echo $(pbpaste) | tr "[a-z]" "[A-Z]" | pbcopy'
 
-#alias app-open_all="find /Applications ~/Applications -type d -name '*.app' -prune -exec open -a {} \;"
-
-#alias finder-show_hiddenfiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
-#alias finder-hide_hiddenfiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
-
-# - GNU/Linux commands -
+# - "Emulated" GNU/Linux commands -
 alias poweroff='/sbin/shutdown -h now'
 alias reboot='/sbin/shutdown -r now'
 {% endif %}
 
 
 
-# --- Installed tools  ---
+# --- Installed Tools  ---
 export PATH="$PATH:$HOME/.local/bin"
 
 {% if ansible_facts.os_family != 'Darwin' %}
@@ -344,17 +338,19 @@ alias dmesg='/bin/dmesg --decode --nopager --color --ctime'
 {% endif %}
 
 # - `git` -
-alias gitdiff='git diff -r'
-alias gitfiles='git diff --name-status -r'
-alias gitstat='git status ; echo ; git diff --stat -r'
-alias giturl='git remote get-url --all origin'
-alias gitlog='git log --graph --pretty=format:"%h: %ar: %s" --abbrev-commit'
+alias-add git git-diff='git diff -r'
+alias-add git git-files='git diff --name-status -r'
+alias-add git git-stat='git status ; echo ; git diff --stat -r'
+alias-add git git-url='git remote get-url --all origin'
+alias-add git git-log='git log --graph --pretty=format:"%h: %ar: %s" --abbrev-commit'
 
-{% if 'clients_media' in group_names    or ansible_facts.os_family == 'Darwin' %}
+{% if 'clients_media' in group_names    or
+      ansible_facts.os_family == 'Darwin' %}
 # - `yt-dlp` -
-alias-add yt-dlp   video-dl="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"   video-dl_audio="yt-dlp -f 'bestaudio[ext=m4a]'"
-alias-add video-dl video-dl-channel="video-dl  -o '%(channel)s - %(title)s-%(id)s.%(ext)s'"
-alias-add video-dl video-dl-workaround_fname="video-dl  -o '%(title).200s  [%(id)s].%(ext)s'"         # WORKAROUND 4: https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195
+alias-add yt-dlp video-dl="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best' -o '%(title)s [%(id)s].mp4'"\
+                 audio-dl="yt-dlp -f 'bestaudio[ext=m4a]' -o '%(title)s [%(id)s].%(ext)s'"
+alias-add video-dl video-dl-channel="video-dl  -o '%(channel)s - %(title)s [%(id)s].mp4'"
+alias-add video-dl video-dl-workaround_fname="video-dl  -o '%(title).200s [%(id)s].mp4'"         # TODO: WORKAROUND 4: https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195  // https://github.com/ytdl-org/youtube-dl/pull/29989
 {% endif %}
 
 {% if ansible_facts.os_family == 'Darwin' %}
@@ -402,7 +398,9 @@ fi
 {% endif %}
 
 
-{% if 'clients_devel' in group_names or 'servers_devel' in group_names    or ansible_facts.os_family == 'Darwin' %}
+{% if 'clients_devel' in group_names or
+      'servers_devel' in group_names    or
+      ansible_facts.os_family == 'Darwin' %}
 if command -v ssh-keygen > /dev/null; then
     ssh-key_generate() {
         readonly GLOBAL_SSH_KEYS_PATH="$HOME/.ssh"
@@ -467,7 +465,7 @@ fi
 # within it _and_ other processes of the same name.
 # Params:
 #   $1 = process name
-#   Ret: # of threads curr alive in the given process
+#   Ret: # of threads currently alive in the given process
 #    -the 'return' is an artifact; we echo the value; the caller is to
 #     pick it up using the usual quoting technique.
 proc-nthreads() {
@@ -502,7 +500,8 @@ poweroff-wait_for_pid() {
 }
 
 
-{% if 'workstations' in group_names    or ansible_facts.os_family == 'Darwin' %}
+{% if 'workstations' in group_names    or
+      ansible_facts.os_family == 'Darwin' %}
 if command -v pdfimages > /dev/null; then
     pdf-extract_images() {
         local filename_prefix=${1:?"The 'pdf file' may be specified."}
@@ -531,7 +530,8 @@ fi
 {% endif %}
 
 
-{% if 'clients_media' in group_names    or ansible_facts.os_family == 'Darwin' %}
+{% if 'clients_media' in group_names    or
+      ansible_facts.os_family == 'Darwin' %}
 {%   set DEFAULT_OUTPUT_FNAME = "output-$(date +'%F-%H_%m_%S')" %}
 {%   set FILE_NOT_FOUND_MSG = "File(s) not found" %}
 # - `ffmpeg` -
@@ -630,23 +630,17 @@ fi
 
 
 # - PATH
-{% if ansible_facts.os_family != 'Darwin' %}
-# NOTE: 4 some inexplicable reason, those paths are "present" in on Ubuntu, but NOT on Debian
-path-add "/usr/local/sbin"     "after"
-path-add "/usr/sbin"           "after"
-path-add "/sbin"               "after"
-{% else %}
-{%   if 'clients_devel' in group_names or 'servers_devel' in group_names %}
-
-path-add "/opt/homebrew/opt/llvm/bin" "before"
-#path-add "/opt/homebrew/opt/sphinx-doc/bin" "before"
+{% if ansible_facts.os_family == 'Darwin' %}
+{%   if 'clients_devel' in group_names or
+        'servers_devel' in group_names %}
+path-add "{{ HOMEBREW_PREFIX }}/opt/llvm/bin" "before"
+#path-add "{{ HOMEBREW_PREFIX }}/opt/sphinx-doc/bin" "before"
 {%   endif %}
 {%   if 'client_workstation' in group_names %}
-
 path-add "/Library/TeX/texbin/" "after"
 {%   endif %}
 {% endif %}
-{% if 'clients_devel' in group_names or 'servers_devel' in group_names %}
-
+{% if 'clients_devel' in group_names or
+      'servers_devel' in group_names %}
 [ -f ~/.cargo/env ] && source $HOME/.cargo/env
 {% endif %}
