@@ -1,3 +1,4 @@
+{{ ansible_managed|comment }}
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -139,13 +140,6 @@ fi
 # - Completions
 autoload -Uz compinit && compinit
 
-{% if ansible_facts.os_family == 'Darwin'  and  cpu_arch == 'arm64' %}
-# -- homebrew (due 2 ARM) --
-{%   set HOMEBREW_PREFIX = "/opt/homebrew" %}
-export PATH={{ HOMEBREW_PREFIX }}/bin:{{ HOMEBREW_PREFIX }}/sbin:$PATH
-export LIBRARY_PATH="$LIBRARY_PATH:{{ HOMEBREW_PREFIX }}/lib"
-{% endif %}
-
 {% if ansible_facts.os_family != 'Darwin'  and  ('clients_devel' in group_names or
                                                  'servers_devel' in group_names) %}
 # --  Launch GLOBAL ssh-agent  --
@@ -168,21 +162,7 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 
 
-# - Custom functions + aliases
-# =================================================================================================================
-# ========================================   Function/Alias definitions   =========================================
-# =================================================================================================================
-# =========================== Global shell functions ===========================
-####
-#
-# Substitute for 'history -c' (which is available in bash)
-#
-history-clear() {
-    local HISTSIZE=0
-    : > $HISTFILE
-
-    unset HISTSIZE
-}
+# =====================================   Function(I)- / Alias Definitions   ======================================
 
 ####
 # Checks & adds path to `PATH` variable if path exists (warns otherwise that path doesn't exist)
@@ -198,10 +178,10 @@ path-add() {
     fi
 
     if ! echo "$PATH" | grep -E -q "(^|:)$newelement($|:)"; then
-        if [ "$2" = "after" ]; then
-            PATH="$PATH:$newelement"
-        else
-            PATH="$newelement:$PATH"
+        if [ "$2" = "before" ]; then
+            path=("$newelement" $path)
+        else    # after
+            path+=("$newelement")
         fi
     fi
 }
@@ -212,7 +192,18 @@ path-add() {
 # @param 1: Path to be removed from PATH var
 #
 path-rm() {
-    PATH="$(echo "$PATH" | sed -e "s;\(^\|:\)${1%/}\(:\|\$\);\1\2;g" -e 's;^:\|:$;;g' -e 's;::;:;g')"
+    path="$(echo "$PATH" | sed -e "s;\(^\|:\)${1%/}\(:\|\$\);\1\2;g" -e 's;^:\|:$;;g' -e 's;::;:;g')"
+}
+
+####
+#
+# Substitute for 'history -c' (which is available in bash)
+#
+history-clear() {
+    local HISTSIZE=0
+    : > $HISTFILE
+
+    unset HISTSIZE
 }
 
 ####
@@ -241,7 +232,8 @@ alias-add() {
     done
 }
 
-# =========================== Aliases  (TODO: SHOULD be in '.zshenv') ===========================
+# ===========================   Alias Definitions   ===========================
+#  TODO: SHOULD be in '.zshenv'
 # - 'Default' commands -
 alias sudo='sudo '                 # ELABORATION: The trailing space makes the shell try alias expansion on the next word
                                    #              (fixes issue: "sudo: ll: command not found")
@@ -253,7 +245,7 @@ alias stat='stat -x'
 alias mv='mv -i'
 alias cp='cp -i'
 
-# - 'Shortcuts' -
+# - Shortcuts -
 #alias zsh-update="source ~/.zshrc"
 
 alias d='dirs -v | head -10'    # USAGE: cd ~<number> -or- enter <number> directly
@@ -262,6 +254,16 @@ alias l='ls -lahF {{ "--color=auto" if ansible_facts.os_family != "Darwin" else 
 alias ll='ls -lhF {{ "--color=auto" if ansible_facts.os_family != "Darwin" else "-G" }}'
 
 {% if ansible_facts.os_family == 'Darwin' %}
+{%   if cpu_arch == 'arm64' %}
+# -- ( "fix" homebrew (due 2 ARM) PATH ) --
+{%     set HOMEBREW_PREFIX = "/opt/homebrew" %}
+path-add '{{ HOMEBREW_PREFIX }}/sbin' "before"
+path-add '{{ HOMEBREW_PREFIX }}/bin' "before"
+
+typeset -T LIBRARY_PATH library_path
+library_path+=('{{ HOMEBREW_PREFIX }}/lib')
+{%   endif %}
+
 alias-add gsed decolorize='gsed -r "s/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"'
 {% else %}
 alias decolorize='sed -r "s/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"'
@@ -330,10 +332,11 @@ alias reboot='/sbin/shutdown -r now'
 
 
 # --- Installed Tools  ---
-export PATH="$PATH:$HOME/.local/bin"
+# - pipx -
+path-add "$HOME/.local/bin" "after"
 
 {% if ansible_facts.os_family != 'Darwin' %}
-# - dmesg
+# - dmesg -
 alias dmesg='/bin/dmesg --decode --nopager --color --ctime'
 {% endif %}
 
@@ -350,7 +353,8 @@ alias-add git git-log='git log --graph --pretty=format:"%h: %ar: %s" --abbrev-co
 alias-add yt-dlp video-dl="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best' -o '%(title)s [%(id)s].mp4'"\
                  audio-dl="yt-dlp -f 'bestaudio[ext=m4a]' -o '%(title)s [%(id)s].%(ext)s'"
 alias-add video-dl video-dl-channel="video-dl  -o '%(channel)s - %(title)s [%(id)s].mp4'"
-alias-add video-dl video-dl-workaround_fname="video-dl  -o '%(title).200s [%(id)s].mp4'"         # TODO: WORKAROUND 4: https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195  // https://github.com/ytdl-org/youtube-dl/pull/29989
+alias-add video-dl video-dl-workaround_fname="video-dl -o '%(title).200s [%(id)s].mp4'"    # TODO: WORKAROUND ( SEE: https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195
+                                                                                           #                         https://github.com/ytdl-org/youtube-dl/pull/29989 )
 {% endif %}
 
 {% if ansible_facts.os_family == 'Darwin' %}
@@ -363,12 +367,12 @@ alias-add hblock hblock-disable="hblock -S none -D none"
 alias-add pigz gzip='pigz' gunzip='unpigz'
 alias-add pbzip2 bzip2='pbzip2' # bunzip2='pbunzip2' bzcat='pbzcat'
 {% if ansible_facts.os_family == 'Darwin' %}
-alias xz='xz -T 0'                                                            # Use max # of threads
+alias xz='xz -T 0'            # Use max # of threads
 
 alias-add colordiff diff='colordiff'
 {% endif %}
 
-# =========================== Functions ===========================
+# ===========================  Functions (II)  ===========================
 {% if ansible_facts.os_family == 'Darwin' %}
 dns-reset_server_for_service() {
     local network_service=${1:?"Network service may be provided."}
@@ -398,7 +402,7 @@ fi
 {% endif %}
 
 
-{% if 'clients_devel' in group_names or
+{% if 'clients_devel' in group_names    or
       'servers_devel' in group_names    or
       ansible_facts.os_family == 'Darwin' %}
 if command -v ssh-keygen > /dev/null; then
