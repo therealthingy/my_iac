@@ -273,7 +273,6 @@
     - name: '[Darwin / Ubuntu/Debian]'
       ansible.builtin.package:
         name:
-          - tldr
           - moreutils                     # `sponge`, `parallel`, …
           - parallel                      # NOTE: Installs also `parallel` like `moreutils`  (but seems 2 be newer version)
           - pv
