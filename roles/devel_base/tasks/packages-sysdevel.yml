@@ -66,6 +66,7 @@
               - bpfcc-tools           # BPF Compiler Collection (BCC) is a toolkit 4 creating efficient kernel tracing & manipulation programs
               - valgrind
               - massif-visualizer
+              - libc6-dbg             # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
             # 'Performance' analysis:
               - kcachegrind           # KDE GUI 2 visualize profiling data (mainly used as visualization frontend for data measured by Cachegrind/Callgrind tools from the Valgrind package)
               - hotspot               # UI (similar 2 KCachegrind 4 valgrind, BUT) around `perf`  (SEE: https://github.com/KDAB/hotspot)
@@ -75,32 +76,31 @@
             # Utils:
               - numactl               # More powerful alternative to `taskset`  (useful on NUMA systems, incl. AMD CPUs w/ "chiplet" design;  `numastat`)
             # Libs:
-              - libcap-dev            # POSIX capabilities API
               - libbsd-dev            # Provides `strlcat`(3), …
-              - libc6-dbg             # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
               - binutils-dev          # Necessary 2 build programs which use the GNU BFD library  (which is part of binutils); also includes libbfd
+              - libcap-dev            # POSIX capabilities API
+              - libaio-dev            # (Linux kernel AIO access -> Enables userspace 1 use Linux kernel asynchronous I/O system calls, important 4 the performance of dbs & other advanced apps)
+              - libevent-dev          # Event notification library  (SEE: https://libevent.org/)
+              - libseccomp-dev        # Provides high level iface 4 constructing, analyzing & installing seccomp filters via a BPF (passed 2 kernel's `prctl`)
               - libelf-dev            # Allows reading & writing of ELF files on a high level
               - libdw-dev             # Provides access to DWARF debug information stored inside ELF files
               - libdwarf-dev          # Allows reading/consuming and writing/producing of DWARF debugging information from object files, shared libraries, and executables    --  basically the same as `libdw-dev` ??!
-              - libunwind-dev         # (libunwind)
               - libiberty-dev         # De-mangles C++ function names
               - libnuma-dev           # Allows controlling specific NUMA scheduling or memory placement policies
+              # C devel
               - libncurses5-dev       # ncurses  (terminal-independent method of updating character screens w/ reasonable optimization)
               - ncurses-dev
+              - libcurl4-gnutls-dev
+#              - libperl-dev           # Assists in developing applications which embed a Perl interpreter
               - libreadline-dev       # Provides a set of functions for use by applications that allow users to edit command lines as they are typed in
-              - libgtest-dev          # Google Test
               - openssl
               - libssl-dev
               - zlib1g-dev            # (zlib)
               - liblzma-dev           # (lzma)
               - zstd
-              - libaio-dev            # (Linux kernel AIO access -> Enables userspace 1 use Linux kernel asynchronous I/O system calls, important 4 the performance of dbs & other advanced apps)
-              - libboost-all-dev      # Boost
-              - libomp-dev            # OpenMP
-              - libcurl4-gnutls-dev
-#              - libperl-dev           # Assists in developing applications which embed a Perl interpreter
-              - libevent-dev          # Event notification library  (SEE: https://libevent.org/)
-              - libseccomp-dev        # Provides high level iface 4 constructing, analyzing & installing seccomp filters via a BPF (passed 2 kernel's `prctl`)
+            # - CXX devel:
+              - libgtest-dev          # Google Test
+#              - libboost-all-dev      # Boost
             # Misc.:
               - fakeroot              # Provides a fake root environment (2 remove the need 2 become root 4 a package build)
               - checksec              # Used 2 check properties of executables (like PIE, RELRO, PaX, Stack Canaries, PIE, RPATH, RUNPATH & compiler fortification) & kernel security options (like  GRSecurity & SELinux)
@@ -111,10 +111,6 @@
               - debhelper             # 4 creating `deb`ian packages (`bindeb-pkg` target)
               - cscope                # Interactive, text screen based source browsing tool
               - indent                # Format C code 2 follow kernel "styleguide"
-            #  - Rust (LKM) deps:
-#              - llvm-dev
-#              - libclang-dev
-#              - lld
             # - "Convenience" tools:
               - exuberant-ctags       # Parses code, producing an index mapping the names of significant entities
             # - Static analysis:
@@ -269,6 +265,11 @@
               - clangd                # LSP
               - libc++-dev            # LLVM's C++ stdlib (alternative 2 GNU's libstdc++)
               - libc++abi-dev
+              - libunwind-dev         # (libunwind)
+              - llvm-dev
+              - libclang-dev
+              - lld
+              - libomp-dev            # OpenMP
           when: llvm_install_distro_version == True
       when: ansible_facts.os_family != 'Darwin'
   become: '{{ package_manager_become }}'

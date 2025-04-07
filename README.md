@@ -4,7 +4,7 @@
 ## TODOs
 - grub: cmdline  disable all cpu mitigations
 
-- Ubuntu HELIX LSPs
+- Ubuntu: HELIX LSPs
 
 - Darwin:
   - FIX lscolors
