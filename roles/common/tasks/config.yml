@@ -32,7 +32,7 @@
 - name: "Set timezone to '{{ timezone }}'"
   # ( NOTE: VERIFY: )
   #   GNU/Linux `sudo dpkg-reconfigure tzdata`
-  #   macOS: `sudo systemsetup -gettimezone`
+  #   Darwin: `sudo systemsetup -gettimezone`
   community.general.timezone:
     name: '{{ timezone }}'
   become: true
@@ -47,7 +47,7 @@
       when: ansible_facts.os_family != 'Darwin'
 
     - name: "Set hostname to '{{ hostname }}'"
-      # macOS equivalent command: `sudo systemsetup -setcomputername <string>`
+      # Darwin equivalent command: `sudo systemsetup -setcomputername <string>`
       # GNU/LINUX:
       #   TEMPORARILY: `hostname demo.example.com`
       #   PERSISTENT:  `hostnamectl set-hostname server1.example.com`

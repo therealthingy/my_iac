@@ -95,7 +95,7 @@
     - name: '[Darwin / Debian/Ubuntu]'
       ansible.builtin.package:
         name:
-          - nmap                          # Contains also `ncat` on macOS ??!
+          - nmap                          # Contains also `ncat` on Darwin ??!
           - socat
           - arp-scan                      # Contains `arp-scan`, `arp-fingerprint`
           - iperf
