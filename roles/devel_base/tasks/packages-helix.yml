@@ -81,13 +81,14 @@
 
 - name: Config
   ansible.builtin.git:
-    repo: https://github.com/therealthingy/dothelix.git #git@github.com:therealthingy/dothelix.git
+    repo: git@github.com:therealthingy/dothelix.git
     dest: '{{ os_homedir }}/{{ user.name }}/.config/helix/'
     clone: true
-    depth: 1
+    #depth: 1
     update: true
-  register: repo_clone
-  failed_when:
-    - repo_clone.failed
-    - not 'Local modifications exist in the destination' in repo_clone.msg
+  changed_when: false
+  #register: repo_clone
+  failed_when: false
+  #  - repo_clone.failed
+  #  - not 'Local modifications exist in the destination' in repo_clone.msg
   become: false

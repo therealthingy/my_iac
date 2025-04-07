@@ -1,46 +1,61 @@
 ---
-- name: '[Debian/Ubuntu]'
+- name: Install
   block:
-    - name: VSCodium - Add apt signing key
-      # NOTE: Equivalent command: `wget -O - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | sudo apt-key add -`; Show keys: `apt-key list`
-      ansible.builtin.apt_key:
-        url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
-        keyring: /usr/share/keyrings/vscodium-archive-keyring.gpg
-        state: present
+    - name: '[Debian/Ubuntu]'
+      block:
+        - name: VSCodium - Add apt signing key
+          # NOTE: Equivalent command: `wget -O - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | sudo apt-key add -`; Show keys: `apt-key list`
+          ansible.builtin.apt_key:
+            url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+            keyring: /usr/share/keyrings/vscodium-archive-keyring.gpg
+            state: present
 
-    - name: VSCodium - Add apt repo and update cache
-      # NOTE: Equivalent command: `sudo add-apt-repository 'deb [arch=amd64] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse'`
-      ansible.builtin.apt_repository:
-        repo: 'deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main'
-        filename: vscodium.list
-        state: present
-        update_cache: true
+        - name: VSCodium - Add apt repo and update cache
+          # NOTE: Equivalent command: `sudo add-apt-repository 'deb [arch=amd64] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse'`
+          ansible.builtin.apt_repository:
+            repo: 'deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main'
+            filename: vscodium.list
+            state: present
+            update_cache: true
 
-    # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
-    - name: VSCodium - Pin apt repo
-      ansible.builtin.template:
-        src: linux/apt-pin.pref.j2
-        dest: /etc/apt/preferences.d/vscodium.pref
-        owner: root
-        group: root
-        mode: 0644
+        # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
+        - name: VSCodium - Pin apt repo
+          ansible.builtin.template:
+            src: linux/apt-pin.pref.j2
+            dest: /etc/apt/preferences.d/vscodium.pref
+            owner: root
+            group: root
+            mode: 0644
+          vars:
+            apt_pin_packages:
+              - target: 'origin download.vscodium.com'
+
+        - name: VSCodium - Install it
+          ansible.builtin.apt:
+            name: codium
+            state: present
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+
+    - name: '[Darwin]'
+      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
-        apt_pin_packages:
-          - target: 'origin download.vscodium.com'
-
-    - name: VSCodium - Install it
-      ansible.builtin.apt:
-        name: codium
-        state: present
-  become: true
-  when: ansible_facts.os_family != 'Darwin'
+        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+          - dir: Development/Editors                                # … as 'general purpose' text editor
+            packages:
+              - vscodium
 
 
-
-- name: '[Darwin] Install homebrew packages'
-  ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-  vars:
-    packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-      - dir: Development/Editors                                # … as 'general purpose' text editor
-        packages:
-          - vscodium
+- name: Config
+  ansible.builtin.git:
+    repo: git@github.com:therealthingy/vscodium-settings.git
+    dest: '{{ os_homedir }}/{{ user.name }}/.config/vscodium/'
+    clone: true
+    #depth: 1
+    update: true
+  changed_when: false
+  #register: repo_clone
+  failed_when: false
+  #  - repo_clone.failed
+  #  - not 'Local modifications exist in the destination' in repo_clone.msg
+  become: false
