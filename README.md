@@ -2,6 +2,12 @@
 
 ## TODOs
 ### GENERAL
+- zsh:
+  - `video-trim_keep` fct.:
+    - allow omitting hours
+    - validate: monotonically increasing
+    - preview option ?!?
+
 #### Darwin
 - FIX lscolors
 
@@ -108,7 +114,10 @@
 
 
 #### Ubuntu
-- grub: cmdline  disable all cpu mitigations
+- grub:
+  - cmdline:  disable all cpu mitigations `mitigations=off`  (https://unix.stackexchange.com/a/554922)
+    - grep . /sys/devices/system/cpu/vulnerabilities/*
+  - server role: `preempt=none`    (merge w/ rpi)
 - HELIX LSPs
 - FIX mute audio
 - GNome Extensions ??

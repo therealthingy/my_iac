@@ -16,7 +16,7 @@ for base_dir in $base_dirs; do
     # Find all git repos recursively and update it 2 the latest revision
     find . -type d -name ".git" -prune -print0  2> /dev/null |
     while IFS= read -r -d '' git_dir; do
-        echo -e "\n\033[33m$(echo $git_dir | sed 's/\/\.git$//')\033[0m:";
+        echo -e "\n\033[33m$(echo "$git_dir" | sed 's/\/\.git$//')\033[0m:";
 
         pushd . > /dev/null         # !! Must be `pushd` (user could've entered relative stuff like `.` or `..`) !!
         cd "$git_dir"  || exit
