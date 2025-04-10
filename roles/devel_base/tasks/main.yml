@@ -31,6 +31,10 @@
       value: auto
     - name: init.defaultBranch
       value: master
+    - name: push.default
+      value: simple
+#    - name: pull.rebase
+#      value: true
 
     # Mailing
     - name: sendemail.from
@@ -59,23 +63,18 @@
       # Prevent Content-Transfer-Encoding from being set to quoted-printable
       value: "8bit"
     #- name: sendemail.smtpPass // value: PASSWORD
-    - name: credential.helper
-      # ( NOTE: Store pws in `~/.git-credentials` )
-      value: "store"
-    # TODO: `git credential-store store`
 
-#    - name: web.browser
-#      value: brave-browser
-#    - name: credential.helper
-#      value: osxkeychain
-    - name: push.default
-      value: simple
+    # "Tools"
+    - name: core.editor
+      value: hx              # helix
+    - name: credential.helper
+      value: "cache"          # TODO (DARWIN): osxkeychain  ( ; NOTE: `store` stores pws in `~/.git-credentials` )
 #    - name: merge.tool
 #      value: kdiff3
 #    - name: difftool.prompt
 #      value: kdiff3
-#    - name: pull.rebase
-#      value: true
+#    - name: web.browser
+#      value: brave-browser
   loop_control:
     loop_var: git_config_var
   become: false
