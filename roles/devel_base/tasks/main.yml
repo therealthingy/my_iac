@@ -66,9 +66,9 @@
 
     # "Tools"
     - name: core.editor
-      value: hx              # helix
+      value: hx               # helix
     - name: credential.helper
-      value: "cache"          # TODO (DARWIN): osxkeychain  ( ; NOTE: `store` stores pws in `~/.git-credentials` )
+      value: "{{ 'osxkeychain' if ansible_facts.os_family == 'Darwin' else 'cache' }}"  # ( NOTE: `store` stores pws in `~/.git-credentials` )
 #    - name: merge.tool
 #      value: kdiff3
 #    - name: difftool.prompt
