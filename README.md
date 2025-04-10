@@ -1,43 +1,10 @@
-# Ansible playbook for setting up my machines
-
+# Ansible Playbook 4 setting up my machines
 
 ## TODOs
-- grub: cmdline  disable all cpu mitigations
-
-- Ubuntu: HELIX LSPs
-
-- Darwin:
-  - FIX lscolors
-  - ADD VLC config  (stored in : `~/Library/Preferences/org.videolan.vlc`)
-
-- FIX mute audio
-
-- GNome Extensions ??
-
-- RPI: Replace [`timeshift-autosnap-apt`](https://github.com/wmutschl/timeshift-autosnap-apt/tree/main) w/ [`apt-btrfs-snapshot`](https://packages.ubuntu.com/search?keywords=apt-btrfs)
-
-
-- Debian:
-  - Nautilus show hidden not working
-  - GNOME display desktop icons using an extension OR nemo
-  - UI apps not working     (but works before playbook has been run):
-    ```
-    ❯ echo $XDG_SESSION_TYPE
-    wayland
-
-    ❯ xdg-open .latexmkrc
-    ~  Authorization required, but no authorization protocol specified
-   [3030:1018/155622.586976:ERROR:ozone_platform_x11.cc(240)] Missing X server or $DISPLAY
-   [3030:1018/155622.587008:ERROR:env.cc(255)] The platform failed to initialize.  Exiting.
-   The futex facility returned an unexpected error code.
-
-   ❯ codium .latexmkrc
-   NOTHING HAPPENS …
-   ```
-
-
-### General
+### GENERAL
 #### Darwin
+- FIX lscolors
+
 - SYSTEM settings:
   - **Add message to lock-screen**
   `sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText “ENTER HERE”`
@@ -54,20 +21,20 @@
   - **Change scroll direction**
     `defaults write -g com.apple.swipescrolldirection -bool FALSE`
 
-- `systemsetup (get|set)wakeonmodem <bool>`
+  - `systemsetup (get|set)wakeonmodem <bool>`
 
-- FINDER settings:
-  ```
-  # Enable snap-to-grid for icons on the desktop and in other icon views
-  /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
-  /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
-  /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
+  - FINDER settings:
+    ```
+    # Enable snap-to-grid for icons on the desktop and in other icon views
+    /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
+    /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
+    /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
 
-  # Set the size of icons on the desktop and in other icon views
-  /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
-  /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
-  /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
-  ```
+    # Set the size of icons on the desktop and in other icon views
+    /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
+    /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
+    /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
+    ```
 
 - APP settings:
   ```
@@ -112,6 +79,7 @@
     SUSendProfileInfo
   ```
 
+  - ADD VLC config  (stored in : `~/Library/Preferences/org.videolan.vlc`)
 
 - [Mac App Store apps](https://github.com/mas-cli/mas/blob/main/README.md):
   - Uninstall iMovie, Pages, Numbers, GarageBand
@@ -119,12 +87,9 @@
 
 - Install X11
 
-- SW:
-  - https://github.com/Lymphatus/caesium-image-compressor  (once stable)
+- SW: https://github.com/Lymphatus/caesium-image-compressor  (once stable)
 
-
-##### Apps
-- **Blackhole**: Record Sysaudio
+- SETUP **Blackhole** -- Record Sysaudio:
   - Open *Audio MIDI Setup*
     - Click *Create Multi-Output Device* (REQUIRED; will be later set in System Preferences under *Sound* as *Output* device when recording)
       - Name it "bh + <device>" (e.g., built-in output)
@@ -142,6 +107,14 @@
       - Cmd + Shift + 5 (in Screen capture utility): *Options* &rarr; *bh + internal mic*
 
 
+#### Ubuntu
+- grub: cmdline  disable all cpu mitigations
+- HELIX LSPs
+- FIX mute audio
+- GNome Extensions ??
+- RPI: Replace [`timeshift-autosnap-apt`](https://github.com/wmutschl/timeshift-autosnap-apt/tree/main) w/ [`apt-btrfs-snapshot`](https://packages.ubuntu.com/search?keywords=apt-btrfs)
+- ( make sure WAYLAND (`echo $XDG_SESSION_TYPE`) )
+
 
 ### *client-devel*
 - not indempotent ISSUE:
@@ -149,11 +122,11 @@
    - TASK [petermosmans.customize-gnome : Download GNOME Shell extensions]
 - Consider switching all apps to flatpak  (EVENTUALLY firefox, vscodium)
 
-### *server*
-- ON ALL DISTROS: USE **netplan + systemd-networkd**
 
+### *server*
 - **SECURITY**: https://christitus.com/linux-security-mistakes/  (Fail2ban)
-- !!!!!!!!!!!!!!!!!!!     Add restricted www user     !!!!!!!!!!!!!!!!!!!
+- !!!!!!!!!!!!!!!!!!!     Add restricted `www` user     !!!!!!!!!!!!!!!!!!!
+
 
 ### *home_server*
 - pihole + unbound:
@@ -162,8 +135,6 @@
   - https://github.com/pi-hole/docker-pi-hole#environment-variables
 
 - **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/
-- Containers:
-  - ( filebrowser: restart container iff config file has changed AND container is ALREADY RUNNING  ( see traefik, BUT ONLY IF CONFIG FILE HAS CHANGED ) )
 - FUTURE WORK:
   - **SSO service** 4 which allows authenticating all services   (https://goauthentik.io/, https://github.com/authelia/authelia)
     - REQUIREMENT: [oauth2, etc. support (also for protected application necessary)](https://www.reddit.com/r/selfhosted/comments/s9ky8f/pass_credentials_from_authelia_to_protected/)
@@ -172,8 +143,6 @@
   - Services:
     - **https://academy.pointtosource.com/containers/ebooks-calibre-readarr/**
     - Heimdall
----
-
 
 
 ## "Usage"
@@ -222,9 +191,6 @@
       - Cleanup &mldr;
 
 
-
-
----
 ## References (Ex.s) / GUIDELINEs
 ### SECURE SERVER
 - (1.) Use secure & encrypted communication
@@ -260,5 +226,3 @@
   - `--list-hosts`
   - `--become --ask-become-pass`: Privilege escalation
   - Useful modules: `ping` (not ICMP ping !!), `gather_facts`
-
-
