@@ -92,3 +92,12 @@
   #  - repo_clone.failed
   #  - not 'Local modifications exist in the destination' in repo_clone.msg
   become: false
+
+
+- name: '[Linux] helix -- Set "alternatives"'
+  community.general.alternatives:
+    name: editor
+    link: /usr/bin/editor
+    path: /usr/bin/hx
+  when: ansible_facts.os_family != 'Darwin'
+  become: true

@@ -124,9 +124,9 @@
         link: '{{ common_nvim_alt.link }}'
         path: '{{ common_nvim_alt.path }}'
       with_items:
-        - name: editor
-          link: /usr/bin/editor
-          path: /usr/bin/nvim
+        #- name: editor
+        #  link: /usr/bin/editor
+        #  path: /usr/bin/nvim
         - name: vi
           link: /usr/bin/vi
           path: /usr/bin/nvim
