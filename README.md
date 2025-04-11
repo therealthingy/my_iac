@@ -88,29 +88,19 @@
   - ADD VLC config  (stored in : `~/Library/Preferences/org.videolan.vlc`)
 
 - [Mac App Store apps](https://github.com/mas-cli/mas/blob/main/README.md):
-  - Uninstall iMovie, Pages, Numbers, GarageBand
-  - Install Keynote, dict.cc, DjVu Viewer + DjVu to PDF
+  - Uninstall:
+    - iMovie
+    - Pages
+    - Numbers
+    - GarageBand
+  - Install:
+    - Keynote
+    - dict.cc
+    - DjVu Viewer + DjVu to PDF
 
 - Install X11
 
 - SW: https://github.com/Lymphatus/caesium-image-compressor  (once stable)
-
-- SETUP **Blackhole** -- Record Sysaudio:
-  - Open *Audio MIDI Setup*
-    - Click *Create Multi-Output Device* (REQUIRED; will be later set in System Preferences under *Sound* as *Output* device when recording)
-      - Name it "bh + <device>" (e.g., built-in output)
-      - Check checkbox for device + *BlackHole 16ch* (IMPORTANT: *BlackHole 16ch* must be LAST in list)
-      - Select the Drift Correction checkbox for any devices not designated clock master + Make sure sample rates of ALL devices match
-    - Click *Create Aggregate Device* (OPTIONAL; will be later set in Screen capture utility as *Microphone* when Mic + SysAudio (BlackHole) shall be recorded)
-      - Name it "bh + <device>" (e.g., internal mic)
-      - Check checkbox for device + *BlackHole 16ch* (IMPORTANT: *BlackHole 16ch* must be FIRST in list)
-  - Record:
-    - Record System Audio (Blackhole) only:
-      - System Preferences: *Sound* &rarr; *Output* &rarr; *bh + built-in output*
-      - Cmd + Shift + 5 (in Screen capture utility): *Options* &rarr; *BlackHole 16ch*
-    - Record System Audio (Blackhole) + mic:
-      - System Preferences: *Sound* &rarr; *Output* &rarr; *bh + built-in output*
-      - Cmd + Shift + 5 (in Screen capture utility): *Options* &rarr; *bh + internal mic*
 
 
 #### Ubuntu
@@ -155,7 +145,7 @@
 
 
 ## "Usage"
-### Pre ansible-run setup steps
+### PRE Ansible-Run Setup Steps
 - Install "dependencies" for playbook: **`ansible-galaxy install -r requirements.yml`**
 - OPTIONAL: Add own systems to be managed in dedicated local inventory:
   - `cp inventory.yml ~/.ansible-inventory.yml`
@@ -186,18 +176,40 @@
     - `-e "<key>=<value>"`: Overwrite vars
     - `--list-hosts`: Only list matching hosts
 
-#### POST ansible run (i.e., not automated steps)
+#### POST Ansible Run (i.e., not automated steps)
 - *clients*:
   - Enable installed Gnome extensions (via 'Extensions app')  (!!  TODO: AUTOMATE  !!)
+
 - *Dev clients*:
   - Apps setup
-    - *VSCod~~e~~ium*: Install extension 'Settings Sync' & follow instructions
+    - *VSCod~~e~~ium*:
+      - Install extension 'zokugun.sync-settings'
+      - Command -> "Sync Settings: Open the repository settings"
+      - `path: ~/.config/vscodium`
+
     - *Firefox*:
       - Go to [about:profiles](about:profiles) and *Launch profile in new browser* for 'default'
       - Open [about:profiles](about:profiles) again in a new browser window & delete the other profile, including data
       - Allow extensions
       - Right click on Bookmarks bar &rarr; *Manage bookmarks* &rarr; *Import and Backup* &rarr; *Restore* &rarr; *Choose File* &rarr; Select the hidden firefox default bookmarks file
       - Cleanup &mldr;
+
+- DARWIN: SETUP **Blackhole** -- Record Sysaudio:
+  - Open *Audio MIDI Setup*
+    - Click *Create Multi-Output Device* (REQUIRED; will be later set in System Preferences under *Sound* as *Output* device when recording)
+      - Name it "bh + <device>" (e.g., built-in output)
+      - Check checkbox for device + *BlackHole 16ch* (IMPORTANT: *BlackHole 16ch* must be LAST in list)
+      - Select the Drift Correction checkbox for any devices not designated clock master + Make sure sample rates of ALL devices match
+    - Click *Create Aggregate Device* (OPTIONAL; will be later set in Screen capture utility as *Microphone* when Mic + SysAudio (BlackHole) shall be recorded)
+      - Name it "bh + <device>" (e.g., internal mic)
+      - Check checkbox for device + *BlackHole 16ch* (IMPORTANT: *BlackHole 16ch* must be FIRST in list)
+  - Record:
+    - Record System Audio (Blackhole) only:
+      - System Preferences: *Sound* &rarr; *Output* &rarr; *bh + built-in output*
+      - Cmd + Shift + 5 (in Screen capture utility): *Options* &rarr; *BlackHole 16ch*
+    - Record System Audio (Blackhole) + mic:
+      - System Preferences: *Sound* &rarr; *Output* &rarr; *bh + built-in output*
+      - Cmd + Shift + 5 (in Screen capture utility): *Options* &rarr; *bh + internal mic*
 
 
 ## References (Ex.s) / GUIDELINEs
