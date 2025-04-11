@@ -72,7 +72,7 @@
           ansible.builtin.set_fact:
             docker_gid: '{{ result_docker_gid.stdout }}'
             www_user:
-              uid: '{{ result_uid.stdout }}'           # $$$$$$$$$$$$$$$$$$$$$  TODO: CREATE EXTRA USER …  $$$$$$$$$$$$$$$$$$$$$
+              uid: '{{ result_uid.stdout }}'
               gid: '{{ result_docker_gid.stdout }}'
             deb_cpu_arch: '{{ result_deb_cpu_architecture.stdout }}'
             kernel_release: '{{ result_kernel_release.stdout }}'
@@ -83,6 +83,7 @@
           ansible.builtin.set_fact:
             package_manager_become: "{{ 'true' if ansible_facts.os_family != 'Darwin' else 'false' }}"
             os_homedir: "{{ '/home' if ansible_facts.os_family != 'Darwin' else '/Users' }}"
+            homebrew_arch_prefix: "{{  'usr/local'  if ansible_architecture != 'arm64' else  'opt/homebrew'  }}"
             cpu_arch: '{{ result_cpu_architecture.stdout }}'
             user:
               name: '{{ result_username.stdout }}'
