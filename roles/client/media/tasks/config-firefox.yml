@@ -10,6 +10,7 @@
               - video-downloadhelper
               - buster-captcha-solver
               - duplicate-tabs-closer
+              - old-reddit-redirect
 
     - name: "Run 'staticdev.firefox' role"
       ansible.builtin.include_role:
