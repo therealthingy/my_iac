@@ -146,6 +146,6 @@
 #      with_items:
 ##       htop:
 #        - src: 'htoprc'                                   # Config file which changes when using the UI
-#          dest: '{{ os_homedir }}/{{ user.name }}/.htoprc'
+#          dest: '/{{ os_homedir }}/{{ user.name }}/.htoprc'
 #      loop_control:
 #        loop_var: common_package_file

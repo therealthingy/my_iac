@@ -87,7 +87,7 @@
   block:
     - name: Ensure systemd user-defined units dir exists
       ansible.builtin.file:
-        path: '{{ os_homedir }}/{{ user.name }}/.config/systemd/user/'
+        path: '/{{ os_homedir }}/{{ user.name }}/.config/systemd/user/'
         owner: '{{ user.name }}'
         group: '{{user.group_name}}'
         state: directory
@@ -95,7 +95,7 @@
     - name: Add systemd service
       ansible.builtin.template:
         src: linux/systemd-ssh-agent.service.j2
-        dest: '{{ os_homedir }}/{{ user.name }}/.config/systemd/user/ssh-agent.service'
+        dest: '/{{ os_homedir }}/{{ user.name }}/.config/systemd/user/ssh-agent.service'
         force: true
         mode: 0755
     - name: Enable service

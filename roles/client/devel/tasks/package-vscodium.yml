@@ -49,7 +49,7 @@
 - name: Config
   ansible.builtin.git:
     repo: git@github.com:therealthingy/vscodium.git
-    dest: '{{ os_homedir }}/{{ user.name }}/.config/vscodium/'
+    dest: '/{{ os_homedir }}/{{ user.name }}/.config/vscodium/'
     clone: true
     #depth: 1
     update: true

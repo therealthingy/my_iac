@@ -84,7 +84,7 @@
     - name: Config
       ansible.builtin.template:
         src: latexmkrc.j2
-        dest: '{{ os_homedir }}/{{ user.name }}/.latexmkrc'
+        dest: '/{{ os_homedir }}/{{ user.name }}/.latexmkrc'
         owner: '{{ user.name }}'
         group: '{{ user.group_name }}'
         mode: 0644

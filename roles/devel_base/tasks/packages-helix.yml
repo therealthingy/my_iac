@@ -82,7 +82,7 @@
 - name: Config
   ansible.builtin.git:
     repo: git@github.com:therealthingy/helix.git
-    dest: '{{ os_homedir }}/{{ user.name }}/.config/helix/'
+    dest: '/{{ os_homedir }}/{{ user.name }}/.config/helix/'
     clone: true
     #depth: 1
     update: true

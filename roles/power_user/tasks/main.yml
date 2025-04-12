@@ -301,7 +301,7 @@
         - name: Download & Install
           ansible.builtin.git:
             repo: https://github.com/gpakosz/.tmux.git
-            dest: '{{ os_homedir }}/{{ user.name }}/.tmux/'
+            dest: '/{{ os_homedir }}/{{ user.name }}/.tmux/'
             clone: true
             depth: 1
             update: true
@@ -311,13 +311,13 @@
             - not 'Local modifications exist in the destination' in repo_clone.msg
         - name: tmux.conf
           ansible.builtin.file:
-            src: '{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf'
-            dest: '{{ os_homedir }}/{{ user.name }}/.tmux.conf'
+            src: '/{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf'
+            dest: '/{{ os_homedir }}/{{ user.name }}/.tmux.conf'
             state: link
         - name: "TODO: Own config    (TODO: fix font)"
           ansible.builtin.file:
-            src: '{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf.local'
-            dest: '{{ os_homedir }}/{{ user.name }}/.tmux.conf.local'
+            src: '/{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf.local'
+            dest: '/{{ os_homedir }}/{{ user.name }}/.tmux.conf.local'
             state: link
       become: false
 

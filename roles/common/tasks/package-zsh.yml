@@ -9,7 +9,7 @@
 
 - name: Create zsh config dir
   ansible.builtin.file:
-    path: '{{ os_homedir }}/{{ user.name }}/.config/zsh/'
+    path: '/{{ os_homedir }}/{{ user.name }}/.config/zsh/'
     state: directory
     owner: '{{ user.name }}'
     group: '{{ user.group_name }}'
@@ -19,7 +19,7 @@
 - name: Install oh-my-zsh
   ansible.builtin.git:
     repo: https://github.com/ohmyzsh/ohmyzsh.git
-    dest: '{{ os_homedir }}/{{ user.name }}/.config/zsh/.oh-my-zsh/'
+    dest: '/{{ os_homedir }}/{{ user.name }}/.config/zsh/.oh-my-zsh/'
     clone: true
     depth: 1
     update: true
@@ -28,7 +28,7 @@
 - name: Install oh-my-zsh plugins
   ansible.builtin.git:
     repo: 'https://github.com/zsh-users/{{ plugin }}'
-    dest: '{{ os_homedir }}/{{ user.name }}/.config/zsh/.oh-my-zsh/custom/plugins/{{ plugin }}/'
+    dest: '/{{ os_homedir }}/{{ user.name }}/.config/zsh/.oh-my-zsh/custom/plugins/{{ plugin }}/'
     clone: true
     depth: 1
     update: true
@@ -50,7 +50,7 @@
 - name: Install Powerlevel10k theme
   ansible.builtin.git:
     repo: 'https://github.com/romkatv/powerlevel10k.git'
-    dest: '{{ os_homedir }}/{{ user.name }}/.config/zsh/.oh-my-zsh/custom/themes/powerlevel10k/'
+    dest: '/{{ os_homedir }}/{{ user.name }}/.config/zsh/.oh-my-zsh/custom/themes/powerlevel10k/'
     clone: true
     depth: 1
     update: true
@@ -59,7 +59,7 @@
 - name: Copy config files (I)
   ansible.builtin.template:
     src: '{{ config_file.src }}'
-    dest: '{{ os_homedir }}/{{ user.name }}/.config/zsh/{{ config_file.dest_file }}'
+    dest: '/{{ os_homedir }}/{{ user.name }}/.config/zsh/{{ config_file.dest_file }}'
     owner: '{{ user.name }}'
     group: '{{ user.group_name }}'
     mode: 0644
@@ -75,7 +75,7 @@
 - name: Copy config files (II)
   ansible.builtin.template:
     src: '{{ config_file.src }}'
-    dest: '{{ os_homedir }}/{{ user.name }}/.config/zsh/{{ config_file.dest_file }}'
+    dest: '/{{ os_homedir }}/{{ user.name }}/.config/zsh/{{ config_file.dest_file }}'
   with_items:
     - src: 'zsh/lscolors.sh.j2'
       dest_file: 'lscolors.sh'
@@ -87,8 +87,8 @@
 
 - name: Set config dir
   ansible.builtin.file:
-    src: '{{ os_homedir }}/{{ user.name }}/.config/zsh/.zshenv'
-    dest: '{{ os_homedir }}/{{ user.name }}/.zshenv'
+    src: '/{{ os_homedir }}/{{ user.name }}/.config/zsh/.zshenv'
+    dest: '/{{ os_homedir }}/{{ user.name }}/.zshenv'
     state: link
   become: false
 
