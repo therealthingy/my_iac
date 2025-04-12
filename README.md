@@ -2,11 +2,16 @@
 
 ## TODOs
 ### GENERAL
-- zsh:
+- `.zshrc`:
+  - clipbrd aliases:
+    - GNU/Linux support
+    - Sanitize filename  (TODO: `detox` doesn't work on strings)
+
   - `video-trim_keep` fct.:
     - allow omitting hours
     - validate: monotonically increasing
     - preview option ?!?
+
 
 #### Darwin
 - FIX lscolors
@@ -109,6 +114,8 @@
     - grep . /sys/devices/system/cpu/vulnerabilities/*
   - server role: `preempt=none`    (merge w/ rpi)
 - HELIX LSPs
+- install [git-crypt](https://github.com/AGWA/git-crypt/blob/master/INSTALL.md)
+    PROBLEM: openssl1.x
 - FIX mute audio
 - GNome Extensions ??
 - RPI: Replace [`timeshift-autosnap-apt`](https://github.com/wmutschl/timeshift-autosnap-apt/tree/main) w/ [`apt-btrfs-snapshot`](https://packages.ubuntu.com/search?keywords=apt-btrfs)

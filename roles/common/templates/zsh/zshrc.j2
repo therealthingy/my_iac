@@ -314,13 +314,13 @@ alias-add objdump obj="objdump -M intel -C --visualize-jumps -d "        # NOTE:
 {% else %}
 alias-add brew brew-up="brew update && brew upgrade ; brew cleanup ; brew doctor"
 
-alias dns-flush="sudo dscacheutil -flushcache ; sudo killall -HUP mDNSResponder"
-alias network-disable_packet_filter="sudo pfctl -d"    # Disable Eddie network lock
+alias dns-flush="sudo dscacheutil -flushcache  ;  sudo killall -HUP mDNSResponder"
+alias network-disable_packet_filter="sudo pfctl -d"    # Disable Eddie's "network lock"
 
-alias backup_poweroff="sudo sh -c 'tmutil startbackup --block && shutdown -h +1'"
+alias backup_poweroff="sudo sh -c 'tmutil startbackup --block  &&  shutdown -h +1'"
 
-alias pb-text_2_lower='echo $(pbpaste) | tr "[A-Z]" "[a-z]" | pbcopy'
-alias pb-text_2_upper='echo $(pbpaste) | tr "[a-z]" "[A-Z]" | pbcopy'
+alias clipbrd-text_2_lower='echo -n $(pbpaste) | tr "[A-Z]" "[a-z]" | pbcopy'
+alias clipbrd-text_2_upper='echo -n $(pbpaste) | tr "[a-z]" "[A-Z]" | pbcopy'
 
 # -  "Emulated" GNU/Linux commands  -
 alias poweroff='/sbin/shutdown -h now'
