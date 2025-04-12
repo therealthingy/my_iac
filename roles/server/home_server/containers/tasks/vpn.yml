@@ -49,7 +49,7 @@
                 config:
                   - subnet: '{{ docker_ipv6_conf.prefix }}:2::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}'
         services:
-          - name: ddclient
+          - name: vpn-ddclient
             _include_in_compose: '{{ vpn.ddns is defined|bool }}'
 #            image: lscr.io/linuxserver/ddclient:latest
             image: ddclient
@@ -66,7 +66,8 @@
               - DDNS_DOMAIN={{ vpn.ddns.domain if vpn.ddns.domain is defined else vpn.endpoint.domain }}
               - DDNS_TOKEN={{ vpn.ddns.pass }}
               - CHECK_INTERVAL_SEC={{ vpn.ddns.update_interval_sec }}
-          - name: wireguard
+
+          - name: vpn-wireguard
             image: linuxserver/wireguard:latest
             volumes:
               - path: '{{ docker_container.data_basedir }}/vpn/wg/:/config/'
@@ -109,7 +110,7 @@
               - PUID={{ www_user.uid }}
               - PGID={{ www_user.gid }}
 
-          - name: wireguard-ui
+          - name: vpn-wireguard-ui
             image: ngoduykhanh/wireguard-ui:latest
             entrypoint: ./wg-ui --disable-login
             security:
@@ -117,7 +118,7 @@
               cap_add:
                 - NET_ADMIN
             network:
-              mode: service:wireguard
+              mode: service:vpn-wireguard
             volumes:
               - path: '{{ docker_container.data_basedir }}/vpn/wg-ui/:/app/db/'
               - path: '{{ docker_container.data_basedir }}/vpn/wg/:/etc/wireguard/'
