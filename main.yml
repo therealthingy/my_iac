@@ -6,7 +6,6 @@
       tags:
         - common
 
-
 # --  "HW specific"  --
 - hosts: hw_specific
   roles:
@@ -14,14 +13,13 @@
       tags:
         - hw_specific
 
-
 # --  "System specific"  --
 - hosts: clients_devel, clients_media, clients_workstation
   roles:
     - role: power_user
     - role: client/base
   vars:
-    wallpaper: '/System/Library/Desktop Pictures/Solid Colors/Stone.png'          # TODO: GNU/Linux wallpaper
+    wallpaper: "/System/Library/Desktop Pictures/Solid Colors/Stone.png" # TODO: GNU/Linux wallpaper
     dock_fav_apps:
       - "'org.gnome.Nautilus.desktop'"
       - "'firefox.desktop'"
@@ -50,7 +48,6 @@
       tags:
         - client_workstation
 
-
 - hosts: servers, servers_devel, servers_home
   roles:
     - role: server/base
@@ -69,7 +66,6 @@
       data_basedir: /{{ os_homedir }}/{{ user.name }}/homeserver/data/
       config_basedir: /{{ os_homedir }}/{{ user.name }}/homeserver/config/
   roles:
-  # -- Docker containers --
     - role: server/3rd-party/internet-pi
       tags:
         - inet_monitoring

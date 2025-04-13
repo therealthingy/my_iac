@@ -5,20 +5,19 @@
     state: present
   become: true
 
-- name: 'Remove default config  (TODO: check / revise)'
+- name: "Remove default config" # TODO: check / revise
   ansible.builtin.file:
     path: /etc/apt/apt.conf.d/20auto-upgrades
     state: absent
   become: true
-
 
 # NOTE: To debug, use `sudo unattended-upgrade --debug --dry-run`
 #       Log file: `cat /var/log/unattended-upgrades/unattended-upgrades.log`
 #       Service: `sudo systemctl status unattended-upgrades.service`
 - name: Copy unattended-upgrades config files
   ansible.builtin.template:
-    src: 'unattended-upgrades/{{ unattended_update_config_file }}.j2'
-    dest: '/etc/apt/apt.conf.d/{{ unattended_update_config_file }}'
+    src: "unattended-upgrades/{{ unattended_update_config_file }}.j2"
+    dest: "/etc/apt/apt.conf.d/{{ unattended_update_config_file }}"
     owner: root
     group: root
     mode: 0644

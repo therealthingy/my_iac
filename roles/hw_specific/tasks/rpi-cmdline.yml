@@ -16,9 +16,9 @@
 - name: update cmdline.txt
   copy:
     content: '{{ result_cmdline.content
-        | b64decode
-        | regex_replace(regex_existing, key_value_pair)
-        | regex_replace(regex_add_missing, key_value_pair + ("\1" if remove|default(false) else " \1"))
-        | regex_replace("\s+", " ") | trim
+      | b64decode
+      | regex_replace(regex_existing, key_value_pair)
+      | regex_replace(regex_add_missing, key_value_pair + ("\1" if remove|default(false) else " \1"))
+      | regex_replace("\s+", " ") | trim
       }}'
     dest: "{{ cmdline_txt_path }}"

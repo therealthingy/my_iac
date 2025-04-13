@@ -8,7 +8,7 @@
 #   - LUKS (if enc.): `sudo cryptsetup luksDump /dev/sda3
 - name: Copy udev rule
   ansible.builtin.template:
-    src: usb_enclosure--10-trim_umap.rules.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
+    src: usb_enclosure--10-trim_umap.rules.j2 # TODO: INLINE ONCE SUPPORTED BY MODULE
     dest: /etc/udev/rules.d/10-trim_umap.rules
     owner: root
     group: root

@@ -2,30 +2,29 @@
 - ansible.builtin.include_tasks: packages.yml
 
 - ansible.builtin.include_tasks: linux/config-firefox.yml
-  when: ansible_facts.os_family != 'Darwin'               # TODO: REVISE
-
+  when: ansible_facts.os_family != 'Darwin' # TODO: REVISE
 
 - name: Copy scripts
   block:
     - name: Create dir
       ansible.builtin.file:
-        path: '/{{ os_homedir }}/{{ user.name }}/.local/bin/'     # TODO: Hijacks pipx's bin folder => is this ok ??!
+        path: "/{{ os_homedir }}/{{ user.name }}/.local/bin/" # TODO: Hijacks pipx's bin folder => is this ok ??!
         state: directory
-#        owner: '{{ user.name }}'
-#        group: '{{user.group_name}}'
+        #owner: '{{ user.name }}'
+        #group: '{{user.group_name}}'
         mode: 0755
     - name: Copy Scripts
       ansible.builtin.template:
-        src: '{{ script_file.src }}.j2'
-        dest: '{{ script_file.dest_dir }}/{{ script_file.src }}'
-#        owner: '{{ script_file.owner }}'
-#        group: '{{ script_file.group }}'
+        src: "{{ script_file.src }}.j2"
+        dest: "{{ script_file.dest_dir }}/{{ script_file.src }}"
+        #owner: '{{ script_file.owner }}'
+        #group: '{{ script_file.group }}'
         mode: 0755
       with_items:
-        - src: 'git-update_repos'
-          dest_dir: '/{{ os_homedir }}/{{ user.name }}/.local/bin/'
-#          owner: '{{ user.name }}'
-#          group: '{{ user.group_name }}'
+        - src: "git-update_repos"
+          dest_dir: "/{{ os_homedir }}/{{ user.name }}/.local/bin/"
+      #owner: '{{ user.name }}'
+      #group: '{{ user.group_name }}'
       loop_control:
         loop_var: script_file
   become: false

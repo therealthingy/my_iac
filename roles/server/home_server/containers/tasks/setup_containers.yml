@@ -2,54 +2,54 @@
 # WORKAROUND 4: "ERROR! 'loop_control' is not a valid attribute for a Block"  (SEE: https://stackoverflow.com/questions/58908625/issue-looping-on-block-containing-a-set-of-tasks-in-ansible)
 - name: Copy docker-compose file
   block:
-    - name: 'Container {{ container.name }}: Create config dir'
+    - name: "Container {{ container.name }}: Create config dir"
       ansible.builtin.file:
-        path: '{{ docker_container.config_basedir }}/{{ container.name }}/'
+        path: "{{ docker_container.config_basedir }}/{{ container.name }}/"
         state: directory
         mode: 0755
-    - name: 'Container {{ container.name }}: Copy compose file'
+    - name: "Container {{ container.name }}: Copy compose file"
       ansible.builtin.template:
         src: '{{ "{0}--".format(container.name) if container.compose is not defined else "" }}docker-compose.yml.j2'
-        dest: '{{ docker_container.config_basedir }}/{{ container.name }}/docker-compose.yml'
+        dest: "{{ docker_container.config_basedir }}/{{ container.name }}/docker-compose.yml"
         mode: 0640
   become: false
 
 - name: Copy config files
   block:
-    - name: 'Container {{ container.name }}: Create dir'
+    - name: "Container {{ container.name }}: Create dir"
       ansible.builtin.file:
         path: '{{ docker_container.config_basedir }}/{{ container.name }}/{{ conf_file.target_dir|default(".", true) }}'
         state: directory
         mode: 0755
-      loop_control:     # AGAIN: Doesn't work on `block`, thus duplicated
+      loop_control: # AGAIN: Doesn't work on `block`, thus duplicated
         loop_var: conf_file
-      with_items: '{{ container.config_files }}'
+      with_items: "{{ container.config_files }}"
 
-    - name: 'Container {{ container.name }}: Copy file'
+    - name: "Container {{ container.name }}: Copy file"
       ansible.builtin.template:
-        src: '{{ container.name }}--{{ conf_file.name }}.j2'
+        src: "{{ container.name }}--{{ conf_file.name }}.j2"
         dest: '{{ docker_container.config_basedir }}/{{ container.name }}/{{ conf_file.target_dir|default(".", true) }}/{{ conf_file.name }}'
         mode: '{{ conf_file.mode|default("0640", true) }}'
       loop_control:
         loop_var: conf_file
-      with_items: '{{ container.config_files }}'
+      with_items: "{{ container.config_files }}"
   become: false
   when: container.config_files is defined
 
-- name: 'Container {{ container.name }}: Create data dirs 4 volumes'
+- name: "Container {{ container.name }}: Create data dirs 4 volumes"
   ansible.builtin.file:
-    path: '{{ docker_container.data_basedir }}/{{ container.name }}/{{ volume }}'
+    path: "{{ docker_container.data_basedir }}/{{ container.name }}/{{ volume }}"
     state: directory
     mode: 0755
   loop_control:
     loop_var: volume
-  with_items: '{{ container.volumes }}'
+  with_items: "{{ container.volumes }}"
   become: false
   when: container.volumes is defined
 
-- name: 'Container {{ container.name }}: Ensure container is running'         # TODO: CONSIDER CHECKing IF ALREADY RUNNING & RESTART IF SO (https://docs.ansible.com/ansible/2.9/modules/docker_container_info_module.html)
+- name: "Container {{ container.name }}: Ensure container is running" # TODO: CONSIDER CHECKing IF ALREADY RUNNING & RESTART IF SO (https://docs.ansible.com/ansible/2.9/modules/docker_container_info_module.html)
   community.docker.docker_compose_v2:
-    project_src: '{{ docker_container.config_basedir }}/{{ container.name }}/'
+    project_src: "{{ docker_container.config_basedir }}/{{ container.name }}/"
     build: never
   become: false
   when: container.startup is not defined or container.startup

@@ -1,7 +1,7 @@
 ---
 # --  Ubuntu Firefox  --
 # TODO: (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
-- name: 'Ubuntu - Ensure no Firefox snap is / will be installed'
+- name: "Ubuntu - Ensure no Firefox snap is / will be installed"
   block:
     - name: Add apt repo and update cache
       # NOTE: Equivalent command: `sudo add-apt-repository 'ppa:mozillateam/ppa'  &&  sudo apt update`
@@ -20,12 +20,11 @@
         mode: 0644
       vars:
         apt_pin_packages:
-          - target: 'release o=LP-PPA-mozillateam'
+          - target: "release o=LP-PPA-mozillateam"
             priority: 1001
 
     #TODO -- UNATTENDED UPGRADES: echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
   when: ansible_facts.distribution == 'Ubuntu'
   become: true
-
 
 # NOTE: Installation is handled by `staticdev.firefox` role

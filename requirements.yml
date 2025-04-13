@@ -5,12 +5,11 @@ collections:
 
   - name: geerlingguy.mac
 
-
 roles:
   - name: staticdev.firefox
 
   - name: geerlingguy.docker
   - name: petermosmans.customize-gnome
-  - name: chriswayg.msmtp-mailer            # Required 4 mail notifications
+  - name: chriswayg.msmtp-mailer # Required 4 mail notifications
 
   - name: elliotweiser.osx-command-line-tools

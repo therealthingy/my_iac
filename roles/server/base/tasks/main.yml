@@ -7,33 +7,30 @@
     state: link
   become: true
 
-
 - name: Install msmtp-mailer + set it up (for e.g., mailing for notifications)
   block:
     - name: Set config as vars for role
       ansible.builtin.set_fact:
         msmtp_accounts:
           - account: notifications
-            host: '{{ notifications_mail.smtp_host }}'
-            port: '{{ notifications_mail.smtp_port }}'
-            auth: 'on'
-            from: '{{ notifications_mail.smtp_username }}'
-            user: '{{ notifications_mail.smtp_username }}'
-            password: '{{ notifications_mail.smtp_password }}'
-        msmtp_alias_default: '{{ notifications_mail.system_admin_mail }}'                # Affects aliases in `/etc/aliases`
+            host: "{{ notifications_mail.smtp_host }}"
+            port: "{{ notifications_mail.smtp_port }}"
+            auth: "on"
+            from: "{{ notifications_mail.smtp_username }}"
+            user: "{{ notifications_mail.smtp_username }}"
+            password: "{{ notifications_mail.smtp_password }}"
+        msmtp_alias_default: "{{ notifications_mail.system_admin_mail }}" # Affects aliases in `/etc/aliases`
         msmtp_log: false
         msmtp_remove_mtas: true
         msmtp_default_account: notifications
-        msmtp_domain: '{{ domainname }}'
+        msmtp_domain: "{{ domainname }}"
     - name: "Run 'chriswayg.msmtp-mailer' role"
       ansible.builtin.include_role:
         name: chriswayg.msmtp-mailer
-  become: true                               # UGLY workaround since `become` isn't allowed in `include_role`
+  become: true # UGLY workaround since `become` isn't allowed in `include_role`
   when: notifications_mail is defined
 
-
 - ansible.builtin.include_tasks: config-unattended_updates.yml
-
 
 - name: Firewall
   block:
@@ -49,17 +46,15 @@
         state: present
   become: true
 
-
 # Equivalent command: `docker network create --subnet="2001:db8:1::/48" --ipv6 {{ reverse_proxy_docker_network }}`
-- name: 'Docker: Create a network w/ IPv6 IPAM config'
+- name: "Docker: Create a network w/ IPv6 IPAM config"
   community.docker.docker_network:
-    name: '{{ reverse_proxy_docker_network }}'
+    name: "{{ reverse_proxy_docker_network }}"
     enable_ipv6: true
     ipam_config:
-      - subnet: '{{ docker_ipv6_conf.prefix }}:1::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}'
+      - subnet: "{{ docker_ipv6_conf.prefix }}:1::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}"
   become: false
   when: "'servers_home' in group_names"
-
 
 # Equivalent command (for adding IPv6 address): `sudo ip addr add {{ pif.ipv6_ula }} dev {{ pif.if_name }}`
 # VALIDATE (show ip addresses): `ip -6 address show dev eth0`
@@ -76,7 +71,7 @@
             purge: true
         - name: Shutdown services, sockets and timers
           ansible.builtin.service:
-            name: '{{ item }}'
+            name: "{{ item }}"
             state: stopped
             enabled: false
           failed_when: false
@@ -87,7 +82,7 @@
             - cloud-init-hotplugd.socket
         - name: Cleanup
           ansible.builtin.file:
-            path: '{{ item }}'
+            path: "{{ item }}"
             state: absent
           with_items:
             - /etc/systemd/system/cloud-init.service
@@ -105,24 +100,21 @@
       block:
         # VERIFY: `networkctl status`
         - ansible.builtin.template:
-           src: if--netplan_rules.yaml.j2           # TODO: INLINE ONCE SUPPORTED BY MODULE
-           dest: /etc/netplan/999-server_if.yaml
-           mode: 0600
-
-#        # NOTE: IPv6:
-#        #   - `net.ipv6.conf.<interface>.temp_valid_lft`:  Default: 604800 (7 days)
-#        #   - `   "        "            .temp_prefered_lft`: Default: 86400 (1 day)
-#        #   - `   "        "            .use_tempaddr`: Preference 4 *Privacy Extensions* (0 = disabled, 1 = enabled, but prefer public, > 1 = enable, but prefer temporary)
-#        - name: Netplan workaround unsupported settings     # TODO: Merge in netplan once supported (or remove if default no longer causes ULA 2 be removed)
-#          ansible.posix.sysctl:
-#            name: 'net.ipv6.conf.{{ pif.if_name }}.temp_valid_lft'   # Otherwise ULA gets removed ??
-#            value: 129600
-#            state: present
+            src: if--netplan_rules.yaml.j2 # TODO: INLINE ONCE SUPPORTED BY MODULE
+            dest: /etc/netplan/999-server_if.yaml
+            mode: 0600
+        ## NOTE: IPv6:
+        ##   - `net.ipv6.conf.<interface>.temp_valid_lft`:  Default: 604800 (7 days)
+        ##   - `   "        "            .temp_prefered_lft`: Default: 86400 (1 day)
+        ##   - `   "        "            .use_tempaddr`: Preference 4 *Privacy Extensions* (0 = disabled, 1 = enabled, but prefer public, > 1 = enable, but prefer temporary)
+        #- name: Netplan workaround unsupported settings     # TODO: Merge in netplan once supported (or remove if default no longer causes ULA 2 be removed)
+        #  ansible.posix.sysctl:
+        #    name: 'net.ipv6.conf.{{ pif.if_name }}.temp_valid_lft'   # Otherwise ULA gets removed ??
+        #    value: 129600
+        #    state: present
       notify: Applying Netplan Configuration
-      when: 'pif is defined'
+      when: "pif is defined"
   become: true
-
-
 
 - name: Install login system stats script
   ansible.builtin.template:

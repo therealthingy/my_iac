@@ -5,7 +5,7 @@
       ansible.builtin.set_fact:
         firefox_profiles:
           default:
-            extensions:                     # NOTE: URL on addons.mozilla.org
+            extensions: # NOTE: URL on addons.mozilla.org
               - video-downloader-profession
               - video-downloadhelper
               - buster-captcha-solver
@@ -16,7 +16,6 @@
       ansible.builtin.include_role:
         name: staticdev.firefox
   become: false
-
 
 - name: Install dependencies for extension
   # Equivalent command: `dpkg -s net.downloadhelper.coapp`
@@ -30,14 +29,14 @@
         - name: Download package as deb
           ansible.builtin.get_url:
             # TODO: Always fetch latest version
-            url: 'https://github.com/aclap-dev/vdhcoapp/releases/download/v{{ downloadhelper_coapp_ver }}/vdhcoapp-linux-{{ cpu_arch }}.deb'
-            dest: '/tmp/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ cpu_arch }}.deb'
+            url: "https://github.com/aclap-dev/vdhcoapp/releases/download/v{{ downloadhelper_coapp_ver }}/vdhcoapp-linux-{{ cpu_arch }}.deb"
+            dest: "/tmp/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ cpu_arch }}.deb"
           become: false
 
         - name: Install it
           # Equivalent command: `sudo apt install ./name.deb`
           ansible.builtin.apt:
-            deb: '/tmp/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ cpu_arch }}.deb'
+            deb: "/tmp/net.downloadhelper.coapp-{{ downloadhelper_coapp_ver }}-1_{{ cpu_arch }}.deb"
           become: true
       when:
         - ansible_os_family == 'Debian'

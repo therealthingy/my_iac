@@ -5,16 +5,15 @@
 #    user: {{ user.name }}
 #    key: {{ user_ssh_key }}
 
-
 - name: Install/Enable + change sshd settings
   block:
     - name: Install ssh server
       block:
-        - name: '[Debian/Ubuntu]'
+        - name: "[Debian/Ubuntu]"
           ansible.builtin.apt:
-            name: ssh               # Contains server AND client
+            name: ssh # Contains server AND client
           when: ansible_facts.os_family != 'Darwin'
-        - name: '[Darwin]'
+        - name: "[Darwin]"
           ansible.builtin.include_tasks: ../../client/base/tasks/darwin/systemsetup.yml
           vars:
             systemsetup_setting: { setting: remotelogin, value: true }
@@ -25,30 +24,30 @@
         - name: Update config file
           ansible.builtin.lineinfile:
             dest: /etc/ssh/sshd_config
-            regexp: '^#?{{ common_ssh_item.key }}'
-            line: '{{ common_ssh_item.key }} {{ common_ssh_item.value }}'
-            validate: '/usr/sbin/sshd -T -f %s'
+            regexp: "^#?{{ common_ssh_item.key }}"
+            line: "{{ common_ssh_item.key }} {{ common_ssh_item.value }}"
+            validate: "/usr/sbin/sshd -T -f %s"
           with_items:
-          # Disable root login:
-            - key: 'PermitRootLogin'
-              value: 'no'
-          # Enable public key authentication:
-            - key: 'PubkeyAuthentication'
-              value: 'yes'
-          # Disable password login:
-            - key: 'PasswordAuthentication'
-              value: 'no'
-            - key: 'ChallengeResponseAuthentication'
-              value: 'no'
-          # Enable/Disable X11 forwarding:
-            - key: 'X11Forwarding'
+            # Disable root login:
+            - key: "PermitRootLogin"
+              value: "no"
+            # Enable public key authentication:
+            - key: "PubkeyAuthentication"
+              value: "yes"
+            # Disable password login:
+            - key: "PasswordAuthentication"
+              value: "no"
+            - key: "ChallengeResponseAuthentication"
+              value: "no"
+            # Enable/Disable X11 forwarding:
+            - key: "X11Forwarding"
               value: "{{ ssh.x11_enabled|default('no', true) }}"
-          # Change ssh port:
-            - key: 'Port'
+            # Change ssh port:
+            - key: "Port"
               value: "{{ ssh.port|default('22', true) }}"
           loop_control:
             loop_var: common_ssh_item
-        - name: '[Ubuntu Server] Rmv contradicting conf file'       # Would overwrite overwrite `PasswordAuthentication` 2 `yes`
+        - name: "[Ubuntu Server] Rmv contradicting conf file" # Would overwrite overwrite `PasswordAuthentication` 2 `yes`
           ansible.builtin.file:
             path: /etc/ssh/sshd_config.d/50-cloud-init.conf
             state: absent
@@ -58,21 +57,20 @@
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: '^#?AcceptEnv LANG LC_\*$'
-        line: 'AcceptEnv LANG LC_*'
-        validate: '/usr/sbin/sshd -T -f %s'
+        line: "AcceptEnv LANG LC_*"
+        validate: "/usr/sbin/sshd -T -f %s"
   notify: restart ssh daemon
   become: true
   when: sshd_disabled is not defined or not sshd_disabled
 
-
 - name: Uninstall/Disable ssh server
   block:
-    - name: '[Debian/Ubuntu]'
+    - name: "[Debian/Ubuntu]"
       ansible.builtin.apt:
         name: openssh-server
         state: absent
       when: ansible_facts.os_family != 'Darwin'
-    - name: '[Darwin]'
+    - name: "[Darwin]"
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/systemsetup.yml
       vars:
         systemsetup_setting: { setting: remotelogin, value: false }

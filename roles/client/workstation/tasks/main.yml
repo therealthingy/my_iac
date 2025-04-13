@@ -1,88 +1,88 @@
 ---
 - name: Install packages
   block:
-    - name: Install audio apps      # TODO: Mv in `client_media` role
+    - name: Install audio apps # TODO: Mv in `client_media` role
       block:
-        - name: '[Darwin] Install homebrew packages'
+        - name: "[Darwin] Install homebrew packages"
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
-            packages_homebrew_casks:         # TODO: Add `flatpak` counterparts 4 linux & check whether VM
+            packages_homebrew_casks: # TODO: Add `flatpak` counterparts 4 linux & check whether VM
               - dir: Audio
                 packages:
-#                  - mediahuman-audio-converter
-#                  - musicbrainz-picard
+                  #- mediahuman-audio-converter
+                  #- musicbrainz-picard
                   - ocenaudio
-#                  - xld                                              # TODO
-#                  - mediainfo
+                  #- xld                                              # TODO
+                  #- mediainfo
 
     - name: Install note taking apps
       block:
-        - name: '[Darwin] Install homebrew packages'
+        - name: "[Darwin] Install homebrew packages"
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
-            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Notes
                 packages:
-#                  - fsnotes
+                  #- fsnotes
                   - joplin
 
     - name: Install design apps
       block:
-        - name: '[Darwin] Install homebrew packages'
+        - name: "[Darwin] Install homebrew packages"
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
-            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Design
                 packages:
                   - digikam
-#                  - inkscape
+                  #- inkscape
                   - paintbrush
                   - imageoptim
 
     - name: 'Install "services" apps'
       block:
-        - name: '[Darwin] Install homebrew packages'
+        - name: "[Darwin] Install homebrew packages"
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
-            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Internet/Services
                 packages:
                   - eddie
                   - maestral
 
-#    - name: Install streaming apps      # TODO: Mv in `client_media` role
-#      block:
-#        - name: '[Darwin] Install homebrew packages'
-#          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-#          vars:
-#            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-#              - dir: Music
-#                packages: ['spotify']                                  # TODO:
+    #- name: Install streaming apps      # TODO: Mv in `client_media` role
+    #  block:
+    #    - name: '[Darwin] Install homebrew packages'
+    #      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
+    #      vars:
+    #        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+    #          - dir: Music
+    #            packages: ['spotify']                                  # TODO:
 
     - name: Install social stuff
       block:
-        - name: '[Darwin] Install homebrew packages'
+        - name: "[Darwin] Install homebrew packages"
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
-            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Social
-                packages: ['signal']
+                packages: ["signal"]
 
     - name: 'Install "conferencing" apps'
       block:
-        - name: '[Darwin] Install homebrew packages'
+        - name: "[Darwin] Install homebrew packages"
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
-            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Internet/Conferencing
-                packages: ['discord']                                   # 'textual'  (IRC client)
+                packages: ["discord"] # 'textual'  (IRC client)
 
     - name: 'Install "inet" tools'
       block:
-        - name: '[Darwin] Install homebrew packages'
+        - name: "[Darwin] Install homebrew packages"
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
-            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Internet/Tools
                 packages:
                   - cyberduck
@@ -93,10 +93,10 @@
 
     - name: Install misc. tools
       block:
-        - name: '[Darwin] Install homebrew packages'
+        - name: "[Darwin] Install homebrew packages"
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
-            packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Tools
                 packages:
                   - betterdisplay
@@ -107,20 +107,17 @@
       ansible.builtin.include_tasks: package-latex.yml
       when: exclude_latex is not defined  or  not exclude_latex
 
-
-
-
-- name: 'Apps: config'
+- name: "Apps: config"
   block:
     - name: Config syncthing
       block:
         - name: Set variables (as facts)
           ansible.builtin.set_fact:
-            syncthing_global_conf_file_target_dir: '/{{ os_homedir }}/{{ user.name }}/'
+            syncthing_global_conf_file_target_dir: "/{{ os_homedir }}/{{ user.name }}/"
         - name: Copy config file
           ansible.builtin.template:
             src: stglobalignore.j2
-            dest: '{{ syncthing_global_conf_file_target_dir }}/.stglobalignore'
+            dest: "{{ syncthing_global_conf_file_target_dir }}/.stglobalignore"
             mode: 0640
           become: false
 
@@ -128,14 +125,14 @@
       block:
         - name: Create dir
           ansible.builtin.file:
-            path: '/{{ os_homedir }}/{{ user.name }}/.config/joplin-desktop'
+            path: "/{{ os_homedir }}/{{ user.name }}/.config/joplin-desktop"
             state: directory
-            owner: '{{ user.name }}'
-            group: '{{user.group_name}}'
+            owner: "{{ user.name }}"
+            group: "{{user.group_name}}"
             mode: 0755
         - name: Copy config
           ansible.builtin.template:
             src: apps/joplin.css.j2
-            dest: '/{{ os_homedir }}/{{ user.name }}/.config/joplin-desktop/basenotestyle.css'
+            dest: "/{{ os_homedir }}/{{ user.name }}/.config/joplin-desktop/basenotestyle.css"
             mode: 0755
   become: false

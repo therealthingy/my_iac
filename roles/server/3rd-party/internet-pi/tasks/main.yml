@@ -1,5 +1,5 @@
 ---
-- name: "Setup ansible playbook   (TODO: REQUIRES ATM 2 RUNS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)"
+- name: "Setup ansible playbook" # TODO: REQUIRES ATM 2 RUNS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   delegate_to: 127.0.0.1
   block:
     - name: Clone repo
@@ -9,7 +9,7 @@
             path: "./roles/server/3rd-party/internet-pi/.git/"
           register: git_already_cloned
         - name: Clone it  (in a hacky way 2 avoid git non-empty dir err)
-          ansible.builtin.shell: '{{ item }}'
+          ansible.builtin.shell: "{{ item }}"
           with_items:
             - git init
             - git remote add origin https://github.com/geerlingguy/internet-pi.git
@@ -28,29 +28,29 @@
           block:
             - name: Add network config
               block:
-                - name: 'container Grafana + rmv ports'
+                - name: "container Grafana + rmv ports"
                   ansible.builtin.replace:
-                    path: './roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2'
-                    regexp: '{{grafana_docker_compose_item.regex}}'
-                    replace: '{{grafana_docker_compose_item.line}}'
+                    path: "./roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2"
+                    regexp: "{{grafana_docker_compose_item.regex}}"
+                    replace: "{{grafana_docker_compose_item.line}}"
                   loop_control:
                     loop_var: grafana_docker_compose_item
                   with_items:
-                    - regex: '- front-tier$'
-                      line: '- {{ reverse_proxy_docker_network }}'
+                    - regex: "- front-tier$"
+                      line: "- {{ reverse_proxy_docker_network }}"
                     - regex: '^    ports:\n      - 9090:9090$\n'
-                      line: ''
+                      line: ""
                     - regex: '^    ports:\n      - 3030:3000$\n'
-                      line: ''
+                      line: ""
                     - regex: '^    ports:\n      - 9115:9115$\n'
-                      line: ''
+                      line: ""
                     - regex: '^    ports:\n      - 9798:9798$\n'
-                      line: ''
+                      line: ""
                     - regex: '^    ports:\n      - 9100:9100$\n'
-                      line: ''
-                - name: 'globally'
+                      line: ""
+                - name: "globally"
                   ansible.builtin.replace:
-                    path: './roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2'
+                    path: "./roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2"
                     regexp: '^  front-tier:\n    name: internet-monitoring-front-tier$\n'
                     replace: |2
                         {{ reverse_proxy_docker_network }}:
@@ -58,9 +58,9 @@
 
             - name: Add traefik config
               ansible.builtin.blockinfile:
-                marker: '# {mark} TRAEFIK CONFIG'
-                path: './roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2'
-                insertafter: '^  grafana:$'
+                marker: "# {mark} TRAEFIK CONFIG"
+                path: "./roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2"
+                insertafter: "^  grafana:$"
                 block: |2
                       labels:
                         - com.centurylinklabs.watchtower.enable=true
@@ -70,24 +70,23 @@
 
             - name: Add watchtower labels 4 remaining containers
               ansible.builtin.blockinfile:
-                marker: '# {mark} WATCHTOWER {{ config_cred_item }}'
-                path: './roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2'
-                insertbefore: '^    image: {{config_cred_item}}:latest$'
+                marker: "# {mark} WATCHTOWER {{ config_cred_item }}"
+                path: "./roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2"
+                insertbefore: "^    image: {{config_cred_item}}:latest$"
                 block: |2
                       labels:
                         - com.centurylinklabs.watchtower.enable=true
               with_items:
-                - 'prom/prometheus'
-                - 'prom/blackbox-exporter'
-                - 'miguelndecarvalho/speedtest-exporter'
-                - 'prom/node-exporter'
+                - "prom/prometheus"
+                - "prom/blackbox-exporter"
+                - "miguelndecarvalho/speedtest-exporter"
+                - "prom/node-exporter"
               loop_control:
                 loop_var: config_cred_item
   become: false
 
-
 - name: Set up Internet Monitoring.
-  ansible.builtin.include_tasks: tasks/internet-monitoring.yml     # NOTE: `import_task` parses it immediately (which won't work as not yet existent)
+  ansible.builtin.include_tasks: tasks/internet-monitoring.yml # NOTE: `import_task` parses it immediately (which won't work as not yet existent)
   when:
     - monitoring_enable
-    - git_already_cloned.stat.exists == True                       # handlers didn't exist yet, leading 2 "ERROR! The requested handler 'Restart internet-monitoring' was not found in either the main handlers list nor in the listening handlers list"  -> THUS: Run it @ 2nd time
+    - git_already_cloned.stat.exists == True # handlers didn't exist yet, leading 2 "ERROR! The requested handler 'Restart internet-monitoring' was not found in either the main handlers list nor in the listening handlers list"  -> THUS: Run it @ 2nd time

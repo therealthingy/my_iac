@@ -5,21 +5,17 @@
       block:
         - name: Install required tools (4 checking)
           ansible.builtin.apt:
-            name: util-linux                    # `lscpu`
+            name: util-linux # `lscpu`
           become: true
-
         - name: Check CPU vendor
           ansible.builtin.shell: lscpu | grep -o "Apple"
           failed_when: false
           changed_when: false
           register: result_cpu_vendor_apple
-
     - name: Run task
       ansible.builtin.import_tasks: apple_silicone.yml
       when: result_cpu_vendor_apple.rc == 0
   when: ansible_architecture == 'aarch64'
-
-
 
 - name: Raspberry Pi
   ansible.builtin.import_tasks: rpi.yml
@@ -28,7 +24,6 @@
 - name: SSD USB enclosure
   ansible.builtin.import_tasks: ssd_usb_enclosure.yml
   when: usb_enclosure is defined
-
 
 - name: VmWare Hypervisor
   ansible.builtin.import_tasks: vmware_hypervisor.yml

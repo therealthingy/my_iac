@@ -2,4 +2,4 @@
 - ansible.builtin.include_tasks: packages.yml
 
 - ansible.builtin.include_tasks: config-firefox.yml
-  when: ansible_facts.os_family != 'Darwin'               # TODO: REVISE
+  when: ansible_facts.os_family != 'Darwin' # TODO: REVISE

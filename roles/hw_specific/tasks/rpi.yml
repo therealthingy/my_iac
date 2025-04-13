@@ -6,35 +6,33 @@
   when: ansible_facts.distribution == 'Debian'
   become: true
 
-
 - name: SW
   block:
     - name: Install
       ansible.builtin.apt:
         name:
-          - libraspberrypi-bin       # '`vcgencmd`'
-          - rpi-eeprom               # TODO: not tested yet  (see https://askubuntu.com/questions/1253070/raspberry-pi-4-firmware-upgrade-eeprom-over-ubuntu-20-04)
+          - libraspberrypi-bin # '`vcgencmd`'
+          - rpi-eeprom # TODO: not tested yet  (see https://askubuntu.com/questions/1253070/raspberry-pi-4-firmware-upgrade-eeprom-over-ubuntu-20-04)
         state: present
     - name: Add necessary groups
       ansible.builtin.user:
-        name: '{{ user.name }}'
+        name: "{{ user.name }}"
         groups: video
         append: true
   become: true
 
-
 # FIRMWARE SETTINGS REFERENCE: https://www.raspberrypi.com/documentation/computers/config_txt.html
 - name: Determine path of config file
   block:
-    - name: '[Raspberry Pi OS]'
+    - name: "[Raspberry Pi OS]"
       ansible.builtin.set_fact:
-        firmware_config_file: '/boot/config.txt'
-        cmdline_txt_path: '/boot/cmdline.txt'
+        firmware_config_file: "/boot/config.txt"
+        cmdline_txt_path: "/boot/cmdline.txt"
       when: ansible_facts.distribution != 'Ubuntu'
-    - name: '[Ubuntu]'
+    - name: "[Ubuntu]"
       ansible.builtin.set_fact:
-        firmware_config_file: '/boot/firmware/config.txt'
-        cmdline_txt_path: '/boot/firmware/cmdline.txt'
+        firmware_config_file: "/boot/firmware/config.txt"
+        cmdline_txt_path: "/boot/firmware/cmdline.txt"
       when: ansible_facts.distribution == 'Ubuntu'
 
 - name: Disable HW
@@ -47,70 +45,69 @@
         # Alternative: Uninstall package `bluez`
         - name: Disable BT services
           ansible.builtin.service:
-            name: '{{ item }}'
+            name: "{{ item }}"
             state: stopped
             enabled: false
           failed_when: false
           with_items:
             - hciuart.service
-#            - bluealsa.service
+            #            - bluealsa.service
             - bluetooth.service
-        - name: Disable HW                        # AGAIN: REQUIRES reboot
+        - name: Disable HW # AGAIN: REQUIRES reboot
           ansible.builtin.lineinfile:
-            dest: '{{ firmware_config_file }}'
-            regexp: '^(#)?dtoverlay={{ item }}'
-            line: 'dtoverlay={{ item }}'
+            dest: "{{ firmware_config_file }}"
+            regexp: "^(#)?dtoverlay={{ item }}"
+            line: "dtoverlay={{ item }}"
           with_items:
             - disable-bt
             - disable-wifi
 
     - name: … LEDs
       ansible.builtin.lineinfile:
-        dest: '{{ firmware_config_file }}'
-        regexp: '^(#)?dtparam={{ item.key }}={{ item.value }}'
-        line: 'dtparam={{ item.key }}={{ item.value }}'
+        dest: "{{ firmware_config_file }}"
+        regexp: "^(#)?dtparam={{ item.key }}={{ item.value }}"
+        line: "dtparam={{ item.key }}={{ item.value }}"
       with_items:
         # Disable activity LED
-        - key: 'act_led_trigger'
-          value: 'none'
-        - key: 'act_led_activelow'
-          value: 'off'
+        - key: "act_led_trigger"
+          value: "none"
+        - key: "act_led_activelow"
+          value: "off"
         # Disable PWR LED  (currently not working properly  ??, see: https://stackoverflow.com/a/71492090)
-        - key: 'pwr_led_trigger'
-          value: 'default-on'
-        - key: 'pwr_led_activelow'
-          value: 'off'
+        - key: "pwr_led_trigger"
+          value: "default-on"
+        - key: "pwr_led_activelow"
+          value: "off"
         # Disable ethernet port (ACT & LNK) LEDs
-        - key: 'eth_led0'
-          value: '4'
-        - key: 'eth_led1'
-          value: '4'
+        - key: "eth_led0"
+          value: "4"
+        - key: "eth_led1"
+          value: "4"
   become: true
 
 - name: Optimize 4 more speed
   ansible.builtin.lineinfile:
-    dest: '{{ firmware_config_file }}'
-    regexp: '^(#)?{{ item.key }}='
-    line: '{{ item.key }}={{ item.value }}'
+    dest: "{{ firmware_config_file }}"
+    regexp: "^(#)?{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
   with_items:
-    - key: 'over_voltage'     # Optimize HW: Over Voltage
-      value: '4'
-    - key: 'arm_freq'         # Optimize HW: CPU freq
-      value: '1800'
-#    - key: 'core_freq'        # Optimize HW: GPU freq
-#      value: '550'
-#    - key: 'gpu_mem'          # Optimize HW: GPU Memory Split
-#      value: '16'
-    - key: 'boot_delay'       # Optimize boot: Disable boot delay
-      value: '0'
-    - key: 'disable_poe_fan'  # Optimize boot: Turn off PoE hat
-      value: '1'
-    - key: 'initial_turbo'    # Optimize boot: OC CPU 4 first secs
-      value: '60'
-    - key: 'disable_splash'   # UNRELATED …
-      value: '1'
+    - key: "over_voltage" # Optimize HW: Over Voltage
+      value: "4"
+    - key: "arm_freq" # Optimize HW: CPU freq
+      value: "1800"
+    #    - key: 'core_freq'        # Optimize HW: GPU freq
+    #      value: '550'
+    #    - key: 'gpu_mem'          # Optimize HW: GPU Memory Split
+    #      value: '16'
+    - key: "boot_delay" # Optimize boot: Disable boot delay
+      value: "0"
+    - key: "disable_poe_fan" # Optimize boot: Turn off PoE hat
+      value: "1"
+    - key: "initial_turbo" # Optimize boot: OC CPU 4 first secs
+      value: "60"
+    - key: "disable_splash" # UNRELATED …
+      value: "1"
   become: true
-
 
 ## TODO:  SEE ALSO:
 ##   - https://github.com/raspberrypi/Raspberry-Pi-OS-64bit/issues/178
@@ -126,10 +123,9 @@
 #      value: 'off'
 #  become: true
 
-
 - name: Optimize scheduler 4 server workloads
   block:
-# TODO: MV 2 server role  +  check whether target host is in group *-client
+    # TODO: MV 2 server role  +  check whether target host is in group *-client
     - include_tasks: rpi-cmdline.yml
       vars:
         key: preempt
@@ -137,21 +133,16 @@
         update: true
   become: true
 
-
-
-
-
-
 # SEE HERE: https://github.com/Pioreactor/rpi_hardware_pwm  //  https://github.com/dotnet/iot/blob/main/Documentation/raspi-pwm.md#enabling-hardware-pwm
 # Validate via: `lsmod | grep pwm`
 - name: Enable HW pwm
   block:
     - name: Update firmware config
       ansible.builtin.lineinfile:
-        dest: '{{ firmware_config_file }}'
-        regexp: '^(#)?dtoverlay=pwm-2chan(.+)?'
-        line: 'dtoverlay=pwm-2chan'
-    - name: Add user to the permission group        # NOTE: newer Raspberry Pi OS releases already have these rules  //  No notify as we need a restart anyways …
+        dest: "{{ firmware_config_file }}"
+        regexp: "^(#)?dtoverlay=pwm-2chan(.+)?"
+        line: "dtoverlay=pwm-2chan"
+    - name: Add user to the permission group # NOTE: newer Raspberry Pi OS releases already have these rules  //  No notify as we need a restart anyways …
       block:
         - name: Check already exists
           ansible.builtin.stat:
@@ -159,7 +150,7 @@
           register: udev_rule_file
         - name: Copy udev rule
           ansible.builtin.template:
-            src: rpi--99-com.rules.j2                    # TODO: INLINE ONCE SUPPORTED BY MODULE
+            src: rpi--99-com.rules.j2 # TODO: INLINE ONCE SUPPORTED BY MODULE
             dest: /etc/udev/rules.d/99-com.rules
             owner: root
             group: root
@@ -170,7 +161,7 @@
 - name: Clone repo
   ansible.builtin.git:
     repo: https://github.com/therealthingy/rpi_fan_controller
-    dest: '{{ rpi_fan_pwm_container_dir }}'
+    dest: "{{ rpi_fan_pwm_container_dir }}"
     clone: true
     depth: 1
     update: true
@@ -180,17 +171,16 @@
     - not 'Local modifications exist in the destination' in repo_clone.msg
   become: false
 
-
 - name: Setup as docker container
   block:
     - name: Adapt config
       ansible.builtin.lineinfile:
-        dest: '{{ rpi_fan_pwm_container_dir }}/.env'
-        regexp: '^INVERT_PWM_SIGNAL=False$'
-        line: 'INVERT_PWM_SIGNAL=True'
+        dest: "{{ rpi_fan_pwm_container_dir }}/.env"
+        regexp: "^INVERT_PWM_SIGNAL=False$"
+        line: "INVERT_PWM_SIGNAL=True"
     - name: Ensure container is running
-      community.docker.docker_compose_v2:              # TODO: Conditional docker dependency  ????????
-        project_src: '{{ rpi_fan_pwm_container_dir }}'
+      community.docker.docker_compose_v2: # TODO: Conditional docker dependency  ????????
+        project_src: "{{ rpi_fan_pwm_container_dir }}"
   become: false
 
 #- name: Setup as systemd service
@@ -241,9 +231,6 @@
 #        daemon_reload: true
 #        name: fan_control
 #  become: true
-
-
-
 
 #  - name: Reboot system        # $$$$$$$$$$$$$$$$$$$   TODO (would require `when` - `changed_when`)
 #    ansible.builtin.reboot:

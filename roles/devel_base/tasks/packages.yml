@@ -1,5 +1,5 @@
 ---
-- ansible.builtin.include_tasks: '{{ included_dev_server_task }}'
+- ansible.builtin.include_tasks: "{{ included_dev_server_task }}"
   loop:
     - packages-sysdevel.yml
     - packages-python.yml
@@ -8,27 +8,25 @@
   loop_control:
     loop_var: included_dev_server_task
 
-
-
 - name: Install misc tools
   block:
-    - name: '[Darwin / Debian/Ubuntu]'
+    - name: "[Darwin / Debian/Ubuntu]"
       ansible.builtin.package:
         name:
-          - graphviz              # TODO: Apparently required by kcachegrind  ??
-#          - flashrom
-#          - jq
-#          - httpie                   # Human-friendly HTTP client for the API era
-      become: '{{ package_manager_become }}'
-#    - name: '[Debian/Ubuntu]'
-#      ansible.builtin.apt:
-#        name:
-#          - sqlite3                   # SQLite CLI
-#        state: present
-#      when: ansible_facts.os_family != 'Darwin'
-#    - name: '[Darwin]'
-#      community.general.homebrew:
-#        name:
-#          - sqlite
-#      become: false
-#      when: ansible_facts.os_family == 'Darwin'
+          - graphviz # TODO: Apparently required by kcachegrind  ??
+          #- flashrom
+          #- jq
+          #- httpie                   # Human-friendly HTTP client for the API era
+      become: "{{ package_manager_become }}"
+    #- name: '[Debian/Ubuntu]'
+    #  ansible.builtin.apt:
+    #    name:
+    #      - sqlite3                   # SQLite CLI
+    #    state: present
+    #  when: ansible_facts.os_family != 'Darwin'
+    #- name: '[Darwin]'
+    #  community.general.homebrew:
+    #    name:
+    #      - sqlite
+    #  become: false
+    #  when: ansible_facts.os_family == 'Darwin'

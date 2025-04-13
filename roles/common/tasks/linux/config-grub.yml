@@ -1,5 +1,5 @@
 ---
-- name: 'Check if grub is used  (TODO: revise)'
+- name: "Check if grub is used" # TODO: revise
   # NOTE: `PATH` may not be set correctly (e.g., on Debian)
   ansible.builtin.command: which /sbin/update-grub
   failed_when: false
@@ -7,7 +7,6 @@
   check_mode: false
   register: result_grub_command
   become: false
-
 
 - name: Change grub settings
   block:
@@ -21,18 +20,18 @@
     - name: Change config file and set no boot timeout
       ansible.builtin.lineinfile:
         dest: /etc/default/grub
-        regexp: '^#?{{ item.key }}={{ item.regexp }}$'
-        line: '{{ item.key }}={{ item.value }}'
+        regexp: "^#?{{ item.key }}={{ item.regexp }}$"
+        line: "{{ item.key }}={{ item.value }}"
       with_items:
-        - key: 'GRUB_TIMEOUT_STYLE'
+        - key: "GRUB_TIMEOUT_STYLE"
           value: "{{ 'menu' if grub_menu_show else 'hidden' }}"
           regexp: '\w+'
-        - key: 'GRUB_TIMEOUT'
-          value: '3'
-          regexp: '[0-9]+'
-#        - key: 'GRUB_RECORDFAIL_TIMEOUT'         # when using btrfs  (SEE: https://askubuntu.com/a/1123295)
-#          value: '0'
-#          regexp: '[0-9]+'
+        - key: "GRUB_TIMEOUT"
+          value: "3"
+          regexp: "[0-9]+"
+        #- key: 'GRUB_RECORDFAIL_TIMEOUT'         # when using btrfs  (SEE: https://askubuntu.com/a/1123295)
+        #  value: '0'
+        #  regexp: '[0-9]+'
       register: result_grub_timeout_updated
       when: grub_menu_show is defined
 

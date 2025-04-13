@@ -1,30 +1,28 @@
 ---
-- ansible.builtin.include_tasks: '{{ item }}'
+- ansible.builtin.include_tasks: "{{ item }}"
   loop:
     - packages-python.yml
 
-
-
 - name: Install file general purpose tools
   block:
-    - name: '[Darwin / Debian/Ubuntu]'
+    - name: "[Darwin / Debian/Ubuntu]"
       ansible.builtin.package:
         name:
-          - detox                         # Renames files to make them easier to work w/ under Unix & related OSes
+          - detox # Renames files to make them easier to work w/ under Unix & related OSes
           - tree
           - rename
           - dos2unix
-          - jdupes                        # OG: `fdupes`
+          - jdupes # OG: `fdupes`
           - rsync
-          - rclone                        # Cloud storage management software
-      become: '{{ package_manager_become }}'
+          - rclone # Cloud storage management software
+      become: "{{ package_manager_become }}"
 
-    - name: '[Debian/Ubuntu]'
+    - name: "[Debian/Ubuntu]"
       ansible.builtin.apt:
         name:
-          - libc-bin                      # Collection of helper programs, so called binary tools, that work in conjunction with libc  (`iconv`, ..)
+          - libc-bin # Collection of helper programs, so called binary tools, that work in conjunction with libc  (`iconv`, ..)
           - file
-          - zerofree                      # NOTE: Useful 4 sparse files
+          - zerofree # NOTE: Useful 4 sparse files
           # -  File archiving tools  -
           - zip
           - unzip
@@ -32,18 +30,17 @@
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
-    - name: '[Darwin]'
+    - name: "[Darwin]"
       community.general.homebrew:
         name:
-        - gnu-sed
-        - gawk
-        - grep
-        - findutils                     # GNU `find`
+          - gnu-sed
+          - gawk
+          - grep
+          - findutils # GNU `find`
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
-
-- name: Install backup tools              # macOS has TimeMachine
+- name: Install backup tools # macOS has TimeMachine
   ansible.builtin.apt:
     name:
       - borgbackup
@@ -51,24 +48,23 @@
   become: true
   when: ansible_facts.os_family != 'Darwin'
 
-
 - name: Monitoring tools
   block:
     - name: Install monitoring tools (I)
       block:
-        - name: '[Debian/Ubuntu]'
+        - name: "[Debian/Ubuntu]"
           ansible.builtin.apt:
             name:
               - atop
-              - dstat                     # System monitoring tool  (allows monitoring system resources such as cpu, memory, disk & network stats) -> replacement 4 `vmstat`, `iostat` & `ifstat`
-              - psmisc                    # Utilities that use the procfs (`fuser` - Identifies processes using files or sockets, `killall` - kills processes by name, `prtstat` - prints process statistics, `pslog` - prints log path(s) of a process, `pstree` - shows currently running processes as a tree, `peekfd` - shows data traveling over a fildes)
+              - dstat # System monitoring tool  (allows monitoring system resources such as cpu, memory, disk & network stats) -> replacement 4 `vmstat`, `iostat` & `ifstat`
+              - psmisc # Utilities that use the procfs (`fuser` - Identifies processes using files or sockets, `killall` - kills processes by name, `prtstat` - prints process statistics, `pslog` - prints log path(s) of a process, `pstree` - shows currently running processes as a tree, `peekfd` - shows data traveling over a fildes)
               - iotop
               - powertop
-              - sysstat                   # `sar` (can be used 2 monitor Linux system’s resources like CPU usage, memory utilization, I/O devices consumption, etc.), `iostat`
-              - usbutils                  # `lsusb`
+              - sysstat # `sar` (can be used 2 monitor Linux system’s resources like CPU usage, memory utilization, I/O devices consumption, etc.), `iostat`
+              - usbutils # `lsusb`
             state: present
           when: ansible_facts.os_family != 'Darwin'
-        - name: '[Darwin]'
+        - name: "[Darwin]"
           community.general.homebrew:
             name:
               - lsusb
@@ -79,78 +75,76 @@
     - name: Install monitoring tools (II)
       ansible.builtin.apt:
         name:
-          - smartmontools                 # `smartctl` & `smartd` 4 controlling & monitoring SMART storage
-          - hdparm                        # Allows setting & viewing ATA hd drive HW params & test performance
+          - smartmontools # `smartctl` & `smartd` 4 controlling & monitoring SMART storage
+          - hdparm # Allows setting & viewing ATA hd drive HW params & test performance
           - nvme-cli
-          - lm-sensors                    # `sensors`
+          - lm-sensors # `sensors`
       when:
         - ansible_facts.os_family != 'Darwin'
         - hw_is_rpi == False
-        -  'hypervisor is not defined or not hypervisor'
+        - "hypervisor is not defined or not hypervisor"
   become: true
-
 
 - name: Install networking tools
   block:
-    - name: '[Darwin / Debian/Ubuntu]'
+    - name: "[Darwin / Debian/Ubuntu]"
       ansible.builtin.package:
         name:
-          - nmap                          # Contains also `ncat` on Darwin ??!
+          - nmap # Contains also `ncat` on Darwin ??!
           - socat
-          - arp-scan                      # Contains `arp-scan`, `arp-fingerprint`
+          - arp-scan # Contains `arp-scan`, `arp-fingerprint`
           - iperf
           - speedtest-cli
           - wget
-          - aria2                         # Download tool  (SEE: https://aria2.github.io/); cmd: `aria2c`
-          - wrk                           # HTTP benchmarking tool
-#          - openvpn
-      become: "{{ 'true' if ansible_facts.os_family != \"Darwin\" else 'false' }}"
+          - aria2 # Download tool  (SEE: https://aria2.github.io/); cmd: `aria2c`
+          - wrk # HTTP benchmarking tool
+          #- openvpn
+      become: '{{ ''true'' if ansible_facts.os_family != "Darwin" else ''false'' }}'
 
-    - name: '[Debian/Ubuntu]'
+    - name: "[Debian/Ubuntu]"
       ansible.builtin.apt:
         name:
-          - iproute2                      # `ip`;   NOTE: Package 'net-tools' has been deprecated
+          - iproute2 # `ip`;   NOTE: Package 'net-tools' has been deprecated
           - traceroute
           - netcat-openbsd
-          - dnsutils                      # `dig`
+          - dnsutils # `dig`
           - tcpdump
           - netdiscover
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
-    - name: '[Darwin]'
+    - name: "[Darwin]"
       community.general.homebrew:
         name:
           - wireguard-tools
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
-
 - name: Administration tools
   block:
-    - name: '[Darwin / Debian/Ubuntu]'
+    - name: "[Darwin / Debian/Ubuntu]"
       ansible.builtin.package:
         name:
           - mosh
           - tmux
-      become: '{{ package_manager_become }}'
+      become: "{{ package_manager_become }}"
 
-    - name: '[Debian/Ubuntu]'
+    - name: "[Debian/Ubuntu]"
       ansible.builtin.apt:
         name:
-#          - aptitude
-          - util-linux                    # Most likely already installed (contains MANY utilities)  (`lscpu`, `lspci`, `hexdump`, `choom`, …)
-          - software-properties-common    # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
-#          - initramfs-tools
-#          - stow                         # SEE https://www.gnu.org/software/stow/
-        # FS stuff:
-          - cloud-guest-utils             # `growpart`
-          - btrfs-compsize                # `compsize <file>` -> Compare size of files (2 see effect of compression)
-#          - fuse
-#          - ntfs-3g                       # Read/write NTFS driver 4 FUSE
-#          - libapfs-utils                 # Contains `fsapfsinfo`, an APFS information retrieval utility, & `fpafsmount`, a FUSE-based APFS filesystem implementation
-          - smb4k                         # UI network neighborhood browser & Samba share mounting utility
+          #- aptitude
+          - util-linux # Most likely already installed (contains MANY utilities)  (`lscpu`, `lspci`, `hexdump`, `choom`, …)
+          - software-properties-common # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
+          #- initramfs-tools
+          #- stow                         # SEE https://www.gnu.org/software/stow/
+          # FS stuff:
+          - cloud-guest-utils # `growpart`
+          - btrfs-compsize # `compsize <file>` -> Compare size of files (2 see effect of compression)
+          #- fuse
+          #- ntfs-3g                       # Read/write NTFS driver 4 FUSE
+          #- libapfs-utils                 # Contains `fsapfsinfo`, an APFS information retrieval utility, & `fpafsmount`, a FUSE-based APFS filesystem implementation
+          - smb4k # UI network neighborhood browser & Samba share mounting utility
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
@@ -159,7 +153,7 @@
       block:
         - name: Install package
           community.general.pipx:
-            name: '{{ pip_package }}'
+            name: "{{ pip_package }}"
             state: latest
             install_deps: true
             executable: pipx
@@ -170,54 +164,52 @@
             loop_var: pip_package
         - name: Inject linter
           community.general.pipx:
-            name: '{{ package.name }}'
+            name: "{{ package.name }}"
             state: inject
-            inject_packages: '{{ package.packages }}'
+            inject_packages: "{{ package.packages }}"
             executable: pipx
           with_items:
-            - name: 'ansible'
-              packages: ['ansible-lint[yamllint]']
+            - name: "ansible"
+              packages: ["ansible-lint[yamllint]"]
           loop_control:
             loop_var: package
       become: false
-      when: 'hypervisor is not defined or not hypervisor'
-
-
+      when: "hypervisor is not defined or not hypervisor"
 
 - name: Privacy tools
   block:
-    - name: '[Darwin / Debian/Ubuntu]'
+    - name: "[Darwin / Debian/Ubuntu]"
       ansible.builtin.package:
         name:
-          - coreutils                     # `shred`
+          - coreutils # `shred`
           - openssl
 
-    - name: '[Debian/Ubuntu]'
+    - name: "[Debian/Ubuntu]"
       ansible.builtin.apt:
         name:
-          - gnupg                         # Encryption & signing tool
+          - gnupg # Encryption & signing tool
         state: present
       when: ansible_facts.os_family != 'Darwin'
 
-    - name: '[Darwin]'
+    - name: "[Darwin]"
       community.general.homebrew:
         name:
           - gpg
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
-    - name: '[Darwin]'
+    - name: "[Darwin]"
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:          # TODO: Add flatpak counterpart 4 linux & check whether VM
+        packages_homebrew_casks: # TODO: Add flatpak counterpart 4 linux & check whether VM
           - dir: Privacy
             packages:
               - cryptomator
-          - packages:                      # Need 2 be in base-dir
-            - little-snitch@5
-#            - tunnelblick
+          - packages: # Need 2 be in base-dir
+              - little-snitch@5
+            #- tunnelblick
 
-    - name: '[Darwin] hblock'
+    - name: "[Darwin] hblock"
       block:
         - name: Install
           community.general.homebrew:
@@ -234,8 +226,8 @@
                 mode: 0755
             - name: Copy config
               ansible.builtin.template:
-                src: 'hblock/{{ config_file }}.j2'
-                dest: '/etc/hblock.d/{{ config_file }}'
+                src: "hblock/{{ config_file }}.j2"
+                dest: "/etc/hblock.d/{{ config_file }}"
                 owner: root
                 group: wheel
                 mode: 0644
@@ -260,39 +252,38 @@
                     month: "*"
                     dow: "*"
                     user: root
-                    job: '{{ result_hblock.stdout }} -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list -q'
+                    job: "{{ result_hblock.stdout }} -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list -q"
           become: true
       when:
-        - 'hypervisor is not defined or not hypervisor'
-        - ansible_facts.os_family == 'Darwin'               # TODO: Add Ubuntu
-  become: '{{ package_manager_become }}'
-
+        - "hypervisor is not defined or not hypervisor"
+        - ansible_facts.os_family == 'Darwin' # TODO: Add Ubuntu
+  become: "{{ package_manager_become }}"
 
 - name: Install shell related tools
   block:
-    - name: '[Darwin / Ubuntu/Debian]'
+    - name: "[Darwin / Ubuntu/Debian]"
       ansible.builtin.package:
         name:
-          - moreutils                     # `sponge`, `parallel`, …
-          - parallel                      # NOTE: Installs also `parallel` like `moreutils`  (but seems 2 be newer version)
+          - moreutils # `sponge`, `parallel`, …
+          - parallel # NOTE: Installs also `parallel` like `moreutils`  (but seems 2 be newer version)
           - pv
-      become: '{{ package_manager_become }}'
+      become: "{{ package_manager_become }}"
 
-    - name: '[Ubuntu/Debian]'
+    - name: "[Ubuntu/Debian]"
       ansible.builtin.apt:
         name:
-          - procps                        # `watch`, `pmap` command
+          - procps # `watch`, `pmap` command
           - uuid
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
-    - name: '[Darwin]'
+    - name: "[Darwin]"
       community.general.homebrew:
         name:
           - watch
           - gnu-time
-          - duti                          # Set default app 4 opening file
+          - duti # Set default app 4 opening file
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
@@ -301,7 +292,7 @@
         - name: Download & Install
           ansible.builtin.git:
             repo: https://github.com/gpakosz/.tmux.git
-            dest: '/{{ os_homedir }}/{{ user.name }}/.tmux/'
+            dest: "/{{ os_homedir }}/{{ user.name }}/.tmux/"
             clone: true
             depth: 1
             update: true
@@ -311,35 +302,31 @@
             - not 'Local modifications exist in the destination' in repo_clone.msg
         - name: tmux.conf
           ansible.builtin.file:
-            src: '/{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf'
-            dest: '/{{ os_homedir }}/{{ user.name }}/.tmux.conf'
+            src: "/{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf"
+            dest: "/{{ os_homedir }}/{{ user.name }}/.tmux.conf"
             state: link
         - name: "TODO: Own config    (TODO: fix font)"
           ansible.builtin.file:
-            src: '/{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf.local'
-            dest: '/{{ os_homedir }}/{{ user.name }}/.tmux.conf.local'
+            src: "/{{ os_homedir }}/{{ user.name }}/.tmux/.tmux.conf.local"
+            dest: "/{{ os_homedir }}/{{ user.name }}/.tmux.conf.local"
             state: link
       become: false
 
-
-
-
 - name: Install benchmark tools
   block:
-    - name: '[Darwin] Install homebrew packages'
+    - name: "[Darwin] Install homebrew packages"
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:          # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Benchmark
-            packages: ['amorphousdiskmark']
-
+            packages: ["amorphousdiskmark"]
 
 - name: Install maintenance tools
   block:
-    - name: '[Darwin] Install homebrew packages'
+    - name: "[Darwin] Install homebrew packages"
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:          # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Maintenance
             packages:
               - appcleaner
@@ -347,34 +334,32 @@
               - onyx
               - aldente
 
-
 - name: Install virtualization tools
   block:
-    - name: '[Darwin] Install homebrew packages'
+    - name: "[Darwin] Install homebrew packages"
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:          # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Tools/Virtualization
             packages:
-              - vmware-fusion             # TODO: Install w/ option `--no-quarantine`, otherwise: '“vmware-id” is an app downloaded from the Internet. Are you sure you want to open it?'
-#              - utm
-
+              - vmware-fusion # TODO: Install w/ option `--no-quarantine`, otherwise: '“vmware-id” is an app downloaded from the Internet. Are you sure you want to open it?'
+              #- utm
 
 - name: Install misc tools
   block:
-    - name: '[Darwin] Install homebrew packages'
+    - name: "[Darwin] Install homebrew packages"
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:          # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Misc
             packages:
               - apparency
-#              - istat-menus
+              #- istat-menus
               - prefs-editor
               - qlmarkdown
               - raycast
-    - name: '[Darwin]'
+    - name: "[Darwin]"
       ansible.builtin.package:
         name:
-          - spek                          # No cask, despite being an UI app  -> opened via `spek`
+          - spek # No cask, despite being an UI app  -> opened via `spek`
       when: ansible_facts.os_family == 'Darwin'

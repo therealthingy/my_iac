@@ -1,8 +1,8 @@
 ---
-# ---------------------------------- PRE-packages - Distro specific stuff ----------------------------------
-- name: '[Debian/Ubuntu]'
+# ---  PRE-packages - Distro specific stuff  ----
+- name: "[Debian/Ubuntu]"
   block:
-    - name: '[Debian] Pre packages - apt sources'
+    - name: "[Debian] Pre packages - apt sources"
       block:
         - name: Remove CD/DVD install as apt source
           ansible.builtin.replace:
@@ -20,16 +20,15 @@
       when: ansible_facts.distribution == 'Debian'
       become: true
 
-
     # WORKAROUND FOR "[…] cannot remove '/var/snap/firefox/common/host-hunspell/en_US.aff': Read-only file system\r\nr":
     #  --> `sudo systemctl stop var-snap-firefox-common-host\\x2dhunspell.mount  &&  sudo systemctl disable var-snap-firefox-common-host\\x2dhunspell.mount`
-    - name: '[Ubuntu] Pre packages'
+    - name: "[Ubuntu] Pre packages"
       block:
-        - name: 'Snaps'
+        - name: "Snaps"
           block:
             - name: Shutdown services, sockets and timers
               ansible.builtin.service:
-                name: '{{ item }}'
+                name: "{{ item }}"
                 state: stopped
                 enabled: false
               failed_when: false
@@ -53,18 +52,18 @@
 
             - name: Remove snapd packages
               ansible.builtin.apt:
-                name: '{{ item }}'
+                name: "{{ item }}"
                 state: absent
                 purge: true
                 allow_downgrade: true
-              with_items: '{{ blocked_pkgs }}'
+              with_items: "{{ blocked_pkgs }}"
 
             - name: Block snapd from installing again
               block:
                 - name: Construct list
                   ansible.builtin.set_fact:
                     apt_pin_packages: "{{ packages|default([]) + [{'name': item, 'priority': -1}] }}"
-                  with_items:  '{{ blocked_pkgs }}'
+                  with_items: "{{ blocked_pkgs }}"
                 - name: Pass 2 template
                   # EQUIVALENT command  ??: `sudo apt-mark hold snapd`
                   ansible.builtin.template:
@@ -74,7 +73,7 @@
 
             - name: Cleanup
               ansible.builtin.file:
-                path: '{{ item }}'
+                path: "{{ item }}"
                 state: absent
               with_items:
                 - /{{ os_homedir }}/{{ user.name }}/snap
@@ -97,49 +96,47 @@
       when: ansible_facts.distribution == 'Ubuntu'
       become: true
   when: ansible_facts.os_family != 'Darwin'
-# ----------------------------------------------------------------------------------------------------------
+# ----  ----
 
-
-- ansible.builtin.include_tasks: '{{ included_common_task }}'
+- ansible.builtin.include_tasks: "{{ included_common_task }}"
   loop:
     - config.yml
     - packages.yml
   loop_control:
     loop_var: included_common_task
 
-
-# ---------------------------------- POST packages - Distro specific stuff ----------------------------------
-- name: '[Debian/Ubuntu]'
+# ---- POST packages - Distro specific stuff ----
+- name: "[Debian/Ubuntu]"
   block:
     # See https://vitux.com/how-to-disable-enable-automatic-error-reporting-in-ubuntu/
-    - name: '[Ubuntu] Post packages - Uninstall Telemetry/error reporting/misc. services'
+    - name: "[Ubuntu] Post packages - Uninstall Telemetry/error reporting/misc. services"
       block:
         - name: Set package names
           ansible.builtin.set_fact:
             blocked_pkgs:
-              - network-manager   # Dep of `task-gnome-desktop`  => Will break Wi-Fi settings
+              - network-manager # Dep of `task-gnome-desktop`  => Will break Wi-Fi settings
               - apport
               - ubuntu-report
               - ubuntu-advantage-tools
-              - whoopsie   # (NOTE: `whoopsie-preferences` is a dep of `gnome-control-center` (Settings app))
+              - whoopsie # (NOTE: `whoopsie-preferences` is a dep of `gnome-control-center` (Settings app))
 
         - name: Uninstall
           ansible.builtin.apt:
-            name: '{{ item }}'
+            name: "{{ item }}"
             state: absent
             purge: true
             clean: true
             autoremove: true
-          with_items: '{{ blocked_pkgs }}'
+          with_items: "{{ blocked_pkgs }}"
 
         - name: Block packages
           block:
             - ansible.builtin.set_fact:
-                apt_pin_packages: []   # TODO: ` | default([])` doesn't work ??!
+                apt_pin_packages: [] # TODO: ` | default([])` doesn't work ??!
             - name: Construct list
               ansible.builtin.set_fact:
                 apt_pin_packages: "{{ apt_pin_packages + [{'name': package_name, 'priority': -1}] }}"
-              with_items: '{{ blocked_pkgs }}'
+              with_items: "{{ blocked_pkgs }}"
               loop_control:
                 loop_var: package_name
             - name: Pass 2 template
@@ -150,4 +147,3 @@
       when: ansible_facts.distribution == 'Ubuntu'
       become: true
   when: ansible_facts.os_family != 'Darwin'
-# -----------------------------------------------------------------------------------------------------------

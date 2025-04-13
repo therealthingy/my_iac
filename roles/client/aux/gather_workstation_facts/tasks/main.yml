@@ -3,9 +3,9 @@
   block:
     - name: Gather data
       block:
-        - name: '[Debian/Ubuntu]'
+        - name: "[Debian/Ubuntu]"
           block:
-            - name: 'Check if GNOME is used as desktop environment  (TODO: revise)'
+            - name: "Check if GNOME is used as desktop environment  (TODO: revise)"
               ansible.builtin.command: which gsettings
               failed_when: false
               changed_when: false
@@ -15,7 +15,7 @@
               become: false
           when: ansible_facts.os_family != 'Darwin'
 
-        - name: '[Darwin]'
+        - name: "[Darwin]"
           block:
             - name: Check whether MacBook
               ansible.builtin.shell: sysctl hw.model | grep -o MacBook
@@ -25,11 +25,10 @@
               become: false
           when: ansible_facts.os_family == 'Darwin'
 
-
     - name: Set variables (as facts)
       block:
-      # --  Set workstation facts  --
-        - name: '[Debian/Ubuntu]'
+        # --  Set workstation facts  --
+        - name: "[Debian/Ubuntu]"
           ansible.builtin.set_fact:
             desktop_envs: "{{ ['GNOME' if result_gnome_command.rc == 0] }}"
             firefox_package_name: "{{ 'firefox-esr' if ansible_facts.distribution == 'Debian' else 'firefox' }}"
@@ -37,15 +36,13 @@
           when: ansible_facts.os_family != 'Darwin'
           become: false
 
-        - name: '[Debian/Ubuntu]'
+        - name: "[Debian/Ubuntu]"
           ansible.builtin.set_fact:
             workstation_is_a_macbook: "{{ True if result_mac_model.rc == 0 else False }}"
             gathered_workstation_facts: True
           when: ansible_facts.os_family == 'Darwin'
           become: false
   when: gathered_workstation_facts is not defined
-
-
 #-  ansible.builtin.debug:
 #    msg:
 #      desktop_envs={{ desktop_envs }}

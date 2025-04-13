@@ -3,9 +3,9 @@
   block:
     - name: Gather data
       block:
-      # --  User data  --
+        # --  User data  --
         - name: Get username of current user
-          ansible.builtin.shell: whoami                               # ALTERNATIVE 4 username: `id -u -n` OR ansible_user_id
+          ansible.builtin.shell: whoami # ALTERNATIVE 4 username: `id -u -n` OR ansible_user_id
           register: result_username
           changed_when: false
 
@@ -19,23 +19,22 @@
           register: result_gid
           changed_when: false
 
-      # --  System info  --
+        # --  System info  --
         - name: Determine CPU architecture
-          ansible.builtin.shell: uname -m                             # ALTERNATIVE for arch.: ansible_architecture
-          register: result_cpu_architecture                           # We need 2 different vars (https://github.com/ansible/ansible/issues/15710)
+          ansible.builtin.shell: uname -m # ALTERNATIVE for arch.: ansible_architecture
+          register: result_cpu_architecture # We need 2 different vars (https://github.com/ansible/ansible/issues/15710)
           changed_when: false
 
-        - name: '[Debian/Ubuntu]'
+        - name: "[Debian/Ubuntu]"
           block:
-            - name: Get gid of the docker group                           # TODO: Doesn't work when docker not yet installed   !!!!!!!!
+            - name: Get gid of the docker group # TODO: Doesn't work when docker not yet installed   !!!!!!!!
               ansible.builtin.shell: >
-                        getent group |
-                        grep docker |
-                        awk -F: '{printf "%d", $3}'
+                getent group |
+                grep docker |
+                awk -F: '{printf "%d", $3}'
               register: result_docker_gid
               changed_when: false
 
-          # --  System info  --
             - name: Determine deb cpu arch
               ansible.builtin.shell: dpkg --print-architecture
               register: result_deb_cpu_architecture
@@ -68,32 +67,31 @@
 
     - name: Set variables (as facts)
       block:
-        - name: '[Debian/Ubuntu]'
+        - name: "[Debian/Ubuntu]"
           ansible.builtin.set_fact:
-            docker_gid: '{{ result_docker_gid.stdout }}'
+            docker_gid: "{{ result_docker_gid.stdout }}"
             www_user:
-              uid: '{{ result_uid.stdout }}'
-              gid: '{{ result_docker_gid.stdout }}'
-            deb_cpu_arch: '{{ result_deb_cpu_architecture.stdout }}'
-            kernel_release: '{{ result_kernel_release.stdout }}'
-            hw_is_rpi: '{{ True if result_rpi.rc == 0 else False }}'
+              uid: "{{ result_uid.stdout }}"
+              gid: "{{ result_docker_gid.stdout }}"
+            deb_cpu_arch: "{{ result_deb_cpu_architecture.stdout }}"
+            kernel_release: "{{ result_kernel_release.stdout }}"
+            hw_is_rpi: "{{ True if result_rpi.rc == 0 else False }}"
             hypervisor: '{{ "vmware" if result_smbios.rc == 0 else None }}'
           when: ansible_facts.os_family != 'Darwin'
-        - name: '[Darwin / Debian/Ubuntu]'
+        - name: "[Darwin / Debian/Ubuntu]"
           ansible.builtin.set_fact:
             package_manager_become: "{{ 'true' if ansible_facts.os_family != 'Darwin' else 'false' }}"
             os_homedir: "{{  'home'  if ansible_facts.os_family != 'Darwin' else  'Users'  }}"
             homebrew_arch_prefix: "{{  'usr/local'  if ansible_architecture != 'arm64' else  'opt/homebrew'  }}"
-            cpu_arch: '{{ result_cpu_architecture.stdout }}'
+            cpu_arch: "{{ result_cpu_architecture.stdout }}"
             user:
-              name: '{{ result_username.stdout }}'
+              name: "{{ result_username.stdout }}"
               group_name: "{{ result_username.stdout if ansible_facts.os_family != 'Darwin' else 'staff' }}"
-              uid: '{{ result_uid.stdout }}'
-              gid: '{{ result_gid.stdout }}'
+              uid: "{{ result_uid.stdout }}"
+              gid: "{{ result_gid.stdout }}"
             gathered_host_facts: True
   when: gathered_host_facts is not defined
   become: false
-
 
 #-  ansible.builtin.debug:
 #    msg:

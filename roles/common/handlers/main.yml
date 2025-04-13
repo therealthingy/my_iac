@@ -13,7 +13,6 @@
       when: ansible_facts.os_family == 'Darwin'
   become: true
 
-
 - name: dpkg-reconfigure keyboard-configuration
   command: /usr/sbin/dpkg-reconfigure -f noninteractive keyboard-configuration
   become: true

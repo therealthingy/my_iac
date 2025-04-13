@@ -1,14 +1,14 @@
 ---
 - name: Install network tools
   block:
-    - name: '[Darwin] Install homebrew packages'
+    - name: "[Darwin] Install homebrew packages"
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:
           - dir: Network
             packages:
               - wireshark
-    - name: '[Debian/Ubuntu] Install apt packages'
+    - name: "[Debian/Ubuntu] Install apt packages"
       ansible.builtin.apt:
         name:
           # NOTE: Reconfigure "capture packets as non-superuser" => `sudo dpkg-reconfigure wireshark-common`
@@ -17,21 +17,19 @@
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
-
 - name: Install VSCodium
   ansible.builtin.include_tasks: package-vscodium.yml
 
-
 - name: Install GUI hexeditor
   block:
-    - name: '[Darwin] Install homebrew packages'
+    - name: "[Darwin] Install homebrew packages"
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Development/Editors
             packages:
               - imhex
-    - name: '[Debian/Ubuntu] Install flatpak packages'
+    - name: "[Debian/Ubuntu] Install flatpak packages"
       community.general.flatpak:
         name:
           - net.werwolv.ImHex
@@ -39,17 +37,16 @@
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
-
-- name:  Install ghidra
+- name: Install ghidra
   block:
-    - name: '[Darwin]'
+    - name: "[Darwin]"
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:
           - dir: Development
             packages:
               - ghidra
-    - name: '[Debian/Ubuntu]'
+    - name: "[Debian/Ubuntu]"
       block:
         - community.general.flatpak:
             name:
@@ -58,24 +55,23 @@
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
-
 - name: Install git tools
   block:
-    - name: '[Darwin] Install homebrew packages'
+    - name: "[Darwin] Install homebrew packages"
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:
           - dir: Development
             packages:
               - sourcetree
-#    - name: '[Debian/Ubuntu] Install flatpak packages'
-#      community.general.flatpak:
-#        name:
-#          - com.syntevo.SmartGit
-#        state: present
-#      become: true
-#      when: ansible_facts.os_family != 'Darwin'
-    - name: Fix sourcetreee git-crypt       # SEE: https://jira.atlassian.com/browse/SRCTREE-2511
+    #- name: '[Debian/Ubuntu] Install flatpak packages'
+    #  community.general.flatpak:
+    #    name:
+    #      - com.syntevo.SmartGit
+    #    state: present
+    #  become: true
+    #  when: ansible_facts.os_family != 'Darwin'
+    - name: Fix sourcetreee git-crypt # SEE: https://jira.atlassian.com/browse/SRCTREE-2511
       ansible.builtin.file:
         src: "/{{ homebrew_arch_prefix }}/bin/git-crypt"
         dest: /Applications/Development/Sourcetree.app/Contents/Resources/git_local/bin/git-crypt
@@ -83,60 +79,58 @@
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
-
-- name: '[Darwin] iterm'
+- name: "[Darwin] iterm"
   block:
     - name: Install
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Development
             packages:
               - iterm2
-    - name: 'Apps: config'
+    - name: "Apps: config"
       block:
         - name: Create dir
           ansible.builtin.file:
-            path: '/{{ os_homedir }}/{{ user.name }}/.config/iterm2'
+            path: "/{{ os_homedir }}/{{ user.name }}/.config/iterm2"
             state: directory
-            owner: '{{ user.name }}'
-            group: '{{ user.group_name }}'
+            owner: "{{ user.name }}"
+            group: "{{ user.group_name }}"
             mode: 0755
         - name: Copy config
           ansible.builtin.copy:
             src: apps/com.googlecode.iterm2.plist
-            dest: '/{{ os_homedir }}/{{ user.name }}/.config/iterm2/com.googlecode.iterm2.plist'
+            dest: "/{{ os_homedir }}/{{ user.name }}/.config/iterm2/com.googlecode.iterm2.plist"
             mode: 0755
         - name: Set config
           community.general.osx_defaults:
             domain: com.googlecode.iterm2
-            key: '{{ item.key }}'
-            type: '{{ item.type }}'
-            value: '{{ item.value }}'
+            key: "{{ item.key }}"
+            type: "{{ item.type }}"
+            value: "{{ item.value }}"
             state: present
           with_items:
-            - key: 'PrefsCustomFolder'
-              value: '/{{ os_homedir }}/{{ user.name }}/.config/iterm2/'
-              type: 'string'
-            - key: 'LoadPrefsFromCustomFolder'
-              value: 'true'
-              type: 'bool'
+            - key: "PrefsCustomFolder"
+              value: "/{{ os_homedir }}/{{ user.name }}/.config/iterm2/"
+              type: "string"
+            - key: "LoadPrefsFromCustomFolder"
+              value: "true"
+              type: "bool"
   when: ansible_facts.os_family == 'Darwin'
   become: false
 
-
 - name: Install db tools
   block:
-    - name: '[Darwin] Install homebrew packages'
+    - name: "[Darwin] Install homebrew packages"
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Development/DB
             packages:
               - db-browser-for-sqlite
               - mysqlworkbench
               - sequel-ace
-    - name: '[Debian/Ubuntu] Install flatpak packages'
+    - name: "[Debian/Ubuntu] Install flatpak packages"
       community.general.flatpak:
         name:
           - org.sqlitebrowser.sqlitebrowser
@@ -145,10 +139,9 @@
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
-
 - name: Install misc. tools
   block:
-    - name: '[Ubuntu]'                  # Repo: https://github.com/bkw777/mainline  (tool 4 downloading & installing pre-compiled kernels)
+    - name: "[Ubuntu]" # Repo: https://github.com/bkw777/mainline  (tool 4 downloading & installing pre-compiled kernels)
       block:
         - name: Add apt repo
           # NOTE: Equivalent command: `sudo add-apt-repository ppa:cappelikan/ppa`

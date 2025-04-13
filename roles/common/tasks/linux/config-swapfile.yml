@@ -4,8 +4,8 @@
     - name: Disable in config
       ansible.builtin.lineinfile:
         dest: /etc/dphys-swapfile
-        regexp: '^CONF_SWAPSIZE=[0-9]+$'
-        line: 'CONF_SWAPSIZE=0'
+        regexp: "^CONF_SWAPSIZE=[0-9]+$"
+        line: "CONF_SWAPSIZE=0"
     - name: Disable service
       ansible.builtin.service:
         name: dphys-swapfile
@@ -17,18 +17,14 @@
     - hw_is_rpi == True
     - ansible_facts.distribution == 'Debian'
 
-
-
 # Validate via: `cat /proc/sys/vm/swappiness`
 - name: Configure swappiness
   ansible.posix.sysctl:
     name: vm.swappiness
-    value: '{{ swap.swappiness|string }}'
+    value: "{{ swap.swappiness|string }}"
     state: present
   become: true
   when: swap is defined
-
-
 
 # TAKEN FROM: https://stackoverflow.com/a/64294534
 # VALIDATE USING: `sudo swapon --show`
@@ -82,8 +78,8 @@
         src: "{{swap.file.path}}"
         fstype: swap
         opts: sw
-        passno: '0'
-        dump: '0'
+        passno: "0"
+        dump: "0"
         state: present
       when: not swap.file.enable
 
@@ -120,8 +116,8 @@
             src: "{{swap.file.path}}"
             fstype: swap
             opts: sw
-            passno: '0'
-            dump: '0'
+            passno: "0"
+            dump: "0"
             state: present
 
         - name: Turn on swap

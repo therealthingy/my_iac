@@ -1,7 +1,7 @@
 ---
 - name: Install Python & tools
   block:
-    - name: '[Debian/Ubuntu]'
+    - name: "[Debian/Ubuntu]"
       ansible.builtin.apt:
         update_cache: true
         name:
@@ -9,19 +9,18 @@
           - python3-pip
         state: present
       when: ansible_facts.os_family != 'Darwin'
-    - name: '[Darwin]'
+    - name: "[Darwin]"
       community.general.homebrew:
         name: python
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
-    - name: '[Darwin / Debian/Ubuntu]'
+    - name: "[Darwin / Debian/Ubuntu]"
       ansible.builtin.package:
         name:
           - pipx
-      become: '{{ package_manager_become }}'
+      become: "{{ package_manager_become }}"
   become: true
-
 
 - name: Update alternatives
   community.general.alternatives:

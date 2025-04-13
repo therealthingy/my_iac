@@ -3,13 +3,13 @@
   block:
     - name: Install package(s)
       community.general.pipx:
-        name: '{{ pip_package }}'
+        name: "{{ pip_package }}"
         state: latest
         install_deps: true
         executable: pipx
       with_items:
         # MISC. tools
-        - pdm            # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
+        - pdm # TODO: Shell Completion 4 pdm  (https://pdm.fming.dev/latest/)
       loop_control:
         loop_var: pip_package
   become: false

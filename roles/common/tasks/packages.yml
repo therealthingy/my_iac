@@ -10,11 +10,9 @@
         name: geerlingguy.mac.homebrew
   when: ansible_facts.os_family == 'Darwin'
 
-
-
 - name: Update packages
   block:
-    - name: '[Debian/Ubuntu]'
+    - name: "[Debian/Ubuntu]"
       ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 3600
@@ -24,105 +22,100 @@
         allow_downgrade: true
       when: ansible_facts.os_family != 'Darwin'
       become: true
-    - name: '[Darwin]'
+    - name: "[Darwin]"
       community.general.homebrew:
         update_homebrew: true
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
-
 - name: Install packages
   block:
-    - name: '[Darwin]'
+    - name: "[Darwin]"
       community.general.homebrew:
         name:
-        # File archiving/Compression:
+          # File archiving/Compression:
           - gnu-tar
           - xz
-        # Git:
+          # Git:
           - git-crypt
       become: false
       when: ansible_facts.os_family == 'Darwin'
-    - name: '[Debian/Ubuntu]'
+    - name: "[Debian/Ubuntu]"
       ansible.builtin.apt:
         name:
-        # Administration:
+          # Administration:
           - sudo
           - openssh-client
-          - needrestart                   # NOTE: 2 check whether reboot is pending: `sudo needrestart -r i`   (required 4 login motd)
-        # Files:
+          - needrestart # NOTE: 2 check whether reboot is pending: `sudo needrestart -r i`   (required 4 login motd)
+          # Files:
           - lsof
           - nano
-        # File archiving/Compression:
+          # File archiving/Compression:
           - tar
           - pbzip2
           - xz-utils
-        # Privacy:
+          # Privacy:
           - cryptsetup
-        # FS stuff:
-          - btrfs-progs                   # btrfs maintenance
-        # Backup:
+          # FS stuff:
+          - btrfs-progs # btrfs maintenance
+          # Backup:
           - timeshift
-        # Misc.:
-          - irqbalance     # Daemon to balance interrupts for SMP systems
+          # Misc.:
+          - irqbalance # Daemon to balance interrupts for SMP systems
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
-    - name: '[Darwin / Debian/Ubuntu]'
+    - name: "[Darwin / Debian/Ubuntu]"
       ansible.builtin.package:
         name:
-        # Administration:
+          # Administration:
           - htop
-          - neofetch                      #   (required 4 login motd)
-        # File archiving:
+          - neofetch #   (required 4 login motd)
+          # File archiving:
           - pigz
-        # Git:    (!!  ALSO REQUIRED FOR ZSH  !!)
+          # Git:    (!!  ALSO REQUIRED FOR ZSH  !!)
           - git
           - git-lfs
-        # Networking:
+          # Networking:
           - curl
-      become: '{{ package_manager_become }}'
+      become: "{{ package_manager_become }}"
 
-    - name: '[Darwin / Debian/Ubuntu] Install nvim'
+    - name: "[Darwin / Debian/Ubuntu] Install nvim"
       ansible.builtin.package:
         name: neovim
-      become: '{{ package_manager_become }}'
+      become: "{{ package_manager_become }}"
 
-#    - name: Install luks sparse file helper
-#      ansible.builtin.template:
-#        src: bin/luks-sparse_helper.j2
-#        dest: /usr/local/bin/luks-sparse_helper
-#        owner: root
-#        group: root
-#        mode: 0755
-#      become: true
-#      when: ansible_facts.os_family != 'Darwin'
+    #- name: Install luks sparse file helper
+    #  ansible.builtin.template:
+    #    src: bin/luks-sparse_helper.j2
+    #    dest: /usr/local/bin/luks-sparse_helper
+    #    owner: root
+    #    group: root
+    #    mode: 0755
+    #  become: true
+    #  when: ansible_facts.os_family != 'Darwin'
 
-    - name: '[Ubuntu] Install proprietary extra stuff (codecs, fonts, …)'
+    - name: "[Ubuntu] Install proprietary extra stuff (codecs, fonts, …)"
       ansible.builtin.apt:
         name: ubuntu-restricted-extras
       when: ansible_facts.os_family == 'Ubuntu'
 
-
-
 - name: Install packages
   block:
-    - name: '[Darwin / Debian/Ubuntu]'
-      ansible.builtin.include_tasks: '{{ item }}'
+    - name: "[Darwin / Debian/Ubuntu]"
+      ansible.builtin.include_tasks: "{{ item }}"
       loop:
         - ssh.yml
         - package-zsh.yml
         - packages-python.yml
 
-
-
 - name: Config
   block:
     - name: '[Linux] nvim -- Set "alternatives"'
       community.general.alternatives:
-        name: '{{ common_nvim_alt.name }}'
-        link: '{{ common_nvim_alt.link }}'
-        path: '{{ common_nvim_alt.path }}'
+        name: "{{ common_nvim_alt.name }}"
+        link: "{{ common_nvim_alt.link }}"
+        path: "{{ common_nvim_alt.path }}"
       with_items:
         #- name: editor
         #  link: /usr/bin/editor
@@ -135,17 +128,17 @@
       when: ansible_facts.os_family != 'Darwin'
       become: true
 
-#    - name: Other packages
-#      ansible.builtin.template:
-#        src: '{{ common_package_file.src }}.j2'
-#        dest: '{{ common_package_file.dest }}'
-#        owner: '{{ user.name }}'
-#        group: '{{ user.group_name }}'
-#        mode: 0644
-#      become: false
-#      with_items:
-##       htop:
-#        - src: 'htoprc'                                   # Config file which changes when using the UI
-#          dest: '/{{ os_homedir }}/{{ user.name }}/.htoprc'
-#      loop_control:
-#        loop_var: common_package_file
+    #- name: Other packages
+    #  ansible.builtin.template:
+    #    src: '{{ common_package_file.src }}.j2'
+    #    dest: '{{ common_package_file.dest }}'
+    #    owner: '{{ user.name }}'
+    #    group: '{{ user.group_name }}'
+    #    mode: 0644
+    #  become: false
+    #  with_items:
+    #   # htop:
+    #    - src: 'htoprc'                                   # Config file which changes when using the UI
+    #      dest: '/{{ os_homedir }}/{{ user.name }}/.htoprc'
+    #  loop_control:
+    #    loop_var: common_package_file

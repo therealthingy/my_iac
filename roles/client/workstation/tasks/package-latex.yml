@@ -1,18 +1,18 @@
 ---
 - name: Install LaTeX distro
   block:
-    - name: '[Debian/Ubuntu]'
+    - name: "[Debian/Ubuntu]"
       ansible.builtin.apt:
         name:
           - texlive-full #texlive-latex-base #extra              # TODO: Use -extra version    (OVERVIEW different versions: https://tex.stackexchange.com/a/504566)
-          - xindy       # TODO: REVISE (mac distro includes it, linux distro doesn't)
+          - xindy # TODO: REVISE (mac distro includes it, linux distro doesn't)
         state: present
       when: ansible_facts.os_family != 'Darwin'
       become: true
 
-    - name: '[Darwin]'
+    - name: "[Darwin]"
       block:
-        - name: '[Darwin] Install homebrew packages'
+        - name: "[Darwin] Install homebrew packages"
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks:
@@ -20,7 +20,7 @@
                 packages:
                   - mactex # basictex
                   #- bibdesk    # (Already contained in mactex full)
-        - name: '[Darwin] Install latexmk'
+        - name: "[Darwin] Install latexmk"
           ansible.builtin.shell: tlmgr install latexmk
           args:
             creates: /Library/TeX/texbin/latexmk
@@ -32,28 +32,27 @@
         name:
           - make
           - cmake
-      become: '{{ package_manager_become }}'
+      become: "{{ package_manager_become }}"
   become: false
-
 
 # USAGE:
 #   `latexmk -pvc -pdf <tex_file>`
 #   `latexmk -C`
 - name: Install + configure latexmk
   block:
-    - name: Install                        # Can't be installed not in user-mode (which is the only mode in Debian)
+    - name: Install # Can't be installed not in user-mode (which is the only mode in Debian)
       ansible.builtin.include_tasks: package-latex-install_globally.yml
       vars:
         latex_package: latexmk
 
     - name: Install + configure auto-reloading pdf reader
       block:
-        - name: '[Debian/Ubuntu]'
+        - name: "[Debian/Ubuntu]"
           ansible.builtin.apt:
             name: evince
           become: true
           when: ansible_facts.os_family != 'Darwin'
-        - name: '[Darwin]'
+        - name: "[Darwin]"
           block:
             - name: Install
               ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
@@ -65,17 +64,17 @@
             - name: Config
               community.general.osx_defaults:
                 domain: net.sourceforge.skim-app.skim
-                key: '{{ skin_conf_item.key }}'
-                type: '{{ skin_conf_item.type }}'
-                value: '{{ skin_conf_item.value }}'
+                key: "{{ skin_conf_item.key }}"
+                type: "{{ skin_conf_item.type }}"
+                value: "{{ skin_conf_item.value }}"
                 state: present
               with_items:
-                - key: 'SKAutoReloadFileUpdate'         # Auto reload file when changed  (in case it doesn't work: Skim -> Preferences -> Sync -> Check 4 file changes + Reload automatically)
-                  value: 'true'
-                  type: 'boolean'
-                - key: 'SKInvertColorsInDarkMode'       # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
-                  value: 'true'
-                  type: 'bool'
+                - key: "SKAutoReloadFileUpdate" # Auto reload file when changed  (in case it doesn't work: Skim -> Preferences -> Sync -> Check 4 file changes + Reload automatically)
+                  value: "true"
+                  type: "boolean"
+                - key: "SKInvertColorsInDarkMode" # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
+                  value: "true"
+                  type: "bool"
                 # OPTIONAL: View -> Hide Contents Pane + Hide Notes Pane
               loop_control:
                 loop_var: skin_conf_item
@@ -84,12 +83,11 @@
     - name: Config
       ansible.builtin.template:
         src: latexmkrc.j2
-        dest: '/{{ os_homedir }}/{{ user.name }}/.latexmkrc'
-        owner: '{{ user.name }}'
-        group: '{{ user.group_name }}'
+        dest: "/{{ os_homedir }}/{{ user.name }}/.latexmkrc"
+        owner: "{{ user.name }}"
+        group: "{{ user.group_name }}"
         mode: 0644
   become: false
-
 
 # TODO: Following tasks are only required when using 'smaller' distro
 #- name: Install packages (globally)      # Can't be installed in user-mode

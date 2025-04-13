@@ -11,14 +11,13 @@
         name: flatpak
         state: present
 
-#    - name: 'Install GNOME Software "store"'           #   DOESN'T WORK ON UBUNTU (depends on `ubuntu-advantage-tools` (SEE: https://packages.ubuntu.com/focal-updates/software-properties-gtk))
-#      ansible.builtin.apt:
-#        name: gnome-software-plugin-flatpak
-#        state: present
-#        install_recommends: true
+    #- name: 'Install GNOME Software "store"'           #   DOESN'T WORK ON UBUNTU (depends on `ubuntu-advantage-tools` (SEE: https://packages.ubuntu.com/focal-updates/software-properties-gtk))
+    #  ansible.builtin.apt:
+    #    name: gnome-software-plugin-flatpak
+    #    state: present
+    #    install_recommends: true
   when: ansible_os_family == 'Debian'
   become: true
-
 
 - name: Add the flathub flatpak repository
   community.general.flatpak_remote:
@@ -28,8 +27,7 @@
     state: present
   become: true
 
-
-- name: Install Flatseal             # Helps managing Flatpak permissions & file storage
+- name: Install Flatseal # Helps managing Flatpak permissions & file storage
   community.general.flatpak:
     name: com.github.tchx84.Flatseal
   become: true

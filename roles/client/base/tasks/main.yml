@@ -1,15 +1,15 @@
 ---
 - name: Install Desktop environment
   block:
-    - name: '[Debian]'
+    - name: "[Debian]"
       ansible.builtin.apt:
         name:
-#          - tasksel
+          #- tasksel
           - gdm3
           - gnome-session
         state: present
       when: ansible_facts.distribution == 'Debian'
-    - name: '[Ubuntu Server]'
+    - name: "[Ubuntu Server]"
       block:
         - name: Gather package facts
           ansible.builtin.package_facts:
@@ -19,15 +19,14 @@
             name:
               - ubuntu-desktop
               - task-gnome-desktop
-              - baobab             # Disk space usage analyzer
+              - baobab # Disk space usage analyzer
               # TODO: vanilla-gnome-desktop vanilla-gnome-default-settings
             state: present
           when: "'ubuntu-desktop' in ansible_facts.packages"
   become: true
   when: ansible_facts.os_family != 'Darwin'
 
-
-- ansible.builtin.include_tasks: '{{ included_workstation_task }}'
+- ansible.builtin.include_tasks: "{{ included_workstation_task }}"
   loop:
     - packages.yml
     - config.yml
@@ -35,4 +34,4 @@
     loop_var: included_workstation_task
 
 - ansible.builtin.include_tasks: linux/config-firefox.yml
-  when: ansible_facts.os_family != 'Darwin'               # TODO: REVISE
+  when: ansible_facts.os_family != 'Darwin' # TODO: REVISE

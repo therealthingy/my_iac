@@ -13,15 +13,18 @@
             network:
               mode: bridge
             volumes:
-              - path: '/var/run/docker.sock:/var/run/docker.sock'
+              - path: "/var/run/docker.sock:/var/run/docker.sock"
             # TESTING: `--run-once`
             # - WATCHTOWER_SCHEDULE="<watchtower_cron_schedule>"
             # FORMAT: Seconds, Minutes, Hours, Day of month, Month, Day of week  (see https://pkg.go.dev/github.com/robfig/cron@v1.2.0#hdr-CRON_Expression_Format)
-            command: ['--schedule "{{ watchtower_cron_schedule|default("0 30 3 * * WED,SAT", true) }}"']
+            command:
+              [
+                '--schedule "{{ watchtower_cron_schedule|default("0 30 3 * * WED,SAT", true) }}"',
+              ]
             env_vars:
               - TZ={{ timezone }}
               - WATCHTOWER_CLEANUP=true
-              - WATCHTOWER_LABEL_ENABLE=true                            # Filter by enable label
+              - WATCHTOWER_LABEL_ENABLE=true # Filter by enable label
               - WATCHTOWER_NO_STARTUP_MESSAGE=true
               # - Emailing
               - WATCHTOWER_NOTIFICATIONS=email
@@ -31,7 +34,6 @@
               - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD={{ notifications_mail.smtp_password }}
               - WATCHTOWER_NOTIFICATION_EMAIL_FROM={{ notifications_mail.smtp_username }}
               - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail.system_admin_mail }}
-
 
     - name: nginx-helloworld
       startup: False
@@ -44,20 +46,19 @@
             restart_policy: "no"
             network:
               ports:
-                - '{{ host_port|default(8080, true) }}:80'
-
+                - "{{ host_port|default(8080, true) }}:80"
 
     - name: traefik
-#      config_files:
-#        - name: ssl-certgen
-#          mode: '0755'
-#        - name: dynamic-conf.yml      # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
+      #config_files:
+      #  - name: ssl-certgen
+      #    mode: '0755'
+      #  - name: dynamic-conf.yml      # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
       compose:
         services:
           - name: traefik
             image: traefik
             network:
-              nets: ['{{ reverse_proxy_docker_network }}']
+              nets: ["{{ reverse_proxy_docker_network }}"]
               ports:
                 - 80:80
                 - 443:443
@@ -78,31 +79,31 @@
               - "--providers.docker.network={{ reverse_proxy_docker_network }}"
               - "--providers.file.directory=/config/"
               - "--providers.file.watch=true"
-#             - "--ping=false"
+              #- "--ping=false"
               # LetsEncrypt cert
-#              - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-              - "--certificatesresolvers.myresolver.acme.dnschallenge=true"                                   # DNS 101 -> Necessary when unreachable (e.g., private IP address)
+              #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+              - "--certificatesresolvers.myresolver.acme.dnschallenge=true" # DNS 101 -> Necessary when unreachable (e.g., private IP address)
               - "--certificatesresolvers.myresolver.acme.dnschallenge.provider={{ cert_acme.provider }}"
               - "--certificatesresolvers.myresolver.acme.email={{ cert_acme.email }}"
               - "--certificatesresolvers.myresolver.acme.storage=/config/certs/acme.json"
-              - "--certificatesResolvers.myresolver.acme.dnsChallenge.delayBeforeCheck=5"                     # 2 delay DNS check & reduce LE hitrate
-              - "--entrypoints.websecure.http.tls.domains[0].main={{ domainname }}"                           # Wildcard cert
+              - "--certificatesResolvers.myresolver.acme.dnsChallenge.delayBeforeCheck=5" # 2 delay DNS check & reduce LE hitrate
+              - "--entrypoints.websecure.http.tls.domains[0].main={{ domainname }}" # Wildcard cert
               - "--entrypoints.websecure.http.tls.domains[0].sans=*.{{ domainname }}"
               - "--entrypoints.websecure.http.tls.certresolver=myresolver"
             volumes:
-              - path: '/var/run/docker.sock:/var/run/docker.sock'
+              - path: "/var/run/docker.sock:/var/run/docker.sock"
                 ro: true
               # config
-              - path: './dynamic-conf.yml:/config/dynamic-conf.yml'
-              - path: '{{ docker_container.data_basedir }}/traefik/:/config/certs/'
+              - path: "./dynamic-conf.yml:/config/dynamic-conf.yml"
+              - path: "{{ docker_container.data_basedir }}/traefik/:/config/certs/"
             env_vars:
               - TZ={{ timezone }}
               - "NAMECHEAP_API_USER={{ cert_acme.user }}"
               - "NAMECHEAP_API_KEY={{ cert_acme.token }}"
 
-    - name: bitwarden                                                         # TODO SSO: https://github.com/dani-garcia/vaultwarden/pull/3899
+    - name: bitwarden # TODO SSO: https://github.com/dani-garcia/vaultwarden/pull/3899
       volumes:
-        - '.'
+        - "."
       compose:
         services:
           - name: bitwarden
@@ -112,7 +113,7 @@
                 - subdomain: bitwarden
                   port: 80
             volumes:
-              - path: '{{ docker_container.data_basedir }}/bitwarden/:/data/'
+              - path: "{{ docker_container.data_basedir }}/bitwarden/:/data/"
             env_vars:
               - TZ={{ timezone }}
               # --- General
@@ -135,15 +136,15 @@
 
     - name: dl_services
       volumes:
-        - '.'
+        - "."
       startup: False
       compose:
         services:
           - name: dl-gluetun
             image: qmcgaw/gluetun
-            restart_policy: '{{ dl_services.restart_policy }}'
+            restart_policy: "{{ dl_services.restart_policy }}"
             sysctls:
-              - net.ipv6.conf.all.disable_ipv6=0        # ( CAPTAIN OBVIOUS: Enable IPv6 )
+              - net.ipv6.conf.all.disable_ipv6=0 # ( CAPTAIN OBVIOUS: Enable IPv6 )
             security:
               use_root: True
               allow_priv_esc: True
@@ -152,45 +153,45 @@
             devices:
               - /dev/net/tun
             network:
-#              ports:
-#                # - Web-UIs of containers
-#                - 8090:8090        # qbittorrent: Web ui
-#                - 6881:6881        # qbittorrent: Forwarded port
-#                - 6881:6881/udp    # qbittorrent: Forwarded port
-#                - 9696:9696        # prowlarr: Web ui
-##                # -  LAN proxy stuff  -
-##                - 8888:8888/tcp   # HTTP proxy
-##                - 8388:8388/tcp   # Shadowsocks
-##                - 8388:8388/udp   # Shadowsocks
-##                - 8389:8389/udp   # Gluetun-Shadowsocks?
-##                - 8389:8389/tcp   # Gluetun-Shadowsocks?
-##                - 8889:8889/tcp   # Gluetun
+              #ports:
+              #  # - Web-UIs of containers
+              #  - 8090:8090        # qbittorrent: Web ui
+              #  - 6881:6881        # qbittorrent: Forwarded port
+              #  - 6881:6881/udp    # qbittorrent: Forwarded port
+              #  - 9696:9696        # prowlarr: Web ui
+              ##  # -  LAN proxy stuff  -
+              ##  - 8888:8888/tcp   # HTTP proxy
+              ##  - 8388:8388/tcp   # Shadowsocks
+              ##  - 8388:8388/udp   # Shadowsocks
+              ##  - 8389:8389/udp   # Gluetun-Shadowsocks?
+              ##  - 8389:8389/tcp   # Gluetun-Shadowsocks?
+              ##  - 8889:8889/tcp   # Gluetun
               reverse_proxy_mappings:
                 - subdomain: prowlarr
                   port: 9696
                 - subdomain: qbit
                   port: 8090
-#            volumes:
-#              - path: '{{ docker_container.config_basedir }}/dl_services/gluetun/:/gluetun'
+            #volumes:
+            #  - path: '{{ docker_container.config_basedir }}/dl_services/gluetun/:/gluetun'
             env_vars:
               - VPN_SERVICE_PROVIDER={{ dl_services.gluetun.vpnsp }}
-              - SERVER_COUNTRIES={{ dl_services.gluetun.server_country }}              # Optional
+              - SERVER_COUNTRIES={{ dl_services.gluetun.server_country }} # Optional
               - VPN_TYPE=wireguard #openvpn
-#              # -  openvpn specific stuff  -
-#              - PROTOCOL=udp        # Only 4 openvpn required
-#              - OPENVPN_CIPHERS=AES-256-GCM
+              ## -  openvpn specific stuff  -
+              #- PROTOCOL=udp        # Only 4 openvpn required
+              #- OPENVPN_CIPHERS=AES-256-GCM
               # -  wireguard specific stuff  -
               - WIREGUARD_ADDRESSES={{ dl_services.gluetun.wireguard_vpn_service.addresses }}
-#              - DNS_ADDRESS=xxx.xxx.xxx.xxx
-              - FIREWALL_VPN_INPUT_PORTS={{ dl_services.gluetun.forward_port }}      # Port forwarding ~~(must be also mentioned as port ???!)~~  -> validate w/ (run in container): `nc -6 -l -p <port> [<ip>]`  (VERIFY: `sudo lsof -i -P -n`)
-#              - WIREGUARD_PUBLIC_KEY={{ dl_services.gluetun.wireguard_vpn_service.pk }}
+              #- DNS_ADDRESS=xxx.xxx.xxx.xxx
+              - FIREWALL_VPN_INPUT_PORTS={{ dl_services.gluetun.forward_port }} # Port forwarding ~~(must be also mentioned as port ???!)~~  -> validate w/ (run in container): `nc -6 -l -p <port> [<ip>]`  (VERIFY: `sudo lsof -i -P -n`)
+              #- WIREGUARD_PUBLIC_KEY={{ dl_services.gluetun.wireguard_vpn_service.pk }}
               - WIREGUARD_PRIVATE_KEY={{ dl_services.gluetun.wireguard_vpn_service.sk }}
               - WIREGUARD_PRESHARED_KEY={{ dl_services.gluetun.wireguard_vpn_service.preshared_key }}
 
           # $$$$$$$$$ TODO:  WORKAROUND: https://github.com/qdm12/gluetun/issues/1407  $$$$$$$$$
           - name: dl-portcheck
             image: eiqnepm/portcheck:latest
-            restart_policy: '{{ dl_services.restart_policy }}'
+            restart_policy: "{{ dl_services.restart_policy }}"
             network:
               mode: service:dl-gluetun
             dependencies:
@@ -202,17 +203,17 @@
               - QBITTORRENT_USERNAME={{ dl_services.web_ui.username }}
               - QBITTORRENT_PASSWORD={{ dl_services.web_ui.password }}
 
-          - name: dl-qbittorrent                                                 # TODO SSO: https://github.com/qbittorrent/qBittorrent/issues/13238
+          - name: dl-qbittorrent # TODO SSO: https://github.com/qbittorrent/qBittorrent/issues/13238
             image: linuxserver/qbittorrent:latest
-            restart_policy: '{{ dl_services.restart_policy }}'
+            restart_policy: "{{ dl_services.restart_policy }}"
             security:
               use_root: True
               allow_priv_esc: True
             network:
               mode: service:dl-gluetun
             volumes:
-              - path: '{{ dl_services.base_dir }}/qbittorrent/:/config/'
-              - path: '{{ dl_services.base_dir }}/downloads/torrents/:/downloads/'
+              - path: "{{ dl_services.base_dir }}/qbittorrent/:/config/"
+              - path: "{{ dl_services.base_dir }}/downloads/torrents/:/downloads/"
             healthcheck: curl {{ dl_services.healthcheck_url }} || exit 1
             env_vars:
               - TZ={{ timezone }}
@@ -221,16 +222,16 @@
               - UMASK=022
               - WEBUI_PORT=8090
 
-          - name: dl-prowlarr                                                    # TODO SSO: N/A atm
+          - name: dl-prowlarr # TODO SSO: N/A atm
             image: hotio/prowlarr:testing
-            restart_policy: '{{ dl_services.restart_policy }}'
+            restart_policy: "{{ dl_services.restart_policy }}"
             security:
               use_root: True
               allow_priv_esc: True
             network:
               mode: service:dl-gluetun
             volumes:
-              - path: '{{ dl_services.base_dir }}/prowlarr/:/config/'
+              - path: "{{ dl_services.base_dir }}/prowlarr/:/config/"
             dependencies:
               - dl-gluetun
               - dl-qbittorrent
@@ -239,9 +240,9 @@
               - PUID={{ www_user.uid }}
               - PGID={{ www_user.gid }}
 
-    - name: portainer                                                         # TODO SSO: https://docs.portainer.io/admin/settings/authentication/oauth  //  https://helgeklein.com/blog/portainer-setup-guide-with-automatic-https-oauth-sso-via-authelia/
+    - name: portainer # TODO SSO: https://docs.portainer.io/admin/settings/authentication/oauth  //  https://helgeklein.com/blog/portainer-setup-guide-with-automatic-https-oauth-sso-via-authelia/
       volumes:
-        - '.'
+        - "."
       startup: False
       compose:
         services:
@@ -254,57 +255,52 @@
                 - subdomain: portainer
                   port: 9000
             volumes:
-              - path: '/var/run/docker.sock:/var/run/docker.sock'
-              - path: '{{ docker_container.data_basedir }}/portainer/:/data'
-              - path: '/etc/localtime:/etc/localtime'
+              - path: "/var/run/docker.sock:/var/run/docker.sock"
+              - path: "{{ docker_container.data_basedir }}/portainer/:/data"
+              - path: "/etc/localtime:/etc/localtime"
                 ro: True
 
-
-    - name: samba                                                         # TODO SSO (LDAP)
+    - name: samba # TODO SSO (LDAP)
 
     - name: syncthing
       volumes:
-        - '.'
+        - "."
       compose:
         services:
           - name: syncthing
             image: syncthing/syncthing
             network:
-#              ports:                                # Not relevant when using `network_mode=host`
-#                - 8384:8384                         # Web UI
-#                - 22000:22000/tcp                   # TCP file transfers
-#                - 22000:22000/udp                   # QUIC file transfers
-#                - 21027:21027/udp                   # Receive local discovery broadcasts
-              mode: host                            # Required 4 local discovery
+              #ports:                                # Not relevant when using `network_mode=host`
+              #  - 8384:8384                         # Web UI
+              #  - 22000:22000/tcp                   # TCP file transfers
+              #  - 22000:22000/udp                   # QUIC file transfers
+              #  - 21027:21027/udp                   # Receive local discovery broadcasts
+              mode: host # Required 4 local discovery
             volumes:
-              - path: '{{ docker_container.data_basedir }}/syncthing/:/var/syncthing/'
+              - path: "{{ docker_container.data_basedir }}/syncthing/:/var/syncthing/"
             env_vars:
               - PUID={{ www_user.uid }}
               - PGID={{ www_user.gid }}
               # Access GUI via: `ssh -L 8385:127.0.0.1:8384 l0-rpi0`
-              - STGUIADDRESS=                      # Empty = Fallback 2 localhost   (change address from `0.0.0.0:<port>` 2 `127.0.0.1:<port>` 4 added security)
+              - STGUIADDRESS= # Empty = Fallback 2 localhost   (change address from `0.0.0.0:<port>` 2 `127.0.0.1:<port>` 4 added security)
 
     - name: volact
       compose:
         services:
           - name: volact
-            image: '{{ volact.container_image }}'
+            image: "{{ volact.container_image }}"
             network:
               ports:
-                - '{{ volact.port }}:{{ volact.port }}/tcp'
+                - "{{ volact.port }}:{{ volact.port }}/tcp"
               mode: bridge
             volumes:
-              - path: '/etc/localtime:/etc/localtime'
+              - path: "/etc/localtime:/etc/localtime"
                 ro: True
 
-
-
-
-# TODO: REPLACE W/ NEXTCLOUD !!!!
-    - name: baikal                                                            # TODO SSO: https://github.com/sabre-io/Baikal/pull/1124
+    - name: baikal # TODO SSO: https://github.com/sabre-io/Baikal/pull/1124
       volumes:
-        - 'config'
-        - 'user'
+        - "config"
+        - "user"
       compose:
         services:
           - name: baikal
@@ -316,8 +312,8 @@
                 - subdomain: baikal
                   port: 80
             volumes:
-              - path: '{{ docker_container.data_basedir }}/baikal/config/:/var/www/baikal/config'
-              - path: '{{ docker_container.data_basedir }}/baikal/user/:/var/www/baikal/Specific'
+              - path: "{{ docker_container.data_basedir }}/baikal/config/:/var/www/baikal/config"
+              - path: "{{ docker_container.data_basedir }}/baikal/user/:/var/www/baikal/Specific"
 
 #    - name: freshrss                       # TODO SSO: https://goauthentik.io/integrations/services/freshrss/
 #      volumes:
@@ -340,10 +336,8 @@
 #              - PUID={{ www_user.uid }}
 #              - PGID={{ www_user.gid }}
 
-
 - name: VPN
   ansible.builtin.import_tasks: vpn.yml
-
 
 - name: Pihole
   ansible.builtin.import_tasks: pihole.yml

@@ -3,20 +3,19 @@
   ansible.builtin.apt:
     update_cache: true
     name:
-      - python3-dev         # Required 4 extending Python interpreter or embedding Python in applications  (we care about the latter)
+      - python3-dev # Required 4 extending Python interpreter or embedding Python in applications  (we care about the latter)
     state: present
   become: true
   when: ansible_facts.os_family != 'Darwin'
 
-
 - name: Install pipx package(s)
   community.general.pipx:
-    name: '{{ pip_package }}'
+    name: "{{ pip_package }}"
     state: latest
     install_deps: true
     executable: pipx
   with_items:
-    - pip-review                        # NOTE: 2 check for updates, use: `pip-review --local --auto`
+    - pip-review # NOTE: 2 check for updates, use: `pip-review --local --auto`
   loop_control:
     loop_var: pip_package
   become: false

@@ -1,5 +1,5 @@
 ---
-- name: '[Darwin / Debian/Ubuntu] Install CLI tools'
+- name: "[Darwin / Debian/Ubuntu] Install CLI tools"
   block:
     - ansible.builtin.package:
         name:
@@ -7,7 +7,7 @@
           - ffmpeg
           - gifsicle
           - imagemagick
-      become: '{{ package_manager_become }}'
+      become: "{{ package_manager_become }}"
 
     - name: Install yt-dlp
       community.general.pipx:
@@ -17,18 +17,17 @@
         executable: pipx
       become: false
 
-
 - name: Install video players
   block:
-    - name: '[Darwin] Install homebrew packages'
+    - name: "[Darwin] Install homebrew packages"
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
-        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
+        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
           - dir: Video
             packages:
               - iina
               - vlc
-    - name: '[Debian/Ubuntu] Install flatpak packages'
+    - name: "[Debian/Ubuntu] Install flatpak packages"
       community.general.flatpak:
         name:
           - org.videolan.VLC
