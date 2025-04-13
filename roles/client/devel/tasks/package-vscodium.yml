@@ -47,15 +47,10 @@
 
 
 - name: Config
-  ansible.builtin.git:
-    repo: git@github.com:therealthingy/vscodium.git
-    dest: '/{{ os_homedir }}/{{ user.name }}/.config/vscodium/'
-    clone: true
-    #depth: 1
-    update: true
-  changed_when: false
-  #register: repo_clone
-  failed_when: false
-  #  - repo_clone.failed
-  #  - not 'Local modifications exist in the destination' in repo_clone.msg
+  block:
+    - ansible.builtin.include_tasks: git_clone_fallback.yml
+      vars:
+        repo_name: therealthingy/vscodium.git
+        repo_git_host: github.com
+        dest: '/{{ os_homedir }}/{{ user.name }}/.config/vscodium/'
   become: false

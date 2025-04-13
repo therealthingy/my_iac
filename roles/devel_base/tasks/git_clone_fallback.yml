@@ -1,0 +1,18 @@
+---
+# WORKAROUND, as `git clone` (on GitHub) w/o ssh key doesn't work  (https://stackoverflow.com/a/46993922)
+- name: ssh git clone w/ https fallback
+  block:
+    - name: Try SSH clone
+      ansible.builtin.git:
+        repo: "git@{{ repo_git_host }}:{{ repo_name }}"
+        dest: "{{ dest }}"
+        depth: "{{ depth | default(1) }}"
+
+  rescue: # (NOTE: rc 128 = "Permission denied (publickey)")
+    - name: HTTP clone fallback
+      ansible.builtin.git:
+        repo: "https://{{ repo_git_host }}/{{ repo_name }}"
+        dest: "{{ dest }}"
+        depth: "{{ depth | default(1) }}"
+      register: repo_clone
+      changed_when: repo_clone.before != repo_clone.after
