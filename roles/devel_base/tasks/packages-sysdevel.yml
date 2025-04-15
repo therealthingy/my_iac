@@ -15,6 +15,7 @@
               - flawfinder # Finds potential security flaws in C src
               - lcov
               # Build tools/Compilers:
+              - ccache # SEE: https://ccache.dev/
               - gcc
               - cmake
               - autoconf # Tool 4 producing configure script 4 building, installing & packing SW
