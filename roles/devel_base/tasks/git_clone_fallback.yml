@@ -7,12 +7,13 @@
         repo: "git@{{ repo_git_host }}:{{ repo_name }}"
         dest: "{{ dest }}"
         depth: "{{ depth | default(1) }}"
-
+        update: "{{ update | default(false) }}"
   rescue: # (NOTE: rc 128 = "Permission denied (publickey)")
     - name: HTTP clone fallback
       ansible.builtin.git:
         repo: "https://{{ repo_git_host }}/{{ repo_name }}"
         dest: "{{ dest }}"
         depth: "{{ depth | default(1) }}"
+        update: "{{ update | default(false) }}"
       register: repo_clone
-      changed_when: repo_clone.before != repo_clone.after
+      changed_when: repo_clone.before != repo_clone.after # TODO: Revise (initial clone)
