@@ -116,11 +116,11 @@
       when: "pif is defined"
   become: true
 
-- name: Install login system stats script
-  ansible.builtin.template:
-    src: zprofile.j2
-    dest: /etc/zsh/zprofile
-    owner: root
-    group: root
-    mode: 0644
-  become: true
+#- name: Install login system stats script
+#  ansible.builtin.template:
+#    src: zprofile.j2
+#    dest: /etc/zsh/zprofile
+#    owner: root
+#    group: root
+#    mode: 0644
+#  become: true
