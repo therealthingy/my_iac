@@ -133,6 +133,6 @@
         - name: Copy config
           ansible.builtin.template:
             src: apps/joplin.css.j2
-            dest: "/{{ os_homedir }}/{{ user.name }}/.config/joplin-desktop/basenotestyle.css"
+            dest: "/{{ os_homedir }}/{{ user.name }}/.config/joplin-desktop/userstyle.css"
             mode: 0755
   become: false
