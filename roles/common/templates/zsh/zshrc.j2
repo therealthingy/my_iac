@@ -231,6 +231,31 @@ history-clear() {
 }
 
 
+# -  ( 3rd Party -- PATH )  -
+{% if ansible_facts.os_family == 'Darwin' %}
+{%   if 'clients_devel' in group_names or
+        'servers_devel' in group_names %}
+path-add "/{{ homebrew_arch_prefix }}/opt/llvm/bin" "before"
+#path-add "/{{ homebrew_arch_prefix }}/opt/sphinx-doc/bin" "before"
+{%   endif %}
+{%   if cpu_arch == 'arm64' %}
+# --  ( "fix" homebrew (due 2 ARM) PATH )  --
+path-add '/{{ homebrew_arch_prefix }}/sbin' "before"
+path-add '/{{ homebrew_arch_prefix }}/bin' "before"
+
+typeset -T LIBRARY_PATH library_path
+library_path+=('/{{ homebrew_arch_prefix }}/lib')
+{%   endif %}
+{%   if 'client_workstation' in group_names %}
+path-add "/Library/TeX/texbin/" "after"
+{%   endif %}
+{% endif %}
+{% if 'clients_devel' in group_names or
+      'servers_devel' in group_names %}
+[ -f ~/.cargo/env ] && source $HOME/.cargo/env
+{% endif %}
+
+
 # ===========================  Alias Definitions  ===========================
 #  TODO: SHOULD be in '.zshenv'
 
@@ -255,15 +280,6 @@ alias l='ls -lahF {{ "--color=auto" if ansible_facts.os_family != "Darwin" else 
 alias ll='ls -lhF {{ "--color=auto" if ansible_facts.os_family != "Darwin" else "-G" }}'
 
 {% if ansible_facts.os_family == 'Darwin' %}
-{%   if cpu_arch == 'arm64' %}
-# --  ( "fix" homebrew (due 2 ARM) PATH )  --
-path-add '/{{ homebrew_arch_prefix }}/sbin' "before"
-path-add '/{{ homebrew_arch_prefix }}/bin' "before"
-
-typeset -T LIBRARY_PATH library_path
-library_path+=('/{{ homebrew_arch_prefix }}/lib')
-{%   endif %}
-
 alias-add gsed decolorize='gsed -r "s/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"'
 {% else %}
 alias decolorize='sed -r "s/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"'
@@ -627,21 +643,4 @@ if command -v gifsicle > /dev/null; then
         fi
     }
 fi
-{% endif %}
-
-
-# -  ( 3rd Party -- PATH )  -
-{% if ansible_facts.os_family == 'Darwin' %}
-{%   if 'clients_devel' in group_names or
-        'servers_devel' in group_names %}
-path-add "/{{ homebrew_arch_prefix }}/opt/llvm/bin" "before"
-#path-add "/{{ homebrew_arch_prefix }}/opt/sphinx-doc/bin" "before"
-{%   endif %}
-{%   if 'client_workstation' in group_names %}
-path-add "/Library/TeX/texbin/" "after"
-{%   endif %}
-{% endif %}
-{% if 'clients_devel' in group_names or
-      'servers_devel' in group_names %}
-[ -f ~/.cargo/env ] && source $HOME/.cargo/env
 {% endif %}
