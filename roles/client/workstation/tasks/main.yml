@@ -87,7 +87,7 @@
                 packages:
                   - cyberduck
                   - netnewswire
-                  - syncthing
+                  - syncthing-app
                   - qbittorrent
                   - rustdesk
 

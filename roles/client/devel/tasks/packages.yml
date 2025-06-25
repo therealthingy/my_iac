@@ -7,7 +7,7 @@
         packages_homebrew_casks:
           - dir: Network
             packages:
-              - wireshark
+              - wireshark-app
     - name: "[Debian/Ubuntu] Install apt packages"
       ansible.builtin.apt:
         name:
