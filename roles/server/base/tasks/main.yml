@@ -71,7 +71,7 @@
             purge: true
         - name: Shutdown services, sockets and timers
           ansible.builtin.service:
-            name: "{{ item }}"
+            name: "{{ cloud_init_service }}"
             state: stopped
             enabled: false
           failed_when: false
@@ -80,9 +80,11 @@
             - cloud-init-local.service
             - cloud-init.target
             - cloud-init-hotplugd.socket
+          loop_control:
+            loop_var: cloud_init_service
         - name: Cleanup
           ansible.builtin.file:
-            path: "{{ item }}"
+            path: "{{ cloud_init_file }}"
             state: absent
           with_items:
             - /etc/systemd/system/cloud-init.service
@@ -94,6 +96,8 @@
             - /etc/cloud/
             - /var/lib/cloud/
             - /etc/netplan/50-cloud-init.yaml
+          loop_control:
+            loop_var: cloud_init_file
       when: ansible_facts.distribution == 'Ubuntu'
 
     - name: Network config
@@ -115,6 +119,16 @@
       notify: Applying Netplan Configuration
       when: "pif is defined"
   become: true
+
+- name: Disable motd msges
+  ansible.builtin.include_tasks: disable_motd_fragment.yml
+  with_items:
+    - 91-contract-ua-esm-status
+    - 50-motd-news
+    - 10-help-text
+  loop_control:
+    loop_var: motd_file
+  when: ansible_facts.distribution == 'Ubuntu'
 
 #- name: Install login system stats script
 #  ansible.builtin.template:

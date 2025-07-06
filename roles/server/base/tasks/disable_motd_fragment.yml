@@ -1,0 +1,13 @@
+---
+- name: Check file exists
+  ansible.builtin.stat:
+    path: "/etc/update-motd.d/{{ motd_file }}"
+  register: motd_file_check
+  changed_when: false
+
+- name: Disable it
+  ansible.builtin.file:
+    path: "/etc/update-motd.d/{{ motd_file }}"
+    mode: u-x,g-x,o-x
+  when: motd_file_check.stat.exists
+  become: true
