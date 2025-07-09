@@ -1,7 +1,6 @@
 ---
 - name: "[Darwin / Debian/Ubuntu] Install common systems programming tools/libs"
   block:
-
     - name: Install packages (I)
       block:
         - name: "[Darwin / Debian/Ubuntu]"
@@ -18,7 +17,6 @@
               # Build tools/Compilers:
               - ccache # SEE: https://ccache.dev/
               - gcc
-              - cmake
               - autoconf # Tool 4 producing configure script 4 building, installing & packing SW
               - automake # Automates parts of the compilation process
               - pkg-config
@@ -57,7 +55,6 @@
               # Build tools:
               #              - gcc-multilib          # Mechanism 4 building & running code 4 different ABIs 4 the same CPU family on a given system;
               #                                      # Most commonly used 2 support 32-bit code on 64-bit systems and 64-bit code on 32-bit systems w/ a 64-bit kernel
-              - cmake-curses-gui
               - autotools-dev
               - ninja-build
               # Debuggers & Tools
@@ -206,10 +203,41 @@
       when: cargo_command_result.rc == 1
   become: false
 
+- name: Install latest CMake
+  block:
+    - name: "[Darwin]"
+      ansible.builtin.package:
+        name:
+          - cmake
+      become: "{{ package_manager_become }}"
+      when: ansible_facts.os_family == 'Darwin'
+
+    - name: "[Debian/Ubuntu]"
+      block:
+        - name: Add apt signing key
+          ansible.builtin.get_url:
+            url: https://apt.kitware.com/keys/kitware-archive-latest.asc
+            dest: /etc/apt/trusted.gpg.d/kitware-archive-latest.asc
+            mode: "0644"
+            force: true
+        - name: Add apt repo and update cache
+          ansible.builtin.apt_repository:
+            repo: "deb [signed-by=/etc/apt/trusted.gpg.d/kitware-archive-latest.asc] https://apt.kitware.com/ubuntu/ {{ cmake_ubuntu_distro }} main"
+            filename: kitware
+            state: present
+            update_cache: true
+        - name: Install it
+          ansible.builtin.package:
+            name:
+              - cmake
+              - cmake-curses-gui
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
+
 - ansible.builtin.include_tasks: packages-llvm.yml
 
 - ansible.builtin.include_tasks: packages-bazel.yml
-
+#
 # TODO: …
 #- ansible.builtin.include_tasks: packages-trace_compass.yml
 
