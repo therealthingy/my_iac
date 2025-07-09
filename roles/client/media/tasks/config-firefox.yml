@@ -1,22 +1,4 @@
 ---
-- name: Configure
-  block:
-    - name: Set config as vars
-      ansible.builtin.set_fact:
-        firefox_profiles:
-          default:
-            extensions: # NOTE: URL on addons.mozilla.org
-              - video-downloader-profession
-              - video-downloadhelper
-              - buster-captcha-solver
-              - duplicate-tabs-closer
-              - old-reddit-redirect
-
-    - name: "Run 'staticdev.firefox' role"
-      ansible.builtin.include_role:
-        name: staticdev.firefox
-  become: false
-
 - name: Install dependencies for extension
   # Equivalent command: `dpkg -s net.downloadhelper.coapp`
   block:

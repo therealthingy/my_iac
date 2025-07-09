@@ -12,6 +12,130 @@
     - validate: monotonically increasing
     - preview option ?!?
 
+- Firefox:
+  ```
+  extensions:
+      # URL on addons.mozilla.org
+      - ublock-origin
+      - consent-o-matic
+      - umatrix
+      - darkreader
+      - save-page-we
+      - privacy-redirect
+      #- startpage-private-search
+  # Privacy friendly settings reference: https://github.com/arkenfox/user.js/blob/master/user.js
+  # TODOs:
+  #   - Rmv 'Import bookmarks from another browser to Firefox' from bookmarks bar  (`browser.uiCustomization.state` -> ""PersonalToolbar":["import-button","personal-bookmarks"]")
+  #   - DEFAULT SEARCH ENGINE  (https://superuser.com/questions/1372679/how-to-set-duckduckgo-as-default-search-engine-using-user-js)
+  preferences:
+      browser.aboutConfig.showWarning: false
+      browser.discovery.enabled: false # Disable "Recommend extensions / features as you browse"
+      browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons: false
+      browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features: false
+      privacy.sanitize.timeSpan: 0 # Changes Burger menu -> History -> 'Clear recent history' … -> 'Time range to clear': 'Everything'
+      # Privacy - Safe browsing
+      browser.safebrowsing.downloads.enabled: false
+      browser.safebrowsing.downloads.remote.block_potentially_unwanted: false
+      browser.safebrowsing.downloads.remote.block_uncommon: false
+      browser.safebrowsing.malware.enabled: false
+      browser.safebrowsing.phishing.enabled: false
+      #browser.shell.checkDefaultBrowser: false
+      browser.toolbars.bookmarks.visibility: "always" # Show bookmarks bar (always, newtab, never)
+      browser.startup.page: 1 # 0=blank, 1=home (DEFAULT), 2=last visited page, 3=resume previous session
+      browser.startup.homepage: "{{ 'https://ipleak.net/' if 'clients_media' in group_names else 'about:home' }}"
+      browser.newtabpage.enabled: true
+      browser.newtab.preload: false
+      browser.newtabpage.activity-stream.feeds.topsites: false # We have already bookmark bar, hence shortcuts are useless
+      browser.newtabpage.activity-stream.feeds.telemetry: false
+      browser.newtabpage.activity-stream.telemetry: false
+      browser.newtabpage.activity-stream.feeds.snippets: false
+      browser.newtabpage.activity-stream.feeds.section.topstories: false
+      browser.newtabpage.activity-stream.section.highlights.includePocket: false
+      browser.newtabpage.activity-stream.showSponsored: false
+      browser.newtabpage.activity-stream.feeds.discoverystreamfeed: false
+      browser.newtabpage.activity-stream.showSponsoredTopSites: false
+      browser.newtabpage.activity-stream.default.sites: ""
+      browser.newtabpage.activity-stream.feeds.section.topstories.options: ""
+      dom.gamepad.enabled: false
+      dom.vr.enabled: false
+      dom.vibrator.enabled: false
+      extensions.pocket.enabled: false
+      extensions.pocket.api: ""
+      extensions.pocket.oAuthConsumerKey: ""
+      extensions.pocket.site: "''"
+      geo.provider.network.url: "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%"
+      geo.provider.ms-windows-location: false # Windows
+      geo.provider.use_corelocation: false # Mac
+      geo.provider.use_gpsd: false # Linux
+      browser.region.network.url: ""
+      browser.region.update.enabled: false
+      intl.accept_languages: "en-US, en"
+      javascript.use_us_english_locale: true
+      extensions.getAddons.showPane: false
+      extensions.htmlaboutaddons.recommendations.enabled: false
+      datareporting.policy.dataSubmissionEnabled: false
+      datareporting.healthreport.uploadEnabled: false
+      toolkit.telemetry.unified: false
+      toolkit.telemetry.enabled: false
+      toolkit.telemetry.server: "data:,"
+      toolkit.telemetry.archive.enabled: false
+      toolkit.telemetry.newProfilePing.enabled: false
+      toolkit.telemetry.shutdownPingSender.enabled: false
+      toolkit.telemetry.updatePing.enabled: false
+      toolkit.telemetry.bhrPing.enabled: false
+      toolkit.telemetry.firstShutdownPing.enabled: false
+      toolkit.telemetry.coverage.opt-out: true
+      toolkit.coverage.opt-out: true
+      toolkit.coverage.endpoint.base: ""
+      browser.ping-centre.telemetry: false
+      app.shield.optoutstudies.enabled: false
+      app.normandy.enabled: false
+      app.normandy.api_url: ""
+      breakpad.reportURL: ""
+      browser.tabs.crashReporting.sendReport: false
+      browser.tabs.warnOnOpen: false
+      browser.tabs.warnOnClose: false
+      browser.tabs.firefox-view: false # Disable 'Firefox View'
+      browser.crashReports.unsubmittedCheck.autoSubmit2: false
+      browser.safebrowsing.downloads.remote.enabled: false
+      #browser.places.speculativeConnect.enabled: false
+      browser.fixup.alternate.enabled: false # disable location bar domain guessing
+      browser.search.suggest.enabled: false # location bar
+      browser.urlbar.suggest.searches: false
+      browser.urlbar.speculativeConnect.enabled: false
+      browser.urlbar.suggest.quicksuggest.nonsponsored: false
+      browser.urlbar.suggest.quicksuggest.sponsored: false
+      browser.formfill.enable: false # Search & form history
+      extensions.formautofill.addresses.enabled: false # Autofill
+      extensions.formautofill.available: "off"
+      extensions.formautofill.creditCards.available: false
+      extensions.formautofill.creditCards.enabled: false
+      extensions.formautofill.heuristics.enabled: false
+      signon.rememberSignons: false # disable auto-filling username & password form fields
+      signon.autofillForms: false
+      #security.ssl.require_safe_negotiation: true
+      #security.tls.enable_0rtt_data: false
+      beacon.enabled: false
+      privacy.sanitize.sanitizeOnShutdown: true
+      privacy.clearOnShutdown.cache: true
+      privacy.clearOnShutdown.downloads: true
+      privacy.clearOnShutdown.formdata: true
+      privacy.clearOnShutdown.history: true
+      privacy.clearOnShutdown.sessions: true
+      privacy.clearOnShutdown.offlineApps: false
+      privacy.resistFingerprinting: true
+      privacy.resistFingerprinting.block_mozAddonManager: true
+      browser.messaging-system.whatsNewPanel.enabled: false
+      identity.fxaccounts.enabled: false
+
+  extensions: # NOTE: URL on addons.mozilla.org
+    - video-downloader-profession
+    - video-downloadhelper
+    - buster-captcha-solver
+    - duplicate-tabs-closer
+    - old-reddit-redirect
+  ```
+
 
 #### Darwin
 - FIX lscolors

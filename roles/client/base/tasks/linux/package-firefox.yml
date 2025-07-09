@@ -33,7 +33,10 @@
             target: "origin packages.mozilla.org"
             priority: 1001
 
+    - name: Install
+      ansible.builtin.apt:
+        name: firefox
+
     #TODO -- UNATTENDED UPGRADES: echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
   when: ansible_facts.distribution == 'Ubuntu'
   become: true
-# NOTE: Installation is handled by `staticdev.firefox` role
