@@ -21,17 +21,20 @@
 
     # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
     - name: Pin apt repo
-      ansible.builtin.template:
-        src: linux/apt-pin.pref.j2
-        dest: /etc/apt/preferences.d/snapd-exclude-firefox.pref
-        owner: root
-        group: root
-        mode: 0644
-      vars:
-        apt_pin_packages:
-          - name: "firefox*"
-            target: "origin packages.mozilla.org"
-            priority: 1001
+      block:
+        - ansible.builtin.set_fact:
+            apt_pin_packages:
+              - target: "origin packages.mozilla.org"
+                priority: 1001
+              - name: "firefox*"
+                target: "release o=Ubuntu"
+                priority: -1
+        - ansible.builtin.template:
+            src: linux/apt-pin.pref.j2
+            dest: /etc/apt/preferences.d/mozilla-firefox.pref
+            owner: root
+            group: root
+            mode: 0644
 
     - name: Install
       ansible.builtin.apt:
