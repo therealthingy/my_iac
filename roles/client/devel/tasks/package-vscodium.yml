@@ -26,11 +26,11 @@
                 apt_pin_packages:
                   - target: "origin download.vscodium.com"
             - ansible.builtin.template:
-              src: linux/apt-pin.pref.j2
-              dest: /etc/apt/preferences.d/vscodium.pref
-              owner: root
-              group: root
-              mode: 0644
+                src: linux/apt-pin.pref.j2
+                dest: /etc/apt/preferences.d/vscodium.pref
+                owner: root
+                group: root
+                mode: 0644
 
         - name: VSCodium - Install it
           ansible.builtin.apt:
