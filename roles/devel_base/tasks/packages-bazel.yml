@@ -13,12 +13,12 @@
         - name: bazel - Add apt signing key
           ansible.builtin.get_url:
             url: https://bazel.build/bazel-release.pub.gpg
-            dest: /etc/apt/trusted.gpg.d/bazel-archive-keyring.gpg
+            dest: /etc/apt/trusted.gpg.d/bazel-archive-keyring.asc
             mode: "0644"
             force: true
         - name: bazel - Add apt repo and update cache
           ansible.builtin.apt_repository:
-            repo: "deb [arch={{ deb_cpu_arch }} signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8"
+            repo: "deb [arch={{ deb_cpu_arch }} signed-by=/etc/apt/trusted.gpg.d/bazel-archive-keyring.asc] https://storage.googleapis.com/bazel-apt stable jdk1.8"
             filename: bazel
             state: present
             update_cache: true
