@@ -34,7 +34,7 @@
           - gnome-calendar
           - gnome-contacts
           - gnome-documents
-          - "*gnome-todo*"
+          - endeavour # previously: gnome-todo
           - gnome-maps
           - gnome-music
           - "*rhythmbox*"
