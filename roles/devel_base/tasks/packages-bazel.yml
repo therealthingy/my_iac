@@ -1,0 +1,32 @@
+---
+- name: Install G00g13 bazel
+  block:
+    - name: "[Ubuntu/Debian]"
+      block:
+        - name: bazel - Install dependencies
+          ansible.builtin.apt:
+            update_cache: true
+            name:
+              - apt-transport-https
+              - curl
+              - gnupg
+        - name: bazel - Add apt signing key
+          ansible.builtin.apt_key:
+            url: https://bazel.build/bazel-release.pub.gpg
+            keyring: /usr/share/keyrings/bazel-archive-keyring.gpg
+            state: present
+        - name: bazel - Add apt repo and update cache
+          ansible.builtin.apt_repository:
+            repo: "deb [arch={{ deb_cpu_arch }} signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8"
+            filename: bazel
+            state: present
+            update_cache: true
+      become: true
+      when:
+        - ansible_facts.os_family != 'Darwin'
+    - name: Install it
+      ansible.builtin.package:
+        name: bazel
+      become: "{{ package_manager_become }}"
+  when:
+    - not (ansible_facts.os_family != 'Darwin' and ansible_architecture != 'x86_64') # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED

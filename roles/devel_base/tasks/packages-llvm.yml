@@ -1,0 +1,73 @@
+---
+- name: Install llvm
+  block:
+    - name: "[Darwin]"
+      ansible.builtin.package:
+        name:
+          - llvm # `clangd`, `llvm-symbolizer`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
+          - lld
+      when: ansible_facts.os_family == 'Darwin'
+    - name: "[Debian/Ubuntu]"
+      block:
+        - name: Install llvm repo version # TODO: REVISE   (automatically install latest)
+          block:
+            - name: Check installed
+              ansible.builtin.command: which 'clang-{{ llvm_version }}'
+              failed_when: false
+              changed_when: false
+              check_mode: false
+              register: llvm_clang_command_result
+            - name: DL
+              ansible.builtin.get_url:
+                url: https://apt.llvm.org/llvm.sh
+                dest: /tmp/llvm.sh
+                mode: 0775
+              when: llvm_clang_command_result.rc == 1
+            - name: Install
+              ansible.builtin.command: "/tmp/llvm.sh {{ llvm_version }} all"
+              when: llvm_clang_command_result.rc == 1
+            - name: Set as default
+              community.general.alternatives:
+                name: "{{ symlink }}"
+                link: "/usr/bin/{{ symlink }}"
+                path: "/usr/bin/{{ symlink }}-{{ llvm_version }}"
+              with_items:
+                - clang
+                - clang++
+                - clangd
+                - clang-format
+                - clang-tidy
+              loop_control:
+                loop_var: symlink
+              become: true
+          when: llvm_install_distro_version == False
+
+        - name: Install distro version
+          ansible.builtin.package:
+            name:
+              - llvm
+              - lldb
+              - clang
+              - clang-tools # Includes `clang-check`~~, `clang-format` & `clang-tidy`~~
+              - clang-tidy
+              - clang-format
+              - clangd # LSP
+              - libc++-dev # LLVM's C++ stdlib (alternative 2 GNU's libstdc++)
+              - libc++abi-dev
+              - libunwind-dev # (libunwind)
+              - llvm-dev
+              - libclang-dev
+              - lld
+              - libomp-dev # OpenMP
+          when: llvm_install_distro_version == True
+      when: ansible_facts.os_family != 'Darwin'
+  become: "{{ package_manager_become }}"
+
+- name: "`clang-format` config"
+  ansible.builtin.template:
+    src: clang-format.j2
+    dest: "/{{ os_homedir }}/{{ user.name }}/.clang-format"
+    owner: "{{ user.name }}"
+    group: "{{ user.group_name }}"
+    mode: 0644
+  become: false

@@ -178,7 +178,7 @@ path-add() {
     if ! echo "$PATH" | grep -E -q "(^|:)$newelement($|:)"; then
         if [ "$2" = "before" ]; then
             path=("$newelement" $path)
-        else    # after
+        else
             path+=("$newelement")
         fi
     fi

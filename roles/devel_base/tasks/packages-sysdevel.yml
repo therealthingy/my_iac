@@ -1,6 +1,7 @@
 ---
-- name: "[Darwin / Debian/Ubuntu] Install systems programming tools/libs"
+- name: "[Darwin / Debian/Ubuntu] Install common systems programming tools/libs"
   block:
+
     - name: Install packages (I)
       block:
         - name: "[Darwin / Debian/Ubuntu]"
@@ -32,6 +33,7 @@
               - sphinx-doc
             state: present
           become: "{{ package_manager_become }}"
+
         - name: "[Debian/Ubuntu]"
           ansible.builtin.apt:
             name:
@@ -42,6 +44,7 @@
               #- linux-tools-common    # `perf`  (Performance analysis tools for Linux)
           ignore_errors: true # In case it's not a distro-kernel …
           when: ansible_facts.os_family != 'Darwin'
+
         - name: "[Debian/Ubuntu]"
           ansible.builtin.apt:
             name:
@@ -144,12 +147,14 @@
               - net-tools # Deprecated  (SUCCESSOR: `iproute2`)
             state: present
           when: ansible_facts.os_family != 'Darwin'
+
         - name: "[Ubuntu]"
           ansible.builtin.apt:
             name:
               - glibc-tools # Contains ’libSigSegv’ library (SEE: https://lemire.me/blog/2023/05/01/under-linux-libsegfault-and-addr2line-are-underrated/)
               # 'Performance' analysis
           when: ansible_facts.os_family == 'Ubuntu'
+
         - name: "[Darwin]"
           community.general.homebrew:
             name:
@@ -159,248 +164,53 @@
               # Libs:
               - readline
               - ncurses # Text-based UIs (TUIs)
-              - boost
+              #- boost
               - googletest # Google Test
           become: false
           when: ansible_facts.os_family == 'Darwin'
-
-    - name: Install gef (4 `gdb`)
-      block:
-        - name: gef - Check whether already installed # TODO: Always update if not latest version
-          ansible.builtin.find:
-            paths: "/{{ os_homedir }}/{{ user.name }}/"
-            file_type: file
-            use_regex: true
-            hidden: true
-            patterns: '^\.gef-20\d{2}\.(0[1-9]|1[012])\.py$'
-          register: gef_find_output
-        - name: gef - Run install script
-          ansible.builtin.shell:
-            cmd: 'bash -c "$(curl -fsSL https://gef.blah.cat/sh)"'
-          become: false
-          when: (gef_find_output.files | length == 0)
-      when: ansible_facts.os_family != 'Darwin'
-
-    - name: "`clang-format` config"
-      ansible.builtin.template:
-        src: clang-format.j2
-        dest: "/{{ os_homedir }}/{{ user.name }}/.clang-format"
-        owner: "{{ user.name }}"
-        group: "{{ user.group_name }}"
-        mode: 0644
-      become: false
-
-    - name: Rust toolchain
-      block:
-        - name: check if cargo is installed
-          ansible.builtin.shell: command -v cargo
-          failed_when: false
-          changed_when: false
-          ignore_errors: true
-          register: cargo_command_result
-        - name: Install rustup + -toolchain
-          block:
-            - ansible.builtin.get_url:
-                url: https://sh.rustup.rs
-                dest: /tmp/sh.rustup.rs
-                mode: "0755"
-                force: true
-            - ansible.builtin.shell: /tmp/sh.rustup.rs -y --profile default -c rust-analyzer miri
-          when: cargo_command_result.rc == 1
-      become: false
   become: true
 
-- name: Install llvm
+- name: Install gef (4 `gdb`)
   block:
-    - name: "[Darwin]"
-      ansible.builtin.package:
-        name:
-          - llvm # `clangd`, `llvm-symbolizer`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
-          - lld
-      when: ansible_facts.os_family == 'Darwin'
-    - name: "[Debian/Ubuntu]"
-      block:
-        - name: Install llvm repo version # TODO: REVISE   (automatically install latest)
-          block:
-            - name: Check installed
-              ansible.builtin.command: which 'clang-{{ llvm_version }}'
-              failed_when: false
-              changed_when: false
-              check_mode: false
-              register: llvm_clang_command_result
-            - name: DL
-              ansible.builtin.get_url:
-                url: https://apt.llvm.org/llvm.sh
-                dest: /tmp/llvm.sh
-                mode: 0775
-              when: llvm_clang_command_result.rc == 1
-            - name: Install
-              ansible.builtin.command: "/tmp/llvm.sh {{ llvm_version }} all"
-              when: llvm_clang_command_result.rc == 1
-            - name: Set as default
-              community.general.alternatives:
-                name: "{{ symlink }}"
-                link: "/usr/bin/{{ symlink }}"
-                path: "/usr/bin/{{ symlink }}-{{ llvm_version }}"
-              with_items:
-                - clang
-                - clang++
-                - clangd
-                - clang-format
-                - clang-tidy
-              loop_control:
-                loop_var: symlink
-              become: true
-          when: llvm_install_distro_version == False
+    - name: gef - Check whether already installed # TODO: Always update if not latest version
+      ansible.builtin.find:
+        paths: "/{{ os_homedir }}/{{ user.name }}/"
+        file_type: file
+        use_regex: true
+        hidden: true
+        patterns: '^\.gef-20\d{2}\.(0[1-9]|1[012])\.py$'
+      register: gef_find_output
+    - name: gef - Run install script
+      ansible.builtin.shell:
+        cmd: 'bash -c "$(curl -fsSL https://gef.blah.cat/sh)"'
+      become: false
+      when: (gef_find_output.files | length == 0)
+  when: ansible_facts.os_family != 'Darwin'
 
-        - name: Install distro version
-          ansible.builtin.package:
-            name:
-              - llvm
-              - lldb
-              - clang
-              - clang-tools # Includes `clang-check`~~, `clang-format` & `clang-tidy`~~
-              - clang-tidy
-              - clang-format
-              - clangd # LSP
-              - libc++-dev # LLVM's C++ stdlib (alternative 2 GNU's libstdc++)
-              - libc++abi-dev
-              - libunwind-dev # (libunwind)
-              - llvm-dev
-              - libclang-dev
-              - lld
-              - libomp-dev # OpenMP
-          when: llvm_install_distro_version == True
-      when: ansible_facts.os_family != 'Darwin'
-  become: "{{ package_manager_become }}"
-
-- name: Install G00g13 bazel
+- name: Rust toolchain
   block:
-    - name: "[Ubuntu/Debian]"
+    - name: check if cargo is installed
+      ansible.builtin.shell: command -v cargo
+      failed_when: false
+      changed_when: false
+      ignore_errors: true
+      register: cargo_command_result
+    - name: Install rustup + -toolchain
       block:
-        - name: bazel - Install dependencies
-          ansible.builtin.apt:
-            update_cache: true
-            name:
-              - apt-transport-https
-              - curl
-              - gnupg
-        - name: bazel - Add apt signing key
-          ansible.builtin.apt_key:
-            url: https://bazel.build/bazel-release.pub.gpg
-            keyring: /usr/share/keyrings/bazel-archive-keyring.gpg
-            state: present
-        - name: bazel - Add apt repo and update cache
-          ansible.builtin.apt_repository:
-            repo: "deb [arch={{ deb_cpu_arch }} signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8"
-            filename: bazel
-            state: present
-            update_cache: true
-      become: true
-      when:
-        - ansible_facts.os_family != 'Darwin'
-    - name: Install it
-      ansible.builtin.package:
-        name: bazel
-      become: "{{ package_manager_become }}"
-  when:
-    - not (ansible_facts.os_family != 'Darwin' and ansible_architecture != 'x86_64') # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED
+        - ansible.builtin.get_url:
+            url: https://sh.rustup.rs
+            dest: /tmp/sh.rustup.rs
+            mode: "0755"
+            force: true
+        - ansible.builtin.shell: /tmp/sh.rustup.rs -y --profile default -c rust-analyzer miri
+      when: cargo_command_result.rc == 1
+  become: false
+
+- ansible.builtin.include_tasks: packages-llvm.yml
+
+- ansible.builtin.include_tasks: packages-bazel.yml
 
 # TODO: …
-#- name: Install Eclipse Trace Compass
-#  block:
-#    - name: Determine stuff
-#      block:
-#        - name: '[Darwin]'
-#          ansible.builtin.set_fact:
-#            java_package: openjdk
-#            tracecompass_package_os: macosx.cocoa
-#            tracecompass_package_arch: '{{ "aarch64" if cpu_arch == "arm64" else cpu_arch }}'
-#            tracecompass_install_path: /Applications/Development/
-#            tracecompass_install_become: false
-#          when: ansible_facts.os_family == 'Darwin'
-#        - name: '[Ubuntu/Debian]'
-#          ansible.builtin.set_fact:
-#            java_package: openjdk-17-jdk
-#            tracecompass_package_os: linux.gtk
-#            tracecompass_package_arch: '{{ cpu_arch }}'
-#            tracecompass_install_path: /opt/
-#            tracecompass_install_become: true
-#          when: ansible_facts.os_family != 'Darwin'
-#    - name: Install Java
-#      ansible.builtin.package:
-#        name: '{{ java_package }}'
-#      become: '{{ package_manager_become }}'
-#    - name: Check if already installed
-#      ansible.builtin.stat:
-#        path: '{{ tracecompass_install_path }}/trace-compass'
-#      register: result_tracecompass_exists
-#      become: false
-#    - name: Install it
-#      block:
-#        - name: "Download & 'install'"
-#          ansible.builtin.unarchive:
-#            src: 'https://www.eclipse.org/downloads/download.php?file=/tracecompass/stable/rcp/trace-compass-{{ tracecompass_version }}-{{ tracecompass_package_os }}.{{ tracecompass_package_arch }}.tar.gz'   # TODO: ALWAYS LATEST VERSION
-#            dest: '{{ tracecompass_install_path }}'
-#            remote_src: yes
-#          become: '{{ tracecompass_install_become }}'
-#        # TODO: Create .desktop file on Gnome
-#      when: result_tracecompass_exists.stat.exists == false
-#  when:
-#    - not ansible_facts.os_family == 'Darwin'     # DON'T install on Darwin atm
-#    - not (ansible_facts.os_family != 'Darwin' and ansible_architecture != 'x86_64')  # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED
+#- ansible.builtin.include_tasks: packages-trace_compass.yml
 
-#- name: Install Intel Pin Tools
-#  block:
-#    - name: Set version
-#      ansible.builtin.set_fact:
-#        # TODO: GET ALWAYS LATEST VERSION;  SEE: https://www.intel.com/content/www/us/en/developer/articles/tool/pin-a-binary-instrumentation-tool-downloads.html
-#        intel_pin_tool_version: pin-3.25-98650-g8f6168173-gcc-linux
-#        intel_pin_tools_dir: /opt/intel
-#    - name: Check already installed
-#      ansible.builtin.command: 'which {{ intel_pin_tools_dir }}/{{ intel_pin_tool_version }}/pin'
-#      failed_when: false
-#      changed_when: false
-#      check_mode: false
-#      register: result_pin_command
-#      become: false
-#    - name: Install if not installed
-#      block:
-#        - name: Ensure dir exists
-#          file:
-#            path: "{{ intel_pin_tools_dir }}/"
-#            state: directory
-#            mode: 0755
-#        - name: Download & Install Pin tools
-#          ansible.builtin.unarchive:
-#            src: 'https://software.intel.com/sites/landingpage/pintool/downloads/{{ intel_pin_tool_version }}.tar.gz'
-#            remote_src: true
-#            dest: "{{ intel_pin_tools_dir }}/"
-#            mode: 0755
-#        - name: Update PATH variable globally
-#          ansible.builtin.lineinfile:
-#            dest: /etc/zsh/zshenv
-#            line: |
-#              if [[ "$PATH" != *"{{ intel_pin_tools_dir }}/{{ intel_pin_tool_version }}"* ]]; then
-#                  export PATH="$PATH:{{ intel_pin_tools_dir }}/{{ intel_pin_tool_version }}"
-#              fi
-#      when: result_pin_command.rc == 1
-#      become: true
-#  when: ansible_architecture == "x86_64"
-#  become: false
-
-# Installation steps: https://www.intel.com/content/www/us/en/develop/documentation/vtune-install-guide/top/linux/package-managers.html
-#- name: Install VTune
-#  block:
-#    - name: Add apt repo
-#      # NOTE: Equivalent command: `sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"`
-#      ansible.builtin.apt_repository:
-#        repo: deb https://apt.repos.intel.com/oneapi all main
-#        state: present
-#        filename: intel
-#        update_cache: true
-#    - name: Install VTune
-#      ansible.builtin.apt:
-#        name: intel-oneapi-vtune
-#  when: ansible_architecture == "x86_64"
-#  become: true
+#- ansible.builtin.include_tasks: packages-intel_tools.yml

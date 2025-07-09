@@ -1,0 +1,55 @@
+---
+- name: Install Intel Pin Tools
+  block:
+    - name: Set version
+      ansible.builtin.set_fact:
+        # TODO: GET ALWAYS LATEST VERSION;  SEE: https://www.intel.com/content/www/us/en/developer/articles/tool/pin-a-binary-instrumentation-tool-downloads.html
+        intel_pin_tool_version: pin-3.25-98650-g8f6168173-gcc-linux
+        intel_pin_tools_dir: /opt/intel
+    - name: Check already installed
+      ansible.builtin.command: 'which {{ intel_pin_tools_dir }}/{{ intel_pin_tool_version }}/pin'
+      failed_when: false
+      changed_when: false
+      check_mode: false
+      register: result_pin_command
+      become: false
+    - name: Install if not installed
+      block:
+        - name: Ensure dir exists
+          file:
+            path: "{{ intel_pin_tools_dir }}/"
+            state: directory
+            mode: 0755
+        - name: Download & Install Pin tools
+          ansible.builtin.unarchive:
+            src: 'https://software.intel.com/sites/landingpage/pintool/downloads/{{ intel_pin_tool_version }}.tar.gz'
+            remote_src: true
+            dest: "{{ intel_pin_tools_dir }}/"
+            mode: 0755
+        - name: Update PATH variable globally
+          ansible.builtin.lineinfile:
+            dest: /etc/zsh/zshenv
+            line: |
+              if [[ "$PATH" != *"{{ intel_pin_tools_dir }}/{{ intel_pin_tool_version }}"* ]]; then
+                  export PATH="$PATH:{{ intel_pin_tools_dir }}/{{ intel_pin_tool_version }}"
+              fi
+      when: result_pin_command.rc == 1
+      become: true
+  when: ansible_architecture == "x86_64"
+  become: false
+
+# Installation steps: https://www.intel.com/content/www/us/en/develop/documentation/vtune-install-guide/top/linux/package-managers.html
+- name: Install VTune
+  block:
+    - name: Add apt repo
+      # NOTE: Equivalent command: `sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"`
+      ansible.builtin.apt_repository:
+        repo: deb https://apt.repos.intel.com/oneapi all main
+        state: present
+        filename: intel
+        update_cache: true
+    - name: Install VTune
+      ansible.builtin.apt:
+        name: intel-oneapi-vtune
+  when: ansible_architecture == "x86_64"
+  become: true
