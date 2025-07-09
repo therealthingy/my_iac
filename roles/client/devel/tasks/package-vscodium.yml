@@ -5,10 +5,11 @@
       block:
         - name: VSCodium - Add apt signing key
           # NOTE: Equivalent command: `wget -O - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | sudo apt-key add -`; Show keys: `apt-key list`
-          ansible.builtin.apt_key:
+          ansible.builtin.get_url:
             url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
-            keyring: /usr/share/keyrings/vscodium-archive-keyring.gpg
-            state: present
+            dest: /etc/apt/trusted.gpg.d/vscodium-archive-keyring.gpg
+            mode: "0644"
+            force: true
 
         - name: VSCodium - Add apt repo and update cache
           # NOTE: Equivalent command: `sudo add-apt-repository 'deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main'`
