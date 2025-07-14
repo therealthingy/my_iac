@@ -73,9 +73,6 @@
           - neofetch #   (required 4 login motd)
           # File archiving:
           - pigz
-          # Git:    (!!  ALSO REQUIRED FOR ZSH  !!)
-          - git
-          - git-lfs
           # Networking:
           - curl
       become: "{{ package_manager_become }}"

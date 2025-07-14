@@ -1,0 +1,84 @@
+---
+- name: "[Darwin / Debian/Ubuntu]" # (!!  ALSO REQUIRED FOR ZSH  !!)
+  ansible.builtin.package:
+    name:
+      - git
+      - git-lfs
+  become: "{{ package_manager_become }}"
+
+# VERIFY: `git config --list --show-origin --show-scope`
+#         `git config --get <key>`
+- name: Configure git
+  community.general.git_config:
+    name: "{{ git_config_var.name }}"
+    value: "{{ git_config_var.value }}"
+    scope: global
+  with_items:
+    - name: user.name
+      value: "{{ git_config.name }}"
+    - name: user.email
+      value: "{{ git_config.email }}"
+
+    #- name: core.excludesfile
+    #  value: ~/.gitignore
+    #  scope: global
+    - name: core.autocrlf
+      value: input
+    - name: color.branch
+      value: auto
+    - name: color.diff
+      value: auto
+    - name: color.interactive
+      value: auto
+    - name: color.status
+      value: auto
+    - name: init.defaultBranch
+      value: master
+    - name: push.default
+      value: simple
+    #- name: pull.rebase
+    #  value: true
+
+    # Mailing
+    - name: sendemail.from
+      value: "{{ git_config.name }} <{{ git_config.email }}>"
+    - name: sendemail.smtpserver
+      value: "{{ git_config.smtp_server }}"
+    - name: sendemail.smtpuser
+      value: "{{ git_config.email }}"
+    - name: sendemail.smtpencryption
+      value: "{{ git_config.smtp_encryption }}"
+    - name: sendemail.smtpserverport
+      value: "{{ git_config.smtp_port }}"
+    - name: sendemail.thread
+      # when sending multiple patches, send successive patches as replies 2 the first or previous email
+      value: "true"
+    - name: sendemail.chainreplyto
+      # when threading, send all successive patches as replies to the first email specifically (don't chain them)
+      value: "false"
+    - name: sendemail.confirm
+      # always get one final confirmation before sending the email
+      value: "always"
+    - name: sendemail.annotate
+      # open the email 1 final time 4 inspection and last-second edits
+      value: "yes"
+    - name: sendemail.transferencoding
+      # Prevent Content-Transfer-Encoding from being set to quoted-printable
+      value: "8bit"
+    #- name: sendemail.smtpPass // value: PASSWORD
+
+    # "Tools"
+    - name: core.editor
+      value: hx # helix
+    - name: credential.helper
+      value: "{{ 'osxkeychain' if ansible_facts.os_family == 'Darwin' else 'cache' }}" # ( NOTE: `store` stores pws in `~/.git-credentials` )
+    #- name: merge.tool
+    #  value: kdiff3
+    #- name: difftool.prompt
+    #  value: kdiff3
+    #- name: web.browser
+    #  value: brave-browser
+  loop_control:
+    loop_var: git_config_var
+  become: false
+  when: git_config is defined
