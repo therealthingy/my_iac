@@ -10,24 +10,25 @@
               - apt-transport-https
               - curl
               - gnupg
-        - name: bazel - Add apt signing key
-          ansible.builtin.get_url:
-            url: https://bazel.build/bazel-release.pub.gpg
-            dest: /etc/apt/trusted.gpg.d/bazel-archive-keyring.asc
-            mode: "0644"
-            force: true
-        - name: bazel - Add apt repo and update cache
-          ansible.builtin.apt_repository:
-            repo: "deb [arch={{ deb_cpu_arch }} signed-by=/etc/apt/trusted.gpg.d/bazel-archive-keyring.asc] https://storage.googleapis.com/bazel-apt stable jdk1.8"
-            filename: bazel
-            state: present
+
+        - name: bazel - Add apt signing key & repo
+          ansible.builtin.deb822_repository:
+            name: bazel
+            uris: https://storage.googleapis.com/bazel-apt
+            suites: stable
+            components: jdk1.8
+            signed_by: https://bazel.build/bazel-release.pub.gpg
+
+        - name: bazel - Update apt cache
+          ansible.builtin.apt:
             update_cache: true
       become: true
       when:
         - ansible_facts.os_family != 'Darwin'
+
     - name: Install it
       ansible.builtin.package:
         name: bazel
       become: "{{ package_manager_become }}"
   when:
-    - not (ansible_facts.os_family != 'Darwin' and ansible_architecture != 'x86_64') # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED
+    - not (ansible_facts.os_family != 'Darwin'  and  ansible_architecture != 'x86_64') # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED

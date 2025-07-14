@@ -1,14 +1,18 @@
 ---
 - name: Install
   block:
-    - name: Add apt repo and update cache
-      ansible.builtin.apt_repository:
-        repo: "ppa:maveonair/helix-editor"
-        validate_certs: false
-        state: present
-        update_cache: true
+    - name: Add apt repo
+      block:
+        - ansible.builtin.deb822_repository:
+          name: maveonair-helix_editor
+          uris: https://ppa.launchpadcontent.net/maveonair/helix-editor/ubuntu/
+          suites: noble # "{{ ansible_distribution }}"
+          components: main
+        - ansible.builtin.apt:
+            update_cache: true
       when: ansible_facts.distribution == 'Ubuntu'
       become: true
+
     - name: Install it
       ansible.builtin.package:
         name: helix

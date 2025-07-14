@@ -216,18 +216,17 @@
 
     - name: "[Debian/Ubuntu]"
       block:
-        - name: Add apt signing key
-          ansible.builtin.get_url:
-            url: https://apt.kitware.com/keys/kitware-archive-latest.asc
-            dest: /etc/apt/trusted.gpg.d/kitware-archive-latest.asc
-            mode: "0644"
-            force: true
-        - name: Add apt repo and update cache
-          ansible.builtin.apt_repository:
-            repo: "deb [signed-by=/etc/apt/trusted.gpg.d/kitware-archive-latest.asc] https://apt.kitware.com/ubuntu/ {{ cmake_ubuntu_apt_distro }} main"
-            filename: kitware
-            state: present
+        - name: Add apt signing key & repo
+          ansible.builtin.deb822_repository:
+            name: kitware
+            uris: https://apt.kitware.com/ubuntu/
+            suites: "{{ cmake_ubuntu_apt_distro }}"
+            components: main
+            signed_by: https://apt.kitware.com/keys/kitware-archive-latest.asc
+        - name: Update apt cache
+          ansible.builtin.apt:
             update_cache: true
+
         - name: Install it
           ansible.builtin.package:
             name:

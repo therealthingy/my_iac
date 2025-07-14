@@ -176,17 +176,15 @@
       #    - com.brave.Browser
       #  state: present
       block:
-        - name: Brave - Add apt signing key
-          ansible.builtin.get_url:
-            url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-            dest: /etc/apt/trusted.gpg.d/brave-browser-archive-keyring.gpg
-            mode: "0644"
-            force: true
-        - name: Brave - Add apt repo and update cache
-          ansible.builtin.apt_repository:
-            repo: "deb [signed-by=/etc/apt/trusted.gpg.d/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"
-            filename: brave-browser-release
-            state: present
+        - name: Brave - Add apt signing key & repo
+          ansible.builtin.deb822_repository:
+            name: brave-browser-release
+            uris: https://brave-browser-apt-release.s3.brave.com/
+            suites: stable
+            components: main
+            signed_by: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+        - name: Brave - Update apt cache
+          ansible.builtin.apt:
             update_cache: true
         - name: Brave - Install it
           ansible.builtin.package:

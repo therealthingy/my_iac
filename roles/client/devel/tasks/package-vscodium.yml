@@ -3,22 +3,19 @@
   block:
     - name: "[Debian/Ubuntu]"
       block:
-        - name: VSCodium - Add apt signing key
-          # NOTE: Equivalent command: `wget -O - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | sudo apt-key add -`; Show keys: `apt-key list`
-          ansible.builtin.get_url:
-            url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
-            dest: /etc/apt/trusted.gpg.d/vscodium.asc
-            mode: "0644"
-            force: true
-
-        - name: VSCodium - Add apt repo and update cache
-          # NOTE: Equivalent command: `sudo add-apt-repository 'deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main'`
-          ansible.builtin.apt_repository:
-            repo: "deb [signed-by=/etc/apt/trusted.gpg.d/vscodium.asc] https://download.vscodium.com/debs vscodium main"
-            filename: vscodium
-            state: present
+        - name: VSCodium - Add apt signing key & repo
+          # NOTE: Equivalent command:
+          #   `wget -O - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | sudo apt-key add -`; Show keys: `apt-key list`
+          #   `sudo add-apt-repository 'deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main'`
+          ansible.builtin.deb822_repository:
+            name: vscodium
+            uris: https://download.vscodium.com/debs
+            suites: vscodium
+            components: main
+            signed_by: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+        - name: VSCodium - Update apt cache
+          ansible.builtin.apt:
             update_cache: true
-
         # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
         - name: VSCodium - Pin apt repo
           block:

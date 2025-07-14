@@ -12,11 +12,11 @@
         # Will have by default prio of 100  (check via `apt-cache policy`)
         - name: Add Backports apt source (to get newer packages backported to the release stable)
           # NOTE: Equivalent command: `sudo add-apt-repository 'deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main'`
-          ansible.builtin.apt_repository:
-            repo: deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main
-            state: present
-            filename: backports
-            update_cache: true
+          ansible.builtin.deb822_repository:
+            name: backports
+            uris: http://deb.debian.org/debian
+            suites: "{{ ansible_distribution_release }}-backports"
+            components: main
       when: ansible_facts.distribution == 'Debian'
       become: true
 
