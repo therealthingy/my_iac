@@ -148,7 +148,7 @@
           ansible.builtin.deb822_repository:
             name: cappelikan-mainline
             uris: https://ppa.launchpadcontent.net/cappelikan/ppa/ubuntu/
-            suites: "{{ ansible_distribution }}"
+            suites: "{{ ansible_distribution_release }}"
             components: main
         - name: Update apt cache
           ansible.builtin.apt:

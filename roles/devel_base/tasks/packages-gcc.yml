@@ -1,0 +1,36 @@
+---
+- name: "[Darwin / Debian/Ubuntu] Install gcc distro"
+  ansible.builtin.package:
+    name: gcc # "Distro gcc"
+  become: "{{ package_manager_become }}"
+#
+#- name: "[Ubuntu] Install gcc"   # TODO
+#  block:
+#    - name: Add apt repo
+#      # NOTE: Equivalent command: `sudo add-apt-repository …`
+#      ansible.builtin.deb822_repository:
+#        name: ubuntu-toolchain-test
+#        uris: https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu/
+#        suites: "{{ ansible_distribution_release }}"
+#        components: main
+#    - name: Update apt cache
+#      ansible.builtin.apt:
+#        update_cache: true
+#
+#    - name: Install it
+#      ansible.builtin.apt:
+#        name: "gcc-{{ gcc_apt_version }}" # TODO: REVISE   (automatically install latest)
+#        state: present
+#
+#    - name: Set as default
+#      community.general.alternatives:
+#        name: "{{ symlink }}"
+#        link: "/usr/bin/{{ symlink }}"
+#        path: "/usr/bin/{{ symlink }}-{{ gcc_apt_version }}"
+#      with_items:
+#        - gcc
+#        - g++
+#      loop_control:
+#        loop_var: symlink
+#  become: true
+#  when: ansible_facts.distribution == 'Ubuntu'  and  gcc_apt_install_latest == True

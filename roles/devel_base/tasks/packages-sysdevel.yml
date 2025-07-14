@@ -1,5 +1,6 @@
 ---
 - ansible.builtin.include_tasks: packages-git.yml
+- ansible.builtin.include_tasks: packages-gcc.yml
 
 - name: "[Darwin / Debian/Ubuntu] Install common systems programming tools/libs"
   block:
@@ -18,7 +19,6 @@
               - lcov
               # Build tools/Compilers:
               - ccache # SEE: https://ccache.dev/
-              - gcc
               - autoconf # Tool 4 producing configure script 4 building, installing & packing SW
               - automake # Automates parts of the compilation process
               - pkg-config
