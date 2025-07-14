@@ -7,12 +7,13 @@
           - llvm # `clangd`, `llvm-symbolizer`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
           - lld
       when: ansible_facts.os_family == 'Darwin'
+
     - name: "[Debian/Ubuntu]"
       block:
         - name: Install llvm repo version # TODO: REVISE   (automatically install latest)
           block:
             - name: Check installed
-              ansible.builtin.command: which 'clang-{{ llvm_version }}'
+              ansible.builtin.command: which 'clang-{{ llvm_apt_version }}'
               failed_when: false
               changed_when: false
               check_mode: false
@@ -24,13 +25,13 @@
                 mode: 0775
               when: llvm_clang_command_result.rc == 1
             - name: Install
-              ansible.builtin.command: "/tmp/llvm.sh {{ llvm_version }} all"
+              ansible.builtin.command: "/tmp/llvm.sh {{ llvm_apt_version }} all"
               when: llvm_clang_command_result.rc == 1
             - name: Set as default
               community.general.alternatives:
                 name: "{{ symlink }}"
                 link: "/usr/bin/{{ symlink }}"
-                path: "/usr/bin/{{ symlink }}-{{ llvm_version }}"
+                path: "/usr/bin/{{ symlink }}-{{ llvm_apt_version }}"
               with_items:
                 - clang
                 - clang++
@@ -40,7 +41,7 @@
               loop_control:
                 loop_var: symlink
               become: true
-          when: llvm_install_distro_version == False
+          when: llvm_debian_install_distro_version == False
 
         - name: Install distro version
           ansible.builtin.package:
@@ -59,7 +60,7 @@
               - libclang-dev
               - lld
               - libomp-dev # OpenMP
-          when: llvm_install_distro_version == True
+          when: llvm_debian_install_distro_version == True
       when: ansible_facts.os_family != 'Darwin'
   become: "{{ package_manager_become }}"
 

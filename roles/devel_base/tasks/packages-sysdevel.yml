@@ -1,4 +1,6 @@
 ---
+- ansible.builtin.include_tasks: packages-git.yml
+
 - name: "[Darwin / Debian/Ubuntu] Install common systems programming tools/libs"
   block:
     - name: Install packages (I)
@@ -222,7 +224,7 @@
             force: true
         - name: Add apt repo and update cache
           ansible.builtin.apt_repository:
-            repo: "deb [signed-by=/etc/apt/trusted.gpg.d/kitware-archive-latest.asc] https://apt.kitware.com/ubuntu/ {{ cmake_ubuntu_distro }} main"
+            repo: "deb [signed-by=/etc/apt/trusted.gpg.d/kitware-archive-latest.asc] https://apt.kitware.com/ubuntu/ {{ cmake_ubuntu_apt_distro }} main"
             filename: kitware
             state: present
             update_cache: true

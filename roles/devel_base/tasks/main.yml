@@ -1,5 +1,4 @@
 ---
-- ansible.builtin.include_tasks: packages-git.yml
 - ansible.builtin.include_tasks: packages.yml
 
 # Ensure there's always a running `ssh-agent` instance  (so we don't have 2 `eval $(ssh-agent)`)

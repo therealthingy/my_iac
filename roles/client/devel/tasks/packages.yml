@@ -146,7 +146,8 @@
         - name: Add apt repo
           # NOTE: Equivalent command: `sudo add-apt-repository ppa:cappelikan/ppa`
           ansible.builtin.apt_repository:
-            repo: ppa:cappelikan/ppa
+            repo: "ppa:cappelikan/ppa"
+            validate_certs: false
             state: present
             update_cache: true
         - name: Install mainline

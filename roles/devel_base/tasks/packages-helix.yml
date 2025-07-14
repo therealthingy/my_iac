@@ -3,7 +3,8 @@
   block:
     - name: Add apt repo and update cache
       ansible.builtin.apt_repository:
-        repo: ppa:maveonair/helix-editor
+        repo: "ppa:maveonair/helix-editor"
+        validate_certs: false
         state: present
         update_cache: true
       when: ansible_facts.distribution == 'Ubuntu'
