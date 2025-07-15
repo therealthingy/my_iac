@@ -30,10 +30,11 @@
             - name: gcc - Fetch signing key & export it
               ansible.builtin.shell: |
                  export GNUPGHOME="$(mktemp -d)"
-                 /usr/bin/gpg --keyserver keyserver.ubuntu.com --recv-keys {{ launchpad_response.json.signing_key_fingerprint }}
-                 /usr/bin/gpg --export {{ launchpad_response.json.signing_key_fingerprint }} > /etc/apt/trusted.gpg.d/ubuntu-toolchain-r.gpg
+                 /usr/bin/gpg --keyserver keyserver.ubuntu.com --recv-keys {{ launchpad_response.json.signing_key_fingerprint }}  2> /dev/null
+                 /usr/bin/gpg --export --armor {{ launchpad_response.json.signing_key_fingerprint }}
               args:
                 executable: /bin/bash
+              register: ubuntu_toolchain_ppa_signing_key_command
 
         - name: gcc - Add apt repo
           # NOTE: Equivalent command: `sudo add-apt-repository …`
@@ -42,7 +43,7 @@
             uris: https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu/
             suites: "{{ ansible_distribution_release }}"
             components: main
-            signed_by: /etc/apt/trusted.gpg.d/ubuntu-toolchain-r.gpg
+            signed_by: "{{ ubuntu_toolchain_ppa_signing_key_command.stdout }}"
           register: ubuntu_repo_added
         - name: gcc - Update apt cache
           ansible.builtin.apt:
