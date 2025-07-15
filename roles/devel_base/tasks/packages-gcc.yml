@@ -3,34 +3,70 @@
   ansible.builtin.package:
     name: gcc # "Distro gcc"
   become: "{{ package_manager_become }}"
-#
-#- name: "[Ubuntu] Install gcc"   # TODO
-#  block:
-#    - name: Add apt repo
-#      # NOTE: Equivalent command: `sudo add-apt-repository …`
-#      ansible.builtin.deb822_repository:
-#        name: ubuntu-toolchain-test
-#        uris: https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu/
-#        suites: "{{ ansible_distribution_release }}"
-#        components: main
-#    - name: Update apt cache
-#      ansible.builtin.apt:
-#        update_cache: true
-#
-#    - name: Install it
-#      ansible.builtin.apt:
-#        name: "gcc-{{ gcc_apt_version }}" # TODO: REVISE   (automatically install latest)
-#        state: present
-#
-#    - name: Set as default
-#      community.general.alternatives:
-#        name: "{{ symlink }}"
-#        link: "/usr/bin/{{ symlink }}"
-#        path: "/usr/bin/{{ symlink }}-{{ gcc_apt_version }}"
-#      with_items:
-#        - gcc
-#        - g++
-#      loop_control:
-#        loop_var: symlink
-#  become: true
-#  when: ansible_facts.distribution == 'Ubuntu'  and  gcc_apt_install_latest == True
+
+- name: "[Ubuntu] Install gcc"
+  block:
+    - name: Check installed
+      ansible.builtin.command: which 'gcc-{{ gcc_apt_version }}'
+      failed_when: false
+      changed_when: false
+      check_mode: false
+      register: gcc_command_result
+
+    - name: Do install
+      block:
+        # DERIVED FROM: https://stackoverflow.com/a/78957571
+        - name: gcc - Retrieve signing key
+          block:
+            - name: gcc - Fetch signing key signature
+              ansible.builtin.uri:
+                url: https://api.launchpad.net/devel/~ubuntu-toolchain-r/+archive/ubuntu/test
+                return_content: yes
+                method: GET
+                headers:
+                  Accept: "application/json"
+              changed_when: false
+              register: launchpad_response
+            - name: gcc - Fetch signing key & export it
+              ansible.builtin.shell: |
+                 export GNUPGHOME="$(mktemp -d)"
+                 /usr/bin/gpg --keyserver keyserver.ubuntu.com --recv-keys {{ launchpad_response.json.signing_key_fingerprint }}
+                 /usr/bin/gpg --export {{ launchpad_response.json.signing_key_fingerprint }} > /etc/apt/trusted.gpg.d/ubuntu-toolchain-r.gpg
+              args:
+                executable: /bin/bash
+
+        - name: gcc - Add apt repo
+          # NOTE: Equivalent command: `sudo add-apt-repository …`
+          ansible.builtin.deb822_repository:
+            name: ubuntu-toolchain-test
+            uris: https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu/
+            suites: "{{ ansible_distribution_release }}"
+            components: main
+            signed_by: /etc/apt/trusted.gpg.d/ubuntu-toolchain-r.gpg
+          register: ubuntu_repo_added
+        - name: gcc - Update apt cache
+          ansible.builtin.apt:
+            update_cache: true
+          when: ubuntu_repo_added.changed == True
+
+        - name: gcc - Install it
+          ansible.builtin.apt:
+            name:
+              - "gcc-{{ gcc_apt_version }}" # TODO: REVISE   (automatically install latest)
+              - "g++-{{ gcc_apt_version }}" # TODO: REVISE   (automatically install latest)
+            state: present
+
+        - name: gcc - Set as default
+          community.general.alternatives:
+            name: "{{ symlink }}"
+            link: "/usr/bin/{{ symlink }}"
+            path: "/usr/bin/{{ symlink }}-{{ gcc_apt_version }}"
+          with_items:
+            - gcc
+            - g++
+          loop_control:
+            loop_var: symlink
+      when: gcc_command_result.rc == 1
+
+  become: true
+  when: ansible_facts.distribution == 'Ubuntu'  and  gcc_apt_install_latest == True

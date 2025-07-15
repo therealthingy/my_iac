@@ -183,9 +183,11 @@
             suites: stable
             components: main
             signed_by: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+          register: brave_repo_added
         - name: Brave - Update apt cache
           ansible.builtin.apt:
             update_cache: true
+          when: brave_repo_added.changed == True
         - name: Brave - Install it
           ansible.builtin.package:
             name: brave-browser

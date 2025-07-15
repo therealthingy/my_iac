@@ -18,10 +18,12 @@
             suites: stable
             components: jdk1.8
             signed_by: https://bazel.build/bazel-release.pub.gpg
+          register: bazel_repo_added
 
         - name: bazel - Update apt cache
           ansible.builtin.apt:
             update_cache: true
+          when: bazel_repo_added.changed == True
       become: true
       when:
         - ansible_facts.os_family != 'Darwin'

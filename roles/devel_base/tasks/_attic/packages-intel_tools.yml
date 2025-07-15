@@ -41,19 +41,21 @@
 # Installation steps: https://www.intel.com/content/www/us/en/develop/documentation/vtune-install-guide/top/linux/package-managers.html
 - name: Install VTune
   block:
-    - name: Add apt repo
+    - name: VTune - Add apt repo
       # NOTE: Equivalent command: `sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"`
       ansible.builtin.deb822_repository:
         name: intel
         uris: https://apt.repos.intel.com/oneapi
         suites: all
         components: main
+      register: intel_vtune_repo_added
 
-    - name: Update apt cache
+    - name: VTune - Update apt cache
       ansible.builtin.apt:
         update_cache: true
+      when: intel_vtune_repo_added.changed == True
 
-    - name: Install VTune
+    - name: VTune - Install it
       ansible.builtin.apt:
         name: intel-oneapi-vtune
   when: ansible_architecture == "x86_64"

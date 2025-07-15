@@ -216,18 +216,20 @@
 
     - name: "[Debian/Ubuntu]"
       block:
-        - name: Add apt signing key & repo
+        - name: kitware - Add apt signing key & repo
           ansible.builtin.deb822_repository:
             name: kitware
             uris: https://apt.kitware.com/ubuntu/
             suites: "{{ cmake_ubuntu_apt_distro }}"
             components: main
             signed_by: https://apt.kitware.com/keys/kitware-archive-latest.asc
-        - name: Update apt cache
+          register: kitware_repo_added
+        - name: kitware - Update apt cache
           ansible.builtin.apt:
             update_cache: true
+          when: kitware_repo_added.changed == True
 
-        - name: Install it
+        - name: kitware - Install it
           ansible.builtin.package:
             name:
               - cmake

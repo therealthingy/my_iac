@@ -3,7 +3,7 @@
 # TODO: (CURRENTLY 4 UBUNTU: temporary workaround to ensure on Ubuntu apt-version gets installed (better performance + 3rd party integrations like video download plugins))  --
 - name: "Ubuntu - Ensure no Firefox snap is / will be installed"
   block:
-    - name: Add apt signing key & repo
+    - name: Firefox - Add apt signing key & repo
       # NOTE: Equivalent commands:
       #   `wget -O - https://packages.mozilla.org/apt/repo-signing-key.gpg | sudo apt-key add -`; Show keys: `apt-key list`
       #   `sudo add-apt-repository 'deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main'`
@@ -13,10 +13,12 @@
         suites: mozilla
         components: main
         signed_by: https://packages.mozilla.org/apt/repo-signing-key.gpg
+      register: firefox_repo_added
 
-    - name: Update apt cache
+    - name: Firefox - Update apt cache
       ansible.builtin.apt:
         update_cache: true
+      when: firefox_repo_added.changed == True
 
     # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
     - name: Pin apt repo

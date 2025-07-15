@@ -13,9 +13,11 @@
             suites: vscodium
             components: main
             signed_by: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+          register: vscodium_repo_added
         - name: VSCodium - Update apt cache
           ansible.builtin.apt:
             update_cache: true
+          when: vscodium_repo_added.changed == True
         # CHECK via: `apt-cache policy`  ('Pin-Priority': https://wiki.ubuntuusers.de/Apt-Pinning/#Werte-fuer-Pin-Priority)
         - name: VSCodium - Pin apt repo
           block:
