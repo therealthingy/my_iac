@@ -7,13 +7,35 @@
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks: # TODO: Add `flatpak` counterparts 4 linux & check whether VM
-              - dir: Audio
+              - dir: Media
                 packages:
                   #- mediahuman-audio-converter
                   #- musicbrainz-picard
                   - ocenaudio
                   #- xld                                              # TODO
                   #- mediainfo
+
+    - name: Install pictures apps
+      block:
+        - name: "[Darwin] Install homebrew packages"
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
+          vars:
+            packages_homebrew_casks: # TODO: Add `flatpak` counterparts 4 linux & check whether VM
+              - dir: Media
+                packages:
+                  - digikam
+
+    - name: Install design apps
+      block:
+        - name: "[Darwin] Install homebrew packages"
+          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
+          vars:
+            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
+              - dir: Design
+                packages:
+                  #- inkscape
+                  - paintbrush
+                  - imageoptim
 
     - name: Install note taking apps
       block:
@@ -25,19 +47,6 @@
                 packages:
                   #- fsnotes
                   - joplin
-
-    - name: Install design apps
-      block:
-        - name: "[Darwin] Install homebrew packages"
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-          vars:
-            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - dir: Design
-                packages:
-                  - digikam
-                  #- inkscape
-                  - paintbrush
-                  - imageoptim
 
     - name: 'Install "services" apps'
       block:
