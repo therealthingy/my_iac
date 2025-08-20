@@ -327,7 +327,7 @@
 #            image: lscr.io/linuxserver/freshrss:latest
 #            network:
 #              reverse_proxy_mappings:
-#                - subdomain: freshrss
+#                - subdomain: newsfeed
 #                  port: 80
 #            volumes:
 #              - path: '{{ docker_container.data_basedir }}/freshrss/:/config/'

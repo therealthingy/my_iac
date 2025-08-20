@@ -36,10 +36,14 @@ services:
 {%     endif %}
 {%     if service.healthcheck is defined %}
     healthcheck:
+{%       if service.healthcheck is false %}
+      disable: false
+{%       else %}
       test: {{ service.healthcheck }}
       interval: 30s
       timeout: 10s
       retries: 3
+{%       endif %}
 {%     endif %}
 {%     if service.sysctls is defined %}
     sysctls:
