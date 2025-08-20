@@ -75,6 +75,9 @@ services:
       - {{ env_var }}
 {%       endfor %}
 {%     endif %}
+{%     if service.shm_size is defined %}
+    shm_size: {{ service.shm_size }}
+{%     endif %}
 {%     if service.volumes is defined %}
     volumes:
 {%       for vol in service.volumes %}
