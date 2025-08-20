@@ -1,23 +1,28 @@
 // {{ ansible_managed }}
 // USAGE: Create file `.stignore` w/ contents: `#include {{ syncthing_global_conf_file_target_dir }}/.stglobalignore`
-
-#*.git
 .svn
 *.svn
-
-// Incomplete Downloads
-// Chrom(ium|e) downloads
 *.crdownload
-// Transmission-/Firefox downloads
 *.part
-
-// Temporary/Backup Files
 *~
 .*.swp
 *.swp
-
-// ???
 *.log
+target
+build
+pyvenv
+__pycache__
+*.py[codz]
+*$py.class
+.pdm-python
+.pdm-build
+.env
+.envrc
+.venv
+.mypy_cache
+.dmypy.json
+dmypy.json
+.ruff_cache
 LOST.DIR
 *.Cache
 *CACHE*
@@ -49,7 +54,7 @@ Temp
 a_writable
 checkouts
 data/searchIndex
-files_trashbin/
+files_trashbin
 forms.json
 nobackup
 searchIndex
@@ -57,8 +62,6 @@ staging.*
 templates_c
 thumbnails
 ~$*
-
-// BTSync files
 *.sync
 *.bts
 *.!Sync
@@ -68,71 +71,43 @@ thumbnails
 *.SyncPart
 *.SyncTemp
 *.SyncOld
-
-// Syncthing files
 .stignore
 .stfolder
-
-// Synology files
 @eaDir
-
-// vim swap files
 (?d)*.*.sw[a-p]
-
 *.shm
-
-// OS-generated files (GNU/Linux)
 *.bak
 *.old
 lost+found
-dev/
-proc/
-run/
-sys/
-tmp/
-var/lib/lxcfs/
-selinux/
 .gvfs
-
-// OS-generated files (Darwin)
 (?d).DS_Store
 .AppleDouble
 .LSOverride
-// Thumbnails (metadata)
 ._*
-// Files that might appear in the root of a volume
 (?d).DocumentRevisions-V100
 .fseventsd
+(?d).AppleDB
+(?d).AppleDesktop
 (?d).Spotlight-V100
 (?d).Trashes
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 .localized
-// Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
 Network Trash Folder
 .TemporaryItems
 .apdisk
-// iCloud temp files
 *.icloud
-
-// OS-generated files (Windows)
 $WINDOWS.~BT
 System*Volume*
 pagefile.sys
-// Windows thumbnail cache files
 (?d)Thumbs.db
 (?d)Thumbs.db:encryptable
 (?d)ehthumbs.db
 (?d)ehthumbs_vista.db
-// Dump file
 *.stackdump
-// Folder config file
 (?d)[Dd]esktop.ini
-// Windows shortcuts
 *.lnk
-// Microsoft Office temp files
 (?d)~*
-// Recycle Bin used on file shares
 $RECYCLE.BIN
