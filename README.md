@@ -218,14 +218,15 @@
 
 - [Mac App Store apps](https://github.com/mas-cli/mas/blob/main/README.md):
   - Uninstall:
-    - iMovie
-    - Pages
-    - Numbers
-    - GarageBand
+    - iMovie  (408981434)
+    - Pages  (409201541)
+    - Numbers  (409203825)
+    - GarageBand  (682658836)
   - Install:
-    - Keynote
-    - dict.cc
-    - DjVu Viewer + DjVu to PDF
+    - Synctrain  (6553985316; Internet/Tools;   replaces cask 'syncthing-app')
+    - Keynote  (409183694; Office)
+    - dict.cc  (327732352; Office/Misc)
+    - DjVu Viewer + DjVu to PDF  (755261884; Office/Misc)
 
 - Install X11
 

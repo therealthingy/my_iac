@@ -96,7 +96,6 @@
                 packages:
                   - cyberduck
                   - netnewswire
-                  - syncthing-app
                   - qbittorrent
                   - rustdesk
 
