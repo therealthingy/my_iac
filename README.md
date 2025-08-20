@@ -180,13 +180,6 @@
   org.tempel.prefseditor:
     SUEnableAutomaticChecks
 
-  org.m0k.transmission:
-    BlocklistAutoUpdate
-    BlocklistURL: http://john.bitsurge.net/public/biglist.p2p.gz
-    DownloadFolder: /Users/gg/Downloads/torrents
-    IncompleteDownloadFolder: /Users/gg/Downloads/torrents
-    SUEnableAutomaticChecks
-
   net.tunnelblick.tunnelblick:
     updateCheckAutomatically
     SUEnableAutomaticChecks
