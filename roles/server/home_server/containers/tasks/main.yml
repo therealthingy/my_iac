@@ -102,8 +102,6 @@
               - "NAMECHEAP_API_KEY={{ cert_acme.token }}"
 
     - name: bitwarden # TODO SSO: https://github.com/dani-garcia/vaultwarden/pull/3899
-      volumes:
-        - "."
       compose:
         services:
           - name: bitwarden
@@ -135,8 +133,6 @@
               - SMTP_TIMEOUT=15
 
     - name: dl_services
-      volumes:
-        - "."
       startup: False
       compose:
         services:
@@ -241,8 +237,6 @@
               - PGID={{ www_user.gid }}
 
     - name: portainer # TODO SSO: https://docs.portainer.io/admin/settings/authentication/oauth  //  https://helgeklein.com/blog/portainer-setup-guide-with-automatic-https-oauth-sso-via-authelia/
-      volumes:
-        - "."
       startup: False
       compose:
         services:
@@ -263,8 +257,6 @@
     - name: samba # TODO SSO (LDAP)
 
     - name: syncthing
-      volumes:
-        - "."
       compose:
         services:
           - name: syncthing
@@ -298,9 +290,6 @@
                 ro: True
 
     - name: baikal # TODO SSO: https://github.com/sabre-io/Baikal/pull/1124
-      volumes:
-        - "config"
-        - "user"
       compose:
         services:
           - name: baikal
@@ -316,8 +305,6 @@
               - path: "{{ docker_container.data_basedir }}/baikal/user/:/var/www/baikal/Specific"
 
 #    - name: freshrss                       # TODO SSO: https://goauthentik.io/integrations/services/freshrss/
-#      volumes:
-#        - 'config'
 ##      startup: False
 #      compose:
 #        services:

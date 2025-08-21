@@ -4,10 +4,17 @@
 networks:
   {{ reverse_proxy_docker_network }}:
     external: true
-{% if container.compose.networks is defined %}
-  {{ container.compose.networks }}
+{% if container.compose.additional_networks is defined %}
+{%   for net in container.compose.additional_networks %}
+  {{ net }}:
+{%   endfor %}
 {% endif %}
-
+{% if container.compose.volumes is defined %}
+volumes:
+{%   for vol in container.compose.volumes %}
+  {{ vol }}:
+{%   endfor %}
+{% endif %}
 
 services:
 {% for service in container.compose.services %}
@@ -24,7 +31,7 @@ services:
 {%     endif %}
     container_name: {{ service.name }}
 {%     if service.network.mode is not defined %}
-    hostname: {{ service.name }}-docker
+    hostname: {{ service.name }}
 #    domainname: {{ domainname }}           # Causes e.g., pihole 2 return its internal Docker IP when queried w/ matching hostname.domainname
 {%     endif %}
     restart: '{{ service.restart_policy|default("always", true) }}'
@@ -122,7 +129,7 @@ services:
       - traefik.enable=true
 {%       for mapping in service.network.reverse_proxy_mappings %}
       - traefik.http.services.{{ service.name }}-{{ mapping.port }}_service.loadbalancer.server.port={{ mapping.port }}
-      # Next line is actually NOT required when single service
+      # The next line is actually NOT required 4 a single service
       - traefik.http.routers.{{ service.name }}-{{ mapping.port }}_router.service={{ service.name }}-{{ mapping.port }}_service
       - traefik.http.routers.{{ service.name }}-{{ mapping.port }}_router.rule=Host(`{{ mapping.subdomain }}.{{ domainname }}`){{ " && Path(`{0}`)".format(mapping.path) if mapping.path is defined else "" }}
 {%       endfor %}
