@@ -219,7 +219,7 @@
               - WEBUI_PORT=8090
 
           - name: dl-prowlarr # TODO SSO: N/A atm
-            image: hotio/prowlarr:testing
+            image: linuxserver/prowlarr:latest
             restart_policy: "{{ dl_services.restart_policy }}"
             security:
               use_root: True
@@ -333,12 +333,14 @@
               - DB_PASSWORD={{ immich.db.pw }}
               - DB_DATABASE_NAME={{ immich.db.db_name }}
             depends_on:
-              - redis
-              - database
+              - immich-redis
+              - immich-db
             restart_policy: "{{ immich.restart_policy }}"
             healthcheck: false
-          - name: redis
+
+          - name: immich-redis
             image: docker.io/valkey/valkey:8-bookworm@sha256:5b8f8c333bef895c925f56629d6ba90aea95a4f7391f62411e625267c600b19c
+            hostname: redis
             healthcheck: redis-cli ping || exit 1
             restart_policy: "{{ immich.restart_policy }}"
             network:
@@ -348,8 +350,10 @@
             #   … # Background saving error
             security:
               use_root: True
-          - name: database
+
+          - name: immich-db
             image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:32324a2f41df5de9efe1af166b7008c3f55646f8d0e00d9550c16c9822366b4a
+            hostname: database
             env_vars:
               - POSTGRES_INITDB_ARGS="--data-checksums"
               - POSTGRES_USER={{ immich.db.user }}
@@ -364,10 +368,12 @@
             restart_policy: "{{ immich.restart_policy }}"
             network:
               nets: [immich]
-          - name: immich-machine-learning
+              
+          - name: immich-ml
             # For hardware acceleration, add one of -[armnn, cuda, rocm, openvino, rknn] to the image tag.
             # Example tag: ${IMMICH_VERSION:-release}-cuda
             image: ghcr.io/immich-app/immich-machine-learning:release-armnn
+            hostname: immich-machine-learning
             volumes:
               - path: "immich-model-cache:/cache"
             restart_policy: "{{ immich.restart_policy }}"
