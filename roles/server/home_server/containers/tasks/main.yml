@@ -338,14 +338,17 @@
             restart_policy: "{{ immich.restart_policy }}"
             healthcheck: false
           - name: redis
-            #hostname: redis
             image: docker.io/valkey/valkey:8-bookworm@sha256:5b8f8c333bef895c925f56629d6ba90aea95a4f7391f62411e625267c600b19c
             healthcheck: redis-cli ping || exit 1
             restart_policy: "{{ immich.restart_policy }}"
             network:
               nets: [immich]
+            # OTHERWISE:
+            #   … # Failed opening the temp RDB file temp-321.rdb (in server root dir /data) for saving: Permission denied
+            #   … # Background saving error
+            security:
+              use_root: True
           - name: database
-            #hostname: database
             image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:32324a2f41df5de9efe1af166b7008c3f55646f8d0e00d9550c16c9822366b4a
             env_vars:
               - POSTGRES_INITDB_ARGS="--data-checksums"
@@ -368,6 +371,9 @@
             volumes:
               - path: "immich-model-cache:/cache"
             restart_policy: "{{ immich.restart_policy }}"
+            # TODO:  Due 2 docker volume permission  (might be fixed using a bind mount instead ?!?!!11)
+            security:
+              use_root: True
             network:
               nets: [immich]
             healthcheck: false
