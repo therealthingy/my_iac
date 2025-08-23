@@ -24,6 +24,12 @@
               - dir: Media
                 packages:
                   - digikam
+    - name: "[Darwin] Immich stuff"
+      ansible.builtin.package:
+        name:
+          - immich-cli
+          - immich-go
+      become: false
 
     - name: Install design apps
       block:
