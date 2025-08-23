@@ -253,20 +253,17 @@
 
 
 ### *home_server*
-- pihole + unbound:
+- **SSO**: [authentik](https://goauthentik.io/)
+  - "highly recommend using SAML2 or OIDC when possible, LDAP should only be used as a fallback"
+
+- **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/
+
+- **Switch Notifications to a service**  (e.g., by using https://github.com/caronc/apprise)
+
+- pihole + unbound:    dns over tls
   - https://git.bln41.win/b30/pudc/src/branch/main/docker-compose.yml
   - https://hub.docker.com/r/klutchell/unbound
   - https://github.com/pi-hole/docker-pi-hole#environment-variables
-
-- **Backup** via borg: https://github.com/borgbackup/borg/issues/4532, https://linuxtut.com/en/d34053037468488eacab/
-- FUTURE WORK:
-  - **SSO service** 4 which allows authenticating all services   (https://goauthentik.io/, https://github.com/authelia/authelia)
-    - REQUIREMENT: [oauth2, etc. support (also for protected application necessary)](https://www.reddit.com/r/selfhosted/comments/s9ky8f/pass_credentials_from_authelia_to_protected/)
-    - [Guide: 2 Factor Auth and Single Sign On with Authelia](https://piped.kavin.rocks/watch?v=u6H-Qwf4nZA)
-  - **Switch Notifications to a service**  (e.g., by using https://github.com/caronc/apprise)
-  - Services:
-    - **https://academy.pointtosource.com/containers/ebooks-calibre-readarr/**
-    - Heimdall
 
 
 ## "Usage"

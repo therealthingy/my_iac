@@ -101,7 +101,10 @@
               - "NAMECHEAP_API_USER={{ cert_acme.user }}"
               - "NAMECHEAP_API_KEY={{ cert_acme.token }}"
 
-    - name: bitwarden # TODO SSO: https://github.com/dani-garcia/vaultwarden/pull/3899
+    - name: bitwarden
+      # TODO SSO -- PROBLEM: Requires "Key connector" 2 avoid entering master pw:
+      #   - https://bitwarden.com/help/about-key-connector/
+      #   - https://github.com/dani-garcia/vaultwarden/discussions/2583
       compose:
         services:
           - name: bitwarden
@@ -368,7 +371,7 @@
             restart_policy: "{{ immich.restart_policy }}"
             network:
               nets: [immich]
-              
+
           - name: immich-ml
             # For hardware acceleration, add one of -[armnn, cuda, rocm, openvino, rknn] to the image tag.
             # Example tag: ${IMMICH_VERSION:-release}-cuda
