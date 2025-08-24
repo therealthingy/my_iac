@@ -331,6 +331,31 @@
               - path: "/etc/localtime:/etc/localtime"
                 ro: True
             env_vars:
+              - IMMICH_WORKERS_INCLUDE=api
+              - TZ={{ timezone }}
+              - DB_USERNAME={{ immich.db.user }}
+              - DB_PASSWORD={{ immich.db.pw }}
+              - DB_DATABASE_NAME={{ immich.db.db_name }}
+            depends_on:
+              - immich-redis
+              - immich-db
+            restart_policy: "{{ immich.restart_policy }}"
+            healthcheck: false
+
+          # SPLIT WEB FROM MICROSERVICES: https://immich.app/docs/administration/jobs-workers/#split-workers
+          - name: immich-microservices
+            image: ghcr.io/immich-app/immich-server:release
+            # extends:
+            #   file: hwaccel.transcoding.yml
+            #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
+            network:
+              nets: [immich]
+            volumes:
+              - path: "{{ docker_container.data_basedir }}/immich/:/data"
+              - path: "/etc/localtime:/etc/localtime"
+                ro: True
+            env_vars:
+              - IMMICH_WORKERS_EXCLUDE=api
               - TZ={{ timezone }}
               - DB_USERNAME={{ immich.db.user }}
               - DB_PASSWORD={{ immich.db.pw }}
