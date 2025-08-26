@@ -30,6 +30,7 @@
           - immich-cli
           - immich-go
       become: false
+      when: ansible_facts.os_family == 'Darwin'
 
     - name: Install design apps
       block:
