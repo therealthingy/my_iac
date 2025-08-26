@@ -1,7 +1,7 @@
 ---
 cmake_ubuntu_apt_distro: noble                  # CHECK 4 UPDATE: https://apt.kitware.com/
 
-llvm_apt_version: 20                            # CHECK 4 UPDATE: https://github.com/llvm/llvm-project
+llvm_apt_version: 21                            # CHECK 4 UPDATE: https://github.com/llvm/llvm-project
 llvm_debian_install_distro_version: False
 
 gcc_apt_version: 15                             # CHECK 4 UPDATE: https://gcc.gnu.org/releases.html
