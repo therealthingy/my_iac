@@ -1,27 +1,14 @@
 ---
-- name: Install
-  block:
-    - name: Add apt repo
-      block:
-        - ansible.builtin.deb822_repository:
-          name: maveonair-helix_editor
-          uris: https://ppa.launchpadcontent.net/maveonair/helix-editor/ubuntu/
-          suites: noble # "{{ ansible_distribution_release }}"
-          components: main
-        - ansible.builtin.apt:
-            update_cache: true
-      when: ansible_facts.distribution == 'Ubuntu'
-      become: true
+- name: Install it
+  ansible.builtin.package:
+    name: helix
+  become: "{{ package_manager_become }}"
+  # TODO: Ubuntu: https://helix-editor.vercel.app/start-here/installation
+  when: ansible_facts.os_family == 'Darwin'
 
-    - name: Install it
-      ansible.builtin.package:
-        name: helix
-      become: "{{ package_manager_become }}"
-
-# TODO: UBUNTU
 - name: LSPs
   block:
-    - name: "[Darwin]"
+    - name: "[Darwin]" # TODO: UBUNTU
       community.general.homebrew:
         name:
           - texlab
@@ -46,9 +33,7 @@
             - python-lsp-server
             - debugpy
             # VSCode   (TODO: ALSO REQUIRED 4 HELIX ??!)
-            - ruff # Python formatter + linter
             - ruff-lsp
-            - cmakelang # `cmake-format`
           loop_control:
             loop_var: pip_package
         - name: Inject packages

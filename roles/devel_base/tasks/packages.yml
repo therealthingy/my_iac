@@ -8,6 +8,24 @@
   loop_control:
     loop_var: included_dev_server_task
 
+- name: "Tools // LSPs"
+  block:
+    - name: "[Darwin / Debian/Ubuntu]"
+      block:
+        - name: Install packages
+          community.general.pipx:
+            name: "{{ pip_package }}"
+            state: latest
+            install_deps: true
+            executable: pipx
+          with_items:
+            # VSCode   (TODO: ALSO REQUIRED 4 HELIX ??!)
+            - ruff # Python formatter + linter
+            - cmakelang # `cmake-format`
+          loop_control:
+            loop_var: pip_package
+  become: false
+
 - name: Install misc tools
   block:
     - name: "[Darwin / Debian/Ubuntu]"
