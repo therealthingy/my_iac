@@ -48,6 +48,7 @@
             # VSCode   (TODO: ALSO REQUIRED 4 HELIX ??!)
             - ruff # Python formatter + linter
             - ruff-lsp
+            - cmakelang # `cmake-format`
           loop_control:
             loop_var: pip_package
         - name: Inject packages
