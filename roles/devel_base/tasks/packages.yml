@@ -24,6 +24,17 @@
             - cmakelang # `cmake-format`
           loop_control:
             loop_var: pip_package
+        - name: Inject packages
+          community.general.pipx:
+            name: "{{ package.name }}"
+            state: inject
+            inject_packages: "{{ package.packages }}"
+            executable: pipx
+          with_items:
+            - name: "cmakelang"
+              packages: ["pyyaml"] # TODO: OTHERWISE: "❯ cmake-format --dump-config yaml"  results in "ModuleNotFoundError: No module named 'yaml'"
+          loop_control:
+            loop_var: package
   become: false
 
 - name: Install misc tools
