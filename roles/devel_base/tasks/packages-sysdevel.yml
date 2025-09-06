@@ -186,24 +186,9 @@
       when: (gef_find_output.files | length == 0)
   when: ansible_facts.os_family != 'Darwin'
 
-- name: Rust toolchain
-  block:
-    - name: check if cargo is installed
-      ansible.builtin.shell: command -v cargo
-      failed_when: false
-      changed_when: false
-      ignore_errors: true
-      register: cargo_command_result
-    - name: Install rustup + -toolchain
-      block:
-        - ansible.builtin.get_url:
-            url: https://sh.rustup.rs
-            dest: /tmp/sh.rustup.rs
-            mode: "0755"
-            force: true
-        - ansible.builtin.shell: /tmp/sh.rustup.rs -y --profile default -c rust-analyzer miri
-      when: cargo_command_result.rc == 1
-  become: false
+- ansible.builtin.include_tasks: packages-llvm.yml
+
+- ansible.builtin.include_tasks: packages-bazel.yml
 
 - name: Install latest CMake
   block:
@@ -228,7 +213,6 @@
           ansible.builtin.apt:
             update_cache: true
           when: kitware_repo_added.changed == True
-
         - name: kitware - Install it
           ansible.builtin.package:
             name:
@@ -237,9 +221,37 @@
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
-- ansible.builtin.include_tasks: packages-llvm.yml
+- name: Rust toolchain
+  block:
+    - name: check if cargo is installed
+      ansible.builtin.shell: command -v cargo
+      failed_when: false
+      changed_when: false
+      ignore_errors: true
+      register: cargo_command_result
+    - name: Install rustup + -toolchain
+      block:
+        - ansible.builtin.get_url:
+            url: https://sh.rustup.rs
+            dest: /tmp/sh.rustup.rs
+            mode: "0755"
+            force: true
+        - ansible.builtin.shell: /tmp/sh.rustup.rs -y --profile default -c rust-analyzer miri
+      when: cargo_command_result.rc == 1
+  become: false
 
-- ansible.builtin.include_tasks: packages-bazel.yml
+- name: Go toolchain
+  block:
+    - name: "[Darwin]"
+      ansible.builtin.package:
+        name: go
+      become: "{{ package_manager_become }}"
+      when: ansible_facts.os_family == 'Darwin'
+    - name: "[Debian/Ubuntu]"
+      ansible.builtin.package:
+        name: golang-go
+      become: true
+      when: ansible_facts.os_family != 'Darwin'
 #
 # TODO: …
 #- ansible.builtin.include_tasks: packages-trace_compass.yml
