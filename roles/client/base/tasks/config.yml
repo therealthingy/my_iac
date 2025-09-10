@@ -239,7 +239,7 @@
               state: present
           loop_control:
             loop_var: gnome_setting
-          when: "hypervisor is not defined or not hypervisor"
+          when: "hypervisor is not defined or hypervisor | length == 0"
 
         - name: GNOME - Set settings [VMs]
           community.general.dconf:
@@ -256,7 +256,7 @@
               state: present
           loop_control:
             loop_var: gnome_setting
-          when: "hypervisor is defined and hypervisor"
+          when: "hypervisor is defined and hypervisor | length > 0"
       become: false
 
     - name: Set installed apps as default
@@ -311,7 +311,7 @@
   when:
     - ansible_facts.os_family != 'Darwin'
     - "'gdm3' in ansible_facts.packages"
-    - "hypervisor is defined and hypervisor" # TODO: Add also `autologin_enabled` value
+    - "hypervisor is defined and hypervisor | length > 0" # TODO: Add also `autologin_enabled` value
 
 - name: Perform initial-run only tasks  (which shall never be run again once completed)
   block:
@@ -331,7 +331,7 @@
               become: true
             - name: Mute audio
               ansible.builtin.command: pactl set-sink-mute @DEFAULT_SINK@ true
-          when: "hypervisor is defined and hypervisor"
+          when: "hypervisor is defined and hypervisor | length > 0"
 
         - name: Set GNOME settings
           community.general.dconf:
