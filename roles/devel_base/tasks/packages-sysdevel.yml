@@ -242,6 +242,14 @@
 
 - name: Go toolchain
   block:
+    - name: Create dir
+      ansible.builtin.file:
+        path: "/{{ os_homedir }}/{{ user.name }}/.golang/bin/"
+        state: directory
+        #owner: '{{ user.name }}'
+        #group: '{{user.group_name}}'
+        mode: 0755
+      become: false
     - name: "[Darwin]"
       ansible.builtin.package:
         name: go

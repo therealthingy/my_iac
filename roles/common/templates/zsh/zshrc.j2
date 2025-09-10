@@ -256,7 +256,10 @@ path-add "/Library/TeX/texbin/" "after"
 [ -f ~/.cargo/env ] && source $HOME/.cargo/env
 
 # --  go  --
-path-add "$HOME/go/bin/" "after"
+{% set GOPATH = "$HOME/.golang/"  %}
+path-add "{{ GOPATH }}/bin/" "after"
+{# TODO: Instead of exporting `GOPATH`, set it permanently via: `go env -w GOPATH=$HOME/go` #}
+export GOPATH={{ GOPATH }}
 {% endif %}
 
 
