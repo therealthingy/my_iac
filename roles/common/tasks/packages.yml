@@ -70,7 +70,6 @@
         name:
           # Administration:
           - htop
-          - neofetch #   (required 4 login motd)
           # File archiving:
           - pigz
           # Networking:
