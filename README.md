@@ -140,6 +140,10 @@
 #### Darwin
 - FIX lscolors
 
+- Add apps (VSCodium & Terminal) 2 *Developer Tools*:
+  - Run in terminal: `sudo spctl developer-mode enable-terminal`
+  - Go 2 System Preferences, *Security & Privacy*, *Privacy tab*, go 2 *Developer Tools* & enable it
+
 - SYSTEM settings:
   - **Add message to lock-screen**
   `sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText “ENTER HERE”`
