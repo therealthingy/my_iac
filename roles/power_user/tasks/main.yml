@@ -68,7 +68,6 @@
           community.general.homebrew:
             name:
               - lsusb
-              - pidof
               - smartmontools
           become: false
           when: ansible_facts.os_family == 'Darwin'
