@@ -524,10 +524,10 @@
       key: "DSDontWriteNetworkStores"
       value: "true"
       type: "boolean"
-    - domain: "com.apple.finder" # Use column view in all Finder windows by default
-      key: "FXPreferredViewStyle"
-      value: "clmv" # 4-letter codes for the other view modes: `icnv`, `Nlsv`, `clmv`, `Flwv`
-      type: "string"
+#    - domain: "com.apple.finder" # Use column view in all Finder windows by default
+#      key: "FXPreferredViewStyle"
+#      value: "clmv" # 4-letter codes for the other view modes: `icnv`, `Nlsv`, `clmv`, `Flwv`
+#      type: "string"
     # --  Dock, Dashboard, & hot corners  --
     - domain: "com.apple.Dock" # Make Dock icons of hidden applications translucent;  TODO: `killall Dock`
       key: "showhidden"
