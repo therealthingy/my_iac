@@ -20,6 +20,11 @@
               #- bibdesk    # (Already contained in mactex full)
       when: ansible_facts.os_family == 'Darwin'
 
+    - name: Install tex-fmt     # SUBSTITUTE 4 `latexindent` (which doesn't work in VSCode: Can't locate File/HomeDir.pm in @INC …)
+      ansible.builtin.package:
+        name: tex-fmt
+      become: "{{ package_manager_become }}"
+
     - name: Install (c)make
       ansible.builtin.package:
         name:
