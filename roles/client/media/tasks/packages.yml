@@ -23,7 +23,7 @@
           community.general.pipx:
             name: yt-dlp
             state: inject
-            inject_packages: ["curl_cffi"]
+            inject_packages: ["curl_cffi", "yt-dlp-ejs"]
             executable: pipx
       become: false
 
