@@ -1,6 +1,10 @@
 # Ansible Playbook 4 setting up my machines
 
+
 ## TODOs
+- FIX WIREGUARD VPN
+
+
 ### GENERAL
 - `.zshrc`:
   - clipbrd aliases:
