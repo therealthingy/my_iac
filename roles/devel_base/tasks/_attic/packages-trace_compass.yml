@@ -40,4 +40,4 @@
       when: result_tracecompass_exists.stat.exists == false
   when:
     - not ansible_facts.os_family == 'Darwin'     # DON'T install on Darwin atm
-    - not (ansible_facts.os_family != 'Darwin' and ansible_architecture != 'x86_64')  # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED
+    - not (ansible_facts.os_family != 'Darwin' and ansible_facts.architecture != 'x86_64')  # $$$$$$$$$$$$$$$$$ TODO: RMV ONCE ARM IS SUPPORTED

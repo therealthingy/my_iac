@@ -38,8 +38,8 @@
           ansible.builtin.apt:
             name:
               #  - LKM dev:
-              - "linux-headers-{{ ansible_kernel }}"
-              - "linux-tools-{{ ansible_kernel }}"
+              - "linux-headers-{{ ansible_facts.kernel }}"
+              - "linux-tools-{{ ansible_facts.kernel }}"
               #- linux-tools-generic   # Kernel modules required 4 `perf`
               #- linux-tools-common    # `perf`  (Performance analysis tools for Linux)
           ignore_errors: true # In case it's not a distro-kernel …

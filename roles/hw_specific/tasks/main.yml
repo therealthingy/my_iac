@@ -15,7 +15,7 @@
     - name: Run task
       ansible.builtin.import_tasks: apple_silicone.yml
       when: result_cpu_vendor_apple.rc == 0
-  when: ansible_architecture == 'aarch64'
+  when: ansible_facts.architecture == 'aarch64'
 
 - name: Raspberry Pi
   ansible.builtin.import_tasks: rpi.yml

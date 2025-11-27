@@ -20,7 +20,7 @@
     group: root
     mode: 0644
   when:
-    - ansible_architecture == 'aarch64'
+    - ansible_facts.architecture == 'aarch64'
     - ansible_facts.distribution == 'Debian'
   become: true
 
