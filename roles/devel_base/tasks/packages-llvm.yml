@@ -2,10 +2,18 @@
 - name: Install llvm
   block:
     - name: "[Darwin]"
-      ansible.builtin.package:
-        name:
-          - llvm # `clangd`, `llvm-symbolizer`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
-          - lld
+      block:
+        - name: Install
+          ansible.builtin.package:
+            name:
+              - llvm # `clangd`, `llvm-symbolizer`, `clang-format`, `clang-tidy`  (NOTE: `bin` dir must be added 2 `$PATH`)
+              - lld
+        - name: Fix C++ 20 modules missing C headers # TODO: SEE: https://github.com/Homebrew/homebrew-core/issues/221782#issuecomment-3572881569
+          ansible.builtin.file:
+            src: "{{ homebrew_prefix }}/etc/clang/"
+            dest: "/{{ os_homedir }}/{{ user.name }}/.config/clang"
+            state: link
+          become: false
       when: ansible_facts.os_family == 'Darwin'
 
     - name: "[Debian/Ubuntu]"

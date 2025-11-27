@@ -65,8 +65,21 @@
               become: true
           when: ansible_facts.os_family != 'Darwin'
 
+        - name: "[Darwin]"
+          block:
+            - name: Homebrew prefix
+              ansible.builtin.shell: brew --prefix
+              register: result_brew_prefix
+              changed_when: false
+          when: ansible_facts.os_family == 'Darwin'
+
     - name: Set variables (as facts)
       block:
+        - name: "[Darwin]"
+          ansible.builtin.set_fact:
+            homebrew_prefix: "{{ result_brew_prefix.stdout }}"
+          when: ansible_facts.os_family == 'Darwin'
+
         - name: "[Debian/Ubuntu]"
           ansible.builtin.set_fact:
             docker_gid: "{{ result_docker_gid.stdout }}"
@@ -78,11 +91,11 @@
             hw_is_rpi: "{{ True if result_rpi.rc == 0 else False }}"
             hypervisor: '{{ "vmware" if result_smbios.rc == 0 else None }}'
           when: ansible_facts.os_family != 'Darwin'
+
         - name: "[Darwin / Debian/Ubuntu]"
           ansible.builtin.set_fact:
             package_manager_become: "{{ 'true' if ansible_facts.os_family != 'Darwin' else 'false' }}"
             os_homedir: "{{  'home'  if ansible_facts.os_family != 'Darwin' else  'Users'  }}"
-            homebrew_arch_prefix: "{{  'usr/local'  if ansible_architecture != 'arm64' else  'opt/homebrew'  }}"
             cpu_arch: "{{ result_cpu_architecture.stdout }}"
             user:
               name: "{{ result_username.stdout }}"
@@ -92,7 +105,6 @@
             gathered_host_facts: True
   when: gathered_host_facts is not defined
   become: false
-
 #-  ansible.builtin.debug:
 #    msg:
 #      user={{ user }},

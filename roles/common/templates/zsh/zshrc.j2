@@ -235,16 +235,16 @@ history-clear() {
 {% if ansible_facts.os_family == 'Darwin' %}
 {%   if 'clients_devel' in group_names or
         'servers_devel' in group_names %}
-path-add "/{{ homebrew_arch_prefix }}/opt/llvm/bin" "before"
-#path-add "/{{ homebrew_arch_prefix }}/opt/sphinx-doc/bin" "before"
+path-add "{{ homebrew_prefix }}/opt/llvm/bin" "before"
+#path-add "{{ homebrew_prefix }}/opt/sphinx-doc/bin" "before"
 {%   endif %}
 {%   if cpu_arch == 'arm64' %}
 # --  ( "fix" homebrew (due 2 ARM) PATH )  --
-path-add '/{{ homebrew_arch_prefix }}/sbin' "before"
-path-add '/{{ homebrew_arch_prefix }}/bin' "before"
+path-add '{{ homebrew_prefix }}/sbin' "before"
+path-add '{{ homebrew_prefix }}/bin' "before"
 
 typeset -T LIBRARY_PATH library_path
-library_path+=('/{{ homebrew_arch_prefix }}/lib')
+library_path+=('{{ homebrew_prefix }}/lib')
 {%   endif %}
 {%   if 'client_workstation' in group_names %}
 path-add "/Library/TeX/texbin/" "after"
