@@ -27,6 +27,14 @@
             executable: pipx
       become: false
 
+    - name: Install gallery-dl
+      community.general.pipx:
+        name: gallery-dl
+        state: latest
+        install_deps: true
+        executable: pipx
+      become: false
+
 - name: Install video players
   block:
     - name: "[Darwin] Install homebrew packages"
