@@ -1,0 +1,8 @@
+{{ ansible_managed|comment }}
+
+-f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
+
+# TODO: WORKAROUND 4 `--trim-filenames` (https://github.com/yt-dlp/yt-dlp/issues/2314; which shall prevent the error "[Errno 36] File name too long"):  '%(title).200s
+#   - https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195
+#   - https://github.com/ytdl-org/youtube-dl/pull/29989
+-o '%(channel)s - %(title).200s [%(id)s].mp4'

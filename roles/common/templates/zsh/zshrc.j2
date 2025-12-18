@@ -377,19 +377,6 @@ alias-add colordiff diff='colordiff'
 # --  pipx  --
 path-add "$HOME/.local/bin" "after"
 
-{% if 'clients_media' in group_names    or
-      ansible_facts.os_family == 'Darwin' %}
-# -  yt-dlp  -
-{%   set YT_DLP_VIDEO_FORMAT = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" %}
-# TODO: WORKAROUND 4 `--trim-filenames` (https://github.com/yt-dlp/yt-dlp/issues/2314; which shall prevent the error "[Errno 36] File name too long"):  '%(title).200s
-#   - https://github.com/yt-dlp/yt-dlp/issues/1136#issuecomment-932077195
-#   - https://github.com/ytdl-org/youtube-dl/pull/29989
-{%   set YT_DLP_WORKAROUND_FNAME_MAX_TITLE_LEN = 200 %}
-alias-add yt-dlp video-dl="yt-dlp  -f '{{ YT_DLP_VIDEO_FORMAT }}'  -o '%(title).{{ YT_DLP_WORKAROUND_FNAME_MAX_TITLE_LEN }}s [%(id)s].mp4'"\
-                 video-dl-channel="yt-dlp  -f '{{ YT_DLP_VIDEO_FORMAT }}'  -o '%(channel)s - %(title).{{ YT_DLP_WORKAROUND_FNAME_MAX_TITLE_LEN }}s [%(id)s].mp4'"\
-                 audio-dl="yt-dlp  -f 'bestaudio[ext=m4a]'  -o '%(title).{{ YT_DLP_WORKAROUND_FNAME_MAX_TITLE_LEN }}s [%(id)s].%(ext)s'"
-{% endif %}
-
 
 
 # ===========================  Functions (II)  ===========================

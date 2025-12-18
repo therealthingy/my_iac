@@ -25,6 +25,14 @@
             state: inject
             inject_packages: ["curl_cffi", "yt-dlp-ejs"]
             executable: pipx
+        - name: Copy config file
+          ansible.builtin.template:
+            src: yt-dlp.conf.j2
+            dest: "/{{ os_homedir }}/{{ user.name }}/.config/yt-dlp.conf"  # TODO: `.config` should be `${XDG_CONFIG_HOME}`
+            owner: "{{ user.name }}"
+            group: "{{ user.group_name }}"
+            mode: 0644
+          become: false
       become: false
 
     - name: Install gallery-dl
