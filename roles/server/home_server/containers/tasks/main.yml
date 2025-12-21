@@ -9,7 +9,7 @@
       compose:
         services:
           - name: watchtower
-            image: containrrr/watchtower
+            image: nickfedor/watchtower
             network:
               mode: bridge
             volumes:
