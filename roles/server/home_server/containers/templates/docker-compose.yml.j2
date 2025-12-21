@@ -6,7 +6,13 @@ networks:
     external: true
 {% if container.compose.additional_networks is defined %}
 {%   for net in container.compose.additional_networks %}
-  {{ net }}:
+  {{ net.name }}:
+{%     if net.ipv6_subnet is defined %}
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: '{{ net.ipv6_subnet }}'
+{%     endif %}
 {%   endfor %}
 {% endif %}
 {% if container.compose.volumes is defined %}

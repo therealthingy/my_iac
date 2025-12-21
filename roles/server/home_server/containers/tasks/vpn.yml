@@ -17,7 +17,7 @@
 ##   - ACCESSABILITY (whether port open + service running):
 ##     - MOCK (if wireguard isn't running):
 ##       - NATIVE: `sudo -b sh -c 'ncat -6 -u -l [<IPv6-addr>] 123   -e /bin/cat -k'`   (on client: `ncat -6 -u <IPv6-addr> 123`)
-##       - DOCKER CONTAINER: `docker run -d --network=wireguard_vpn --name test_avail -p 123:123/udp nicolaka/netshoot nc -6 -u -l -p 123`
+##       - DOCKER CONTAINER: `docker run -d --network=vpn --name test_avail -p 123:123/udp nicolaka/netshoot nc -6 -u -l -p 123`
 ##     - VERIFY port 'binding' on server: `sudo lsof -i -P -n |grep 123`
 ##     - VERIFY via tcpdump: `sudo tcpdump -n -i eth0  udp port 123  -XAvvv`
 ##     - VERIFY from client (!! from different network, e.g., cellular network !!): `ncat -6 -u <domain> 123`
@@ -39,13 +39,9 @@
         - name: ddns-Dockerfile
       startup: False
       compose:
-        networks: |+
-          vpn:
-              name: wireguard_vpn
-              enable_ipv6: true
-              ipam:
-                config:
-                  - subnet: '{{ docker_ipv6_conf.prefix }}:2::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}'
+        additional_networks:
+          - name: vpn
+            ipv6_subnet: '{{ docker_ipv6_conf.prefix }}:2::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}'
         services:
           - name: vpn-ddclient
             _include_in_compose: "{{ vpn.ddns is defined|bool }}"
