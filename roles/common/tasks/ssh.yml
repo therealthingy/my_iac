@@ -41,10 +41,10 @@
               value: "no"
             # Enable/Disable X11 forwarding:
             - key: "X11Forwarding"
-              value: "{{ ssh.x11_enabled|default('no', true) }}"
+              value: "{{ ssh.x11_enabled | default('no', true) }}"
             # Change ssh port:
             - key: "Port"
-              value: "{{ ssh.port|default('22', true) }}"
+              value: "{{ ssh.port | default('22', true) }}"
           loop_control:
             loop_var: common_ssh_item
         - name: "[Ubuntu Server] Rmv contradicting conf file" # Would overwrite overwrite `PasswordAuthentication` 2 `yes`

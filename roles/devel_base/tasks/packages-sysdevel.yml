@@ -234,7 +234,7 @@
         - ansible.builtin.get_url:
             url: https://sh.rustup.rs
             dest: /tmp/sh.rustup.rs
-            mode: "0755"
+            mode: 0755
             force: true
         - ansible.builtin.shell: /tmp/sh.rustup.rs -y --profile default -c rust-analyzer miri
       when: cargo_command_result.rc == 1

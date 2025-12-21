@@ -11,7 +11,11 @@ networks:
     enable_ipv6: true
     ipam:
       config:
-        - subnet: '{{ net.ipv6_subnet }}'
+        - subnet: "{{ net.ipv6_subnet }}"
+{%     endif %}
+{%     if net.sysctls is defined %}
+    driver_opts:
+      com.docker.network.endpoint.sysctls: "{{ net.sysctls }}"
 {%     endif %}
 {%   endfor %}
 {% endif %}
@@ -40,7 +44,7 @@ services:
     hostname: {{ service.name if service.hostname is not defined else service.hostname }}
 #    domainname: {{ domainname }}           # Causes e.g., pihole 2 return its internal Docker IP when queried w/ matching hostname.domainname
 {%     endif %}
-    restart: '{{ service.restart_policy|default("always", true) }}'
+    restart: '{{ service.restart_policy | default("always", true) }}'
 {%     if service.dependencies is defined %}
     depends_on:
 {%       for dep in service.dependencies %}

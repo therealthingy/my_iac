@@ -18,7 +18,7 @@
   block:
     - name: "Container {{ container.name }}: Create dir"
       ansible.builtin.file:
-        path: '{{ docker_container.config_basedir }}/{{ container.name }}/{{ conf_file.target_dir|default(".", true) }}'
+        path: '{{ docker_container.config_basedir }}/{{ container.name }}/{{ conf_file.target_dir | default(".", true) }}'
         state: directory
         mode: 0755
       loop_control: # AGAIN: Doesn't work on `block`, thus duplicated
@@ -28,8 +28,8 @@
     - name: "Container {{ container.name }}: Copy file"
       ansible.builtin.template:
         src: "{{ container.name }}--{{ conf_file.name }}.j2"
-        dest: '{{ docker_container.config_basedir }}/{{ container.name }}/{{ conf_file.target_dir|default(".", true) }}/{{ conf_file.name }}'
-        mode: '{{ conf_file.mode|default("0640", true) }}'
+        dest: '{{ docker_container.config_basedir }}/{{ container.name }}/{{ conf_file.target_dir | default(".", true) }}/{{ conf_file.name }}'
+        mode: '{{ conf_file.mode | default("0640", true) }}'
       loop_control:
         loop_var: conf_file
       with_items: "{{ container.config_files }}"

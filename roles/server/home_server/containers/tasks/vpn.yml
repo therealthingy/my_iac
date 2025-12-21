@@ -41,7 +41,8 @@
       compose:
         additional_networks:
           - name: vpn
-            ipv6_subnet: '{{ docker_ipv6_conf.prefix }}:2::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}'
+            ipv6_subnet: "{{ docker_ipv6_conf.prefix }}:2::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}"
+            sysctls: "net.ipv6.conf.{{ vpn.if }}.accept_ra=2,net.ipv6.conf.{{ vpn.if }}.addr_gen_mode=0,net.ipv6.conf.{{ vpn.if }}.use_tempaddr=0"
         services:
           - name: vpn-ddclient
             _include_in_compose: "{{ vpn.ddns is defined|bool }}"
@@ -77,7 +78,7 @@
                 # Wireguard server   (DEFAULT PORT: 51820)
                 - "{{ vpn.endpoint.port }}:{{ vpn.endpoint.port }}/udp"
                 # Wireguard UI   -->  Access GUI via: `ssh -L 8080:127.0.0.1:8080 l0-rpi0`  (ALTERNATIVE: use traefik ––––––––  WHICH WON't WORK aS LONG AS We DON'T USE ITS NETWORK)
-                - "127.0.0.1:{{ vpn.wireguard_ui.local_port|default(8080, true) }}:5000/tcp"
+                - "127.0.0.1:{{ vpn.wireguard_ui.local_port | default(8080, true) }}:5000/tcp"
             sysctls:
               #  $$$$$$   TODO: ONLY AFFECTS CONTAINER (NOT HOST-SYSTEM)  => NAMESPACE CGROUPS ???    $$$$$$
               # REFERENCE: https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html
@@ -90,12 +91,9 @@
               # ?
               - net.ipv4.conf.all.src_valid_mark=1
               # Accept Router Advertisements (RAs;  0 = don't accept, 1 = accept if forwarding is DISABLED; 2 = accept even IF forwarding is enabled)
-              - "net.ipv6.conf.{{ vpn.if }}.accept_ra=2"
               # How link-local- & autoconf addresses are generated (`0` = EUI64)
               - net.ipv6.conf.default.addr_gen_mode=0
-              - "net.ipv6.conf.{{ vpn.if }}.addr_gen_mode=0"
               # Disable *Privacy Extensions*
-              - "net.ipv6.conf.{{ vpn.if }}.use_tempaddr=0"
               - net.ipv6.conf.default.use_tempaddr=0
               - net.ipv6.conf.all.use_tempaddr=0
             # REFERENCE: https://docs.linuxserver.io/images/docker-wireguard/#environment-variables-e
@@ -119,8 +117,8 @@
             # REFERENCE: https://github.com/ngoduykhanh/wireguard-ui#environment-variables
             env_vars:
               # UI
-              - 'WGUI_USERNAME={{ vpn.wireguard_ui.user|default("gg", true) }}' # Required 4 db init
-              - 'WGUI_PASSWORD={{ vpn.wireguard_ui.pass|default("1", true) }}'
+              - 'WGUI_USERNAME={{ vpn.wireguard_ui.user | default("gg", true) }}' # Required 4 db init
+              - 'WGUI_PASSWORD={{ vpn.wireguard_ui.pass | default("1", true) }}'
               #- 'SESSION_SECRET=XX vpn.wireguard_ui.session_secret XX'
               - "WGUI_LOG_LEVEL={{ vpn.wireguard_ui.log_level }}"
               # Start / restart wireguard container w/ this container
@@ -134,7 +132,7 @@
               - WGUI_SERVER_INTERFACE_ADDRESSES={{ vpn.internal_networks|map(attribute='server')|join(',') }}
               - WGUI_DNS={{ vpn.internal_networks|map(attribute='dns')|join(',') }}
               # OVERHEAD: IPv4: 20 bytes / IPv6: 40 bytes, UDP: 8 bytes, WG: 32 bytes   //   MTU: Cable = 1500, DSL = 1492
-              - WGUI_MTU={{ vpn.wireguard_mtu|default(1450, true) }}
+              - WGUI_MTU={{ vpn.wireguard_mtu | default(1450, true) }}
               # ( Don't route inet traffic (by default) through tunnel   --> {# `{% for network in NETWORK_VAR %}{{ network.subnet }},{{ "%s0/%s"|format(network.server[:-4], network.server.split("/")[1]) }}{{ "" if loop.last else "," }}{% endfor %}` ) #}
               - WGUI_DEFAULT_CLIENT_ALLOWED_IPS=0.0.0.0/0,::/0
               # Rules 4 forwarding from VPN subnet 2 actual network

@@ -62,7 +62,7 @@
               block:
                 - name: Construct list
                   ansible.builtin.set_fact:
-                    apt_pin_packages: "{{ packages|default([]) + [{'name': item, 'priority': -1}] }}"
+                    apt_pin_packages: "{{ packages | default([]) + [{'name': item, 'priority': -1}] }}"
                   with_items: "{{ blocked_pkgs }}"
                 - name: Pass 2 template
                   # EQUIVALENT command  ??: `sudo apt-mark hold snapd`
