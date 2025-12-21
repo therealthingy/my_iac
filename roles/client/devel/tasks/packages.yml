@@ -101,7 +101,7 @@
           ansible.builtin.copy:
             src: apps/com.googlecode.iterm2.plist
             dest: "/{{ os_homedir }}/{{ user.name }}/.config/iterm2/com.googlecode.iterm2.plist"
-            mode: 0755
+            mode: 0644
         - name: Set config
           community.general.osx_defaults:
             domain: com.googlecode.iterm2

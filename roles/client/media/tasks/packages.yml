@@ -32,7 +32,6 @@
             owner: "{{ user.name }}"
             group: "{{ user.group_name }}"
             mode: 0644
-          become: false
       become: false
 
     - name: Install gallery-dl
