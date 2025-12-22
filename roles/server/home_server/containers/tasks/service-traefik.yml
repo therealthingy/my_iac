@@ -1,0 +1,59 @@
+---
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TODO: Derive `volumes` from `compose`  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+- name: Setup container
+  ansible.builtin.include_tasks: setup_containers.yml
+  loop_control:
+    loop_var: container
+  with_items:
+    - name: traefik
+      #config_files:
+      #  - name: ssl-certgen
+      #    mode: '0755'
+      #  - name: dynamic-conf.yml      # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
+      compose:
+        services:
+          - name: traefik
+            image: traefik
+            network:
+              nets: ["{{ reverse_proxy_docker_network }}"]
+              ports:
+                - 80:80
+                - 443:443
+            command:
+              - "--log.level=WARN"
+              - "--global.sendanonymoususage=false"
+              - "--api.dashboard=false"
+              - "--api.insecure=true"
+              - "--entrypoints.websecure.address=:443"
+              - "--entrypoints.websecure.http.tls=true"
+              - "--entrypoints.web.address=:80"
+              - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+              - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+              - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+              - "--entrypoints.websecure.http.middlewares=securityHeaders@file"
+              - "--providers.docker=true"
+              - "--providers.docker.exposedByDefault=false"
+              - "--providers.docker.network={{ reverse_proxy_docker_network }}"
+              - "--providers.file.directory=/config/"
+              - "--providers.file.watch=true"
+              #- "--ping=false"
+              # LetsEncrypt cert
+              #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+              - "--certificatesresolvers.myresolver.acme.dnschallenge=true" # DNS 101 -> Necessary when unreachable (e.g., private IP address)
+              - "--certificatesresolvers.myresolver.acme.dnschallenge.provider={{ cert_acme.provider }}"
+              - "--certificatesresolvers.myresolver.acme.email={{ cert_acme.email }}"
+              - "--certificatesresolvers.myresolver.acme.storage=/config/certs/acme.json"
+              - "--certificatesResolvers.myresolver.acme.dnsChallenge.delayBeforeCheck=5" # 2 delay DNS check & reduce LE hitrate
+              - "--entrypoints.websecure.http.tls.domains[0].main={{ domainname }}" # Wildcard cert
+              - "--entrypoints.websecure.http.tls.domains[0].sans=*.{{ domainname }}"
+              - "--entrypoints.websecure.http.tls.certresolver=myresolver"
+            volumes:
+              - path: "/var/run/docker.sock:/var/run/docker.sock"
+                ro: true
+              # config
+              - path: "./dynamic-conf.yml:/config/dynamic-conf.yml"
+              - path: "{{ docker_container.data_basedir }}/traefik/:/config/certs/"
+            env_vars:
+              - TZ={{ timezone }}
+              - "NAMECHEAP_API_USER={{ cert_acme.user }}"
+              - "NAMECHEAP_API_KEY={{ cert_acme.token }}"

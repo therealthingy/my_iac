@@ -1,40 +1,31 @@
 ---
+- name: Watchtower
+  ansible.builtin.import_tasks: service-watchtower.yml
+
+- name: Traefik
+  ansible.builtin.import_tasks: service-traefik.yml
+
+- name: Bitwarden
+  ansible.builtin.import_tasks: service-bitwarden.yml
+
+- name: Download Services
+  ansible.builtin.import_tasks: service-dl_services.yml
+
+- name: Immich
+  ansible.builtin.import_tasks: service-immich.yml
+
+- name: Wireguard VPN
+  ansible.builtin.import_tasks: service-vpn.yml
+
+- name: Pihole
+  ansible.builtin.import_tasks: service-pihole.yml
+
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TODO: Derive `volumes` from `compose`  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 - name: Setup containers
   ansible.builtin.include_tasks: setup_containers.yml
   loop_control:
     loop_var: container
   with_items:
-    - name: watchtower
-      compose:
-        services:
-          - name: watchtower
-            image: nickfedor/watchtower
-            network:
-              mode: bridge
-            volumes:
-              - path: "/var/run/docker.sock:/var/run/docker.sock"
-            # TESTING: `--run-once`
-            # - WATCHTOWER_SCHEDULE="<watchtower_cron_schedule>"
-            # FORMAT: Seconds, Minutes, Hours, Day of month, Month, Day of week  (see https://pkg.go.dev/github.com/robfig/cron@v1.2.0#hdr-CRON_Expression_Format)
-            command:
-              [
-                '--schedule "{{ watchtower_cron_schedule | default("0 30 3 * * WED,SAT", true) }}"',
-              ]
-            env_vars:
-              - TZ={{ timezone }}
-              - WATCHTOWER_CLEANUP=true
-              - WATCHTOWER_LABEL_ENABLE=true # Filter by enable label
-              - WATCHTOWER_NO_STARTUP_MESSAGE=true
-              # - Emailing
-              - WATCHTOWER_NOTIFICATIONS=email
-              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER={{ notifications_mail.smtp_host }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT={{ notifications_mail.smtp_port }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER={{ notifications_mail.smtp_username }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD={{ notifications_mail.smtp_password }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_FROM={{ notifications_mail.smtp_username }}
-              - WATCHTOWER_NOTIFICATION_EMAIL_TO={{ notifications_mail.system_admin_mail }}
-
     - name: nginx-helloworld
       startup: False
       compose:
@@ -47,93 +38,6 @@
             network:
               ports:
                 - "{{ host_port | default(8080, true) }}:80"
-
-    - name: traefik
-      #config_files:
-      #  - name: ssl-certgen
-      #    mode: '0755'
-      #  - name: dynamic-conf.yml      # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
-      compose:
-        services:
-          - name: traefik
-            image: traefik
-            network:
-              nets: ["{{ reverse_proxy_docker_network }}"]
-              ports:
-                - 80:80
-                - 443:443
-            command:
-              - "--log.level=WARN"
-              - "--global.sendanonymoususage=false"
-              - "--api.dashboard=false"
-              - "--api.insecure=true"
-              - "--entrypoints.websecure.address=:443"
-              - "--entrypoints.websecure.http.tls=true"
-              - "--entrypoints.web.address=:80"
-              - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-              - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-              - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
-              - "--entrypoints.websecure.http.middlewares=securityHeaders@file"
-              - "--providers.docker=true"
-              - "--providers.docker.exposedByDefault=false"
-              - "--providers.docker.network={{ reverse_proxy_docker_network }}"
-              - "--providers.file.directory=/config/"
-              - "--providers.file.watch=true"
-              #- "--ping=false"
-              # LetsEncrypt cert
-              #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-              - "--certificatesresolvers.myresolver.acme.dnschallenge=true" # DNS 101 -> Necessary when unreachable (e.g., private IP address)
-              - "--certificatesresolvers.myresolver.acme.dnschallenge.provider={{ cert_acme.provider }}"
-              - "--certificatesresolvers.myresolver.acme.email={{ cert_acme.email }}"
-              - "--certificatesresolvers.myresolver.acme.storage=/config/certs/acme.json"
-              - "--certificatesResolvers.myresolver.acme.dnsChallenge.delayBeforeCheck=5" # 2 delay DNS check & reduce LE hitrate
-              - "--entrypoints.websecure.http.tls.domains[0].main={{ domainname }}" # Wildcard cert
-              - "--entrypoints.websecure.http.tls.domains[0].sans=*.{{ domainname }}"
-              - "--entrypoints.websecure.http.tls.certresolver=myresolver"
-            volumes:
-              - path: "/var/run/docker.sock:/var/run/docker.sock"
-                ro: true
-              # config
-              - path: "./dynamic-conf.yml:/config/dynamic-conf.yml"
-              - path: "{{ docker_container.data_basedir }}/traefik/:/config/certs/"
-            env_vars:
-              - TZ={{ timezone }}
-              - "NAMECHEAP_API_USER={{ cert_acme.user }}"
-              - "NAMECHEAP_API_KEY={{ cert_acme.token }}"
-
-    - name: bitwarden
-      # TODO SSO -- PROBLEM: Requires "Key connector" 2 avoid entering master pw:
-      #   - https://bitwarden.com/help/about-key-connector/
-      #   - https://github.com/dani-garcia/vaultwarden/discussions/2583
-      compose:
-        services:
-          - name: bitwarden
-            image: vaultwarden/server
-            network:
-              reverse_proxy_mappings:
-                - subdomain: bitwarden
-                  port: 80
-            volumes:
-              - path: "{{ docker_container.data_basedir }}/bitwarden/:/data/"
-            env_vars:
-              - TZ={{ timezone }}
-              # --- General
-              - DATA_FOLDER=/data
-              - DATABASE_URL=/data/db.sqlite3
-              - WEBSOCKET_ENABLED=true
-              - SIGNUPS_ALLOWED={{ bitwarden_signups_allowed | default('false', true) }}
-              - SIGNUPS_VERIFY={{ 'true' if notifications_mail is defined else 'false' }}
-              - DOMAIN=https://bitwarden.{{ domainname }}
-              # --- Emailing
-              - SMTP_HOST={{ notifications_mail.smtp_host }}
-              - SMTP_FROM={{ notifications_mail.smtp_username }}
-              - SMTP_FROM_NAME=Bitwarden_RS
-              - SMTP_PORT={{ notifications_mail.smtp_port }}
-              # NOTE: ("starttls", "force_tls", "off") Enable a secure connection. Default is "starttls" (Explicit - ports 587 or 25), "force_tls" (Implicit - port 465) or "off", no encryption (port 25)
-              - SMTP_SECURITY={{ notifications_mail.smtp_enc }}
-              - SMTP_USERNAME={{ notifications_mail.smtp_username }}
-              - SMTP_PASSWORD={{ notifications_mail.smtp_password }}
-              - SMTP_TIMEOUT=15
 
     - name: portainer # TODO SSO: https://docs.portainer.io/admin/settings/authentication/oauth  //  https://helgeklein.com/blog/portainer-setup-guide-with-automatic-https-oauth-sso-via-authelia/
       startup: False
@@ -203,12 +107,6 @@
               - path: "{{ docker_container.data_basedir }}/baikal/config/:/var/www/baikal/config"
               - path: "{{ docker_container.data_basedir }}/baikal/user/:/var/www/baikal/Specific"
 
-- name: Download Services
-  ansible.builtin.import_tasks: dl_services.yml
-
-- name: Immich
-  ansible.builtin.import_tasks: immich.yml
-
 #    - name: freshrss                       # TODO SSO: https://goauthentik.io/integrations/services/freshrss/
 ##      startup: False
 #      compose:
@@ -227,9 +125,3 @@
 #              - TZ={{ timezone }}
 #              - PUID={{ www_user.uid }}
 #              - PGID={{ www_user.gid }}
-
-- name: Wireguard VPN
-  ansible.builtin.import_tasks: vpn.yml
-
-- name: Pihole
-  ansible.builtin.import_tasks: pihole.yml
