@@ -1,5 +1,5 @@
 ---
-{{ ansible_managed|comment }}
+{{ ansible_managed | comment }}
 {# $$$$$$$  TODO: Check whether service actually uses reverse-proxy & leave out network if so  $$$$$$$ #}
 networks:
   {{ reverse_proxy_docker_network }}:
@@ -45,6 +45,9 @@ services:
 #    domainname: {{ domainname }}           # Causes e.g., pihole 2 return its internal Docker IP when queried w/ matching hostname.domainname
 {%     endif %}
     restart: '{{ service.restart_policy | default("always", true) }}'
+{%     if service.stop_grace_period is defined %}
+    stop_grace_period: {{ service.stop_grace_period }}
+{%     endif %}
 {%     if service.dependencies is defined %}
     depends_on:
 {%       for dep in service.dependencies %}
@@ -106,7 +109,7 @@ services:
 {%       endfor %}
 {%     endif %}
 {%     if service.command is defined %}
-    command: {{ service.command | join(" ") }}
+    command: {{ service.command|join(" ") }}
 {%     endif %}
 {%     if service.network is defined %}
 {%       if service.network.reverse_proxy_mappings is defined  or  service.network.nets is defined %}

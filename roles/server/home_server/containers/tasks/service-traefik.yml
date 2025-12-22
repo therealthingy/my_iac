@@ -6,10 +6,10 @@
     loop_var: container
   with_items:
     - name: traefik
-      #config_files:
+      config_files:
+        - name: dynamic-conf.yml      # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
       #  - name: ssl-certgen
       #    mode: '0755'
-      #  - name: dynamic-conf.yml      # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
       compose:
         services:
           - name: traefik

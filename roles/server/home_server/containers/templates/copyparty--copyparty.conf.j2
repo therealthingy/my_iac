@@ -1,0 +1,36 @@
+{{ ansible_managed | comment }}
+
+[global]
+  e2dsa  # enable file indexing and filesystem scanning
+  e2ts   # enable multimedia indexing
+  ansi   # enable colors in log messages (both in logfiles and stdout)
+
+  # q, lo: /cfg/log/%Y-%m%d.log   # log to file instead of docker
+
+  # p: 3939          # listen on another port
+  # ipa: 10.89.      # only allow connections from 10.89.*
+  df: 100           # stop accepting uploads if less than 100 GB free disk space
+  # ver              # show copyparty version in the controlpanel
+  grid             # show thumbnails/grid-view by default
+  # theme: 2         # monokai
+  # name: datasaver  # change the server-name that's displayed in the browser
+  # stats, nos-dup   # enable the prometheus endpoint, but disable the dupes counter (too slow)
+  # no-robots, force-js  # make it harder for search engines to read your server
+
+
+[accounts]
+{% for user in samba.users %}
+  {{ user.name }}: {{ user.pass }}
+{% endfor %}
+
+{% for share in samba.shares %}
+[{{ share.name }}/]
+  {{ share.path }}
+  accs:
+{%   if share.users_ro is defined %}
+    r: {{ share.users_ro }}
+{%   endif %}
+{%   if share.users_rw is defined %}
+    rwmda: {{ share.users_rw }}
+{%   endif %}
+{% endfor %}
