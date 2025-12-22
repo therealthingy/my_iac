@@ -2,7 +2,7 @@
 
 
 ## TODOs
-- FIX WIREGUARD VPN
+…
 
 
 ### GENERAL

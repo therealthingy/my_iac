@@ -35,11 +35,18 @@
       become: false
 
     - name: Install gallery-dl
-      community.general.pipx:
-        name: gallery-dl
-        state: latest
-        install_deps: true
-        executable: pipx
+      block:
+        - name: Install packages
+          community.general.pipx:
+            name: gallery-dl
+            state: latest
+            install_deps: true
+            executable: pipx
+        - name: Copy config file
+          ansible.builtin.copy:
+            src: gallery-dl.conf
+            dest: "/{{ os_homedir }}/{{ user.name }}/.gallery-dl.conf"
+            mode: 0644
       become: false
 
 - name: Install video players
