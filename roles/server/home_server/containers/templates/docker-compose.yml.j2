@@ -106,7 +106,7 @@ services:
 {%       endfor %}
 {%     endif %}
 {%     if service.command is defined %}
-    command: {{ service.command|join(" ") }}
+    command: {{ service.command | join(" ") }}
 {%     endif %}
 {%     if service.network is defined %}
 {%       if service.network.reverse_proxy_mappings is defined  or  service.network.nets is defined %}

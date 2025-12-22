@@ -36,7 +36,7 @@
             env_vars:
               # REFERENCE: https://github.com/pi-hole/docker-pi-hole#environment-variables
               - TZ={{ timezone }}
-              - 'PIHOLE_DNS_={{ pihole.dns_servers|join(";") }}'
+              - 'PIHOLE_DNS_={{ pihole.dns_servers | join(";") }}'
               - "DNSMASQ_LISTENING=single"
               - "INTERFACE={{ pihole.if }}"
               - "IPv6=true"

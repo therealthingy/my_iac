@@ -20,7 +20,7 @@
 {% if hblock is defined %}
 {% for entry in hblock.overwrite %}
 {%   for host_ip in entry.host_ips %}
-{{ host_ip }} {{ entry.domains|join(' ') }}
+{{ host_ip }} {{ entry.domains | join(' ') }}
 {%   endfor %}
 {% endfor %}
 {% endif %}

@@ -46,7 +46,7 @@ services:
       -u "{{ user.name }};{{ user.pass }}"
 {% endfor %}
 {% for share in samba.shares %}
-      -s "{{ share.name }};{{ share.path }};{{ share.browsable }};{{ share.readonly }};{{ share.guest }};{{ share.users|join(',') }};none;;"
+      -s "{{ share.name }};{{ share.path }};{{ share.browsable }};{{ share.readonly }};{{ share.guest }};{{ share.users | join(',') }};none;;"
 {% endfor %}
 
     environment:

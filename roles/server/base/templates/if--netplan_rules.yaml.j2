@@ -18,7 +18,7 @@ network:
 
       # DNS
       nameservers:
-        addresses: [{{ pif.dns_servers|join(',') }}]
+        addresses: [{{ pif.dns_servers | join(',') }}]
 
       # Static ip-addr
       addresses:
