@@ -301,27 +301,7 @@ all:
             wireguard_ui:
               log_level: INFO
 
-          samba:
-            shares:
-              - name: shared
-                bind_mounts:
-                  - "{{docker_container.data_basedir}}/samba-filebrowser/share/public:/mnt/share/public/"
-                path: /mnt/share/public
-                browsable: "yes"
-                readonly: "no"
-                guest: "no"
-                users:
-                  - "all"
-              - name: private
-                bind_mounts:
-                  - "{{docker_container.data_basedir}}/samba-filebrowser/share/private:/mnt/share/private/"
-                  - "{{ dl_services.base_dir }}/downloads/:/mnt/share/private/storage/downloads/"
-                path: /mnt/share/private
-                browsable: "no"
-                readonly: "no"
-                guest: "no"
-                users:
-                  - "gg"
+          copyparty:
             users:
               - name: gg
                 pass: !vault |
@@ -339,6 +319,17 @@ all:
                   34313432363861613663336435316630366330626334346634373661356631396235336137303962
                   3135326235313131300a616132356362343531613264306465633133633361656266326634373166
                   6438
+            shares:
+              - name: shared
+                path: /data/fsshare/shared/
+                users_rw: "gg,anonymous"
+              - name: gg
+                path: /data/fsshare/gg/
+                users_rw: "gg"
+              - name: downloads
+                path: /data/ext/downloads/
+                users_rw: "gg"
+                rescan_sec: 900
 
     # --  "HW specific"  --
     hw_specific:

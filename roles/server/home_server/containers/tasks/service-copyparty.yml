@@ -1,0 +1,27 @@
+---
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TODO: Derive `volumes` from `compose`  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+- name: Setup containers
+  ansible.builtin.include_tasks: setup_containers.yml
+  loop_control:
+    loop_var: container
+  with_items:
+    - name: copyparty # TODO: SSO
+      config_files:
+        - name: copyparty.conf # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
+      compose:
+        services:
+          - name: copyparty
+            image: copyparty/ac:latest
+            stop_grace_period: 15s # thumbnailer is allowed to continue finishing up for 10s after the shutdown signal
+            network:
+              reverse_proxy_mappings:
+                - subdomain: fs
+                  port: 3923
+            volumes:
+              # config
+              - path: "{{ docker_container.config_basedir }}/copyparty/:/cfg/" # TODO: `:z` (SELinux) suffix
+              # data volume(s)
+              - path: "{{docker_container.data_basedir}}/fsshare/:/data/fsshare/"
+              - path: "{{ dl_services.base_dir }}/downloads/torrents/:/data/ext/downloads/" # dl_services
+            env_vars:
+              - PYTHONUNBUFFERED=1 # ensures log-messages are not delayed (but can reduce speed a tiny bit)
