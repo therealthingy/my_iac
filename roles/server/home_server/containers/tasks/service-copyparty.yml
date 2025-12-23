@@ -21,7 +21,7 @@
               # config
               - path: "{{ docker_container.config_basedir }}/copyparty/:/cfg/" # TODO: `:z` (SELinux) suffix
               # data volume(s)
-              - path: "{{docker_container.data_basedir}}/fsshare/:/data/fsshare/"
+              - path: "{{ docker_container.data_basedir }}/fsshare/:/data/fsshare/"
               - path: "{{ dl_services.base_dir }}/downloads/torrents/:/data/ext/downloads/" # dl_services
             env_vars:
               - PYTHONUNBUFFERED=1 # ensures log-messages are not delayed (but can reduce speed a tiny bit)

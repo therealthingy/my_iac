@@ -11,7 +11,7 @@
         path: "/{{ os_homedir }}/{{ user.name }}/.local/bin/" # TODO: Hijacks pipx's bin folder => is this ok ??!
         state: directory
         #owner: '{{ user.name }}'
-        #group: '{{user.group_name}}'
+        #group: '{{ user.group_name }}'
         mode: 0755
     - name: Copy Scripts
       ansible.builtin.template:

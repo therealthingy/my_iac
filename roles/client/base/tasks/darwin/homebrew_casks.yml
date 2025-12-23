@@ -6,7 +6,7 @@
         path: "/Applications/{{ homebrew_cask_dir.dir }}"
         state: directory
         owner: "{{ user.name }}"
-        group: "{{user.group_name}}"
+        group: "{{ user.group_name }}"
         mode: 0755
       with_items: "{{ packages_homebrew_casks }}"
       loop_control:

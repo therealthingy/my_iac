@@ -247,7 +247,7 @@
         path: "/{{ os_homedir }}/{{ user.name }}/.golang/bin/"
         state: directory
         #owner: '{{ user.name }}'
-        #group: '{{user.group_name}}'
+        #group: '{{ user.group_name }}'
         mode: 0755
       become: false
     - name: "[Darwin]"

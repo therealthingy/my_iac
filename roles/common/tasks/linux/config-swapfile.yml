@@ -41,7 +41,7 @@
   block:
     - name: Check if swap file exists
       ansible.builtin.stat:
-        path: "{{swap.file.path}}"
+        path: "{{ swap.file.path }}"
         get_checksum: false
         get_md5: false
       register: swap_file_check
@@ -53,13 +53,13 @@
       when: swap_file_check.stat.exists
 
     - name: Check if swap is on
-      ansible.builtin.shell: swapon --show | grep {{swap.file.path}}
+      ansible.builtin.shell: swapon --show | grep {{ swap.file.path }}
       register: swap_is_enabled
       changed_when: false
       failed_when: false
 
     - name: Disable swap
-      ansible.builtin.command: swapoff {{swap.file.path}}
+      ansible.builtin.command: swapoff {{ swap.file.path }}
       register: swap_disabled
       when: >
         swap_file_check.stat.exists
@@ -68,14 +68,14 @@
 
     - name: Delete the swap file
       ansible.builtin.file:
-        path: "{{swap.file.path}}"
+        path: "{{ swap.file.path }}"
         state: absent
       when: not swap.file.enable
 
     - name: Remove swap entry from fstab
       ansible.posix.mount:
         name: none
-        src: "{{swap.file.path}}"
+        src: "{{ swap.file.path }}"
         fstype: swap
         opts: sw
         passno: "0"
@@ -87,7 +87,7 @@
       when: swap.file.enable | bool
       block:
         - name: Create or change the size of swap file
-          ansible.builtin.command: dd if=/dev/zero of={{swap.file.path}} count={{swap.file.size_mb}} bs=1MiB
+          ansible.builtin.command: dd if=/dev/zero of={{ swap.file.path }} count={{ swap.file.size_mb }} bs=1MiB
           register: swap_file_created
           when: >
             not swap_file_check.stat.exists
@@ -95,17 +95,17 @@
 
         - name: Change swap file permissions
           ansible.builtin.file:
-            path: "{{swap.file.path}}"
+            path: "{{ swap.file.path }}"
             mode: 0600
 
         - name: Check if swap is formatted
-          ansible.builtin.shell: file {{swap.file.path}} | grep 'swap file'
+          ansible.builtin.shell: file {{ swap.file.path }} | grep 'swap file'
           register: swap_file_is_formatted
           changed_when: false
           failed_when: false
 
         - name: Format swap file if it's not formatted
-          ansible.builtin.command: mkswap {{swap.file.path}}
+          ansible.builtin.command: mkswap {{ swap.file.path }}
           when: >
             ('rc' in swap_file_is_formatted and swap_file_is_formatted.rc > 0)
             or swap_file_created.changed
@@ -113,7 +113,7 @@
         - name: Add swap entry to fstab
           ansible.posix.mount:
             name: none
-            src: "{{swap.file.path}}"
+            src: "{{ swap.file.path }}"
             fstype: swap
             opts: sw
             passno: "0"

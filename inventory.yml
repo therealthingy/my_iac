@@ -187,7 +187,7 @@ all:
               65646534373261373236353431313633653065323932616533303835653464643264
 
           dl_services:
-            base_dir: "{{docker_container.data_basedir}}/dl_services/"
+            base_dir: "{{ docker_container.data_basedir }}/dl_services/"
             restart_policy: "unless-stopped"
             healthcheck_url: apple.com
             web_ui:

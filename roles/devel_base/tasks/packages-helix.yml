@@ -58,7 +58,7 @@
             path: "/Applications/Development/Editors"
             state: directory
             owner: "{{ user.name }}"
-            group: "{{user.group_name}}"
+            group: "{{ user.group_name }}"
             mode: 0755
         - ansible.builtin.unarchive:
             src: "apps/Helix-iTerm.app.tar.gz"

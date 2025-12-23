@@ -131,7 +131,6 @@
           # ( NOTE: VERIFY: `systemctl status docker-fix-ipv6` )
           ansible.builtin.systemd_service:
             name: docker-fix-ipv6
-            state: started
             enabled: true
   become: true
 

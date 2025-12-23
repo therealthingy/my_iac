@@ -31,8 +31,8 @@
                 - name: "container Grafana + rmv ports"
                   ansible.builtin.replace:
                     path: "./roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2"
-                    regexp: "{{grafana_docker_compose_item.regex}}"
-                    replace: "{{grafana_docker_compose_item.line}}"
+                    regexp: "{{ grafana_docker_compose_item.regex }}"
+                    replace: "{{ grafana_docker_compose_item.line }}"
                   loop_control:
                     loop_var: grafana_docker_compose_item
                   with_items:
@@ -72,7 +72,7 @@
               ansible.builtin.blockinfile:
                 marker: "# {mark} WATCHTOWER {{ config_cred_item }}"
                 path: "./roles/server/3rd-party/internet-pi/templates/docker-compose.yml.j2"
-                insertbefore: "^    image: {{config_cred_item}}:latest$"
+                insertbefore: "^    image: {{ config_cred_item }}:latest$"
                 block: |2
                       labels:
                         - com.centurylinklabs.watchtower.enable=true

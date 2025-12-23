@@ -136,7 +136,7 @@
             path: "/{{ os_homedir }}/{{ user.name }}/.config/joplin-desktop"
             state: directory
             owner: "{{ user.name }}"
-            group: "{{user.group_name}}"
+            group: "{{ user.group_name }}"
             mode: 0755
         - name: Copy config
           ansible.builtin.template:
