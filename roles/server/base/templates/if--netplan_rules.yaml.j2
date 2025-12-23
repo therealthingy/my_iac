@@ -10,31 +10,38 @@ network:
       # NIC identification
       match:
         macaddress: {{ pif.if_match_mac }}
+
+      # NIC "settings"
       set-name: {{ pif.if_name }}
 
-      # "Operational settings"
-      critical: true
-      ignore-carrier: true
+      #  - "Operational settings"
+      critical: true         # Wait 4 IF 2 be configured before continuing boot (if it fails 2 come up, boot may be delayed or dropped 2 emergency mode)
+      ignore-carrier: true   # IF is treated as “up” even if: No cable is plugged in; The link is temporarily down
 
-      # DNS
+      #  - DNS
       nameservers:
-        addresses: [{{ pif.dns_servers | join(',') }}]
+        addresses:
+{% for server in pif.dns_servers %}
+          - {{ server }}
+{% endfor %}
 
-      # Static ip-addr
-      addresses:
-        - {{ pif.ipv4 }}
-        - {{ pif.ipv6_ula }}   # Add unique local IPv6 addresses  (equivalent command (4 adding IPv6 address): `sudo ip addr add {{ pif.ipv6_ula }} dev {{ pif.if_name }}`)
-
-      # Disable DHCP
+      #  - Disable DHCP
       dhcp4: false
 
-      # IPv6 stuff
-      dhcp6: false
-      accept-ra: true
+      #  - IPv6
 
+      # WE NEED 2 independent mechanisms on the same IF:
+      #   - RA-managed global address(es)
+      #     - SLAAC
+      #     - Lifetime defined by the router
+      accept-ra: true                                     # Allow global (GLA) IPv6 via RA
+      #   - Static ULA
+      #     - Manually configured
+      #     - !! Lifetime: forever !!
+      #       PROBLEM: FritzBox OVERRIDES the lifetime sooner or later via an RA
+      dhcp6: false                                        # (as DHCPv6 always assigns lifetimes)
 {#      ipv6-address-generation: eui64 #}
       ipv6-address-token: '::{{ pif.ipv6_ula[20:-3] }}'   # Equivalent cmd: `ip token set {{ pif.ipv6_ula[20:-3] }} dev eth0;      NOTE: will also affect ULA addr.s  (`pif.ipv6_ula`)
-
       # TODO: ENABLE AGAIN ONCE SOLUTION HAS BEEN FOUND
       #   - PROBLEM (when using UDP + PE):
       #     - Client sends request 2 static IPv6 address
@@ -43,3 +50,8 @@ network:
       #     - Bind 2 socket (via `<static-ipv6>:port/udp` in docker-compose)  => CON: IPv6 prefix MIGHT change
       #     - Disable IPv6 PE  => CON: Privacy reduced
       ipv6-privacy: false
+
+      #  - Static IP addresses
+      addresses:
+        - {{ pif.ipv4 }}
+        - {{ pif.ipv6_ula }}   # Add unique local IPv6 addresses  (equivalent command (4 adding IPv6 address): `sudo ip addr add {{ pif.ipv6_ula }} dev {{ pif.if_name }}`)

@@ -118,6 +118,21 @@
         #    state: present
       notify: Applying Netplan Configuration
       when: "pif is defined"
+
+    - name: "WORKAROUND: docker service -- Reset IPv6 ULA"
+      block:
+        - name: Add systemd service
+          ansible.builtin.template:
+            src: if--docker-fix-ipv6.service.j2
+            dest: /etc/systemd/system/docker-fix-ipv6.service
+            force: true
+            mode: 0644
+        - name: Enable service
+          # ( NOTE: VERIFY: `systemctl status docker-fix-ipv6` )
+          ansible.builtin.systemd_service:
+            name: docker-fix-ipv6
+            state: started
+            enabled: true
   become: true
 
 - name: Disable motd msges

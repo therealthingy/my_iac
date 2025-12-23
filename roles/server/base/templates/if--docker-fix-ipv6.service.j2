@@ -1,0 +1,16 @@
+{{ ansible_managed | comment }}
+# PROBLEM: FritzBox w/ IPv6 RAs enabled overrides the lifetime of the static ULA, making it eventually deprecated
+# HENCE, BEFORE the docker.service starts, re-create the static ULA
+
+[Unit]
+Description=Reset static IPv6 ULA before docker starts
+Before=docker.service
+# Ensures it runs whenever docker.service starts or restarts
+PartOf=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/netplan apply
+
+[Install]
+WantedBy=docker.service

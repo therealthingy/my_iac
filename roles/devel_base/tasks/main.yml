@@ -16,7 +16,7 @@
         src: linux/systemd-ssh-agent.service.j2
         dest: "/{{ os_homedir }}/{{ user.name }}/.config/systemd/user/ssh-agent.service"
         force: true
-        mode: 0755
+        mode: 0644
     - name: Enable service
       # ( NOTE: VERIFY: `systemctl --user status ssh-agent` )
       ansible.builtin.systemd_service:
