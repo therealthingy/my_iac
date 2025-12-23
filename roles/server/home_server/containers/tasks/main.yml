@@ -60,6 +60,12 @@
               - path: "/etc/localtime:/etc/localtime"
                 ro: True
 
+    # NOTE -- CLIENT CONFIG: 2 use syncthing w/ wireguard vpn,
+    #   go in SyncTrain 2 Devices
+    #   -> <device-hostname>
+    #   -> Addresses
+    #   -> Add address
+    #   -> Add both tcp & quic: W/ hostname <device-hostname>
     - name: syncthing
       compose:
         services:
