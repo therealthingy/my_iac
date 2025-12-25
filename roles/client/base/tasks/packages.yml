@@ -89,7 +89,7 @@
   community.general.homebrew_cask:
     name: blackhole-2ch
     state: latest
-    sudo_password: "{{ ansible_become_pass }}"
+    #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
   become: false
   when: ansible_facts.os_family == 'Darwin'
 
