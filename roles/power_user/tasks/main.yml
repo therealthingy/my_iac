@@ -327,16 +327,7 @@
               - onyx
               - aldente
 
-- name: Install virtualization tools
-  block:
-    - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Tools/Virtualization
-            packages:
-              - vmware-fusion # TODO: Install w/ option `--no-quarantine`, otherwise: '“vmware-id” is an app downloaded from the Internet. Are you sure you want to open it?'
-              #- utm
+# TODO: Vmware Fusion replacement …
 
 - name: Install misc tools
   block:
