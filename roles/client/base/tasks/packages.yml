@@ -89,6 +89,7 @@
   community.general.homebrew_cask:
     name: blackhole-2ch
     state: latest
+    sudo_password: "{{ ansible_become_pass }}"
   become: false
   when: ansible_facts.os_family == 'Darwin'
 
