@@ -311,14 +311,8 @@
             state: link
       become: false
 
-- name: Install benchmark tools
-  block:
-    - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Benchmark
-            packages: ["amorphousdiskmark"]
+#- name: Install benchmark tools
+#  TODO: mas amorphousdiskmark
 
 - name: Install maintenance tools
   block:
