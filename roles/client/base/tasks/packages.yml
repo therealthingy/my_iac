@@ -204,7 +204,6 @@
           - dir: Security
             packages:
               - dhs
-              - kextviewr
               - knockknock
               - suspicious-package
               - taskexplorer
