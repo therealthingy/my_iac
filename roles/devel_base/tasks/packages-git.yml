@@ -8,17 +8,12 @@
 
 # VERIFY: `git config --list --show-origin --show-scope`
 #         `git config --get <key>`
-- name: Configure git
+- name: Configure git (general settings)
   community.general.git_config:
     name: "{{ git_config_var.name }}"
     value: "{{ git_config_var.value }}"
     scope: global
   with_items:
-    - name: user.name
-      value: "{{ git_config.name }}"
-    - name: user.email
-      value: "{{ git_config.email }}"
-
     #- name: core.excludesfile
     #  value: ~/.gitignore
     #  scope: global
@@ -40,16 +35,6 @@
     #  value: true
 
     # Mailing
-    - name: sendemail.from
-      value: "{{ git_config.name }} <{{ git_config.email }}>"
-    - name: sendemail.smtpserver
-      value: "{{ git_config.smtp_server }}"
-    - name: sendemail.smtpuser
-      value: "{{ git_config.email }}"
-    - name: sendemail.smtpencryption
-      value: "{{ git_config.smtp_encryption }}"
-    - name: sendemail.smtpserverport
-      value: "{{ git_config.smtp_port }}"
     - name: sendemail.thread
       # when sending multiple patches, send successive patches as replies 2 the first or previous email
       value: "true"
@@ -78,6 +63,31 @@
     #  value: kdiff3
     #- name: web.browser
     #  value: brave-browser
+  loop_control:
+    loop_var: git_config_var
+  become: false
+
+- name: Configure git (user specific)
+  community.general.git_config:
+    name: "{{ git_config_var.name }}"
+    value: "{{ git_config_var.value }}"
+    scope: global
+  with_items:
+    - name: user.name
+      value: "{{ git_config.name }}"
+    - name: user.email
+      value: "{{ git_config.email }}"
+    # Mailing
+    - name: sendemail.from
+      value: "{{ git_config.name }} <{{ git_config.email }}>"
+    - name: sendemail.smtpserver
+      value: "{{ git_config.smtp_server }}"
+    - name: sendemail.smtpuser
+      value: "{{ git_config.email }}"
+    - name: sendemail.smtpencryption
+      value: "{{ git_config.smtp_encryption }}"
+    - name: sendemail.smtpserverport
+      value: "{{ git_config.smtp_port }}"
   loop_control:
     loop_var: git_config_var
   become: false
