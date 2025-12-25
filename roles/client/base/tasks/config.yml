@@ -545,10 +545,6 @@
       key: "expose-animation-duration"
       value: "0.15"
       type: "float"
-    - domain: "com.apple.universalaccess" # DISABLE the 'reduce transparency' option (wastes more GPU cycles, but looks slick)
-      key: "reduceTransparency"
-      value: "false"
-      type: "boolean"
     # Hot corners
     # Possible values:
     #  0: no-op
