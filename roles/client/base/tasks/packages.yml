@@ -203,7 +203,6 @@
         packages_homebrew_casks:
           - dir: Security
             packages:
-              - blockblock
               - dhs
               - kextviewr
               - knockknock
