@@ -38,7 +38,13 @@ network:
       #   - Static ULA
       #     - Manually configured
       #     - !! Lifetime: forever !!
-      #       PROBLEM: FritzBox OVERRIDES the lifetime sooner or later via an RA
+      #       PROBLEM: Requires correct setting in FritzBox, otherwise the lifetime is OVERRIDDEN via an RA:
+      #       MANUALLY SET IN FritzBox:
+      #            "Home Network"
+      #         -> "Network"
+      #         -> "Network Settings"
+      #         -> "IPv6 Settings"
+      #         -> "Do not assign unique local addresses (ULA) (not recommended)"
       dhcp6: false                                        # (as DHCPv6 always assigns lifetimes)
 {#      ipv6-address-generation: eui64 #}
       ipv6-address-token: '::{{ pif.ipv6_ula[20:-3] }}'   # Equivalent cmd: `ip token set {{ pif.ipv6_ula[20:-3] }} dev eth0;      NOTE: will also affect ULA addr.s  (`pif.ipv6_ula`)
