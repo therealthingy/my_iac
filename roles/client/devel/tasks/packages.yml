@@ -8,6 +8,7 @@
           - dir: Network
             packages:
               - wireshark-app
+                #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
     - name: "[Debian/Ubuntu] Install apt packages"
       ansible.builtin.apt:
         name:
