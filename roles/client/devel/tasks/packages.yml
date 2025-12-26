@@ -38,15 +38,12 @@
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
-- name: Install ghidra
+- name: Install Ghidra
   block:
     - name: "[Darwin]"
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:
-          - dir: Development
-            packages:
-              - ghidra
+      community.general.homebrew:
+        name:
+          - ghidra
     - name: "[Debian/Ubuntu]"
       block:
         - community.general.flatpak:
@@ -72,7 +69,7 @@
     #    state: present
     #  become: true
     #  when: ansible_facts.os_family != 'Darwin'
-    - name: Fix sourcetreee git-crypt # SEE: https://jira.atlassian.com/browse/SRCTREE-2511
+    - name: Fix Sourcetree git-crypt # SEE: https://jira.atlassian.com/browse/SRCTREE-2511
       ansible.builtin.file:
         src: "{{ homebrew_prefix }}/bin/git-crypt"
         dest: /Applications/Development/Sourcetree.app/Contents/Resources/git_local/bin/git-crypt
@@ -80,7 +77,7 @@
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
-- name: "[Darwin] iterm"
+- name: "[Darwin] iTerm"
   block:
     - name: Install
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
