@@ -24,6 +24,7 @@
               - dir: Media
                 packages:
                   - digikam
+                  #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
 
     - name: Install design apps
       block:
@@ -107,7 +108,6 @@
             packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
               - dir: Tools
                 packages:
-                  - betterdisplay
                   - keycastr
                   - bitwarden
 
