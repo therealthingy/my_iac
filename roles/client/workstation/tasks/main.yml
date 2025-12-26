@@ -95,7 +95,6 @@
               - # Misc
                 packages:
                   - keycastr
-                  - bitwarden
 
     - name: Install Latex
       ansible.builtin.include_tasks: package-latex.yml
@@ -105,7 +104,21 @@
   ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
   vars:
     packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-      - packages: "{{ overridable_apps }}"
+      - #
+        packages:
+          - raycast
+          - bitwarden
+          # Office
+          - pdf-expert
+          # Privacy
+          - little-snitch
+          # Internet/Services
+          - eddie
+          # Social
+          - signal
+          - discord
+  when: install_additional == true
+
 
 - name: "Apps: config"
   block:

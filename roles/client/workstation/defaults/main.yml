@@ -1,18 +1,8 @@
 ---
+install_additional: False
+
 install_latex: False
 
 #latex_packages:
 #  - logreq
 #  - biblatex
-
-overridable_apps:
-  - raycast
-  # Office
-  - pdf-expert
-  # Privacy
-  - little-snitch
-  # Internet/Services
-  - eddie
-  # Social
-  - signal
-  - discord

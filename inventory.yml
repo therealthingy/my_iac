@@ -18,7 +18,6 @@ all:
     clients_workstation:
       hosts:
         local_mac:
-          overridable_apps: []
 
     # -  "Headless" systems  -
     servers:
@@ -243,7 +242,7 @@ all:
               - server: fa93:eb85:93cd:56be::1/64
                 dns: "{{ pif.ipv6_ula[:-3] }}"
             ddns:
-              update_interval_sec: 300
+              update_interval_sec: 900
               if_ipv6_id: "::{{ pif.ipv6_ula[20:-3] }}"
               update_url: https://dynv6.com/api/update?hostname={domain}&token={token}&ipv4=&ipv6={ip6addr}
               pass: !vault |
