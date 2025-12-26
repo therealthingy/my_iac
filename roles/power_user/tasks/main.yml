@@ -204,7 +204,6 @@
           - # Privacy
             packages:
               - cryptomator
-              - little-snitch
             #- tunnelblick
 
     - name: "[Darwin] hblock"
@@ -340,9 +339,3 @@
               #- istat-menus
               - prefs-editor
 #              - qlmarkdown  # ("Deprecated because it does not pass the macOS Gatekeeper check! It will be disabled on 2026-09-01.")
-              - raycast
-    - name: "[Darwin]"
-      ansible.builtin.package:
-        name:
-          - spek # No cask, despite being an UI app  -> opened via `spek`
-      when: ansible_facts.os_family == 'Darwin'

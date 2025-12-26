@@ -14,6 +14,11 @@
                   - ocenaudio
                   #- xld                                              # TODO
                   #- mediainfo
+        - name: "[Darwin]"
+          ansible.builtin.package:
+            name:
+              - spek # No cask, despite being an UI app  -> opened via `spek`
+          when: ansible_facts.os_family == 'Darwin'
 
     - name: Install pictures apps
       block:
@@ -49,17 +54,6 @@
                   #- fsnotes
                   - joplin
 
-    - name: 'Install "services" apps'
-      block:
-        - name: "[Darwin] Install homebrew packages"
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-          vars:
-            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - # Internet/Services
-                packages:
-                  - eddie
-#                  - maestral
-
     #- name: Install streaming apps      # TODO: Mv in `client_media` role
     #  block:
     #    - name: '[Darwin] Install homebrew packages'
@@ -76,16 +70,9 @@
           vars:
             packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
               - # Social
-                packages: ["signal"]
-
-    - name: 'Install "conferencing" apps'
-      block:
-        - name: "[Darwin] Install homebrew packages"
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-          vars:
-            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - # Internet/Conferencing
-                packages: ["discord"] # 'textual'  (IRC client)
+                packages:
+                  - netnewswire
+                  # TODO: 'textual'  (IRC client)
 
     - name: 'Install "inet" tools'
       block:
@@ -96,7 +83,6 @@
               - # Internet/Tools
                 packages:
                   - cyberduck
-                  - netnewswire
                   - qbittorrent
                   - rustdesk
 
@@ -106,14 +92,22 @@
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - # Tools
+              - # Misc
                 packages:
                   - keycastr
                   - bitwarden
 
     - name: Install Latex
       ansible.builtin.include_tasks: package-latex.yml
-      when: exclude_latex is not defined  or  not exclude_latex
+      when: install_latex == True
+
+- name: 'Install "additional" apps'
+  block:
+    - name: "[Darwin] Install homebrew packages"
+      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
+      vars:
+        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
+          packages: "{{ overridable_apps }}"
 
 - name: "Apps: config"
   block:

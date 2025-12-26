@@ -18,6 +18,7 @@ all:
     clients_workstation:
       hosts:
         local_mac:
+          overridable_apps: []
 
     # -  "Headless" systems  -
     servers:

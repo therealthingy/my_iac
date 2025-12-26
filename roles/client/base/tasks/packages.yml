@@ -105,7 +105,6 @@
     - name: "[Darwin]"
       community.general.homebrew:
         name:
-          #- ddcctl                 # DDC monitor controls for the OSX command line
           - trash
           - mas # Mac App Store CLI tool
       become: false
@@ -150,12 +149,11 @@
           - # Office
             packages:
               - drawio
-              - pdf-expert
               - slidepilot
           - # Office/Misc
             packages:
               - geogebra
-              #- softmaker-freeoffice
+              - softmaker-freeoffice
   become: "{{ package_manager_become }}"
 
 - name: Install internet related stuff
@@ -167,7 +165,6 @@
           - # Internet/Browsers
             packages:
               - brave-browser
-              #- librewolf                                      # TODO: `xattr -d "com.apple.quarantine" /Applications/Internet/Browsers/LibreWolf.app`
               - tor-browser
 
     - name: "[Debian/Ubuntu] Install flatpak packages" # TODO: Add mac counterparts & check whether VM
