@@ -72,7 +72,7 @@
     - name: Fix Sourcetree git-crypt # SEE: https://jira.atlassian.com/browse/SRCTREE-2511
       ansible.builtin.file:
         src: "{{ homebrew_prefix }}/bin/git-crypt"
-        dest: /Applications/Development/Sourcetree.app/Contents/Resources/git_local/bin/git-crypt
+        dest: /Applications/Sourcetree.app/Contents/Resources/git_local/bin/git-crypt
         state: link
       become: false
       when: ansible_facts.os_family == 'Darwin'
