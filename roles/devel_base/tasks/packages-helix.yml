@@ -62,7 +62,7 @@
             mode: 0755
         - ansible.builtin.unarchive:
             src: "apps/Helix-iTerm.app.tar.gz"
-            dest: "/Applications/Development/Editors/"
+            dest: "/Applications/"
             creates: Helix-iTerm.app
       become: false
       when: ansible_facts.os_family == 'Darwin'

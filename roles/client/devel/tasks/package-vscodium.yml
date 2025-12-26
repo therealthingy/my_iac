@@ -42,7 +42,7 @@
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Development/Editors # … as 'general purpose' text editor
+          - # Development/Editors # … as 'general purpose' text editor
             packages:
               - vscodium
 

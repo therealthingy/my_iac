@@ -5,7 +5,7 @@
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:
-          - dir: Network
+          - # Network
             packages:
               - wireshark-app
                 #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
@@ -27,7 +27,7 @@
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Development/Editors
+          - # Development/Editors
             packages:
               - imhex
     - name: "[Debian/Ubuntu] Install flatpak packages"
@@ -59,7 +59,7 @@
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:
-          - dir: Development
+          - # Development
             packages:
               - sourcetree
     #- name: '[Debian/Ubuntu] Install flatpak packages'
@@ -83,7 +83,7 @@
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Development
+          - # Development
             packages:
               - iterm2
     - name: "Apps: config"
@@ -123,7 +123,7 @@
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Development/DB
+          - # Development/DB
             packages:
               - db-browser-for-sqlite
               - mysqlworkbench

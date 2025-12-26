@@ -201,10 +201,9 @@
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks: # TODO: Add flatpak counterpart 4 linux & check whether VM
-          - dir: Privacy
+          - # Privacy
             packages:
               - cryptomator
-          - packages: # Need 2 be in base-dir
               - little-snitch
             #- tunnelblick
 
@@ -320,7 +319,7 @@
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Maintenance
+          - # Maintenance
             packages:
               - appcleaner
               - omnidisksweeper
@@ -335,7 +334,7 @@
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Misc
+          - # Misc
             packages:
               - apparency
               #- istat-menus

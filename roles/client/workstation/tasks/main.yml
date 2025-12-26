@@ -7,7 +7,7 @@
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks: # TODO: Add `flatpak` counterparts 4 linux & check whether VM
-              - dir: Media
+              - # Media
                 packages:
                   #- mediahuman-audio-converter
                   #- musicbrainz-picard
@@ -21,7 +21,7 @@
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks: # TODO: Add `flatpak` counterparts 4 linux & check whether VM
-              - dir: Media
+              - # Media
                 packages:
                   - digikam
                   #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
@@ -32,7 +32,7 @@
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - dir: Design
+              - # Design
                 packages:
                   #- inkscape
                   - paintbrush
@@ -44,7 +44,7 @@
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - dir: Notes
+              - # Notes
                 packages:
                   #- fsnotes
                   - joplin
@@ -55,10 +55,10 @@
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - dir: Internet/Services
+              - # Internet/Services
                 packages:
                   - eddie
-                  - maestral
+#                  - maestral
 
     #- name: Install streaming apps      # TODO: Mv in `client_media` role
     #  block:
@@ -66,7 +66,7 @@
     #      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
     #      vars:
     #        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-    #          - dir: Music
+    #          - Music
     #            packages: ['spotify']                                  # TODO:
 
     - name: Install social stuff
@@ -75,7 +75,7 @@
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - dir: Social
+              - # Social
                 packages: ["signal"]
 
     - name: 'Install "conferencing" apps'
@@ -84,7 +84,7 @@
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - dir: Internet/Conferencing
+              - # Internet/Conferencing
                 packages: ["discord"] # 'textual'  (IRC client)
 
     - name: 'Install "inet" tools'
@@ -93,7 +93,7 @@
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - dir: Internet/Tools
+              - # Internet/Tools
                 packages:
                   - cyberduck
                   - netnewswire
@@ -106,7 +106,7 @@
           ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
           vars:
             packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - dir: Tools
+              - # Tools
                 packages:
                   - keycastr
                   - bitwarden

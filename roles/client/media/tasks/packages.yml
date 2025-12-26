@@ -55,7 +55,7 @@
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Media
+          - # Media
             packages:
               - iina
               - vlc

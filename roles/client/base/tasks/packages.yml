@@ -147,12 +147,12 @@
       ansible.builtin.include_tasks: darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Office
+          - # Office
             packages:
               - drawio
               - pdf-expert
               - slidepilot
-          - dir: Office/Misc
+          - # Office/Misc
             packages:
               - geogebra
               #- softmaker-freeoffice
@@ -164,7 +164,7 @@
       ansible.builtin.include_tasks: darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:
-          - dir: Internet/Browsers
+          - # Internet/Browsers
             packages:
               - brave-browser
               #- librewolf                                      # TODO: `xattr -d "com.apple.quarantine" /Applications/Internet/Browsers/LibreWolf.app`
@@ -201,7 +201,7 @@
       ansible.builtin.include_tasks: darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:
-          - dir: Security
+          - # Security
             packages:
               - dhs
               - knockknock
@@ -215,7 +215,7 @@
       ansible.builtin.include_tasks: darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - dir: Package
+          - # Package
             packages:
               - keka
               - pacifist

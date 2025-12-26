@@ -14,7 +14,7 @@
       ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
       vars:
         packages_homebrew_casks:
-          - dir: Office/LaTeX
+          - # Office/LaTeX
             packages:
               - mactex # basictex
               #- bibdesk    # (Already contained in mactex full)
@@ -64,7 +64,7 @@
               ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
               vars:
                 packages_homebrew_casks:
-                  - dir: Office/LaTeX
+                  - # Office/LaTeX
                     packages:
                       - skim
             - name: Config
