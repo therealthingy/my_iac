@@ -54,4 +54,4 @@
         repo_git_host: github.com
         dest: "/{{ os_homedir }}/{{ user.name }}/.config/vscodium/"
   become: false
-  when: git_config is defined
+  when: git_config is defined # as it's a private repo (atm)

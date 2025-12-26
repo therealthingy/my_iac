@@ -52,7 +52,6 @@
           - nano
           # File archiving/Compression:
           - tar
-          - pbzip2
           - xz-utils
           # Privacy:
           - cryptsetup
@@ -68,10 +67,12 @@
     - name: "[Darwin / Debian/Ubuntu]"
       ansible.builtin.package:
         name:
+          - colordiff
           # Administration:
           - htop
           # File archiving:
           - pigz
+          - pbzip2
           # Networking:
           - curl
       become: "{{ package_manager_become }}"
