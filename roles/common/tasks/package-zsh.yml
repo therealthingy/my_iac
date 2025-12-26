@@ -16,6 +16,15 @@
     mode: 0755
   become: false
 
+- name: Create local scripts dir
+  ansible.builtin.file:
+    path: "/{{ os_homedir }}/{{ user.name }}/.local/bin/" # TODO: Hijacks pipx's bin folder => is this ok ??!
+    state: directory
+    #owner: '{{ user.name }}'
+    #group: '{{ user.group_name }}'
+    mode: 0755
+  become: false
+
 - name: Install oh-my-zsh
   ansible.builtin.git:
     repo: https://github.com/ohmyzsh/ohmyzsh.git
