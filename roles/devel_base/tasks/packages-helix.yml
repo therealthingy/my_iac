@@ -51,21 +51,10 @@
 
 # TODO: https://schembri.me/post/neovim-everywhere-on-macos/
 - name: "[Darwin] Post Install -- Finder integration"
-  block:
-    - name: Install app
-      block:
-        - ansible.builtin.file:
-            path: "/Applications/Development/Editors"
-            state: directory
-            owner: "{{ user.name }}"
-            group: "{{ user.group_name }}"
-            mode: 0755
-        - ansible.builtin.unarchive:
-            src: "apps/Helix-iTerm.app.tar.gz"
-            dest: "/Applications/"
-            creates: Helix-iTerm.app
-      become: false
-      when: ansible_facts.os_family == 'Darwin'
+  ansible.builtin.unarchive:
+    src: "apps/Helix-iTerm.app.tar.gz"
+    dest: "/Applications/"
+    creates: Helix-iTerm.app
   become: false
   when: ansible_facts.os_family == 'Darwin'
 
