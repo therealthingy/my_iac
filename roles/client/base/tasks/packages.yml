@@ -154,6 +154,7 @@
             packages:
               - geogebra
               - softmaker-freeoffice
+              #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
   become: "{{ package_manager_become }}"
 
 - name: Install internet related stuff
