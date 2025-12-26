@@ -533,6 +533,10 @@
       key: "showhidden"
       value: "true"
       type: "boolean"
+    - domain: "com.apple.Dock" # Make Dock icons of hidden applications translucent;  TODO: `killall Dock`
+      key: "show-recents"
+      value: "true"
+      type: "boolean"
     - domain: "com.apple.dock" # Eliminate Dock reveal delay
       key: "autohide-time-modifier"
       value: "0"
@@ -622,6 +626,10 @@
   #defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
   become: false
   when: ansible_facts.os_family == 'Darwin'
+
+# TODO: Dock items  (SEE: https://stackoverflow.com/q/67026378)
+  # com.apple.dock "persistent-apps"
+  #   => when `dock_fav_apps` is defined
 
 - name: "[Darwin] `systemsetup` settings"
   ansible.builtin.include_tasks: darwin/systemsetup.yml

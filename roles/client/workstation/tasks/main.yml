@@ -18,7 +18,7 @@
           ansible.builtin.package:
             name:
               - spek # No cask, despite being an UI app  -> opened via `spek`
-          when: ansible_facts.os_family == 'Darwin'
+      when: ansible_facts.os_family == 'Darwin'
 
     - name: Install pictures apps
       block:
