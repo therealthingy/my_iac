@@ -47,6 +47,7 @@
   become: true
 
 # Equivalent command: `docker network create --subnet="2001:db8:1::/48" --ipv6 {{ reverse_proxy_docker_network }}`
+# NOTE: Might require a `sudo systemctl restart docker` on the first run
 - name: "Docker: Create a network w/ IPv6 IPAM config"
   community.docker.docker_network:
     name: "{{ reverse_proxy_docker_network }}"
