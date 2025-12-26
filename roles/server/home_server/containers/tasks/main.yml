@@ -43,7 +43,7 @@
                 - "{{ host_port | default(8080, true) }}:80"
 
     - name: portainer # TODO SSO: https://docs.portainer.io/admin/settings/authentication/oauth  //  https://helgeklein.com/blog/portainer-setup-guide-with-automatic-https-oauth-sso-via-authelia/
-      startup: False
+      startup: True
       compose:
         services:
           - name: portainer
