@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# {{ ansible_managed | comment }}
+{{ ansible_managed | comment }}
 """
 Essentially only updates IPv6 prefix   ~~(as we use Privacy Extensions, but FritzBox allows only fixed IF-ID)~~
 
@@ -19,6 +19,11 @@ LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
 def main():
+    print(
+        f"\n\n\n[{datetime.datetime.now().strftime(LOG_DATE_FORMAT)}] Running as user '{os.path.split(os.path.expanduser('~'))[-1]}' on '{os.uname()[1]}'"
+    )
+
+    # Parse env
     try:
         if_name = os.environ["IF_NAME"]
         ipv6_if_id = os.environ["IPV6_IF_ID"].replace("::", "")
@@ -31,48 +36,55 @@ def main():
         exit(1)
 
     print(
-        f"\n\n\n[{datetime.datetime.now().strftime(LOG_DATE_FORMAT)}] Running as user '{os.path.split(os.path.expanduser('~'))[-1]}' on '{os.uname()[1]}'"
+        f"ENV: {if_name=},{ipv6_if_id=},{ddns_update_url=},{ddns_domain=},{ddns_token=},{check_interval_sec=}"
     )
 
+    # Update 4 ever
     prior_ip = None
     while True:
         print(
             f'[{datetime.datetime.now().strftime(LOG_DATE_FORMAT)}] Checking 4 IPv6 IF-ID "{ipv6_if_id}" on "{if_name}" …'
         )
+
+        # Check all IP addresses
         for ip in ni.ifaddresses(if_name)[ni.AF_INET6]:
-            if (
-                any(ip["addr"].startswith(x) for x in ["fd", "fe80"])
-                or ipv6_if_id not in ip["addr"]
-            ):
+            ip = ip["addr"]
+            # Skip irrelevant IPs based on prefix (no ULAs & link-local addresses) & suffix (IF id)
+            if any(ip.startswith(x) for x in ["fd", "fe80"]) or ipv6_if_id not in ip:
                 continue
 
-            if prior_ip != ip["addr"]:
-                try:
-                    with requests.get(
-                        ddns_update_url.format(
-                            domain=ddns_domain, token=ddns_token, ip6addr=ip["addr"]
-                        ),
-                        timeout=3,
-                    ) as r:
-                        r.raise_for_status()
-                except (
-                    requests.exceptions.HTTPError,
-                    requests.exceptions.ConnectionError,
-                    requests.exceptions.Timeout,
-                    requests.exceptions.RequestException,
-                ) as e:
-                    print(
-                        f"[{datetime.datetime.now().strftime(LOG_DATE_FORMAT)}] ↳ ERROR: Update failed:  ",
-                        e,
-                        file=sys.stderr,
-                    )
-                    break
-                prior_ip = ip["addr"]
-                print(
-                    f'[{datetime.datetime.now().strftime(LOG_DATE_FORMAT)}] ↳ Updated AAAA record 4 domain zone "{ddns_domain}": {prior_ip}'
-                )
+            else:
+                # Update IP
+                if prior_ip != ip:
+                    try:
+                        with requests.get(
+                            ddns_update_url.format(
+                                domain=ddns_domain,
+                                token=ddns_token,
+                                ip6addr=ip,
+                            ),
+                            timeout=3,
+                        ) as r:
+                            r.raise_for_status()
+                    except (
+                        requests.exceptions.HTTPError,
+                        requests.exceptions.ConnectionError,
+                        requests.exceptions.Timeout,
+                        requests.exceptions.RequestException,
+                    ) as e:
+                        print(
+                            f"[{datetime.datetime.now().strftime(LOG_DATE_FORMAT)}] ↳ ERROR: Update failed:  ",
+                            e,
+                            file=sys.stderr,
+                        )
+                        break
 
-            break
+                    prior_ip = ip
+                    print(
+                        f'[{datetime.datetime.now().strftime(LOG_DATE_FORMAT)}] ↳ Updated AAAA record 4 domain zone "{ddns_domain}": {prior_ip}'
+                    )
+
+                break
 
         if prior_ip == None:
             print(
@@ -81,6 +93,7 @@ def main():
             )
             exit(1)
 
+        # TODO: Avoid polling by using pyroute2 (netlink sockets)
         time.sleep(check_interval_sec)
 
 
