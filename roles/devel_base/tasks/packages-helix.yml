@@ -6,6 +6,16 @@
   # TODO: Ubuntu: https://helix-editor.vercel.app/start-here/installation
   when: ansible_facts.os_family == 'Darwin'
 
+#
+#TODO: Once installation 4 Ubuntu added …
+#- name: '[Linux] helix -- Set "alternatives"'
+#  community.general.alternatives:
+#    name: editor
+#    link: /usr/bin/editor
+#    path: /usr/bin/hx
+#  when: ansible_facts.os_family != 'Darwin'
+#  become: true
+
 - name: LSPs
   block:
     - name: "[Darwin]" # TODO: UBUNTU
@@ -66,11 +76,3 @@
         repo_git_host: github.com
         dest: "/{{ os_homedir }}/{{ user.name }}/.config/helix/"
   become: false
-
-- name: '[Linux] helix -- Set "alternatives"'
-  community.general.alternatives:
-    name: editor
-    link: /usr/bin/editor
-    path: /usr/bin/hx
-  when: ansible_facts.os_family != 'Darwin'
-  become: true
