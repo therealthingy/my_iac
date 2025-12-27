@@ -18,8 +18,8 @@
         - name: "[Darwin]"
           block:
             - name: Check whether MacBook
-              ansible.builtin.shell: sysctl hw.model | grep -o MacBook
-              register: result_mac_model
+              ansible.builtin.shell: pmset -g batt > /dev/null
+              register: result_mac_battery
               failed_when: false
               changed_when: false
               become: false
@@ -36,9 +36,9 @@
           when: ansible_facts.os_family != 'Darwin'
           become: false
 
-        - name: "[Debian/Ubuntu]"
+        - name: "[Darwin]"
           ansible.builtin.set_fact:
-            workstation_is_a_macbook: "{{ True if result_mac_model.rc == 0 else False }}"
+            host_is_a_macbook: "{{ True if result_mac_battery.rc == 0 else False }}"
             gathered_workstation_facts: True
           when: ansible_facts.os_family == 'Darwin'
           become: false

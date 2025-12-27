@@ -388,10 +388,10 @@
     - setting: restartfreeze
       value: true
     - setting: computersleep
-      value: "{{ 1 if workstation_is_a_macbook else 0 }}"
+      value: "{{ 1 if host_is_a_macbook else 0 }}"
       type: int
     - setting: displaysleep
-      value: "{{ 5 if workstation_is_a_macbook else 15 }}"
+      value: "{{ 5 if host_is_a_macbook else 15 }}"
       type: int
     - setting: harddisksleep
       value: 0

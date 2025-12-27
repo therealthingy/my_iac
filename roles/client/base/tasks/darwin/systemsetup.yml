@@ -2,7 +2,7 @@
 - name: Set `systemsetup` setting
   block:
     - name: "Check '{{ systemsetup_setting.setting }}' already set"
-      ansible.builtin.shell: "systemsetup -get{{ systemsetup_setting.setting }} | grep -wo {{ ('On' if systemsetup_setting.value else 'Off') if systemsetup_setting.type is not defined or systemsetup_setting.type == 'bool'   else   (systemsetup_setting.value if systemsetup_setting.value|int != 0 else 'Never')  }}"
+      ansible.builtin.shell: "systemsetup -get{{ systemsetup_setting.setting }} | grep -wo {{ ('On' if systemsetup_setting.value else 'Off') if systemsetup_setting.type is not defined or systemsetup_setting.type == 'bool'   else   (systemsetup_setting.value if systemsetup_setting.value | int != 0 else 'Never')  }}"
       register: result_systemsetup_get
       failed_when: false
       changed_when: false
