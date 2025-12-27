@@ -127,6 +127,8 @@
     - bitwarden
     # Office
     - pdf-expert
+    #- softmaker-freeoffice
+    ##sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
     # Privacy
     - little-snitch
     # Internet/Services

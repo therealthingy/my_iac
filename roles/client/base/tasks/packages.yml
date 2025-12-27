@@ -151,8 +151,6 @@
         - drawio
         - slidepilot
         - geogebra
-        - softmaker-freeoffice
-          #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
       loop_control:
         loop_var: homebrew_cask
       when: ansible_facts.os_family == 'Darwin'

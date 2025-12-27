@@ -129,7 +129,7 @@
       with_items:
         # Development/DB
         - db-browser-for-sqlite
-        - mysqlworkbench
+        #- mysqlworkbench
         - sequel-ace
       loop_control:
         loop_var: homebrew_cask
