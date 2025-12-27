@@ -105,6 +105,7 @@
             gathered_host_facts: True
   when: gathered_host_facts is not defined
   become: false
+#
 #-  ansible.builtin.debug:
 #    msg:
 #      user={{ user }},

@@ -56,7 +56,7 @@
       ansible.builtin.apt:
         name:
           - nautilus # Gets rmved mysteriously …
-          - gnome-terminal
+          - ptyxis
           - seahorse # "gnome-keyring" frontend
         state: present
   become: true
@@ -171,7 +171,7 @@
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
-    - name: "[Debian/Ubuntu] Install flatpak packages" # TODO: Add mac counterparts & check whether VM
+    - name: "[Debian/Ubuntu] ~~Install flatpak packages~~" # TODO: Add mac counterparts & check whether VM
       ## Too buggy (https://github.com/flathub/com.brave.Browser/issues?q=is%3Aopen+is%3Aissue), hence we use the native package
       #community.general.flatpak:
       #  name:
