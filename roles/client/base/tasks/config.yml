@@ -387,6 +387,7 @@
   with_items:
     - setting: restartfreeze
       value: true
+    # Energy
     - setting: computersleep
       value: "{{ 1 if host_is_a_macbook else 0 }}"
       type: int

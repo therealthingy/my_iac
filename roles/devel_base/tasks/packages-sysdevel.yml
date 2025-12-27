@@ -72,7 +72,7 @@
               - libc6-dbg # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
               # 'Performance' analysis:
               - kcachegrind # KDE GUI 2 visualize profiling data (mainly used as visualization frontend for data measured by Cachegrind/Callgrind tools from the Valgrind package)
-              #- hotspot # UI (similar 2 KCachegrind 4 valgrind, BUT) around `perf`  (SEE: https://github.com/KDAB/hotspot)
+              - hotspot # UI (similar 2 KCachegrind 4 valgrind, BUT) around `perf`  (SEE: https://github.com/KDAB/hotspot)
               - heaptrack # Heap analysis tool (from KDE)
               - heaptrack-gui
               - time # NOTE: Usually implemented as shell builtin  (hence must be called directly via `/usr/bin/time`)

@@ -161,9 +161,6 @@
   - **Disable usb drive not properly ejected warning**:
     `sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.DiskArbitration.diskarbitrationd.plist DADisableEjectNotification -bool YES && sudo pkill diskarbitrationd`
 
-  - **Change scroll direction**
-    `defaults write -g com.apple.swipescrolldirection -bool FALSE`
-
   - `systemsetup (get|set)wakeonmodem <bool>`
 
   - FINDER settings:
