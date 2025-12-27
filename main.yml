@@ -19,7 +19,7 @@
     - role: power_user
     - role: client/base
   vars:
-    wallpaper: "/System/Library/Desktop Pictures/Solid Colors/Stone.png" # TODO: GNU/Linux wallpaper
+    wallpaper: "/System/Library/Desktop Pictures/Solid Colors/Stone.png" # TODO: GNOME wallpaper
     dock_fav_apps:
       - "'org.gnome.Nautilus.desktop'"
       - "'firefox.desktop'"

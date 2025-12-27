@@ -150,7 +150,7 @@
 
 - SYSTEM settings:
   - **Add message to lock-screen**
-  `sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText “ENTER HERE”`
+    `sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText “ENTER HERE”`
   - SOUND:
     ```
     defaults write -g "com.apple.sound.beep.feedback" -int 0
@@ -178,6 +178,7 @@
     /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
     /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
     ```
+
 
 - APP settings:
   ```
