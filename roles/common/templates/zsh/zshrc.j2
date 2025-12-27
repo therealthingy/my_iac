@@ -254,12 +254,6 @@ path-add "/Library/TeX/texbin/" "after"
       'servers_devel' in group_names %}
 # --  cargo  --
 [ -f ~/.cargo/env ] && source $HOME/.cargo/env
-
-# --  go  --
-{% set GOPATH = "$HOME/.golang/"  %}
-path-add "{{ GOPATH }}/bin/" "after"
-{# TODO: Instead of exporting `GOPATH`, set it permanently via: `go env -w GOPATH=$HOME/go` #}
-export GOPATH={{ GOPATH }}
 {% endif %}
 
 
