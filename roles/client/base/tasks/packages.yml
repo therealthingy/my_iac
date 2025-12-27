@@ -142,31 +142,36 @@
           - ocrmypdf # NOTE: Based on tesseract (and its lang packs -> e.g., `ocrmypdf -l eng+deu …`)
           - img2pdf
 
-    - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - # Office
-            packages:
-              - drawio
-              - slidepilot
-          - # Office/Misc
-            packages:
-              - geogebra
-              - softmaker-freeoffice
-              #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
+    - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        # Office
+        - drawio
+        - slidepilot
+        - geogebra
+        - softmaker-freeoffice
+          #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
+      loop_control:
+        loop_var: homebrew_cask
+      when: ansible_facts.os_family == 'Darwin'
   become: "{{ package_manager_become }}"
 
 - name: Install internet related stuff
   block:
     - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:
-          - # Internet/Browsers
-            packages:
-              - brave-browser
-              - tor-browser
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        # Internet/Browsers
+        - brave-browser
+        - tor-browser
+      loop_control:
+        loop_var: homebrew_cask
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
 
     - name: "[Debian/Ubuntu] Install flatpak packages" # TODO: Add mac counterparts & check whether VM
       ## Too buggy (https://github.com/flathub/com.brave.Browser/issues?q=is%3Aopen+is%3Aissue), hence we use the native package
@@ -196,24 +201,32 @@
 - name: Install security related stuff
   block:
     - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:
-          - # Security
-            packages:
-              - dhs
-              - knockknock
-              - suspicious-package
-              - taskexplorer
-              - whatsyoursign
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        # Security
+        - dhs
+        - knockknock
+        - suspicious-package
+        - taskexplorer
+        - whatsyoursign
+      loop_control:
+        loop_var: homebrew_cask
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
 
 - name: Install archiving related stuff
   block:
-    - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - # Package
-            packages:
-              - keka
-              - pacifist
+    - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        # Package
+        - keka
+        - pacifist
+      loop_control:
+        loop_var: homebrew_cask
+      become: false
+      when: ansible_facts.os_family == 'Darwin'

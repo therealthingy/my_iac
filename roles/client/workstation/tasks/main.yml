@@ -3,122 +3,141 @@
   block:
     - name: Install audio apps # TODO: Mv in `client_media` role
       block:
-        - name: "[Darwin] Install homebrew packages"
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-          vars:
-            packages_homebrew_casks: # TODO: Add `flatpak` counterparts 4 linux & check whether VM
-              - # Media
-                packages:
-                  #- mediahuman-audio-converter
-                  #- musicbrainz-picard
-                  - ocenaudio
-                  #- xld                                              # TODO
-                  #- mediainfo
+        - name: "[Darwin] Install homebrew packages" # TODO: Add `flatpak` counterparts 4 linux & check whether VM
+          community.general.homebrew_cask:
+            name: "{{ homebrew_cask }}"
+            state: latest
+          with_items:
+            # Media
+            #- mediahuman-audio-converter
+            #- musicbrainz-picard
+            - ocenaudio
+            #- xld                                              # TODO
+            #- mediainfo
+          loop_control:
+            loop_var: homebrew_cask
         - name: "[Darwin]"
           ansible.builtin.package:
             name:
               - spek # No cask, despite being an UI app  -> opened via `spek`
+      become: false
       when: ansible_facts.os_family == 'Darwin'
 
     - name: Install pictures apps
       block:
-        - name: "[Darwin] Install homebrew packages"
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-          vars:
-            packages_homebrew_casks: # TODO: Add `flatpak` counterparts 4 linux & check whether VM
-              - # Media
-                packages:
-                  - digikam
-                  #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
+        - name: "[Darwin] Install homebrew packages" # TODO: Add `flatpak` counterparts 4 linux & check whether VM
+          community.general.homebrew_cask:
+            name: "{{ homebrew_cask }}"
+            state: latest
+          with_items:
+            # Media
+            - digikam
+              #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
+          loop_control:
+            loop_var: homebrew_cask
+          become: false
+          when: ansible_facts.os_family == 'Darwin'
 
     - name: Install design apps
       block:
-        - name: "[Darwin] Install homebrew packages"
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-          vars:
-            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - # Design
-                packages:
-                  #- inkscape
-                  - paintbrush
-                  - imageoptim
+        - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VMF
+          community.general.homebrew_cask:
+            name: "{{ homebrew_cask }}"
+            state: latest
+          with_items:
+            # Design
+            #- inkscape
+            - paintbrush
+            - imageoptim
+          loop_control:
+            loop_var: homebrew_cask
+          become: false
+          when: ansible_facts.os_family == 'Darwin'
 
     - name: Install note taking apps
       block:
-        - name: "[Darwin] Install homebrew packages"
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-          vars:
-            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - # Notes
-                packages:
-                  #- fsnotes
-                  - joplin
-
-    #- name: Install streaming apps      # TODO: Mv in `client_media` role
-    #  block:
-    #    - name: '[Darwin] Install homebrew packages'
-    #      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-    #      vars:
-    #        packages_homebrew_casks:         # TODO: Add flatpak counterparts 4 linux & check whether VM
-    #          - Music
-    #            packages: ['spotify']                                  # TODO:
+        - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+          community.general.homebrew_cask:
+            name: "{{ homebrew_cask }}"
+            state: latest
+          with_items:
+            # Notes
+            #- fsnotes
+            - joplin
+          loop_control:
+            loop_var: homebrew_cask
+          become: false
+          when: ansible_facts.os_family == 'Darwin'
 
     - name: Install social stuff
       block:
-        - name: "[Darwin] Install homebrew packages"
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-          vars:
-            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - # Social
-                packages:
-                  - netnewswire
-                  # TODO: 'textual'  (IRC client)
+        - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+          community.general.homebrew_cask:
+            name: "{{ homebrew_cask }}"
+            state: latest
+          with_items:
+            # Social
+            - netnewswire
+            # TODO: 'textual'  (IRC client)
+          loop_control:
+            loop_var: homebrew_cask
+          become: false
+          when: ansible_facts.os_family == 'Darwin'
 
     - name: 'Install "inet" tools'
       block:
-        - name: "[Darwin] Install homebrew packages"
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-          vars:
-            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - # Internet/Tools
-                packages:
-                  - cyberduck
-                  - qbittorrent
-                  - rustdesk
+        - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+          community.general.homebrew_cask:
+            name: "{{ homebrew_cask }}"
+            state: latest
+          with_items:
+            # Internet/Tools
+            - cyberduck
+            - qbittorrent
+            - rustdesk
+          loop_control:
+            loop_var: homebrew_cask
+          become: false
+          when: ansible_facts.os_family == 'Darwin'
 
     - name: Install misc. tools
       block:
-        - name: "[Darwin] Install homebrew packages"
-          ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-          vars:
-            packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-              - # Misc
-                packages:
-                  - keycastr
+        - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+          community.general.homebrew_cask:
+            name: "{{ homebrew_cask }}"
+            state: latest
+          with_items:
+            # Misc
+            - keycastr
+          loop_control:
+            loop_var: homebrew_cask
+          become: false
+          when: ansible_facts.os_family == 'Darwin'
 
     - name: Install Latex
       ansible.builtin.include_tasks: package-latex.yml
       when: install_latex == True
 
-- name: 'Install "additional" apps'
-  ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-  vars:
-    packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-      - #
-        packages:
-          - raycast
-          - bitwarden
-          # Office
-          - pdf-expert
-          # Privacy
-          - little-snitch
-          # Internet/Services
-          - eddie
-          # Social
-          - signal
-          - discord
-  when: install_additional == true
-
+- name: '[Darwin] Install "additional" apps' # TODO: Add flatpak counterparts 4 linux & check whether VM
+  community.general.homebrew_cask:
+    name: "{{ homebrew_cask }}"
+    state: latest
+  with_items:
+    - raycast
+    - bitwarden
+    # Office
+    - pdf-expert
+    # Privacy
+    - little-snitch
+    # Internet/Services
+    - eddie
+    # Social
+    - signal
+    - discord
+  loop_control:
+    loop_var: homebrew_cask
+  become: false
+  when: ansible_facts.os_family == 'Darwin' and install_additional == true
 
 - name: "Apps: config"
   block:

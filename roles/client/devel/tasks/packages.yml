@@ -2,13 +2,18 @@
 - name: Install network tools
   block:
     - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:
-          - # Network
-            packages:
-              - wireshark-app
-                #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        # Network
+        - wireshark-app
+          #sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
+      loop_control:
+        loop_var: homebrew_cask
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
+
     - name: "[Debian/Ubuntu] Install apt packages"
       ansible.builtin.apt:
         name:
@@ -23,13 +28,13 @@
 
 - name: Install GUI hexeditor
   block:
-    - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - # Development/Editors
-            packages:
-              - imhex
+    - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+      community.general.homebrew_cask:
+        name: imhex
+        state: latest
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
+
     - name: "[Debian/Ubuntu] Install flatpak packages"
       community.general.flatpak:
         name:
@@ -56,12 +61,12 @@
 - name: Install git tools
   block:
     - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:
-          - # Development
-            packages:
-              - sourcetree
+      community.general.homebrew_cask:
+        # Development
+        name: sourcetree
+        state: latest
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
     #- name: '[Debian/Ubuntu] Install flatpak packages'
     #  community.general.flatpak:
     #    name:
@@ -79,13 +84,11 @@
 
 - name: "[Darwin] iTerm"
   block:
-    - name: Install
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - # Development
-            packages:
-              - iterm2
+    - name: Install # TODO: Add flatpak counterparts 4 linux & check whether VM
+      community.general.homebrew_cask:
+        # Development
+        name: iterm2
+        state: latest
     - name: "Apps: config"
       block:
         - name: Create dir
@@ -119,15 +122,19 @@
 
 - name: Install db tools
   block:
-    - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - # Development/DB
-            packages:
-              - db-browser-for-sqlite
-              - mysqlworkbench
-              - sequel-ace
+    - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        # Development/DB
+        - db-browser-for-sqlite
+        - mysqlworkbench
+        - sequel-ace
+      loop_control:
+        loop_var: homebrew_cask
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
     - name: "[Debian/Ubuntu] Install flatpak packages"
       community.general.flatpak:
         name:

@@ -39,12 +39,12 @@
       when: ansible_facts.os_family != 'Darwin'
 
     - name: "[Darwin]"
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - # Development/Editors # … as 'general purpose' text editor
-            packages:
-              - vscodium
+      community.general.homebrew_cask:
+        # Development/Editors
+        name: vscodium
+        state: latest
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
 
 - name: Config
   block:

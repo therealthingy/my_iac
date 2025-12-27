@@ -197,14 +197,18 @@
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
-    - name: "[Darwin]"
-      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks: # TODO: Add flatpak counterpart 4 linux & check whether VM
-          - # Privacy
-            packages:
-              - cryptomator
-            #- tunnelblick
+    - name: "[Darwin]" # TODO: Add flatpak counterpart 4 linux & check whether VM
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        # Privacy
+        - cryptomator
+        #- tunnelblick
+      loop_control:
+        loop_var: homebrew_cask
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
 
     - name: "[Darwin] hblock"
       block:
@@ -314,28 +318,36 @@
 
 - name: Install maintenance tools
   block:
-    - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - # Maintenance
-            packages:
-              - appcleaner
-              - omnidisksweeper
-              - onyx
-              - aldente
+    - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        # Maintenance
+        - appcleaner
+        - omnidisksweeper
+        - onyx
+        - aldente
+      loop_control:
+        loop_var: homebrew_cask
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
 
 # TODO: Vmware Fusion replacement …
 
 - name: Install misc tools
   block:
-    - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - # Misc
-            packages:
-              - apparency
-              #- istat-menus
-              - prefs-editor
-#              - qlmarkdown  # ("Deprecated because it does not pass the macOS Gatekeeper check! It will be disabled on 2026-09-01.")
+    - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        # Misc
+        - apparency
+        #- istat-menus
+        - prefs-editor
+      #        - qlmarkdown  # ("Deprecated because it does not pass the macOS Gatekeeper check! It will be disabled on 2026-09-01.")
+      loop_control:
+        loop_var: homebrew_cask
+      become: false
+      when: ansible_facts.os_family == 'Darwin'

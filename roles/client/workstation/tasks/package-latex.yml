@@ -11,16 +11,19 @@
       become: true
 
     - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks:
-          - # Office/LaTeX
-            packages:
-              - mactex # basictex
-              #- bibdesk    # (Already contained in mactex full)
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        # Office/LaTeX
+        - mactex # basictex
+        #- bibdesk    # (already contained in mactex full)
+      loop_control:
+        loop_var: homebrew_cask
+      become: false
       when: ansible_facts.os_family == 'Darwin'
 
-    - name: Install tex-fmt     # SUBSTITUTE 4 `latexindent` (which doesn't work in VSCode: Can't locate File/HomeDir.pm in @INC …)
+    - name: Install tex-fmt # SUBSTITUTE 4 `latexindent` (which doesn't work in VSCode: Can't locate File/HomeDir.pm in @INC …)
       ansible.builtin.package:
         name: tex-fmt
       become: "{{ package_manager_become }}"
@@ -61,12 +64,10 @@
         - name: "[Darwin]"
           block:
             - name: Install
-              ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-              vars:
-                packages_homebrew_casks:
-                  - # Office/LaTeX
-                    packages:
-                      - skim
+              community.general.homebrew_cask:
+                # Office/LaTeX
+                name: skim
+                state: latest
             - name: Config
               community.general.osx_defaults:
                 domain: net.sourceforge.skim-app.skim
@@ -87,7 +88,7 @@
           become: false
           when: ansible_facts.os_family == 'Darwin'
   become: false
-
+#
 # TODO: Following tasks are only required when using 'smaller' distro
 #- name: Install packages (globally)      # Can't be installed in user-mode
 #  ansible.builtin.include_tasks: package-latex-install_globally.yml

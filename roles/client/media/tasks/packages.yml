@@ -28,7 +28,7 @@
         - name: Copy config file
           ansible.builtin.template:
             src: yt-dlp.conf.j2
-            dest: "/{{ os_homedir }}/{{ user.name }}/.config/yt-dlp.conf"  # TODO: `.config` should be `${XDG_CONFIG_HOME}`
+            dest: "/{{ os_homedir }}/{{ user.name }}/.config/yt-dlp.conf" # TODO: `.config` should be `${XDG_CONFIG_HOME}`
             owner: "{{ user.name }}"
             group: "{{ user.group_name }}"
             mode: 0644
@@ -51,14 +51,18 @@
 
 - name: Install video players
   block:
-    - name: "[Darwin] Install homebrew packages"
-      ansible.builtin.include_tasks: ../../base/tasks/darwin/homebrew_casks.yml
-      vars:
-        packages_homebrew_casks: # TODO: Add flatpak counterparts 4 linux & check whether VM
-          - # Media
-            packages:
-              - iina
-              - vlc
+    - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        # Media
+        - iina
+        - vlc
+      loop_control:
+        loop_var: homebrew_cask
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
     - name: "[Debian/Ubuntu] Install flatpak packages"
       community.general.flatpak:
         name:
