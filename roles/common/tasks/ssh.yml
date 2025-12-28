@@ -16,7 +16,7 @@
         - name: "[Darwin]"
           ansible.builtin.include_tasks: ../../client/base/tasks/darwin/systemsetup.yml
           vars:
-            systemsetup_setting: { setting: remotelogin, value: true }
+            systemsetup_setting: { setting: remotelogin, value: "On" }
           when: ansible_facts.os_family == 'Darwin'
 
     - name: Harden
@@ -73,7 +73,7 @@
     - name: "[Darwin]"
       ansible.builtin.include_tasks: ../../client/base/tasks/darwin/systemsetup.yml
       vars:
-        systemsetup_setting: { setting: remotelogin, value: false }
+        systemsetup_setting: { setting: remotelogin, value: "Off" }
       when: ansible_facts.os_family == 'Darwin'
   become: true
   when: sshd_disabled is defined and sshd_disabled

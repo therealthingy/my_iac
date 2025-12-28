@@ -45,10 +45,13 @@
       when: ansible_facts.os_family != 'Darwin'
 
     - name: "Set hostname to '{{ hostname }}'"
-      # Darwin equivalent command: `sudo systemsetup -setcomputername <string>`
       # GNU/LINUX:
       #   TEMPORARILY: `hostname demo.example.com`
       #   PERSISTENT:  `hostnamectl set-hostname server1.example.com`
+      # TODO:Darwin:
+      #   scutil --get ComputerName
+      #   scutil --get HostName
+      #   scutil --get LocalHostName
       ansible.builtin.hostname:
         name: "{{ hostname }}"
       become: true

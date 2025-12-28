@@ -386,17 +386,14 @@
     loop_var: systemsetup_setting
   with_items:
     - setting: restartfreeze
-      value: true
+      value: "Off"
     # Energy
     - setting: computersleep
       value: "{{ 1 if host_is_a_macbook else 0 }}"
-      type: int
     - setting: displaysleep
       value: "{{ 5 if host_is_a_macbook else 15 }}"
-      type: int
     - setting: harddisksleep
       value: 0
-      type: int
   when: ansible_facts.os_family == 'Darwin'
 
 - name: Set wallpaper
