@@ -125,7 +125,6 @@
     - name: "[Darwin / Debian/Ubuntu]"
       ansible.builtin.package:
         name:
-          - mosh
           - tmux
       become: "{{ package_manager_become }}"
 
