@@ -31,7 +31,7 @@
       when: lockscreen_msg is defined
   when: ansible_facts.os_family == 'Darwin'
 
-- name: "[Darwin] User-wide settings" # ( NOTE: Changes will take effect after logging in again )
+- name: "[Darwin] User-wide settings" # ( NOTE: Changes MAY only take effect after logging in again )
   block:
     - community.general.osx_defaults:
         domain: "{{ item.domain }}"
@@ -165,7 +165,7 @@
           key: "FXPreferredGroupBy"
           value: "Kind"
           type: "string"
-        - domain: "com.apple.finder" # Sorting: Keep folders on top
+        - domain: "com.apple.finder" # Sorting: Keep folders on top when sorting by Name
           key: "_FXSortFoldersFirst"
           value: "true"
           type: "boolean"
@@ -491,25 +491,28 @@
         - key: ":DesktopViewSettings:IconViewSettings:showItemInfo" # Enable "Show item info"
           value: "true"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
-        # Enable snap-to-grid 4 icons on the desktop and in other icon views
-        - key: ":DesktopViewSettings:IconViewSettings:arrangeBy"
-          value: "grid"
+        - key: ":DesktopViewSettings:GroupBy" # ~~Group~~Stack by (on Desktop)
+          value: "Kind"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        # Sort by name
+        - key: ":DesktopViewSettings:IconViewSettings:arrangeBy" # (… on Desktop)
+          value: "Name"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
         - key: ":FK_StandardViewSettings:IconViewSettings:arrangeBy"
-          value: "grid"
+          value: "Name"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
         - key: ":StandardViewSettings:IconViewSettings:arrangeBy"
-          value: "grid"
+          value: "Name"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
         # Set the size of icons on the desktop and in other icon views
         - key: ":DesktopViewSettings:IconViewSettings:iconSize"
-          value: "64"
+          value: "48"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
         - key: ":FK_StandardViewSettings:IconViewSettings:iconSize"
-          value: "64"
+          value: "48"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
         - key: ":StandardViewSettings:IconViewSettings:iconSize"
-          value: "64"
+          value: "48"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
 
     - name: Set wallpaper
@@ -523,6 +526,7 @@
           ansible.builtin.command: osascript -e 'tell app "Finder" to set desktop picture to POSIX file "{{ wallpaper }}"'
           when: result_current_wallpaper.rc != 0  or  wallpaper != result_current_wallpaper.stdout
   become: false
+  notify: "restart darwin daemons"
   when: ansible_facts.os_family == 'Darwin'
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------
