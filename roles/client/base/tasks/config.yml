@@ -421,11 +421,14 @@
     value: "{{ item.value }}"
     state: present
   with_items:
-    # --  UI/UX  --
-    - domain: "NSGlobalDomain"
-      key: "AppleInterfaceStyleSwitchesAutomatically"
-      value: "true"
+    # Battery: TODO: Disable optimized charging (4 AlDente)
+    # --  Audio  --
+    - domain: "NSGlobalDomain" # Play feedback when volume is changed; default
+      key: "com.apple.sound.beep.feedback"
+      value: "false"
       type: "boolean"
+    # TODO: Disable startup chime: System Preferences..., then click Sound. In the Sound Effects pane, use the “Play sound on startup” setting to turn the startup sound on or off.
+    # --  UI/UX  --
     - domain: "NSGlobalDomain" # Save 2 disk (not 2 iCloud) by default
       key: "NSDocumentSaveNewDocumentsToCloud"
       value: "false"
@@ -442,6 +445,15 @@
       key: "PMPrintingExpandedStateForPrint"
       value: "true"
       type: "boolean"
+    # -  Appearance  -
+    - domain: "NSGlobalDomain" # Auto appearance (light <-> dark)
+      key: "AppleInterfaceStyleSwitchesAutomatically"
+      value: "true"
+      type: "boolean"
+    - domain: "NSGlobalDomain" # Accent color (Graphite)
+      key: "AppleAccentColor"
+      value: "-1"
+      type: "integer"
     # -  Menubar  -
     - domain: "com.apple.menuextra.clock" # Flash clock time separators; default
       key: "FlashDateSeparators"
@@ -459,6 +471,10 @@
     - domain: "com.apple.finder" # Show all icons on desktop; default
       key: "CreateDesktop"
       value: "true"
+      type: "boolean"
+    - domain: "com.apple.WindowManager" # Disable "Click wallpaper to show desktop"
+      key: "EnableStandardClickToShowDesktop"
+      value: "false"
       type: "boolean"
     # ( Show icons for hard drives, connected servers, and removable media on the desktop )
     - domain: "com.apple.finder" # default
