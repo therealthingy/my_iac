@@ -10,8 +10,6 @@ all:
           ansible_host: 127.0.0.1
           ansible_user: gary # TODO: should be 'gg'
 
-          hostname: gg-mbp
-
     clients_media:
       hosts:
 

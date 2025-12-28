@@ -1,7 +1,5 @@
 ---
-- ansible.builtin.include_tasks: "{{ item }}"
-  loop:
-    - packages-python.yml
+- ansible.builtin.include_tasks: packages-python.yml
 
 - name: Install file general purpose tools
   block:
@@ -310,9 +308,6 @@
             dest: "/{{ os_homedir }}/{{ user.name }}/.tmux.conf.local"
             state: link
       become: false
-
-#- name: Install benchmark tools
-#  TODO: mas amorphousdiskmark
 
 - name: Install maintenance tools
   block:

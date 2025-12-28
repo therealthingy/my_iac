@@ -48,10 +48,7 @@
       # GNU/LINUX:
       #   TEMPORARILY: `hostname demo.example.com`
       #   PERSISTENT:  `hostnamectl set-hostname server1.example.com`
-      # TODO:Darwin:
-      #   scutil --get ComputerName
-      #   scutil --get HostName
-      #   scutil --get LocalHostName
+      # VALIDATE -- Darwin: `scutil --get HostName`  //  `scutil --get LocalHostName`  //  `scutil --get ComputerName`
       ansible.builtin.hostname:
         name: "{{ hostname }}"
       become: true
