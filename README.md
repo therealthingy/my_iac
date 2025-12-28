@@ -138,6 +138,35 @@
   ```
 
 
+#### Ubuntu
+- ADD `<release>-updates` & `<release>-backports` repo in `/etc/apt/sources.list.d/ubuntu.sources`:
+  ```
+  Types: deb
+  URIs: http://us.archive.ubuntu.com/ubuntu/
+  Suites: noble noble-updates noble-backports                            # <<<<<<<<<<<<<<<<<<<<<<<< Added `noble-updates` & `noble-backports`
+  Components: main restricted universe multiverse
+  Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+  Types: deb
+  URIs: http://security.ubuntu.com/ubuntu
+  Suites: noble-security
+  Components: main restricted universe multiverse
+  Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+  ```
+
+- grub:
+  - cmdline:  disable all cpu mitigations `mitigations=off`  (https://unix.stackexchange.com/a/554922)
+    - grep . /sys/devices/system/cpu/vulnerabilities/*
+  - server role: `preempt=none`    (merge w/ rpi)
+- HELIX LSPs
+- install [git-crypt](https://github.com/AGWA/git-crypt/blob/master/INSTALL.md)
+    PROBLEM: openssl1.x
+- FIX mute audio
+- GNome Extensions ??
+- RPI: Replace [`timeshift-autosnap-apt`](https://github.com/wmutschl/timeshift-autosnap-apt/tree/main) w/ [`apt-btrfs-snapshot`](https://packages.ubuntu.com/search?keywords=apt-btrfs)
+- ( make sure WAYLAND (`echo $XDG_SESSION_TYPE`) )
+
+
 #### Darwin
 - FIX lscolors
 
@@ -194,24 +223,11 @@
     - Keynote  (409183694)
     - dict.cc  (327732352)
     - DjVu Viewer + DjVu to PDF  (755261884)
+    - AmorphousDiskMark  (1168254295;  region locking)
 
 - Install X11
 
 - SW: https://github.com/Lymphatus/caesium-image-compressor  (once stable)
-
-
-#### Ubuntu
-- grub:
-  - cmdline:  disable all cpu mitigations `mitigations=off`  (https://unix.stackexchange.com/a/554922)
-    - grep . /sys/devices/system/cpu/vulnerabilities/*
-  - server role: `preempt=none`    (merge w/ rpi)
-- HELIX LSPs
-- install [git-crypt](https://github.com/AGWA/git-crypt/blob/master/INSTALL.md)
-    PROBLEM: openssl1.x
-- FIX mute audio
-- GNome Extensions ??
-- RPI: Replace [`timeshift-autosnap-apt`](https://github.com/wmutschl/timeshift-autosnap-apt/tree/main) w/ [`apt-btrfs-snapshot`](https://packages.ubuntu.com/search?keywords=apt-btrfs)
-- ( make sure WAYLAND (`echo $XDG_SESSION_TYPE`) )
 
 
 ### *client-devel*
