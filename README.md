@@ -2,9 +2,6 @@
 
 
 ## TODOs
-…
-
-
 ### GENERAL
 - `.zshrc`:
   - clipbrd aliases:

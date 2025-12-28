@@ -49,6 +49,8 @@
         - client_workstation
 
 - hosts: servers, servers_devel, servers_home
+  vars:
+    sshd_enabled: true
   roles:
     - role: server/base
       tags: server

@@ -5,24 +5,13 @@
 #    user: {{ user.name }}
 #    key: {{ user_ssh_key }}
 
-- name: Install ssh client
-  ansible.builtin.apt:
-    name: ssh
-  when: ansible_facts.os_family != 'Darwin'
-  become: true
-
-- name: Install mosh
-  ansible.builtin.package:
-    name: mosh # Both client & "server"
-  become: "{{ package_manager_become }}"
-
 - name: Install/Enable + change sshd settings
   block:
     - name: Install ssh server
       block:
         - name: "[Debian/Ubuntu]"
           ansible.builtin.apt:
-            name: openssh-server
+            name: ssh # Metapackage comprised of both the OpenSSH client & the OpenSSH server
           when: ansible_facts.os_family != 'Darwin'
         - name: "[Darwin]"
           ansible.builtin.include_tasks: ../../client/base/tasks/darwin/systemsetup_util.yml
@@ -72,13 +61,18 @@
         validate: "/usr/sbin/sshd -T -f %s"
   notify: restart ssh daemon
   become: true
-  when: sshd_disabled is not defined or not sshd_disabled
+  when: sshd_enabled is defined and sshd_enabled == True
+
+- name: Install mosh
+  ansible.builtin.package:
+    name: mosh # Both client & "server"
+  become: "{{ package_manager_become }}"
 
 - name: Uninstall/Disable ssh server
   block:
     - name: "[Debian/Ubuntu]"
       ansible.builtin.apt:
-        name: openssh-server
+        name: openssh-server # TODO: REVISE (just disable daemon ?!)
         state: absent
       when: ansible_facts.os_family != 'Darwin'
     - name: "[Darwin]"
@@ -87,4 +81,4 @@
         systemsetup_setting: { setting: remotelogin, value: "Off" }
       when: ansible_facts.os_family == 'Darwin'
   become: true
-  when: sshd_disabled is defined and sshd_disabled
+  when: sshd_enabled is defined and sshd_enabled == False

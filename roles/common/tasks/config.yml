@@ -44,7 +44,7 @@
       changed_when: false
       when: ansible_facts.os_family != 'Darwin'
 
-    - name: "Set hostname to '{{ hostname }}'"
+    - name: Set hostname
       # GNU/LINUX:
       #   TEMPORARILY: `hostname demo.example.com`
       #   PERSISTENT:  `hostnamectl set-hostname server1.example.com`
