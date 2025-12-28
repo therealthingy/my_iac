@@ -474,6 +474,31 @@
           value: "false"
           type: "boolean"
 
+    - ansible.builtin.include_tasks: darwin/plistbuddy_util.yml
+      loop_control:
+        loop_var: plist_setting
+      with_items:
+        # Enable snap-to-grid 4 icons on the desktop and in other icon views
+        - key: ":DesktopViewSettings:IconViewSettings:arrangeBy"
+          value: "grid"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":FK_StandardViewSettings:IconViewSettings:arrangeBy"
+          value: "grid"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":StandardViewSettings:IconViewSettings:arrangeBy"
+          value: "grid"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        # Set the size of icons on the desktop and in other icon views
+        - key: ":DesktopViewSettings:IconViewSettings:iconSize"
+          value: "64"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":FK_StandardViewSettings:IconViewSettings:iconSize"
+          value: "64"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":StandardViewSettings:IconViewSettings:iconSize"
+          value: "64"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+
     - name: Set wallpaper
       block:
         - name: Get current wallpaper

@@ -1,0 +1,13 @@
+---
+- name: Set setting w/ `PlistBuddy`
+  block:
+    - name: "Check '{{ plist_setting.key }}' already set"
+      ansible.builtin.shell: '/usr/libexec/PlistBuddy -c "Print {{ plist_setting.key }} {{ plist_setting.value }}" {{ plist_setting.file }} | grep -wo {{ plist_setting.value }}'
+      register: result_plistbuddy_print
+      failed_when: false
+      changed_when: false
+    - name: "Set '{{ plist_setting.key }}' setting"
+      ansible.builtin.command: '/usr/libexec/PlistBuddy -c "Set {{ plist_setting.key }} {{ plist_setting.value }}" {{ plist_setting.file }}'
+      when: result_plistbuddy_print.rc != 0
+  #become: …    # Must be set by "caller"
+  when: ansible_facts.os_family == 'Darwin'

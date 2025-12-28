@@ -106,7 +106,7 @@
   when: gathered_host_facts is not defined
   become: false
 #
-#-  ansible.builtin.debug:
+#- ansible.builtin.debug:
 #    msg:
 #      user={{ user }},
 #      cpu_arch={{ cpu_arch }},

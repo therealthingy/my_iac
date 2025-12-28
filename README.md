@@ -148,22 +148,6 @@
   - Run in terminal: `sudo spctl developer-mode enable-terminal`
   - Go 2 System Preferences, *Security & Privacy*, *Privacy tab*, go 2 *Developer Tools* & enable it
 
-- SYSTEM settings:
-  - FINDER settings:
-    ```
-    # Enable snap-to-grid 4 icons on the desktop and in other icon views
-    # OPTION VALUE W/: `Print` (instead of `Set`)
-    /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
-    /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
-    /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
-
-    # Set the size of icons on the desktop and in other icon views
-    /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
-    /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
-    /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
-    ```
-
-
 - APP settings:
   ```
   ch.sudo.cyberduck, com.colliderli.iina, com.ranchero.NetNewsWire-Evergreen, org.wireshark.Wireshark, org.videolan.vlc, net.freemacsoft.AppCleaner:
