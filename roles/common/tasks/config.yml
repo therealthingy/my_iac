@@ -102,12 +102,12 @@
     src: passwordless_sudo.j2 # TODO: INLINE ONCE SUPPORTED BY MODULE
     dest: "/etc/sudoers.d/010_{{ user.name }}-nopasswd"
     owner: root
-    group: root
+    group: "{{ 'wheel' if ansible_facts.os_family == 'Darwin' else 'root' }}"
     mode: 0440
     validate: visudo -cf %s
   become: true
-  when: passwordless_sudo_enabled is defined and passwordless_sudo_enabled
-
+  when: passwordless_sudo is defined and passwordless_sudo
+#
 ## NOTE: Via netplan definitions: `ipv6-privacy: true`
 ## Will only take effect after reboot
 ## VERIFY: `ip -6 a show eth0 |grep ip6-privacy`

@@ -144,7 +144,7 @@
   loop_control:
     loop_var: motd_file
   when: ansible_facts.distribution == 'Ubuntu'
-
+#
 #- name: Install login system stats script
 #  ansible.builtin.template:
 #    src: zprofile.j2
@@ -153,3 +153,4 @@
 #    group: root
 #    mode: 0644
 #  become: true
+

@@ -193,10 +193,10 @@
     - Numbers  (409203825)
     - GarageBand  (682658836)
   - Install:
-    - Synctrain  (6553985316; Internet/Tools;   replaces cask 'syncthing-app')
-    - Keynote  (409183694; Office)
-    - dict.cc  (327732352; Office/Misc)
-    - DjVu Viewer + DjVu to PDF  (755261884; Office/Misc)
+    - Synctrain  (6553985316)
+    - Keynote  (409183694)
+    - dict.cc  (327732352)
+    - DjVu Viewer + DjVu to PDF  (755261884)
 
 - Install X11
 
