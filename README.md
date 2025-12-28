@@ -151,7 +151,8 @@
 - SYSTEM settings:
   - FINDER settings:
     ```
-    # Enable snap-to-grid for icons on the desktop and in other icon views
+    # Enable snap-to-grid 4 icons on the desktop and in other icon views
+    # OPTION VALUE W/: `Print` (instead of `Set`)
     /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
     /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
     /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
@@ -161,11 +162,6 @@
     /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
     /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
     ```
-
-  - SOUND: `defaults write "com.apple.systemsound" "com.apple.sound.uiaudio.enabled" -int 0  ;  killall -HUP SystemUIServer`
-
-  - **Disable usb drive not properly ejected warning**:
-    `sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.DiskArbitration.diskarbitrationd.plist DADisableEjectNotification -bool YES && sudo pkill diskarbitrationd`
 
 
 - APP settings:

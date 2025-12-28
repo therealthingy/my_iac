@@ -14,7 +14,7 @@
             name: ssh # Contains server AND client
           when: ansible_facts.os_family != 'Darwin'
         - name: "[Darwin]"
-          ansible.builtin.include_tasks: ../../client/base/tasks/darwin/systemsetup.yml
+          ansible.builtin.include_tasks: ../../client/base/tasks/darwin/systemsetup_util.yml
           vars:
             systemsetup_setting: { setting: remotelogin, value: "On" }
           when: ansible_facts.os_family == 'Darwin'
@@ -71,7 +71,7 @@
         state: absent
       when: ansible_facts.os_family != 'Darwin'
     - name: "[Darwin]"
-      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/systemsetup.yml
+      ansible.builtin.include_tasks: ../../client/base/tasks/darwin/systemsetup_util.yml
       vars:
         systemsetup_setting: { setting: remotelogin, value: "Off" }
       when: ansible_facts.os_family == 'Darwin'

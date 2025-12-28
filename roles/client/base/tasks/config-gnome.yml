@@ -1,0 +1,358 @@
+---
+- name: Setup GNOME
+  block:
+    - name: Install dconf edtior
+      ansible.builtin.apt:
+        name: dconf-editor
+        state: present
+      become: true
+
+    - name: "[Ubuntu] Install GNOME extension manager"
+      ansible.builtin.apt:
+        name: gnome-shell-extension-manager
+        state: present
+      when: ansible_facts.distribution == 'Ubuntu'
+      become: true
+
+    # NOTE: List extensions: `gnome-extensions list --enabled`
+    - name: Install GNOME extensions
+      block:
+        - name: Install dependencies for GNOME extensions
+          ansible.builtin.apt:
+            name:
+              - gir1.2-gtop-2.0 # Top Hat  (like iStats menu 4 mac)
+            state: present
+          become: true
+
+        - name: "'Determine' which extensions shall be installed"
+          block:
+            - name: Set config as vars
+              ansible.builtin.set_fact:
+                gnome_extensions: # (ids are derived from URL, e.g., https://extensions.gnome.org/extension/307/dash-to-dock/)
+                  - id: 2087 # Desktop Icons NG (DING)
+                    enable: true # TODO: Currently not working ??!!
+                  - id: 3193 # Blur my Shell
+                    enable: true
+                  - id: 5219 # Top Hat  (like iStats menu 4 mac)
+                    enable: true
+                  - id: 2 # Move Clock  (Move clock to left of status menu button)
+                    enable: true
+                  - id: 4839 # Clipboard history
+                    enable: true
+                  - id: 2236 # Night Theme Switcher     (TODO: ALLEGEDLY NOT WORKING ON UBUNTU, BUT WORKS IN PRAXIS) ??
+                    enable: true
+                  #- id: 3438                      # Jiggle  (highlights the cursor position when the mouse is moved rapidly like on mac)   $$$$$$$$$$$$$$$$$$$  TOOD: ADD BACK ONCE SUPPORTED (https://github.com/jeffchannell/jiggle/pull/68)  $$$$$$$$$$$$$$$$$$$
+                  #  enable: true
+                  # TODO (for non-vms): caffeine, cpufreq, wireguard-indicator
+
+            - name: Debian - Set distro specific stuff
+              ansible.builtin.set_fact:
+                # Dash to Dock
+                gnome_extensions: "{{ gnome_extensions + [ { 'id': 307, 'enable': true } ]  }}"
+              when: ansible_facts.distribution == 'Debian'
+
+        - name: "Run 'petermosmans.customize-gnome' role"
+          ansible.builtin.include_role:
+            name: petermosmans.customize-gnome
+
+    # HOW2: gesettings tool  (e.g., `gsettings get org.gnome.desktop.input-sources sources`); example: https://gist.github.com/carlwgeorge/c560a532b6929f49d9c0df52f75a68ae
+    - name: GNOME
+      block:
+        - name: Set config
+          block:
+            - name: "[Ubuntu]"
+              ansible.builtin.set_fact:
+                gnome_button_layout: "close,minimize,maximize:"
+              when: ansible_facts.distribution == 'Ubuntu'
+            - name: "[Debian]"
+              ansible.builtin.set_fact:
+                gnome_button_layout: "close:"
+              when: ansible_facts.distribution == 'Debian'
+
+        - name: GNOME - Set settings
+          community.general.dconf:
+            key: "{{ gnome_setting.key }}"
+            value: "{{ gnome_setting.value }}"
+            state: "{{ gnome_setting.state }}"
+          with_items:
+            # !!  BE AWARE: Schema for gtk (used by `gsettings`): `org.gtk.Settings.FileChooser` v.s. Path (used by dconf editor and Ansible module): `org.gtk.settings.file-chooser`  !!
+            # --  General settings  --
+            - key: "/org/gnome/desktop/input-sources/sources"
+              value: "[('xkb', '{{ keyboard.layout }}')]"
+              state: present
+
+            # --  General Behavior  --
+            - key: "/org/gnome/desktop/privacy/show-full-name-in-top-bar"
+              value: "true"
+              state: present
+            - key: "/org/gnome/desktop/privacy/remember-recent-files"
+              value: "false"
+              state: present
+            - key: "/org/gnome/desktop/privacy/remove-old-temp-files"
+              value: "true"
+              state: present
+            - key: "/org/gnome/desktop/sound/event-sounds"
+              value: "false"
+              state: present
+            - key: "/org/gnome/desktop/wm/preferences/audible-bell" # TODO: Use `visual-bell` bell instead (currently not suitable (flashes entire screen))
+              value: "false"
+              state: present
+            #            - key: '/org/gnome/desktop/interface/gtk-enable-primary-paste'         # TODO:  Disable "Middle-click paste"  (doesn't work 4 Ubuntu 22.04 LTS)
+            #              value: 'false'
+            #              state: present
+            - key: "/org/gnome/desktop/notifications/show-banners" # 'Do not disturb' in Ubuntu's Settings app
+              value: "false"
+              state: present
+            - key: "/org/gnome/gnome-session/logout-prompt"
+              value: "false"
+              state: present
+            # -  Privacy  -
+            - key: "/org/gnome/desktop/privacy/report-technical-problems"
+              value: "false"
+              state: present
+            - key: "/org/gnome/desktop/privacy/send-software-usage-stats"
+              value: "false"
+              state: present
+            # -  Security  -
+            - key: "/org/gnome/desktop/media-handling/automount-open"
+              value: "false"
+              state: present
+
+            # --  General UI  --
+            - key: "/org/gnome/desktop/wm/preferences/button-layout"
+              value: "'{{ gnome_button_layout }}'"
+              state: present
+            - key: "/org/gnome/desktop/interface/clock-format"
+              value: "'12h'"
+              state: present
+            - key: "/org/gtk/settings/file-chooser/clock-format"
+              value: "'12h'"
+              state: present
+            - key: "/org/gnome/shell/favorite-apps" # NOTE: Desktop entries for application (.desktop files) reside in '/usr/share/applications/' or '/usr/local/share/applications/'
+              value: "[{{ dock_fav_apps | join(', ') }}]"
+              state: present
+            # --  Extensions  --
+            # -  Dock  -
+            - key: "/org/gnome/shell/extensions/dash-to-dock/extend-height"
+              value: "false"
+              state: present
+            - key: "/org/gnome/shell/extensions/dash-to-dock/dock-position"
+              value: "'LEFT'"
+              state: present
+            - key: "/org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size"
+              value: "25"
+              state: present
+            - key: "/org/gnome/shell/extensions/dash-to-dock/dock-fixed"
+              value: "true"
+              state: present
+            - key: "/org/gnome/shell/extensions/dash-to-dock/click-action"
+              value: "'minimize'"
+              state: present
+            # -  Desktop  -
+            - key: "/org/gnome/shell/extensions/ding/show-home"
+              value: "false"
+              state: present
+            - key: "/org/gnome/shell/extensions/ding/show-trash"
+              value: "false"
+              state: present
+            - key: "/org/gnome/shell/extensions/ding/icon-size"
+              value: "'small'"
+              state: present
+            - key: "/org/gnome/shell/extensions/ding/show-link-emblem"
+              value: "true"
+              state: present
+            - key: "/org/gnome/shell/extensions/ding/start-corner"
+              value: "'top-left'"
+              state: present
+            # - gnome-clipboard-history -
+            - key: "/org/gnome/shell/extensions/clipboard-history/confirm-clear"
+              value: "false"
+              state: present
+
+            # --  Apps  --
+            # -  Nautilus  --
+            - key: "/org/gnome/nautilus/preferences/show-delete-permanently"
+              value: "true"
+              state: present
+            #- key: '/org/gnome/nautilus/preferences/show-hidden-files'
+            #  value: 'true'
+            #  state: present
+            - key: "/org/gnome/nautilus/preferences/default-sort-order"
+              value: "'type'" # Possible values: size, type, mtime, atime, starred
+              state: present
+            - key: "/org/gnome/nautilus/preferences/default-sort-in-reverse-order"
+              value: "false"
+              state: present
+            - key: "/org/gnome/nautilus/preferences/default-folder-viewer"
+              value: "'list-view'" # Possible values: icon-view, list-view
+              state: present
+            - key: "/org/gnome/nautilus/list-view/default-zoom-level"
+              value: "'small'"
+              state: present
+            - key: "/org/gnome/nautilus/list-view/default-visible-columns"
+              value: "['name', 'type', 'size', 'date_modified']"
+              state: present
+            - key: "/org/gnome/nautilus/list-view/use-tree-view"
+              value: "true"
+              state: present
+            - key: "/org/gtk/settings/file-chooser/show-hidden"
+              value: "true"
+              state: present
+            # -  System monitor  -
+            - key: "/org/gnome/gnome-system-monitor/show-dependencies"
+              value: "true"
+              state: present
+            - key: "/org/gnome/gnome-system-monitor/proctree/columns-order"
+              value: "[0, 12, 1, 8, 15, 4, 22, 2, 3, 6, 9, 10, 11, 13, 14, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26]"
+              state: present
+            - key: "/org/gnome/gnome-system-monitor/proctree/col-4-visible"
+              value: "true"
+              state: present
+            # -  dconf  -
+            - {
+                key: "/ca/desrt/dconf-editor/show-warning",
+                value: "false",
+                state: present,
+              }
+          loop_control:
+            loop_var: gnome_setting
+
+        - name: GNOME - Set settings [BARE-METAL]
+          community.general.dconf:
+            key: "{{ gnome_setting.key }}"
+            value: "{{ gnome_setting.value }}"
+            state: "{{ gnome_setting.state }}"
+          with_items:
+            - key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
+              value: "true"
+              state: present
+            # - General Behavior -
+            - key: "/org/gnome/desktop/peripherals/mouse/natural-scroll"
+              value: "true"
+              state: present
+            - key: "/org/gnome/desktop/peripherals/touchpad/natural-scroll"
+              value: "true"
+              state: present
+            # - Power -
+            - key: "/org/gnome/desktop/session/idle-delay"
+              value: "uint32 900"
+              state: present
+          loop_control:
+            loop_var: gnome_setting
+          when: "hypervisor is not defined or hypervisor | length == 0"
+
+        - name: GNOME - Set settings [VMs]
+          community.general.dconf:
+            key: "{{ gnome_setting.key }}"
+            value: "{{ gnome_setting.value }}"
+            state: "{{ gnome_setting.state }}"
+          with_items:
+            # -  Power  -
+            - key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type"
+              value: "'nothing'"
+              state: present
+            - key: "/org/gnome/desktop/session/idle-delay" # Don't show black screen after idle timeout
+              value: "uint32 0"
+              state: present
+          loop_control:
+            loop_var: gnome_setting
+          when: "hypervisor is defined and hypervisor | length > 0"
+      become: false
+
+    - name: Set installed apps as default
+      ansible.builtin.template:
+        src: linux/gnome-registered_default_apps.list.j2
+        dest: "/{{ os_homedir }}/{{ user.name }}/.config/mimeapps.list"
+      become: false
+  when:
+    - ansible_facts.os_family != 'Darwin'
+    - "'GNOME' in desktop_envs"
+
+- name: Ubuntu post packages - Disable Telemetry/error reporting + Ubuntu services
+  community.general.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state }}"
+  with_items:
+    - key: "/com/ubuntu/update-notifier/show-apport-crashes"
+      value: "false"
+      state: present
+    - key: "/com/ubuntu/update-notifier/notify-ubuntu-advantage-available"
+      value: "false"
+      state: present
+    - key: "/com/ubuntu/update-notifier/show-livepatch-status-icon"
+      value: "false"
+      state: present
+  become: false
+  when: ansible_facts.distribution == 'Ubuntu'
+
+- name: gdm3 - Enable Autologin
+  block:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: "Enable autologin for {{ user.name }}"
+      block:
+        - name: Set autologin config file
+          ansible.builtin.set_fact:
+            gdm3_config_file: "{{ 'daemon.conf' if ansible_facts.distribution == 'Debian' else 'custom.conf' }}"
+          become: false
+
+        - name: Update config file
+          ansible.builtin.replace:
+            path: "/etc/gdm3/{{ gdm3_config_file }}"
+            # UNMATCH IF NAME is already contained: '^(#\s*|\s*)AutomaticLoginEnable\s*=\s*(true|false)\n^(#\s*|\s*)AutomaticLogin\s*=\s*(?!{{ user.name }}$)\w+$'  (doesn't work -- PROBLEM: name unmatches, which causes it not to be updated if it's commented out)
+            regexp: '^#\s*AutomaticLoginEnable\s*=\s*(true|false)\n^#\s*AutomaticLogin\s*=\s*\w+$'
+            replace: |
+              AutomaticLoginEnable = true
+              AutomaticLogin = {{ user.name }}
+          become: true
+  when:
+    - ansible_facts.os_family != 'Darwin'
+    - "'gdm3' in ansible_facts.packages"
+    - "hypervisor is defined and hypervisor | length > 0" # TODO: Add also `autologin_enabled` value
+
+- name: Perform initial-run only tasks  (which shall never be run again once completed)
+  block:
+    - name: Check whether tasks should be performed
+      ansible.builtin.stat:
+        path: "/{{ os_homedir }}/{{ user.name }}/.ansible_first_run_completed"
+      register: first_run_completed
+
+    - name: Perform ACTUAL tasks
+      block:
+        - name: Mute audio (requires PulseAudio)
+          block:
+            - name: Install PulseAudio
+              ansible.builtin.apt:
+                name: pulseaudio-utils
+                state: present
+              become: true
+            - name: Mute audio
+              ansible.builtin.command: pactl set-sink-mute @DEFAULT_SINK@ true
+          when: "hypervisor is defined and hypervisor | length > 0"
+
+        - name: Set GNOME settings
+          community.general.dconf:
+            key: "{{ gnome_setting.key }}"
+            value: "{{ gnome_setting.value }}"
+            state: "{{ gnome_setting.state }}"
+          with_items:
+            - key: "/org/gnome/shell/extensions/clipboard-history/private-mode"
+              value: "true"
+              state: present
+          loop_control:
+            loop_var: gnome_setting
+          when:
+            - ansible_facts.os_family != 'Darwin'
+            - "'GNOME' in desktop_envs"
+      when: first_run_completed.stat.exists == False
+
+    - name: Store initial-run completed
+      ansible.builtin.file:
+        path: "/{{ os_homedir }}/{{ user.name }}/.ansible_first_run_completed"
+        state: touch
+      when: first_run_completed.stat.exists == False
+  become: false
+  when: ansible_facts.os_family != 'Darwin' # TODO: REVISE
