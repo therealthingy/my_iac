@@ -97,7 +97,14 @@
     loop_var: included_common_config_task
   when: ansible_facts.os_family != 'Darwin'
 
-- name: "Enable password-less sudo for '{{ user.name }}'"
+- name: "[Ubuntu] Delete cloud-init passwordless sudo"
+  ansible.builtin.file:
+    path: /etc/sudoers.d/90-cloud-init-users
+    state: absent
+  become: true
+  when: ansible_facts.distribution == 'Ubuntu'
+
+- name: "Enable password-less sudo 4 '{{ user.name }}'"
   ansible.builtin.template:
     src: passwordless_sudo.j2 # TODO: INLINE ONCE SUPPORTED BY MODULE
     dest: "/etc/sudoers.d/010_{{ user.name }}-nopasswd"
