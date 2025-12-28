@@ -151,25 +151,23 @@
           key: "scroll-to-open"
           value: "true"
           type: "boolean"
+        #
         # TODO: Dock items  (SEE: https://stackoverflow.com/q/67026378)
         # com.apple.dock "persistent-apps"
         #   => when `dock_fav_apps` is defined
+        #
         # --  Finder  --
-        #    - domain: "com.apple.finder" # Use column view in all Finder windows by default
-        #      key: "FXPreferredViewStyle"
-        #      value: "clmv" # 4-letter codes for the other view modes: `icnv`, `Nlsv`, `clmv`, `Flwv`
-        #      type: "string"
-        - domain: "com.apple.finder" # Show hidden files by default
-          key: "AppleShowAllFiles"
+        - domain: "com.apple.finder" # Use column view in all Finder windows by default
+          key: "FXPreferredViewStyle"
+          value: "icnv" # 4-letter codes for the other view modes: `icnv` = icon view, `Nlsv` = list view, `clmv` = column view, `Flwv` = cover flow view
+          type: "string"
+        - domain: "com.apple.finder" # Default group by (if appropriate `FXPreferredViewStyle`; `Name`, `Kind`, `DateModified`, `DateCreated`, `Size`, `Tags`)
+          key: "FXPreferredGroupBy"
+          value: "Kind"
+          type: "string"
+        - domain: "com.apple.finder" # Sorting: Keep folders on top
+          key: "_FXSortFoldersFirst"
           value: "true"
-          type: "boolean"
-        - domain: "NSGlobalDomain" # Show all filename extensions
-          key: "AppleShowAllExtensions"
-          value: "true"
-          type: "boolean"
-        - domain: "com.apple.finder" # Disable the warning when changing a file extension
-          key: "FXEnableExtensionChangeWarning"
-          value: "false"
           type: "boolean"
         - domain: "com.apple.finder" # Set Downloads as the default location for new Finder windows
           key: "ShowPathbar"
@@ -191,14 +189,22 @@
           key: "NSToolbarTitleViewRolloverDelay"
           value: "1"
           type: "int"
-        - domain: "com.apple.finder" # Sorting: Keep folders on top
-          key: "_FXSortFoldersFirst"
-          value: "true"
-          type: "boolean"
         - domain: "NSGlobalDomain" # Sidebar icon size (`1` = small, `2` = medium, `3` = large)
           key: "NSTableViewDefaultSizeMode"
           value: "1"
           type: "int"
+        - domain: "com.apple.finder" # Show hidden files by default
+          key: "AppleShowAllFiles"
+          value: "true"
+          type: "boolean"
+        - domain: "NSGlobalDomain" # Show all filename extensions
+          key: "AppleShowAllExtensions"
+          value: "true"
+          type: "boolean"
+        - domain: "com.apple.finder" # Disable the warning when changing a file extension
+          key: "FXEnableExtensionChangeWarning"
+          value: "false"
+          type: "boolean"
         - domain: "com.apple.finder" # Cmd + double-click opens new tab (`true`) or new window (`false`); default
           key: "FinderSpawnTab"
           value: "true"
@@ -233,6 +239,10 @@
           type: "boolean"
         - domain: "com.apple.finder" # Empty bin items after 30 days; default
           key: "FXRemoveOldTrashItems"
+          value: "false"
+          type: "boolean"
+        - domain: "com.apple.finder" # Disable the "Show warning before emptying the Trash" warning
+          key: "WarnOnEmptyTrash"
           value: "false"
           type: "boolean"
         - domain: "com.apple.finder" # NOT RECOMMENDED!; default
@@ -478,6 +488,9 @@
       loop_control:
         loop_var: plist_setting
       with_items:
+        - key: ":DesktopViewSettings:IconViewSettings:showItemInfo" # Enable "Show item info"
+          value: "true"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
         # Enable snap-to-grid 4 icons on the desktop and in other icon views
         - key: ":DesktopViewSettings:IconViewSettings:arrangeBy"
           value: "grid"
