@@ -123,7 +123,7 @@
           value: "true"
           type: "boolean"
         # --  Dock  --
-        - domain: "com.apple.dock" # Make Dock icons of hidden applications translucent;  TODO: `killall Dock`
+        - domain: "com.apple.dock"
           key: "orientation"
           value: "left"
           type: "string"
@@ -131,7 +131,7 @@
           key: "tilesize"
           value: "22.0"
           type: "float"
-        - domain: "com.apple.dock" # Make Dock icons of hidden applications translucent;  TODO: `killall Dock`
+        - domain: "com.apple.dock"
           key: "autohide"
           value: "true"
           type: "boolean"
@@ -139,11 +139,23 @@
           key: "autohide-time-modifier"
           value: "0"
           type: "int"
-        - domain: "com.apple.dock" # Make Dock icons of hidden applications translucent;  TODO: `killall Dock`
+        #- domain: "com.apple.dock" # Enable spring loading for all Dock items;        TODO: ?!?!!11
+        #  key: "enable-spring-load-actions-on-all-items"
+        #  value: "false"
+        #  type: "boolean"
+        - domain: "com.apple.dock" # Show indicator lights for open applications in the Dock; default
+          key: "show-process-indicators"
+          value: "true"
+          type: "boolean"
+        - domain: "com.apple.dock" # Make Dock icons of hidden applications translucent
           key: "showhidden"
           value: "true"
           type: "boolean"
-        - domain: "com.apple.dock" # Make Dock icons of hidden applications translucent;  TODO: `killall Dock`; default
+        - domain: "com.apple.dock" # Enable highlight hover effect for the grid view of a stack (Dock)
+          key: "mouse-over-hilite-stack"
+          value: "true"
+          type: "boolean"
+        - domain: "com.apple.dock" # default
           key: "show-recents"
           value: "true"
           type: "boolean"
@@ -151,13 +163,13 @@
           key: "mineffect"
           value: "genie"
           type: "string"
+        - domain: "com.apple.dock"
+          key: "scroll-to-open"
+          value: "true"
+          type: "boolean"
         - domain: "com.apple.dock" # Only show opened apps in Dock; default
           key: "static-only"
           value: "false"
-          type: "boolean"
-        - domain: "com.apple.dock" # Make Dock icons of hidden applications translucent;  TODO: `killall Dock`
-          key: "scroll-to-open"
-          value: "true"
           type: "boolean"
         #
         # TODO: Dock items  (SEE: https://stackoverflow.com/q/67026378)
@@ -274,6 +286,14 @@
           type: "boolean"
         # --  Input  --
         # -  Trackpad & Mouse  -
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad" # Tap 2 Click
+          key: "Clicking"
+          value: "false"
+          type: "boolean"
+        - domain: "NSGlobalDomain" # duplicate ?!
+          key: "com.apple.mouse.tapBehavior"
+          value: "false"
+          type: "boolean"
         - domain: "NSGlobalDomain" # Enable natural scroll direction (affects trackpad AND mouse); default
           key: "com.apple.swipescrolldirection"
           value: "true"
@@ -326,7 +346,7 @@
           value: "true"
           type: "boolean"
         # ( Set a blazingly fast keyboard repeat rate, and make it happen more quickly   (doesn't make a difference as of now, as press-and-hold is enabled) )
-        - domain: "NSGlobalDomain" # ENABLE press-and-hold (e.g., ń popup after long pressing n, …) for keys in favor of key repeat; default
+        - domain: "NSGlobalDomain" # ENABLE press-and-hold (e.g., ń popup after long pressing n, …) 4 keys in favor of key repeat; default
           key: "ApplePressAndHoldEnabled"
           value: "true" # NOTE: MUST BE `false` 2 have blazing fast keyboard repeats
           type: "boolean"
@@ -394,13 +414,13 @@
           key: "wvous-bl-modifier"
           value: "0"
           type: "int"
-        - domain: "com.apple.dock" # Rearrange Spaces automatically (`true` = based on most recent use); default
+        - domain: "com.apple.dock" # Rearrange Spaces automatically (`true` = based on most recent use)
           key: "mru-spaces"
-          value: "true"
+          value: "false"
           type: "boolean"
         - domain: "com.apple.dock" # Group windows by application; default
           key: "expose-group-apps"
-          value: "false"
+          value: "true"
           type: "boolean"
         - domain: "NSGlobalDomain" # When switching 2 an app, switch 2 a space w/ open windows 4 this app; default
           key: "AppleSpacesSwitchOnActivate"
@@ -506,6 +526,11 @@
           key: "NSQuitAlwaysKeepsWindow"
           value: "false"
           type: "boolean"
+        #- domain: "com.apple.controlcenter" # Show battery percentage             TODO: DOESN'T WORK !!  (requires `-currentHost`)
+        #  key: "BatteryShowPercentage"
+        #  value: "true"
+        #  type: "boolean"
+        #  host: currentHost
         ## TODO: Disk image verification
         #defaults write com.apple.frameworks.diskimages skip-verify        -bool true
         #defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true
@@ -519,6 +544,9 @@
         - key: ":DesktopViewSettings:IconViewSettings:iconSize"
           value: "32"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":FK_DefaultIconViewSettings:iconSize"
+          value: "64"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
         - key: ":FK_StandardViewSettings:IconViewSettings:iconSize"
           value: "64"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
@@ -530,6 +558,9 @@
           value: "54"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
         - key: ":FK_StandardViewSettings:IconViewSettings:gridSpacing"
+          value: "54"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":FK_DefaultIconViewSettings:gridSpacing"
           value: "54"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
         - key: ":StandardViewSettings:IconViewSettings:gridSpacing"
@@ -555,6 +586,9 @@
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
         # Sort by name 4 icons on the desktop and in other icon views
         - key: ":DesktopViewSettings:IconViewSettings:arrangeBy" # (… on Desktop)
+          value: "Name"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":FK_DefaultIconViewSettings:arrangeBy"
           value: "Name"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
         - key: ":FK_StandardViewSettings:IconViewSettings:arrangeBy"
