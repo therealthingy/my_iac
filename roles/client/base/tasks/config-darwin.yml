@@ -4,6 +4,8 @@
 #    - `defaults read-type <key>` reveals type info
 # REFERENCE: https://macos-defaults.com/
 
+# NOTE: Show power settings: `sudo pmset -g`
+
 - name: "[Darwin] System-wide"
   block:
     - ansible.builtin.include_tasks: darwin/systemsetup_util.yml
@@ -12,7 +14,7 @@
       with_items:
         - setting: restartfreeze
           value: "Off"
-        # Energy
+        # Power settings
         - setting: computersleep
           value: "{{ 1 if host_is_a_macbook else 0 }}"
         - setting: displaysleep
@@ -30,6 +32,8 @@
       become: true
       when: lockscreen_msg is defined
   when: ansible_facts.os_family == 'Darwin'
+
+# TODO: Add wifi networks: `networksetup -setairportnetwork en0 WIFI_SSID WIFI_PASSWORD`
 
 - name: "[Darwin] User-wide settings" # ( NOTE: Changes MAY only take effect after logging in again )
   block:
@@ -50,7 +54,7 @@
         # TODO: Disable startup chime: System Preferences..., then click Sound. In the Sound Effects pane, use the “Play sound on startup” setting to turn the startup sound on or off.
         # TODO: SOUND: `defaults write "com.apple.systemsound" "com.apple.sound.uiaudio.enabled" -int 0  ;  killall -HUP SystemUIServer`
         # --  UI/UX  --
-        - domain: "NSGlobalDomain" # Save 2 disk (not 2 iCloud) by default
+        - domain: "NSGlobalDomain" # Fileviewer dialog: Save 2 disk (not 2 iCloud) by default
           key: "NSDocumentSaveNewDocumentsToCloud"
           value: "false"
           type: "boolean"
@@ -58,11 +62,15 @@
           key: "NSNavPanelExpandedStateForSaveMode"
           value: "true"
           type: "boolean"
-        - domain: "NSGlobalDomain" # Expand print panel by default
-          key: "PMPrintingExpandedStateForPrint"
-          value: "true"
-          type: "boolean"
+        - domain: "NSGlobalDomain" # Show scrollbar (`WhenScrolling`, `Automatic` and `Always`); default
+          key: "AppleShowScrollBars"
+          value: "WhenScrolling"
+          type: "string"
         # -  Appearance  -
+        - domain: "com.apple.universalaccess" # Don't reduce transparency (Accessibility feature)
+          key: "reduceTransparency"
+          value: "false"
+          type: "boolean"
         - domain: "NSGlobalDomain" # Auto appearance (light <-> dark)
           key: "AppleInterfaceStyleSwitchesAutomatically"
           value: "true"
@@ -89,13 +97,13 @@
           key: "_FXSortFoldersFirstOnDesktop"
           value: "true"
           type: "boolean"
-        - domain: "com.apple.finder" # Show all icons on desktop; default
-          key: "CreateDesktop"
-          value: "true"
-          type: "boolean"
         - domain: "com.apple.WindowManager" # Disable "Click wallpaper to show desktop"
           key: "EnableStandardClickToShowDesktop"
           value: "false"
+          type: "boolean"
+        - domain: "com.apple.finder" # Show all icons on desktop; default
+          key: "CreateDesktop"
+          value: "true"
           type: "boolean"
         # ( Show icons for hard drives, connected servers, and removable media on the desktop )
         - domain: "com.apple.finder" # default
@@ -112,7 +120,7 @@
           type: "boolean"
         - domain: "com.apple.finder" # default
           key: "ShowMountedServersOnDesktop"
-          value: "false"
+          value: "true"
           type: "boolean"
         # --  Dock  --
         - domain: "com.apple.dock" # Make Dock icons of hidden applications translucent;  TODO: `killall Dock`
@@ -169,6 +177,12 @@
           key: "_FXSortFoldersFirst"
           value: "true"
           type: "boolean"
+        ## TODO: Expand the following File Info panes:
+        ## “General”, “Open with”, and “Sharing & Permissions”
+        #defaults write com.apple.finder FXInfoPanesExpanded -dict \
+        #    General -bool true \
+        #    OpenWith -bool true \
+        #    Privileges -bool true
         - domain: "com.apple.finder" # Set Downloads as the default location for new Finder windows
           key: "ShowPathbar"
           value: "true"
@@ -189,10 +203,6 @@
           key: "NSToolbarTitleViewRolloverDelay"
           value: "1"
           type: "int"
-        - domain: "NSGlobalDomain" # Sidebar icon size (`1` = small, `2` = medium, `3` = large)
-          key: "NSTableViewDefaultSizeMode"
-          value: "1"
-          type: "int"
         - domain: "com.apple.finder" # Show hidden files by default
           key: "AppleShowAllFiles"
           value: "true"
@@ -209,34 +219,30 @@
           key: "FinderSpawnTab"
           value: "true"
           type: "boolean"
-        - domain: "com.apple.finder" # Set Downloads as the default location for new Finder windows
+        - domain: "com.apple.finder" # Set Downloads as the default location for new Finder windows (`PfCm` = Computer, `PfVo` = Volume, `PfHm` = $HOME, `PfDe` = Desktop, `PfDo` = Documents, `PfAF` = All My Files, `PfLo` = Other …)
           key: "NewWindowTarget"
           value: "PfLo"
           type: "string"
         - domain: "com.apple.finder"
           key: "NewWindowTargetPath"
-          value: "file:///{{ os_homedir }}/{{ user.name }}/Downloads/"
+          value: "file:///{{ os_homedir }}/{{ user.name }}/"
           type: "string"
         - domain: "com.apple.finder" # Allow text selection in Quick Look
           key: "QLEnableTextSelection"
           value: "true"
           type: "boolean"
-        - domain: "NSGlobalDomain" # Enable spring loading for directories
+        - domain: "NSGlobalDomain" # Enable spring loading 4 directories
           key: "com.apple.springing.enabled"
           value: "true"
           type: "boolean"
-        - domain: "NSGlobalDomain" # Remove the spring loading delay for directories
+        - domain: "NSGlobalDomain" # Remove the spring loading delay 4 directories
           key: "com.apple.springing.delay"
-          value: "0.1"
+          value: "0.3"
           type: "float"
         - domain: "com.apple.finder" # Default search scope  (`SCcf` = current folder, `SCev` = this Mac)
           key: "FXDefaultSearchScope"
           value: "SCcf"
           type: "string"
-        - domain: "com.apple.desktopservices" # Avoid creating .DS_Store files on network volumes
-          key: "DSDontWriteNetworkStores"
-          value: "true"
-          type: "boolean"
         - domain: "com.apple.finder" # Empty bin items after 30 days; default
           key: "FXRemoveOldTrashItems"
           value: "false"
@@ -245,9 +251,26 @@
           key: "WarnOnEmptyTrash"
           value: "false"
           type: "boolean"
+        - domain: "com.apple.finder" # Disable Window animations and Get Info animations; default
+          key: "DisableAllAnimations"
+          value: "false"
+          type: "boolean"
         - domain: "com.apple.finder" # NOT RECOMMENDED!; default
           key: "QuitMenuItem"
           value: "false"
+          type: "boolean"
+        - domain: "NSGlobalDomain" # Sidebar icon size (`1` = small, `2` = medium, `3` = large)
+          key: "NSTableViewDefaultSizeMode"
+          value: "1"
+          type: "int"
+        # -  Metadata files  -
+        - domain: "com.apple.desktopservices" # Avoid creating .DS_Store files on network volumes
+          key: "DSDontWriteNetworkStores"
+          value: "true"
+          type: "boolean"
+        - domain: "com.apple.desktopservices" # Avoid creating .DS_Store files on USB drives
+          key: "DSDontWriteUSBStores"
+          value: "true"
           type: "boolean"
         # --  Input  --
         # -  Trackpad & Mouse  -
@@ -483,18 +506,54 @@
           key: "NSQuitAlwaysKeepsWindow"
           value: "false"
           type: "boolean"
+        ## TODO: Disk image verification
+        #defaults write com.apple.frameworks.diskimages skip-verify        -bool true
+        #defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true
+        #defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
 
     - ansible.builtin.include_tasks: darwin/plistbuddy_util.yml
       loop_control:
         loop_var: plist_setting
       with_items:
-        - key: ":DesktopViewSettings:IconViewSettings:showItemInfo" # Enable "Show item info"
+        # Size of icons on the desktop and in other icon views; default: `64`
+        - key: ":DesktopViewSettings:IconViewSettings:iconSize"
+          value: "32"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":FK_StandardViewSettings:IconViewSettings:iconSize"
+          value: "64"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":StandardViewSettings:IconViewSettings:iconSize"
+          value: "64"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        # Grid spacing 4 icons on the desktop and in other icon views; default: `54`
+        - key: ":DesktopViewSettings:IconViewSettings:gridSpacing"
+          value: "54"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":FK_StandardViewSettings:IconViewSettings:gridSpacing"
+          value: "54"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":StandardViewSettings:IconViewSettings:gridSpacing"
+          value: "54"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        # Show item info near icons on the desktop and in other icon views (default: false)
+        - key: ":DesktopViewSettings:IconViewSettings:showItemInfo"
           value: "true"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":FK_StandardViewSettings:IconViewSettings:showItemInfo"
+          value: "true"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        - key: ":StandardViewSettings:IconViewSettings:showItemInfo"
+          value: "true"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        # Show item info about the icons on the desktop (default: false)
+        - key: "DesktopViewSettings:IconViewSettings:labelOnBottom"
+          value: "true"
+          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
+        #
         - key: ":DesktopViewSettings:GroupBy" # ~~Group~~Stack by (on Desktop)
           value: "Kind"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
-        # Sort by name
+        # Sort by name 4 icons on the desktop and in other icon views
         - key: ":DesktopViewSettings:IconViewSettings:arrangeBy" # (… on Desktop)
           value: "Name"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
@@ -503,16 +562,6 @@
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
         - key: ":StandardViewSettings:IconViewSettings:arrangeBy"
           value: "Name"
-          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
-        # Set the size of icons on the desktop and in other icon views
-        - key: ":DesktopViewSettings:IconViewSettings:iconSize"
-          value: "48"
-          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
-        - key: ":FK_StandardViewSettings:IconViewSettings:iconSize"
-          value: "48"
-          file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
-        - key: ":StandardViewSettings:IconViewSettings:iconSize"
-          value: "48"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
 
     - name: Set wallpaper
