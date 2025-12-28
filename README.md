@@ -149,19 +149,6 @@
   - Go 2 System Preferences, *Security & Privacy*, *Privacy tab*, go 2 *Developer Tools* & enable it
 
 - SYSTEM settings:
-  - **Add message to lock-screen**
-    `sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText “ENTER HERE”`
-  - SOUND:
-    ```
-    defaults write -g "com.apple.sound.beep.feedback" -int 0
-    defaults write "com.apple.systemsound" "com.apple.sound.uiaudio.enabled" -int 0
-    killall -HUP SystemUIServer
-    ```
-
-  - **Disable usb drive not properly ejected warning**:
-    `sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.DiskArbitration.diskarbitrationd.plist DADisableEjectNotification -bool YES && sudo pkill diskarbitrationd`
-
-
   - FINDER settings:
     ```
     # Enable snap-to-grid for icons on the desktop and in other icon views
@@ -174,6 +161,11 @@
     /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
     /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
     ```
+
+  - SOUND: `defaults write "com.apple.systemsound" "com.apple.sound.uiaudio.enabled" -int 0  ;  killall -HUP SystemUIServer`
+
+  - **Disable usb drive not properly ejected warning**:
+    `sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.DiskArbitration.diskarbitrationd.plist DADisableEjectNotification -bool YES && sudo pkill diskarbitrationd`
 
 
 - APP settings:

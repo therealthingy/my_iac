@@ -396,6 +396,16 @@
       value: 0
   when: ansible_facts.os_family == 'Darwin'
 
+- name: "Set lock screen message"
+  community.general.osx_defaults:
+    domain: "/Library/Preferences/com.apple.loginwindow"
+    key: "LoginwindowText"
+    type: "string"
+    value: "{{ lockscreen_msg }}"
+    state: present
+  become: true
+  when: ansible_facts.os_family == 'Darwin' and lockscreen_msg is defined
+
 - name: Set wallpaper
   block:
     - name: Get current wallpaper
