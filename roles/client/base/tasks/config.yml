@@ -422,6 +422,7 @@
     state: present
   with_items:
     # Battery: TODO: Disable optimized charging (4 AlDente)
+    # Security: TODO: Allow accessories to connect
     # --  Audio  --
     - domain: "NSGlobalDomain" # Play feedback when volume is changed; default
       key: "com.apple.sound.beep.feedback"
@@ -454,6 +455,10 @@
       key: "AppleAccentColor"
       value: "-1"
       type: "integer"
+    - domain: "NSGlobalDomain" # Text highlight color (Graphite)
+      key: "AppleHighlightColor"
+      value: "0.847059 0.847059 0.862745 Graphite"
+      type: "string"
     # -  Menubar  -
     - domain: "com.apple.menuextra.clock" # Flash clock time separators; default
       key: "FlashDateSeparators"

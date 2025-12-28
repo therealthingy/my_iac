@@ -161,7 +161,6 @@
   - **Disable usb drive not properly ejected warning**:
     `sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.DiskArbitration.diskarbitrationd.plist DADisableEjectNotification -bool YES && sudo pkill diskarbitrationd`
 
-  - `systemsetup (get|set)wakeonmodem <bool>`
 
   - FINDER settings:
     ```
