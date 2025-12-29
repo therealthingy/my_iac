@@ -1,4 +1,25 @@
 ---
+- name: "[Darwin] Setup brew autoupdate"
+  # SEE: https://github.com/DomT4/homebrew-autoupdate
+  #   ( DISABLE: `brew autoupdate delete` )
+  #   ( SEE STATUS: brew autoupdate status )
+  block:
+    - name: Install deps
+      community.general.homebrew: # (required 4 `-sudo` option)
+        name: pinentry-mac
+    - name: Tap updater homebrew repo
+      community.general.homebrew_tap:
+        name: domt4/autoupdate
+    - name: Check already installed
+      ansible.builtin.stat:
+        path: '/Users/{{ user.name }}/Library/Application Support/com.github.domt4.homebrew-autoupdate/brew_autoupdate'
+      register: brew_autoupdater
+    - name: Install brew autoupdater
+      ansible.builtin.shell: brew autoupdate start 43200 --upgrade --cleanup --immediate --sudo --ac-only # TODO: `--greedy` ?!
+      when: brew_autoupdater.stat.exists == False
+  become: false
+  when: ansible_facts.os_family == 'Darwin'
+
 # NOTE `defaults`:
 #    - `-g` in `defaults` refers 2 `NSGlobalDomain`
 #    - `defaults read-type <key>` reveals type info
@@ -11,7 +32,7 @@
 
 # TODO:
 #   - Add wifi networks: `networksetup -setairportnetwork en0 WIFI_SSID WIFI_PASSWORD`
-#   - Add dnsforge certificate
+#   - Add [dnsforge certificate](https://dnsforge.de/)
 #   - Add login items
 
 - name: "[Darwin] System-wide"
