@@ -118,10 +118,6 @@
           value: "0.847059 0.847059 0.862745 Graphite"
           type: "string"
         # -  Menubar  -
-        - domain: "NSGlobalDomain" # 12h clock
-          key: "AppleICUForce12HourTime"
-          value: "true"
-          type: "bool"
         - domain: "com.apple.menuextra.clock" # Flash clock time separators; default
           key: "FlashDateSeparators"
           value: "false"
@@ -652,7 +648,36 @@
           key: "NSQuitAlwaysKeepsWindow"
           value: "false"
           type: "bool"
-        ## TODO: Disk image verification
+        - domain: "NSGlobalDomain" # default
+          key: "AppleLiveTextEnabled"
+          value: "true"
+          type: "bool"
+        # -  Localization  -
+        # TODO: Region
+        - domain: "NSGlobalDomain"
+          key: "AppleLanguages"
+          value:
+            - "en-US"
+            - "de-DE"
+          type: "array"
+        - domain: "NSGlobalDomain" # 12h clock
+          key: "AppleICUForce12HourTime"
+          value: "true"
+          type: "bool"
+        - domain: "NSGlobalDomain"
+          key: "AppleMetricUnits"
+          value: "true"
+          type: "bool"
+        - domain: "NSGlobalDomain"
+          key: "AppleMeasurementUnits"
+          value: "Centimeters"
+          type: "string"
+        - domain: "NSGlobalDomain"
+          key: "AppleTemperatureUnit"
+          value: "Celsius"
+          type: "string"
+        # TODO: Date format  => `AppleICUDateFormatStrings`
+        ## -  TODO: Disk image verification  -
         #defaults write com.apple.frameworks.diskimages skip-verify        -bool true
         #defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true
         #defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
