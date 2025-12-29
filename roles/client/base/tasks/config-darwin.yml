@@ -118,6 +118,10 @@
           value: "0.847059 0.847059 0.862745 Graphite"
           type: "string"
         # -  Menubar  -
+        - domain: "NSGlobalDomain" # 12h clock
+          key: "AppleICUForce12HourTime"
+          value: "true"
+          type: "bool"
         - domain: "com.apple.menuextra.clock" # Flash clock time separators; default
           key: "FlashDateSeparators"
           value: "false"
