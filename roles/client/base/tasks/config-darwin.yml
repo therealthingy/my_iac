@@ -185,7 +185,7 @@
           value: "true"
           type: "bool"
         # --  Dock  --
-        - domain: "com.apple.dock"
+        - domain: "com.apple.dock" #        << TODO: SHOULD BE VARIABLE
           key: "orientation"
           value: "left"
           type: "string"
@@ -676,13 +676,17 @@
           key: "NSCloseAlwaysConfirmsChanges"
           value: "false"
           type: "bool"
+        - domain: "NSGlobalDomain" # Close confirm changes popup
+          key: "NSCloseAlwaysConfirmsChanges"
+          value: "false"
+          type: "bool"
         - domain: "NSGlobalDomain" # Keep windows when quitting an application
           key: "NSQuitAlwaysKeepsWindow"
           value: "false"
           type: "bool"
-        - domain: "NSGlobalDomain" # default
-          key: "AppleLiveTextEnabled"
-          value: "true"
+        - domain: "com.apple.loginwindow" # "Reopen windows when logging in"
+          key: "TALLogoutSavesState"
+          value: "false"
           type: "bool"
         # -  Localization  -
         # TODO: Region
