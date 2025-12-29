@@ -150,7 +150,6 @@
         # Office
         - drawio
         - slidepilot
-        - geogebra
       loop_control:
         loop_var: homebrew_cask
       when: ansible_facts.os_family == 'Darwin'

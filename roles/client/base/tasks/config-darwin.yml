@@ -7,12 +7,19 @@
     - name: Install deps
       community.general.homebrew: # (required 4 `-sudo` option)
         name: pinentry-mac
+    - name: Create `LaunchAgents` dir
+      ansible.builtin.file:
+        path: "/Users/{{ user.name }}/Library/LaunchAgents/"
+        state: directory
+        owner: "{{ user.name }}"
+        group: "staff"
+        mode: 0700
     - name: Tap updater homebrew repo
       community.general.homebrew_tap:
         name: domt4/autoupdate
     - name: Check already installed
       ansible.builtin.stat:
-        path: '/Users/{{ user.name }}/Library/Application Support/com.github.domt4.homebrew-autoupdate/brew_autoupdate'
+        path: '/Users/{{ user.name }}/Library/LaunchAgents/com.github.domt4.homebrew-autoupdate.plist'
       register: brew_autoupdater
     - name: Install brew autoupdater
       ansible.builtin.shell: brew autoupdate start 43200 --upgrade --cleanup --immediate --sudo --ac-only # TODO: `--greedy` ?!
