@@ -30,6 +30,10 @@
         - setting: harddisksleep
           value: 0
 
+    # TODO: Disable startup chime: System Preferences..., then click Sound. In the Sound Effects pane, use the “Play sound on startup” setting to turn the startup sound on or off.
+
+    # Security: TODO: Allow accessories 2 connect
+
     - name: "[Darwin] Set lock screen message"
       community.general.osx_defaults:
         domain: "/Library/Preferences/com.apple.loginwindow"
@@ -39,8 +43,6 @@
         check_type: false
         state: present
       when: lockscreen_msg is defined
-
-    # Security: TODO: Allow accessories 2 connect
 
     - name: "[Darwin] Disable Optimized Battery Charging 4 AlDente"
       community.general.osx_defaults:
@@ -85,8 +87,6 @@
           key: "com.apple.sound.beep.volume"
           value: "0"
           type: "float"
-        # TODO: Disable startup chime: System Preferences..., then click Sound. In the Sound Effects pane, use the “Play sound on startup” setting to turn the startup sound on or off.
-        # TODO: SOUND: `defaults write "com.apple.systemsound" "com.apple.sound.uiaudio.enabled" -int 0  ;  killall -HUP SystemUIServer`
         # --  UI/UX  --
         - domain: "NSGlobalDomain" # Fileviewer dialog: Save 2 disk (not 2 iCloud) by default
           key: "NSDocumentSaveNewDocumentsToCloud"

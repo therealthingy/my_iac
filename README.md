@@ -170,6 +170,24 @@
 #### Darwin
 - FIX lscolors
 
+- [Mac App Store apps](https://github.com/mas-cli/mas/blob/main/README.md):
+  - Uninstall:
+    - iMovie  (408981434)
+    - GarageBand  (682658836)
+  - Install:
+    - uBlock Origin Lite  (6745342698)
+    - Synctrain  (6553985316)
+    - Keynote  (409183694)
+    - Pages  (409201541)
+    - Numbers  (409203825)
+    - dict.cc  (327732352)
+    - Goegebra  (?)
+    - DjVu Viewer + DjVu to PDF  (755261884)
+    - Organic Maps  (1567437057)
+    - Yattee  (1595136629)
+    - Later  (1507396839)
+    - AmorphousDiskMark  (1168254295;  blocked in de-DE AppStore)
+
 - Add apps (VSCodium & Terminal) 2 *Developer Tools*:
   - Run in terminal: `sudo spctl developer-mode enable-terminal`
   - Go 2 System Preferences, *Security & Privacy*, *Privacy tab*, go 2 *Developer Tools* & enable it
@@ -211,19 +229,6 @@
   ```
 
   - ADD VLC config  (stored in : `~/Library/Preferences/org.videolan.vlc`)
-
-- [Mac App Store apps](https://github.com/mas-cli/mas/blob/main/README.md):
-  - Uninstall:
-    - iMovie  (408981434)
-    - Pages  (409201541)
-    - Numbers  (409203825)
-    - GarageBand  (682658836)
-  - Install:
-    - Synctrain  (6553985316)
-    - Keynote  (409183694)
-    - dict.cc  (327732352)
-    - DjVu Viewer + DjVu to PDF  (755261884)
-    - AmorphousDiskMark  (1168254295;  region locking)
 
 - Install X11
 
