@@ -3,8 +3,15 @@
 #    - `-g` in `defaults` refers 2 `NSGlobalDomain`
 #    - `defaults read-type <key>` reveals type info
 # REFERENCE: https://macos-defaults.com/
+# NOTE: 2 find out a setting:
+#   BEFORE & AFTER CHANGING THE SETTING IN QUESTION: `defaults [-currentHost] read [-g] | codium -`
+#   Diff both files
 
 # NOTE: Show power settings: `sudo pmset -g`
+
+# TODO:
+#   - Add wifi networks: `networksetup -setairportnetwork en0 WIFI_SSID WIFI_PASSWORD`
+#   - Add dnsforge certificate
 
 - name: "[Darwin] System-wide"
   block:
@@ -29,11 +36,28 @@
         type: "string"
         value: "{{ lockscreen_msg }}"
         state: present
-      become: true
       when: lockscreen_msg is defined
-  when: ansible_facts.os_family == 'Darwin'
 
-# TODO: Add wifi networks: `networksetup -setairportnetwork en0 WIFI_SSID WIFI_PASSWORD`
+    # Security: TODO: Allow accessories 2 connect
+
+    - name: "[Darwin] Disable Optimized Battery Charging 4 AlDente"
+      community.general.osx_defaults:
+        domain: "{{ item.domain }}"
+        key: "{{ item.key }}"
+        type: "{{ item.type }}"
+        value: "{{ item.value }}"
+        state: present
+      with_items:
+        - domain: "com.apple.smartcharging.topoffprotection"
+          key: "enabled"
+          value: "false"
+          type: "boolean"
+        - domain: "com.apple.smartcharging.topoffprotection"
+          key: "currentState"
+          value: "false"
+          type: "boolean"
+  become: true
+  when: ansible_facts.os_family == 'Darwin'
 
 - name: "[Darwin] User-wide settings" # ( NOTE: Changes MAY only take effect after logging in again )
   block:
@@ -44,8 +68,6 @@
         value: "{{ item.value }}"
         state: present
       with_items:
-        # Battery: TODO: Disable optimized charging (4 AlDente)
-        # Security: TODO: Allow accessories to connect
         # --  Audio  --
         - domain: "NSGlobalDomain" # Play feedback when volume is changed; default
           key: "com.apple.sound.beep.feedback"
@@ -286,30 +308,135 @@
           type: "boolean"
         # --  Input  --
         # -  Trackpad & Mouse  -
-        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad" # Tap 2 Click
+        # - Point & Click
+        # Click weight (threshold) (`0` = light, `1` = medium, `2` = firm); default
+        - domain: "com.apple.AppleMultitouchTrackpad"
+          key: "FirstClickThreshold"
+          value: "1"
+          type: "int"
+        - domain: "com.apple.AppleMultitouchTrackpad"
+          key: "SecondClickThreshold"
+          value: "1"
+          type: "int"
+        # Disable forcetouch
+        - domain: "com.apple.AppleMultitouchTrackpad"
+          key: "TrackpadThreeFingerTapGesture"
+          value: "0"
+          type: "int"
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad" # "Look up & data detectors?"
+          key: "TrackpadThreeFingerTapGesture"
+          value: "0"
+          type: "int"
+        # Secondary click = click/tap
+        - domain: "NSGlobalDomain"
+          key: "ContextMenuGesture"
+          value: "1"
+          type: "int"
+        - domain: "com.apple.AppleMultitouchTrackpad"
+          key: "TrackpadRightClick"
+          value: "true"
+          type: "boolean"
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
+          key: "TrackpadRightClick"
+          value: "true"
+          type: "boolean"
+        #
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad" # Tap 2 Click (I)
           key: "Clicking"
-          value: "false"
+          value: "true"
           type: "boolean"
-        - domain: "NSGlobalDomain" # duplicate ?!
-          key: "com.apple.mouse.tapBehavior"
-          value: "false"
-          type: "boolean"
-        - domain: "NSGlobalDomain" # Enable natural scroll direction (affects trackpad AND mouse); default
+        # - Scroll & Zoom
+        # Enable natural scroll direction (affects trackpad AND mouse); default
+        - domain: "NSGlobalDomain"
           key: "com.apple.swipescrolldirection"
           value: "true"
           type: "boolean"
+        # Pinch 2 zoom
+        - domain: "com.apple.AppleMultitouchTrackpad" # Enable natural scroll direction (affects trackpad AND mouse); default
+          key: "TrackpadPinch"
+          value: "true"
+          type: "boolean"
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
+          key: "TrackpadPinch"
+          value: "true"
+          type: "boolean"
+        # Smart zoom
+        - domain: "com.apple.AppleMultitouchTrackpad" # Enable natural scroll direction (affects trackpad AND mouse); default
+          key: "TrackpadTwoFingerDoubleTapGesture"
+          value: "1"
+          type: "int"
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
+          key: "TrackpadTwoFingerDoubleTapGesture"
+          value: "1"
+          type: "int"
+        # Rotate
+        - domain: "com.apple.AppleMultitouchTrackpad" # Enable natural scroll direction (affects trackpad AND mouse); default
+          key: "TrackpadRotate"
+          value: "true"
+          type: "boolean"
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
+          key: "TrackpadRotate"
+          value: "true"
+          type: "boolean"
+        # - More gestures
+        - domain: "NSGlobalDomain" # Swipe b/w pages
+          key: "AppleEnableSwipeNavigateWithScrolls"
+          value: "true"
+          type: "boolean"
+        # - Swipe b/w full-screen apps
+        - domain: "com.apple.AppleMultitouchTrackpad"
+          key: "TrackpadFourFingerHorizSwipeGesture"
+          value: "2"
+          type: "integer"
+        - domain: "com.apple.AppleMultitouchTrackpad"
+          key: "TrackpadThreeFingerHorizSwipeGesture"
+          value: "2"
+          type: "integer"
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
+          key: "TrackpadFourFingerHorizSwipeGesture"
+          value: "2"
+          type: "integer"
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
+          key: "TrackpadThreeFingerHorizSwipeGesture"
+          value: "2"
+          type: "integer"
+        # Notification Center
+        - domain: "com.apple.AppleMultitouchTrackpad"
+          key: "TrackpadTwoFingerFromRightEdgeSwipeGesture"
+          value: "3"
+          type: "integer"
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
+          key: "TrackpadTwoFingerFromRightEdgeSwipeGesture"
+          value: "3"
+          type: "integer"
+        # Mission Control
+        - domain: "com.apple.dock"
+          key: "showMissionControlGestureEnabled"
+          value: "true"
+          type: "boolean"
+        # App Exposé
+        - domain: "com.apple.dock"
+          key: "showAppExposeGestureEnabled"
+          value: "true"
+          type: "boolean"
+        # Show Desktop
+        - domain: "com.apple.dock"
+          key: "showDesktopGestureEnabled"
+          value: "true"
+          type: "boolean"
+        #
         - domain: "NSGlobalDomain" # Movement speed of the mouse cursor
           key: "com.apple.mouse.scaling"
+          value: "3"
+          type: "float"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.trackpad.scaling"
           value: "3"
           type: "float"
         - domain: "NSGlobalDomain" # Disable mouse acceleration; default
           key: "com.apple.mouse.linear"
           value: "false"
           type: "boolean"
-        - domain: "com.apple.AppleMultitouchTrackpad" # Click weight (threshold) (`0` = light, `1` = medium, `2` = firm); default
-          key: "FirstClickThreshold"
-          value: "1"
-          type: "int"
         # Dragging
         - domain: "com.apple.AppleMultitouchTrackpad" # Dragging w/ drag lock (mutually exclusive w/ `Dragging` & `TrackpadThreeFingerDrag`); default
           key: "DragLock"
@@ -526,15 +653,29 @@
           key: "NSQuitAlwaysKeepsWindow"
           value: "false"
           type: "boolean"
-        #- domain: "com.apple.controlcenter" # Show battery percentage             TODO: DOESN'T WORK !!  (requires `-currentHost`)
-        #  key: "BatteryShowPercentage"
-        #  value: "true"
-        #  type: "boolean"
-        #  host: currentHost
         ## TODO: Disk image verification
         #defaults write com.apple.frameworks.diskimages skip-verify        -bool true
         #defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true
         #defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
+
+    - community.general.osx_defaults:
+        domain: "{{ item.domain }}"
+        key: "{{ item.key }}"
+        type: "{{ item.type }}"
+        value: "{{ item.value }}"
+        host: currentHost
+        state: present
+      with_items:
+        - domain: "com.apple.controlcenter" # Show battery percentage
+          key: "BatteryShowPercentage"
+          value: "true"
+          type: "boolean"
+        # Trackpad -> Point & Click
+        - domain: "NSGlobalDomain" # Tap 2 Click (II)
+          key: "com.apple.mouse.tapBehavior"
+          value: "false"
+          type: "boolean"
+          host: currentHost
 
     - ansible.builtin.include_tasks: darwin/plistbuddy_util.yml
       loop_control:
