@@ -78,7 +78,7 @@
               with_items:
                 - key: "SKAutoReloadFileUpdate" # Auto reload file when changed  (in case it doesn't work: Skim -> Preferences -> Sync -> Check 4 file changes + Reload automatically)
                   value: "true"
-                  type: "boolean"
+                  type: "bool"
                 - key: "SKInvertColorsInDarkMode" # Skim -> Preferences -> Display -> Check Invert colors in Dark Mode
                   value: "true"
                   type: "bool"

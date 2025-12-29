@@ -12,6 +12,7 @@
 # TODO:
 #   - Add wifi networks: `networksetup -setairportnetwork en0 WIFI_SSID WIFI_PASSWORD`
 #   - Add dnsforge certificate
+#   - Add login items
 
 - name: "[Darwin] System-wide"
   block:
@@ -35,6 +36,7 @@
         key: "LoginwindowText"
         type: "string"
         value: "{{ lockscreen_msg }}"
+        check_type: false
         state: present
       when: lockscreen_msg is defined
 
@@ -46,16 +48,17 @@
         key: "{{ item.key }}"
         type: "{{ item.type }}"
         value: "{{ item.value }}"
+        check_type: false
         state: present
       with_items:
         - domain: "com.apple.smartcharging.topoffprotection"
           key: "enabled"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.smartcharging.topoffprotection"
           key: "currentState"
           value: "false"
-          type: "boolean"
+          type: "bool"
   become: true
   when: ansible_facts.os_family == 'Darwin'
 
@@ -66,24 +69,33 @@
         key: "{{ item.key }}"
         type: "{{ item.type }}"
         value: "{{ item.value }}"
+        check_type: false
         state: present
       with_items:
         # --  Audio  --
         - domain: "NSGlobalDomain" # Play feedback when volume is changed; default
           key: "com.apple.sound.beep.feedback"
+          value: "true"
+          type: "bool"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.sound.uiaudio.enabled"
           value: "false"
-          type: "boolean"
+          type: "bool"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.sound.beep.volume"
+          value: "0"
+          type: "float"
         # TODO: Disable startup chime: System Preferences..., then click Sound. In the Sound Effects pane, use the “Play sound on startup” setting to turn the startup sound on or off.
         # TODO: SOUND: `defaults write "com.apple.systemsound" "com.apple.sound.uiaudio.enabled" -int 0  ;  killall -HUP SystemUIServer`
         # --  UI/UX  --
         - domain: "NSGlobalDomain" # Fileviewer dialog: Save 2 disk (not 2 iCloud) by default
           key: "NSDocumentSaveNewDocumentsToCloud"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Expand save panel by default
           key: "NSNavPanelExpandedStateForSaveMode"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Show scrollbar (`WhenScrolling`, `Automatic` and `Always`); default
           key: "AppleShowScrollBars"
           value: "WhenScrolling"
@@ -92,11 +104,11 @@
         - domain: "com.apple.universalaccess" # Don't reduce transparency (Accessibility feature)
           key: "reduceTransparency"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Auto appearance (light <-> dark)
           key: "AppleInterfaceStyleSwitchesAutomatically"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Accent color (Graphite)
           key: "AppleAccentColor"
           value: "-1"
@@ -109,7 +121,7 @@
         - domain: "com.apple.menuextra.clock" # Flash clock time separators; default
           key: "FlashDateSeparators"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.menuextra.clock"
           key: "DateFormat"
           value: "EEE d MMM HH:mm"
@@ -118,32 +130,32 @@
         - domain: "com.apple.finder" # Sorting: Keep folders on top when sorting
           key: "_FXSortFoldersFirstOnDesktop"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.WindowManager" # Disable "Click wallpaper to show desktop"
           key: "EnableStandardClickToShowDesktop"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.finder" # Show all icons on desktop; default
           key: "CreateDesktop"
           value: "true"
-          type: "boolean"
+          type: "bool"
         # ( Show icons for hard drives, connected servers, and removable media on the desktop )
         - domain: "com.apple.finder" # default
           key: "ShowHardDrivesOnDesktop"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.finder" # default
           key: "ShowExternalHardDrivesOnDesktop"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.finder" # default
           key: "ShowRemovableMediaOnDesktop"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.finder" # default
           key: "ShowMountedServersOnDesktop"
           value: "true"
-          type: "boolean"
+          type: "bool"
         # --  Dock  --
         - domain: "com.apple.dock"
           key: "orientation"
@@ -156,7 +168,7 @@
         - domain: "com.apple.dock"
           key: "autohide"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.dock" # Eliminate Dock reveal delay
           key: "autohide-time-modifier"
           value: "0"
@@ -164,23 +176,23 @@
         #- domain: "com.apple.dock" # Enable spring loading for all Dock items;        TODO: ?!?!!11
         #  key: "enable-spring-load-actions-on-all-items"
         #  value: "false"
-        #  type: "boolean"
+        #  type: "bool"
         - domain: "com.apple.dock" # Show indicator lights for open applications in the Dock; default
           key: "show-process-indicators"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.dock" # Make Dock icons of hidden applications translucent
           key: "showhidden"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.dock" # Enable highlight hover effect for the grid view of a stack (Dock)
           key: "mouse-over-hilite-stack"
           value: "true"
-          type: "boolean"
-        - domain: "com.apple.dock" # default
+          type: "bool"
+        - domain: "com.apple.dock"
           key: "show-recents"
-          value: "true"
-          type: "boolean"
+          value: "false"
+          type: "bool"
         - domain: "com.apple.dock" # Dock minimize animation (`genie`, `scale`, `suck`); default
           key: "mineffect"
           value: "genie"
@@ -188,11 +200,11 @@
         - domain: "com.apple.dock"
           key: "scroll-to-open"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.dock" # Only show opened apps in Dock; default
           key: "static-only"
           value: "false"
-          type: "boolean"
+          type: "bool"
         #
         # TODO: Dock items  (SEE: https://stackoverflow.com/q/67026378)
         # com.apple.dock "persistent-apps"
@@ -210,7 +222,7 @@
         - domain: "com.apple.finder" # Sorting: Keep folders on top when sorting by Name
           key: "_FXSortFoldersFirst"
           value: "true"
-          type: "boolean"
+          type: "bool"
         ## TODO: Expand the following File Info panes:
         ## “General”, “Open with”, and “Sharing & Permissions”
         #defaults write com.apple.finder FXInfoPanesExpanded -dict \
@@ -220,19 +232,19 @@
         - domain: "com.apple.finder" # Set Downloads as the default location for new Finder windows
           key: "ShowPathbar"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.finder" # Finder: DON'T show status bar
           key: "ShowStatusBar"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.finder" # Display full POSIX path as Finder window title
           key: "_FXShowPosixPathInTitle"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.universalaccess" # Show folder icon before title in the title bar; default
           key: "showWindowTitlebarIcons"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Toolbar title rollover delay (`0` = off)
           key: "NSToolbarTitleViewRolloverDelay"
           value: "1"
@@ -240,19 +252,19 @@
         - domain: "com.apple.finder" # Show hidden files by default
           key: "AppleShowAllFiles"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Show all filename extensions
           key: "AppleShowAllExtensions"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.finder" # Disable the warning when changing a file extension
           key: "FXEnableExtensionChangeWarning"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.finder" # Cmd + double-click opens new tab (`true`) or new window (`false`); default
           key: "FinderSpawnTab"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.finder" # Set Downloads as the default location for new Finder windows (`PfCm` = Computer, `PfVo` = Volume, `PfHm` = $HOME, `PfDe` = Desktop, `PfDo` = Documents, `PfAF` = All My Files, `PfLo` = Other …)
           key: "NewWindowTarget"
           value: "PfLo"
@@ -264,11 +276,11 @@
         - domain: "com.apple.finder" # Allow text selection in Quick Look
           key: "QLEnableTextSelection"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Enable spring loading 4 directories
           key: "com.apple.springing.enabled"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Remove the spring loading delay 4 directories
           key: "com.apple.springing.delay"
           value: "0.3"
@@ -280,19 +292,19 @@
         - domain: "com.apple.finder" # Empty bin items after 30 days; default
           key: "FXRemoveOldTrashItems"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.finder" # Disable the "Show warning before emptying the Trash" warning
           key: "WarnOnEmptyTrash"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.finder" # Disable Window animations and Get Info animations; default
           key: "DisableAllAnimations"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.finder" # NOT RECOMMENDED!; default
           key: "QuitMenuItem"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Sidebar icon size (`1` = small, `2` = medium, `3` = large)
           key: "NSTableViewDefaultSizeMode"
           value: "1"
@@ -301,14 +313,27 @@
         - domain: "com.apple.desktopservices" # Avoid creating .DS_Store files on network volumes
           key: "DSDontWriteNetworkStores"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.desktopservices" # Avoid creating .DS_Store files on USB drives
           key: "DSDontWriteUSBStores"
           value: "true"
-          type: "boolean"
+          type: "bool"
         # --  Input  --
         # -  Trackpad & Mouse  -
         # - Point & Click
+        # Mouse speed
+        - domain: "NSGlobalDomain" # Pertains 2 tackpad
+          key: "com.apple.trackpad.scaling"
+          value: "3"
+          type: "float"
+        - domain: "NSGlobalDomain" # Pertains 2 mouse
+          key: "com.apple.mouse.scaling"
+          value: "3"
+          type: "float"
+        - domain: "NSGlobalDomain" # Disable mouse acceleration; default
+          key: "com.apple.mouse.linear"
+          value: "false"
+          type: "bool"
         # Click weight (threshold) (`0` = light, `1` = medium, `2` = firm); default
         - domain: "com.apple.AppleMultitouchTrackpad"
           key: "FirstClickThreshold"
@@ -319,142 +344,112 @@
           value: "1"
           type: "int"
         # Disable forcetouch
-        - domain: "com.apple.AppleMultitouchTrackpad"
-          key: "TrackpadThreeFingerTapGesture"
-          value: "0"
-          type: "int"
-        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad" # "Look up & data detectors?"
-          key: "TrackpadThreeFingerTapGesture"
-          value: "0"
-          type: "int"
-        # Secondary click = click/tap
         - domain: "NSGlobalDomain"
-          key: "ContextMenuGesture"
-          value: "1"
-          type: "int"
+          key: "com.apple.trackpad.forceClick"
+          value: "false"
+          type: "bool"
         - domain: "com.apple.AppleMultitouchTrackpad"
-          key: "TrackpadRightClick"
+          key: "ForceSuppressed"
           value: "true"
-          type: "boolean"
-        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
-          key: "TrackpadRightClick"
-          value: "true"
-          type: "boolean"
-        #
-        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad" # Tap 2 Click (I)
-          key: "Clicking"
-          value: "true"
-          type: "boolean"
-        # - Scroll & Zoom
+          type: "bool"
+        - domain: "com.apple.AppleMultitouchTrackpad"
+          key: "ActuateDetents"
+          value: "false"
+          type: "bool"
         # Enable natural scroll direction (affects trackpad AND mouse); default
         - domain: "NSGlobalDomain"
           key: "com.apple.swipescrolldirection"
           value: "true"
-          type: "boolean"
-        # Pinch 2 zoom
-        - domain: "com.apple.AppleMultitouchTrackpad" # Enable natural scroll direction (affects trackpad AND mouse); default
-          key: "TrackpadPinch"
+          type: "bool"
+        # - Gestures
+        - domain: "com.apple.AppleMultitouchTrackpad"
+          key: "TrackpadRightClick"
           value: "true"
           type: "boolean"
         - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
-          key: "TrackpadPinch"
+          key: "TrackpadRightClick"
           value: "true"
           type: "boolean"
-        # Smart zoom
-        - domain: "com.apple.AppleMultitouchTrackpad" # Enable natural scroll direction (affects trackpad AND mouse); default
-          key: "TrackpadTwoFingerDoubleTapGesture"
+        - domain: "NSGlobalDomain"
+          key: "ContextMenuGesture"
           value: "1"
           type: "int"
-        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
-          key: "TrackpadTwoFingerDoubleTapGesture"
-          value: "1"
-          type: "int"
-        # Rotate
-        - domain: "com.apple.AppleMultitouchTrackpad" # Enable natural scroll direction (affects trackpad AND mouse); default
-          key: "TrackpadRotate"
-          value: "true"
-          type: "boolean"
-        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
-          key: "TrackpadRotate"
-          value: "true"
-          type: "boolean"
-        # - More gestures
-        - domain: "NSGlobalDomain" # Swipe b/w pages
+        - domain: "NSGlobalDomain"
           key: "AppleEnableSwipeNavigateWithScrolls"
           value: "true"
-          type: "boolean"
-        # - Swipe b/w full-screen apps
+          type: "bool"
         - domain: "com.apple.AppleMultitouchTrackpad"
-          key: "TrackpadFourFingerHorizSwipeGesture"
+          key: "TrackpadFiveFingerPinchGesture"
           value: "2"
-          type: "integer"
+          type: "int"
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
+          key: "TrackpadFiveFingerPinchGesture"
+          value: "2"
+          type: "int"
         - domain: "com.apple.AppleMultitouchTrackpad"
-          key: "TrackpadThreeFingerHorizSwipeGesture"
+          key: "TrackpadFourFingerPinchGesture"
           value: "2"
-          type: "integer"
+          type: "int"
         - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
-          key: "TrackpadFourFingerHorizSwipeGesture"
+          key: "TrackpadFourFingerPinchGesture"
           value: "2"
-          type: "integer"
-        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
-          key: "TrackpadThreeFingerHorizSwipeGesture"
-          value: "2"
-          type: "integer"
-        # Notification Center
+          type: "int"
         - domain: "com.apple.AppleMultitouchTrackpad"
-          key: "TrackpadTwoFingerFromRightEdgeSwipeGesture"
-          value: "3"
-          type: "integer"
+          key: "TrackpadFourFingerVertSwipeGesture"
+          value: "2"
+          type: "int"
         - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
-          key: "TrackpadTwoFingerFromRightEdgeSwipeGesture"
-          value: "3"
-          type: "integer"
-        # Mission Control
-        - domain: "com.apple.dock"
-          key: "showMissionControlGestureEnabled"
-          value: "true"
-          type: "boolean"
-        # App Exposé
+          key: "TrackpadFourFingerVertSwipeGesture"
+          value: "2"
+          type: "int"
+        - domain: "com.apple.AppleMultitouchTrackpad"
+          key: "TrackpadThreeFingerVertSwipeGesture"
+          value: "2"
+          type: "int"
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
+          key: "TrackpadThreeFingerVertSwipeGesture"
+          value: "2"
+          type: "int"
         - domain: "com.apple.dock"
           key: "showAppExposeGestureEnabled"
           value: "true"
-          type: "boolean"
-        # Show Desktop
+          type: "bool"
         - domain: "com.apple.dock"
           key: "showDesktopGestureEnabled"
           value: "true"
-          type: "boolean"
+          type: "bool"
+        - domain: "com.apple.dock"
+          key: "showMissionControlGestureEnabled"
+          value: "true"
+          type: "bool"
         #
-        - domain: "NSGlobalDomain" # Movement speed of the mouse cursor
-          key: "com.apple.mouse.scaling"
-          value: "3"
-          type: "float"
-        - domain: "NSGlobalDomain"
-          key: "com.apple.trackpad.scaling"
-          value: "3"
-          type: "float"
-        - domain: "NSGlobalDomain" # Disable mouse acceleration; default
-          key: "com.apple.mouse.linear"
-          value: "false"
-          type: "boolean"
+        # Tap 2 Click (I)
+        - domain: "com.apple.driver.AppleBluetoothMultitouch.trackpad"
+          key: "Clicking"
+          value: "true"
+          type: "bool"
+        - domain: "com.apple.AppleMultitouchTrackpad"
+          key: "Clicking"
+          value: "true"
+          type: "bool"
         # Dragging
         - domain: "com.apple.AppleMultitouchTrackpad" # Dragging w/ drag lock (mutually exclusive w/ `Dragging` & `TrackpadThreeFingerDrag`); default
           key: "DragLock"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.AppleMultitouchTrackpad" # Dragging w/o drag lock (mutually exclusive w/ `DragLock` & `TrackpadThreeFingerDrag`); default
           key: "Dragging"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.AppleMultitouchTrackpad" # Dragging w/ 3 finger drag (mutually exclusive w/ `Dragging` & `DragLock`); default
           key: "TrackpadThreeFingerDrag"
           value: "false"
-          type: "boolean"
+          type: "bool"
         #
         - domain: "com.apple.Terminal" # default
           key: "FocusFollowsMouse"
           value: "false"
-          type: "boolean"
+          type: "bool"
         # -  Keyboard  -
         - domain: "com.apple.HIToolbox" # Fn/🌐 key usage (`1` = Change input source, `2` =  Show Emoji & Symbols, `3` = Start Dictation)
           key: "AppleFnUsageType"
@@ -463,7 +458,7 @@
         - domain: "NSGlobalDomain" # Function keys behavior ?; default
           key: "com.apple.keyboard.fnState"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Keyboard navigation (moving focus w/ Tab & Shift Tab; `0` = disabled, `2` = enabled)
           key: "AppleKeyboardUIMode"
           value: "2"
@@ -471,33 +466,33 @@
         - domain: "kCFPreferencesAnyApplication" # Turn off the language indicator while switching input sources; default
           key: "TSMLanguageIndicatorEnabled"
           value: "true"
-          type: "boolean"
+          type: "bool"
+        # -  Typing  -
         # ( Set a blazingly fast keyboard repeat rate, and make it happen more quickly   (doesn't make a difference as of now, as press-and-hold is enabled) )
         - domain: "NSGlobalDomain" # ENABLE press-and-hold (e.g., ń popup after long pressing n, …) 4 keys in favor of key repeat; default
           key: "ApplePressAndHoldEnabled"
           value: "true" # NOTE: MUST BE `false` 2 have blazing fast keyboard repeats
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain"
           key: "InitialKeyRepeat"
           value: "20"
-          type: "int"
+          type: "float"
         - domain: "NSGlobalDomain"
           key: "KeyRepeat"
           value: "1"
-          type: "int"
-        # -  Typing  -
+          type: "float"
         - domain: "NSGlobalDomain" # Disable smart quotes
           key: "NSAutomaticQuoteSubstitutionEnabled"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Disable smart dashes
           key: "NSAutomaticDashSubstitutionEnabled"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Disable auto-correct
           key: "NSAutomaticSpellingCorrectionEnabled"
           value: "false"
-          type: "boolean"
+          type: "bool"
         # --  Mission Control  --
         - domain: "com.apple.dock" # Speed up Mission Control animations
           key: "expose-animation-duration"
@@ -544,36 +539,36 @@
         - domain: "com.apple.dock" # Rearrange Spaces automatically (`true` = based on most recent use)
           key: "mru-spaces"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.dock" # Group windows by application; default
           key: "expose-group-apps"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # When switching 2 an app, switch 2 a space w/ open windows 4 this app; default
           key: "AppleSpacesSwitchOnActivate"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.spaces" # Displays have separate Spaces; default
           key: "spans-displays"
           value: "false"
-          type: "boolean"
+          type: "bool"
         # --  Screenshots  --
-        - domain: "com.apple.screencapture" # Disable shadow in screenshots; default;     TODO: `killall SystemUIServer`
+        - domain: "com.apple.screencapture" # Disable shadow in screenshots; default
           key: "disable-shadow"
           value: "false"
-          type: "boolean"
-        - domain: "com.apple.screencapture" # Include in filename date; default;     TODO: `killall SystemUIServer`
+          type: "bool"
+        - domain: "com.apple.screencapture" # Include in filename date; default
           key: "include-date"
           value: "true"
-          type: "boolean"
+          type: "bool"
         #- domain: "com.apple.screencapture" # Save screenshots 2 Downloads folder
         #  key: "location"
         #  value: "/{{ os_homedir }}/{{ user.name }}/Downloads"
         #  type: "string"
-        - domain: "com.apple.screencapture" # Show thumbnail; default;     TODO: `killall SystemUIServer`
+        - domain: "com.apple.screencapture" # Show thumbnail; default
           key: "show-thumbnail"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.screencapture" # Save screenshots in PNG format (`png`, `jpg`, `pdf`, `psd`, `gif`, `tga`, `tiff`, `bmp`, `heic`); default
           key: "type"
           value: "png"
@@ -582,13 +577,13 @@
         - domain: "com.apple.TimeMachine" # Don't offer new disks 4 TM backup
           key: "DoNotOfferNewDisksForBackup"
           value: "true"
-          type: "boolean"
+          type: "bool"
         # --  Apps  --
         # -  Activity Monitor  -
         - domain: "com.apple.ActivityMonitor" # Show the main window when launching Activity Monitor
           key: "OpenMainWindow"
           value: "true"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.ActivityMonitor" # Show all processes in Activity Monitor
           key: "ShowCategory"
           value: "0"
@@ -605,40 +600,40 @@
         - domain: "com.apple.Safari" # Show full URL; default
           key: "ShowFullURLInSmartSearchField"
           value: "false"
-          type: "boolean"
+          type: "bool"
         # TODO: Don't work
         ## Enable the Develop menu and the Web Inspector in Safari
         #- domain: 'com.apple.Safari'
         #  key: 'IncludeDevelopMenu'
         #  value: 'true'
-        #  type: 'boolean'
+        #  type: 'bool'
         #- domain: 'com.apple.Safari'
         #  key: 'WebKitDeveloperExtrasEnabledPreferenceKey'
         #  value: 'true'
-        #  type: 'boolean'
+        #  type: 'bool'
         #- domain: 'com.apple.Safari'
         #  key: 'com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled'
         #  value: 'true'
-        #  type: 'boolean'
+        #  type: 'bool'
         ## Add a context menu item for showing the Web Inspector in web views
         #- domain: 'NSGlobalDomain'
         #  key: 'WebKitDeveloperExtras'
         #  value: 'true'
-        #  type: 'boolean'
+        #  type: 'bool'
         ## -  Mail  -
         #- domain: 'com.apple.mail'                       # Copy email addresses as `foo@example.com` instead of `Foo Bar <foo@example.com>` in Mail.app
         #  key: 'AddressesIncludeNameOnPasteboard'
         #  value: 'false'
-        #  type: 'boolean'
+        #  type: 'bool'
         # -  TextEdit  -
         - domain: "com.apple.TextEdit" # Default document format
           key: "RichText"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "com.apple.TextEdit" # Convert from neutral form 2 opening/closing variants; default
           key: "SmartQuotes"
           value: "true"
-          type: "boolean"
+          type: "bool"
         # - TODO:  Messages  -
         ## Disable smart quotes as it’s annoying for messages that contain code
         #defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
@@ -648,11 +643,11 @@
         - domain: "NSGlobalDomain" # Close confirm changes popup
           key: "NSCloseAlwaysConfirmsChanges"
           value: "false"
-          type: "boolean"
+          type: "bool"
         - domain: "NSGlobalDomain" # Keep windows when quitting an application
           key: "NSQuitAlwaysKeepsWindow"
           value: "false"
-          type: "boolean"
+          type: "bool"
         ## TODO: Disk image verification
         #defaults write com.apple.frameworks.diskimages skip-verify        -bool true
         #defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true
@@ -664,18 +659,63 @@
         type: "{{ item.type }}"
         value: "{{ item.value }}"
         host: currentHost
+        check_type: false
         state: present
       with_items:
         - domain: "com.apple.controlcenter" # Show battery percentage
           key: "BatteryShowPercentage"
           value: "true"
-          type: "boolean"
+          type: "bool"
         # Trackpad -> Point & Click
         - domain: "NSGlobalDomain" # Tap 2 Click (II)
           key: "com.apple.mouse.tapBehavior"
-          value: "false"
-          type: "boolean"
-          host: currentHost
+          value: "true"
+          type: "bool"
+        # Trackpad -> Gestures
+        - domain: "NSGlobalDomain"
+          key: "com.apple.trackpad.enableSecondaryClick"
+          value: "true"
+          type: "bool"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.trackpad.fiveFingerPinchSwipeGesture"
+          value: "2"
+          type: "int"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.trackpad.fourFingerHorizSwipeGesture"
+          value: "2"
+          type: "int"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.trackpad.fourFingerPinchSwipeGesture"
+          value: "2"
+          type: "int"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.trackpad.fourFingerVertSwipeGesture"
+          value: "2"
+          type: "int"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.trackpad.pinchGesture"
+          value: "1"
+          type: "int"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.trackpad.rotateGesture"
+          value: "1"
+          type: "int"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.trackpad.threeFingerHorizSwipeGesture"
+          value: "2"
+          type: "int"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.trackpad.threeFingerVertSwipeGesture"
+          value: "2"
+          type: "int"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.trackpad.twoFingerDoubleTapGesture"
+          value: "1"
+          type: "int"
+        - domain: "NSGlobalDomain"
+          key: "com.apple.trackpad.twoFingerFromRightEdgeSwipeGesture"
+          value: "3"
+          type: "int"
 
     - ansible.builtin.include_tasks: darwin/plistbuddy_util.yml
       loop_control:
