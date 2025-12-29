@@ -1,5 +1,5 @@
 ---
-- ansible.builtin.include_tasks: packages-python.yml
+- ansible.builtin.import_tasks: packages-python.yml
 
 - name: Install file general purpose tools
   block:

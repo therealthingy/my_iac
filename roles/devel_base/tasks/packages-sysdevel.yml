@@ -1,6 +1,6 @@
 ---
-- ansible.builtin.include_tasks: packages-git.yml
-- ansible.builtin.include_tasks: packages-gcc.yml
+- ansible.builtin.import_tasks: packages-git.yml
+- ansible.builtin.import_tasks: packages-gcc.yml
 
 - name: "[Darwin / Debian/Ubuntu] Install common systems programming tools/libs"
   block:
@@ -186,9 +186,9 @@
       when: (gef_find_output.files | length == 0)
   when: ansible_facts.os_family != 'Darwin'
 
-- ansible.builtin.include_tasks: packages-llvm.yml
+- ansible.builtin.import_tasks: packages-llvm.yml
 
-- ansible.builtin.include_tasks: packages-bazel.yml
+- ansible.builtin.import_tasks: packages-bazel.yml
 
 - name: Install latest CMake
   block:
@@ -241,6 +241,6 @@
   become: false
 #
 # TODO: …
-#- ansible.builtin.include_tasks: packages-trace_compass.yml
+#- ansible.builtin.import_tasks: packages-trace_compass.yml
 
-#- ansible.builtin.include_tasks: packages-intel_tools.yml
+#- ansible.builtin.import_tasks: packages-intel_tools.yml

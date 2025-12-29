@@ -1,11 +1,10 @@
 ---
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TODO: Derive `volumes` from `compose`  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 - name: Setup containers
-  ansible.builtin.include_tasks: setup_containers.yml
-  loop_control:
-    loop_var: container
-  with_items:
-    - name: copyparty # TODO: SSO
+  ansible.builtin.import_tasks: setup_containers.yml
+  vars:
+    container:
+      name: copyparty # TODO: SSO
       config_files:
         - name: copyparty.conf # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
       compose:

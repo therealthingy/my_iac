@@ -1,10 +1,9 @@
 ---
 - name: Setup container
-  ansible.builtin.include_tasks: setup_containers.yml
-  loop_control:
-    loop_var: container
-  with_items:
-    - name: pihole # TODO SSO: N/A atm
+  ansible.builtin.import_tasks: setup_containers.yml
+  vars:
+    container:
+      name: pihole # TODO SSO: N/A atm
       compose:
         services:
           - name: pihole

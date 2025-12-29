@@ -1,4 +1,6 @@
 ---
 dependencies:
   - role: aux/gather_host_facts
+    tags: [user_config]
   - role: client/aux/gather_workstation_facts
+    tags: [user_config]

@@ -299,7 +299,7 @@
           type: "string"
         - domain: "com.apple.finder"
           key: "NewWindowTargetPath"
-          value: "file:///{{ os_homedir }}/{{ user.name }}/"
+          value: "file:///Users/{{ user.name }}/"
           type: "string"
         - domain: "com.apple.finder" # Allow text selection in Quick Look
           key: "QLEnableTextSelection"
@@ -591,7 +591,7 @@
           type: "bool"
         #- domain: "com.apple.screencapture" # Save screenshots 2 Downloads folder
         #  key: "location"
-        #  value: "/{{ os_homedir }}/{{ user.name }}/Downloads"
+        #  value: "/Users/{{ user.name }}/Downloads"
         #  type: "string"
         - domain: "com.apple.screencapture" # Show thumbnail; default
           key: "show-thumbnail"
@@ -841,7 +841,7 @@
   notify: "restart darwin daemons"
   when: ansible_facts.os_family == 'Darwin'
   tags:
-    - user_settings
+    - user_config
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------
 

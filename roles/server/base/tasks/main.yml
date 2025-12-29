@@ -30,7 +30,7 @@
   become: true # UGLY workaround since `become` isn't allowed in `include_role`
   when: notifications_mail is defined
 
-- ansible.builtin.include_tasks: config-unattended_updates.yml
+- ansible.builtin.import_tasks: config-unattended_updates.yml
 
 - name: Firewall
   block:

@@ -1,11 +1,10 @@
 ---
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TODO: Derive `volumes` from `compose`  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 - name: Setup containers
-  ansible.builtin.include_tasks: setup_containers.yml
-  loop_control:
-    loop_var: container
-  with_items:
-    - name: watchtower
+  ansible.builtin.import_tasks: setup_containers.yml
+  vars:
+    container:
+      name: watchtower
       compose:
         services:
           - name: watchtower

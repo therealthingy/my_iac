@@ -70,7 +70,7 @@
 
 - name: Config
   block:
-    - ansible.builtin.include_tasks: git_clone_fallback.yml
+    - ansible.builtin.import_tasks: git_clone_fallback.yml
       vars:
         repo_name: therealthingy/helix.git
         repo_git_host: github.com

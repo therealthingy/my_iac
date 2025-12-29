@@ -75,7 +75,7 @@
           - dconf-editor
         state: present
     - name: Install flatpak
-      ansible.builtin.include_tasks: linux/package-flatpak.yml
+      ansible.builtin.import_tasks: linux/package-flatpak.yml
   become: true
   when: ansible_facts.os_family != 'Darwin'
 

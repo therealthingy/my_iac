@@ -1,11 +1,10 @@
 ---
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TODO: Derive `volumes` from `compose`  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 - name: Setup containers
-  ansible.builtin.include_tasks: setup_containers.yml
-  loop_control:
-    loop_var: container
-  with_items:
-    - name: bitwarden
+  ansible.builtin.import_tasks: setup_containers.yml
+  vars:
+    container:
+      name: bitwarden
       # TODO SSO -- PROBLEM: Requires "Key connector" 2 avoid entering master pw:
       #   - https://bitwarden.com/help/about-key-connector/
       #   - https://github.com/dani-garcia/vaultwarden/discussions/2583

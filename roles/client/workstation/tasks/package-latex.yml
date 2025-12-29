@@ -42,7 +42,7 @@
 - name: Install + configure latexmk
   block:
     - name: Install # Can't be installed not in user-mode (which is the only mode in Debian)
-      ansible.builtin.include_tasks: package-latex-install_globally.yml
+      ansible.builtin.import_tasks: package-latex-install_globally.yml
       vars:
         latex_package: latexmk
 

@@ -126,7 +126,7 @@
 - name: Optimize scheduler 4 server workloads
   block:
     # TODO: MV 2 server role  +  check whether target host is in group *-client
-    - include_tasks: rpi-cmdline.yml
+    - ansible.builtin.import_tasks: rpi-cmdline.yml
       vars:
         key: preempt
         value: none

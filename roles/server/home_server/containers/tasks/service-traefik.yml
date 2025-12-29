@@ -1,11 +1,10 @@
 ---
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TODO: Derive `volumes` from `compose`  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 - name: Setup container
-  ansible.builtin.include_tasks: setup_containers.yml
-  loop_control:
-    loop_var: container
-  with_items:
-    - name: traefik
+  ansible.builtin.import_tasks: setup_containers.yml
+  vars:
+    container:
+      name: traefik
       config_files:
         - name: dynamic-conf.yml # $$$$$$$$  TODO: RESTART WHEN CHANGED  $$$$$$$$
       #  - name: ssl-certgen
