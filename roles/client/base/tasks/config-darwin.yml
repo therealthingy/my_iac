@@ -19,7 +19,7 @@
         name: domt4/autoupdate
     - name: Check already installed
       ansible.builtin.stat:
-        path: '/Users/{{ user.name }}/Library/LaunchAgents/com.github.domt4.homebrew-autoupdate.plist'
+        path: "/Users/{{ user.name }}/Library/LaunchAgents/com.github.domt4.homebrew-autoupdate.plist"
       register: brew_autoupdater
     - name: Install brew autoupdater
       ansible.builtin.shell: brew autoupdate start 43200 --upgrade --cleanup --immediate --sudo --ac-only # TODO: `--greedy` ?!
@@ -38,9 +38,9 @@
 # NOTE: Show power settings: `sudo pmset -g`
 
 # TODO:
-#   - Add wifi networks: `networksetup -setairportnetwork en0 WIFI_SSID WIFI_PASSWORD`
 #   - Add [dnsforge certificate](https://dnsforge.de/)
 #   - Add login items
+#   - Add wifi networks: `networksetup -setairportnetwork en0 WIFI_SSID WIFI_PASSWORD`
 
 - name: "[Darwin] System-wide"
   block:
@@ -137,11 +137,11 @@
           key: "AppleInterfaceStyleSwitchesAutomatically"
           value: "true"
           type: "bool"
-        - domain: "NSGlobalDomain" # Accent color (Graphite)
+        - domain: "NSGlobalDomain" # Accent color (Graphite)        << TODO: SHOULD BE VARIABLE
           key: "AppleAccentColor"
           value: "-1"
           type: "integer"
-        - domain: "NSGlobalDomain" # Text highlight color (Graphite)
+        - domain: "NSGlobalDomain" # Text highlight color (Graphite)        << TODO: SHOULD BE VARIABLE
           key: "AppleHighlightColor"
           value: "0.847059 0.847059 0.862745 Graphite"
           type: "string"
@@ -189,7 +189,7 @@
           key: "orientation"
           value: "left"
           type: "string"
-        - domain: "com.apple.dock" # Set the icon size of Dock items
+        - domain: "com.apple.dock" # Set the icon size of Dock items        << TODO: SHOULD BE VARIABLE
           key: "tilesize"
           value: "22.0"
           type: "float"
@@ -277,7 +277,7 @@
           key: "NSToolbarTitleViewRolloverDelay"
           value: "1"
           type: "int"
-        - domain: "com.apple.finder" # Show hidden files by default
+        - domain: "com.apple.finder" # Show hidden files by default        << TODO: SHOULD BE VARIABLE
           key: "AppleShowAllFiles"
           value: "true"
           type: "bool"
@@ -285,7 +285,7 @@
           key: "AppleShowAllExtensions"
           value: "true"
           type: "bool"
-        - domain: "com.apple.finder" # Disable the warning when changing a file extension
+        - domain: "com.apple.finder" # Disable the warning when changing a file extension        << TODO: SHOULD BE VARIABLE
           key: "FXEnableExtensionChangeWarning"
           value: "false"
           type: "bool"
@@ -321,7 +321,7 @@
           key: "FXRemoveOldTrashItems"
           value: "false"
           type: "bool"
-        - domain: "com.apple.finder" # Disable the "Show warning before emptying the Trash" warning
+        - domain: "com.apple.finder" # Disable the "Show warning before emptying the Trash" warning        << TODO: SHOULD BE VARIABLE
           key: "WarnOnEmptyTrash"
           value: "false"
           type: "bool"
@@ -350,7 +350,7 @@
         # -  Trackpad & Mouse  -
         # - Point & Click
         # Mouse speed
-        - domain: "NSGlobalDomain" # Pertains 2 tackpad
+        - domain: "NSGlobalDomain" # Pertains 2 trackpad
           key: "com.apple.trackpad.scaling"
           value: "3"
           type: "float"
@@ -384,7 +384,7 @@
           key: "ActuateDetents"
           value: "false"
           type: "bool"
-        # Enable natural scroll direction (affects trackpad AND mouse); default
+        # Enable natural scroll direction (affects trackpad AND mouse); default        << TODO: SHOULD BE VARIABLE
         - domain: "NSGlobalDomain"
           key: "com.apple.swipescrolldirection"
           value: "true"
@@ -688,7 +688,7 @@
             - "en-US"
             - "de-DE"
           type: "array"
-        - domain: "NSGlobalDomain" # 12h clock
+        - domain: "NSGlobalDomain" # 12h clock        << TODO: SHOULD BE VARIABLE
           key: "AppleICUForce12HourTime"
           value: "true"
           type: "bool"
@@ -827,7 +827,7 @@
           value: "Name"
           file: "/Users/{{ user.name }}/Library/Preferences/com.apple.finder.plist"
 
-    - name: Set wallpaper
+    - name: Set wallpaper #         << TODO: SHOULD BE VARIABLE
       block:
         - name: Get current wallpaper
           ansible.builtin.shell: osascript -e 'tell app "Finder" to get posix path of (get desktop picture as alias)'
