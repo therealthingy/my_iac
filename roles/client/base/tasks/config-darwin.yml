@@ -1,5 +1,5 @@
 ---
-- name: "[Darwin] Setup brew autoupdate"
+- name: "[Darwin] Setup brew autoupdate" #         << TODO: SHOULD BE VARIABLE
   # SEE: https://github.com/DomT4/homebrew-autoupdate
   #   ( DISABLE: `brew autoupdate delete` )
   #   ( SEE STATUS: brew autoupdate status )
