@@ -840,6 +840,8 @@
   become: false
   notify: "restart darwin daemons"
   when: ansible_facts.os_family == 'Darwin'
+  tags:
+    - user_settings
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------
 
