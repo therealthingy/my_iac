@@ -200,7 +200,11 @@
         - domain: "com.apple.dock" # Eliminate Dock reveal delay
           key: "autohide-time-modifier"
           value: "0"
-          type: "int"
+          type: "float"
+        - domain: "com.apple.dock" # Eliminate Dock reveal delay
+          key: "autohide-delay"
+          value: "0"
+          type: "float"
         #- domain: "com.apple.dock" # Enable spring loading for all Dock items;        TODO: ?!?!!11
         #  key: "enable-spring-load-actions-on-all-items"
         #  value: "false"
