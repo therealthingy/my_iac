@@ -833,7 +833,26 @@
           key: "com.apple.trackpad.twoFingerFromRightEdgeSwipeGesture"
           value: "3"
           type: "int"
-
+#
+# TODO: Requires support 4 `dict` values (SEE: https://github.com/ansible-collections/community.general/issues/238)
+#    - name: Change keyboard modifiers (swap Option & Command) keys 4 Windows keyboards
+#      community.general.osx_defaults:
+#        key: "com.apple.keyboard.modifiermapping.{{ item.usb_vendor_id }}-{{ item.usb_product_id }}-{{ item.n }}"
+#        array_add: true
+#        type: dict
+#        value:
+#          - '{HIDKeyboardModifierMappingDst = 30064771299; HIDKeyboardModifierMappingSrc = 30064771298;}'
+#          - '{HIDKeyboardModifierMappingDst = 30064771299; HIDKeyboardModifierMappingSrc = 30064771298;}'
+#          - '{HIDKeyboardModifierMappingDst = 30064771302; HIDKeyboardModifierMappingSrc = 30064771303;}'
+#          - '{HIDKeyboardModifierMappingDst = 30064771303; HIDKeyboardModifierMappingSrc = 30064771302;}'
+#          - '{HIDKeyboardModifierMappingDst = 30064771298; HIDKeyboardModifierMappingSrc = 30064771299;}'
+#        host: currentHost
+#        check_type: false
+#        state: present
+#      # NOTE: Find out product & vendor id: `ioreg -p IOUSB -c IOUSBDevice | grep -e class -e idVendor -e idProduct`
+#      with_items: "{{ usb_windows_keyboards }}"
+#      when: usb_windows_keyboards is defined
+#
     - ansible.builtin.include_tasks: darwin/plistbuddy_util.yml
       loop_control:
         loop_var: plist_setting
