@@ -116,7 +116,7 @@
           value: "0"
           type: "float"
         # --  UI/UX  --
-        - domain: "NSGlobalDomain" # Fileviewer dialog: Save 2 disk (not 2 iCloud) by default
+        - domain: "NSGlobalDomain" # File viewer dialog: Save 2 disk (not 2 iCloud) by default
           key: "NSDocumentSaveNewDocumentsToCloud"
           value: "false"
           type: "bool"
@@ -124,6 +124,10 @@
           key: "NSNavPanelExpandedStateForSaveMode"
           value: "true"
           type: "bool"
+        - domain: "NSGlobalDomain" # "Windows title bar double-click action"
+          key: "AppleActionOnDoubleClick"
+          value: "Fill"
+          type: "string"
         - domain: "NSGlobalDomain" # Show scrollbar (`WhenScrolling`, `Automatic` and `Always`); default
           key: "AppleShowScrollBars"
           value: "WhenScrolling"
@@ -193,7 +197,7 @@
           key: "tilesize"
           value: "22.0"
           type: "float"
-        - domain: "com.apple.dock"
+        - domain: "com.apple.dock" #        << TODO: SHOULD BE VARIABLE
           key: "autohide"
           value: "true"
           type: "bool"
@@ -722,20 +726,20 @@
         # --  Misc.  --
         - domain: "NSGlobalDomain" # Close confirm changes popup
           key: "NSCloseAlwaysConfirmsChanges"
-          value: "false"
+          value: "true"
           type: "bool"
-        - domain: "NSGlobalDomain" # Close confirm changes popup
-          key: "NSCloseAlwaysConfirmsChanges"
-          value: "false"
-          type: "bool"
-        - domain: "NSGlobalDomain" # Keep windows when quitting an application
+        - domain: "NSGlobalDomain" # Close windows when quitting an application
           key: "NSQuitAlwaysKeepsWindow"
-          value: "false"
+          value: "true"
           type: "bool"
         - domain: "com.apple.loginwindow" # "Reopen windows when logging in"
           key: "TALLogoutSavesState"
           value: "false"
           type: "bool"
+        #- domain: "com.apple.controlcenter" # "Recent documents, applications, and servers"               TODO: DOESN'T WORK ?!?!!1111
+        #  key: "NumberOfRecents"
+        #  value: "0"
+        #  type: "int"
         # -  Localization  -
         # TODO: Region
         - domain: "NSGlobalDomain"
