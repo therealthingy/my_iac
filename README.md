@@ -282,6 +282,8 @@
       ```
 
 ### RUN Playbook
+- Mac only user-wide settings: `ansible-playbook -i ~/.ansible-inventory.yml  ~/Documents/devel/my_iac/main.yml --limit local_mac, --tags user_config,`
+
 - Cache SSH passphrase: `eval `ssh-agent` && ssh-add ~/.ssh/<cert-file>`
 - Exec 4 specific client: **`ansible-playbook --vault-pass-file ~/.ansible-vault main.yml`**
   - Flags:
