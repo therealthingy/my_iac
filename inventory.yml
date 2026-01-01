@@ -87,9 +87,12 @@ all:
               - 149.112.112.10
               - 2620:fe::fe:10
 
-          ssh:
+          sshd:
             port: 2233
             x11_enabled: "yes"
+            authorized_keys:
+              - user: gg
+                key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/local/l0-rpi0.pub') }}"
 
           autoupdate_reboot_enabled: false
 

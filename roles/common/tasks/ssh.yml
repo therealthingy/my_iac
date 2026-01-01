@@ -1,10 +1,4 @@
 ---
-# TODO: for all systems: common ansible ssh-key
-#- name: Add ssh key for {{ user.name }}
-#  authorized_key:
-#    user: {{ user.name }}
-#    key: {{ user_ssh_key }}
-
 - name: Install/Enable + change sshd settings
   block:
     - name: Install ssh server
@@ -41,10 +35,10 @@
               value: "no"
             # Enable/Disable X11 forwarding:
             - key: "X11Forwarding"
-              value: "{{ ssh.x11_enabled | default('no', true) }}"
+              value: "{{ sshd.x11_enabled | default('no', true) }}"
             # Change ssh port:
             - key: "Port"
-              value: "{{ ssh.port | default('22', true) }}"
+              value: "{{ sshd.port | default('22', true) }}"
           loop_control:
             loop_var: common_ssh_item
         - name: "[Ubuntu Server] Rmv contradicting conf file" # Would overwrite overwrite `PasswordAuthentication` 2 `yes`
@@ -52,6 +46,17 @@
             path: /etc/ssh/sshd_config.d/50-cloud-init.conf
             state: absent
           when: ansible_facts.distribution == 'Ubuntu'
+
+    - name: Add authorized ssh key(s)
+      ansible.posix.authorized_key:
+        user: "{{ auth_host.user }}"
+        key: "{{ auth_host.key }}"
+        #key_options: 'no-port-forwarding,from="10.0.1.1"'
+        state: present
+      with_items: "{{ sshd.authorized_keys }}"
+      loop_control:
+        loop_var: auth_host
+      when: sshd.authorized_keys is defined
 
     - name: Allow client 2 pass locale environment variables
       ansible.builtin.lineinfile:
@@ -61,7 +66,7 @@
         validate: "/usr/sbin/sshd -T -f %s"
   notify: restart ssh daemon
   become: true
-  when: sshd_enabled is defined and sshd_enabled == True
+  when: sshd is defined and not (sshd.enabled is defined and sshd.enabled == False)
 
 - name: Install mosh
   ansible.builtin.package:
@@ -81,4 +86,4 @@
         systemsetup_setting: { setting: remotelogin, value: "Off" }
       when: ansible_facts.os_family == 'Darwin'
   become: true
-  when: sshd_enabled is defined and sshd_enabled == False
+  when: sshd is defined and sshd.enabled is defined and sshd.enabled == False
