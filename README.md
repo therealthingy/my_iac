@@ -180,13 +180,14 @@
     - Keynote  (409183694)
     - Pages  (409201541)
     - Numbers  (409203825)
+    - DjVu Viewer + DjVu to PDF  (755261884)
+    - Immich  (1613945652)
+    - AmorphousDiskMark  (1168254295;  blocked in de-DE AppStore)
     - dict.cc  (327732352)
     - Goegebra  (?)
-    - DjVu Viewer + DjVu to PDF  (755261884)
     - Organic Maps  (1567437057)
     - Yattee  (1595136629)
     - Later  (1507396839)
-    - AmorphousDiskMark  (1168254295;  blocked in de-DE AppStore)
 
 - Add apps (VSCodium & Terminal) 2 *Developer Tools*:
   - Run in terminal: `sudo spctl developer-mode enable-terminal`
