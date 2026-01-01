@@ -92,3 +92,43 @@
     loop_var: git_config_var
   become: false
   when: git_config is defined
+
+- name: Add VCS ssh keys
+  block:
+    - name: Create dir
+      ansible.builtin.file:
+        path: "/{{ os_homedir }}/{{ user.name }}/.ssh/vcss"
+        state: directory
+        owner: "{{ user.name }}"
+        group: "{{ user.group_name }}"
+        mode: 0755
+    - name: Add keys
+      block:
+        - name: Copy sk
+          ansible.builtin.copy:
+            content: "{{ vcs.sk }}"
+            dest: "/{{ os_homedir }}/{{ user.name }}/.ssh/vcss/{{ vcs.host }}"
+            mode: 0600
+          with_items: "{{ vcs_ssh_keys }}"
+          loop_control:
+            loop_var: vcs
+        - name: Copy pk
+          ansible.builtin.copy:
+            content: "{{ vcs.pk }}"
+            dest: "/{{ os_homedir }}/{{ user.name }}/.ssh/vcss/{{ vcs.host }}.pub"
+            mode: 0644
+          with_items: "{{ vcs_ssh_keys }}"
+          loop_control:
+            loop_var: vcs
+    - name: Generate config
+      ansible.builtin.template:
+        src: ssh-config-vcss.j2
+        dest: "/{{ os_homedir }}/{{ user.name }}/.ssh/vcss/config"
+    - name: Add include in main file
+      ansible.builtin.lineinfile:
+        path: "/{{ os_homedir }}/{{ user.name }}/.ssh/config"
+        search_string: "Include vcss/config"
+        line: "Include vcss/config"
+        create: true
+  become: false
+  when: vcs_ssh_keys is defined
