@@ -347,7 +347,7 @@
           key: "QuitMenuItem"
           value: "false"
           type: "bool"
-        - domain: "NSGlobalDomain" # Sidebar icon size (`1` = small, `2` = medium, `3` = large)
+        - domain: "NSGlobalDomain" # Sidebar icon size (`1` = small, `2` = medium, `3` = large)        << TODO: SHOULD BE VARIABLE
           key: "NSTableViewDefaultSizeMode"
           value: "1"
           type: "int"

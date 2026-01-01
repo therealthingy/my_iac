@@ -54,21 +54,6 @@
           become: false
           when: ansible_facts.os_family == 'Darwin'
 
-    - name: Install note taking apps
-      block:
-        - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
-          community.general.homebrew_cask:
-            name: "{{ homebrew_cask }}"
-            state: latest
-          with_items:
-            # Notes
-            #- fsnotes
-            - joplin
-          loop_control:
-            loop_var: homebrew_cask
-          become: false
-          when: ansible_facts.os_family == 'Darwin'
-
     - name: Install social stuff
       block:
         - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
@@ -119,41 +104,29 @@
       when: install_latex == True
 
 - name: '[Darwin] Install "additional" apps' # TODO: Add flatpak counterparts 4 linux & check whether VM
-  community.general.homebrew_cask:
-    name: "{{ homebrew_cask }}"
-    state: latest
-  with_items:
-    - raycast
-    - bitwarden
-    # Office
-    - pdf-expert
-    #- softmaker-freeoffice
-    ##sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
-    # Privacy
-    - little-snitch
-    # Internet/Services
-    - eddie
-    # Social
-    - signal
-    - discord
-  loop_control:
-    loop_var: homebrew_cask
-  become: false
-  when: ansible_facts.os_family == 'Darwin' and install_additional == true
-
-- name: "Apps: config"
   block:
-    - name: Config syncthing
-      block:
-        - name: Set variables (as facts)
-          ansible.builtin.set_fact:
-            syncthing_global_conf_file_target_dir: "/{{ os_homedir }}/{{ user.name }}/"
-        - name: Copy config file
-          ansible.builtin.template:
-            src: stglobalignore.j2
-            dest: "{{ syncthing_global_conf_file_target_dir }}/.stglobalignore"
-            mode: 0640
-          become: false
+    - name: Install
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        - raycast
+        - bitwarden
+        #- fsnotes
+        - joplin
+        # Office
+        - pdf-expert
+        #- softmaker-freeoffice
+        ##sudo_password: "{{ ansible_become_pass }}"   TODO: Doesn't work when not passwordless: https://github.com/ansible-collections/community.general/issues/4957
+        # Privacy
+        - little-snitch
+        # Internet/Services
+        - eddie
+        # Social
+        - signal
+        - discord
+      loop_control:
+        loop_var: homebrew_cask
 
     - name: Config Joplin
       block:
@@ -169,4 +142,19 @@
             src: apps/joplin.css.j2
             dest: "/{{ os_homedir }}/{{ user.name }}/.config/joplin-desktop/userstyle.css"
             mode: 0755
+  become: false
+  when: ansible_facts.os_family == 'Darwin' and install_additional == true
+
+- name: "Apps: config"
+  block:
+    - name: Config syncthing
+      block:
+        - name: Set variables (as facts)
+          ansible.builtin.set_fact:
+            syncthing_global_conf_file_target_dir: "/{{ os_homedir }}/{{ user.name }}/"
+        - name: Copy config file
+          ansible.builtin.template:
+            src: stglobalignore.j2
+            dest: "{{ syncthing_global_conf_file_target_dir }}/.stglobalignore"
+            mode: 0640
   become: false
