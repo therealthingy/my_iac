@@ -12,14 +12,14 @@
   block:
     - name: Change config file to enable verbose boot
       ansible.builtin.lineinfile:
-        dest: /etc/default/grub
+        path: /etc/default/grub
         regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=\".*\"$'
         line: 'GRUB_CMDLINE_LINUX_DEFAULT=""'
       register: result_grub_verbose_updated
 
     - name: Change config file and set no boot timeout
       ansible.builtin.lineinfile:
-        dest: /etc/default/grub
+        path: /etc/default/grub
         regexp: "^#?{{ item.key }}={{ item.regexp }}$"
         line: "{{ item.key }}={{ item.value }}"
       with_items:

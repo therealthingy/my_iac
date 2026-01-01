@@ -55,7 +55,7 @@
             - bluetooth.service
         - name: Disable HW # AGAIN: REQUIRES reboot
           ansible.builtin.lineinfile:
-            dest: "{{ firmware_config_file }}"
+            path: "{{ firmware_config_file }}"
             regexp: "^(#)?dtoverlay={{ item }}"
             line: "dtoverlay={{ item }}"
           with_items:
@@ -64,7 +64,7 @@
 
     - name: … LEDs
       ansible.builtin.lineinfile:
-        dest: "{{ firmware_config_file }}"
+        path: "{{ firmware_config_file }}"
         regexp: "^(#)?dtparam={{ item.key }}={{ item.value }}"
         line: "dtparam={{ item.key }}={{ item.value }}"
       with_items:
@@ -87,7 +87,7 @@
 
 - name: Optimize 4 more speed
   ansible.builtin.lineinfile:
-    dest: "{{ firmware_config_file }}"
+    path: "{{ firmware_config_file }}"
     regexp: "^(#)?{{ item.key }}="
     line: "{{ item.key }}={{ item.value }}"
   with_items:
@@ -115,7 +115,7 @@
 ##  ALTERNATIVELY: `sudo ethtool --set-eee eth0 eee off`  //  VALIDATE: `sudo ethtool --show-eee eth0`
 #- name: Fix unreliable ethernet due 2 EEE
 #  ansible.builtin.lineinfile:
-#    dest: '{{ firmware_config_file }}'
+#    path: '{{ firmware_config_file }}'
 #    regexp: '^(#)?dtparam={{ item.key }}={{ item.value }}'
 #    line: 'dtparam={{ item.key }}={{ item.value }}'
 #  with_items:
@@ -175,7 +175,7 @@
   block:
     - name: Adapt config
       ansible.builtin.lineinfile:
-        dest: "{{ rpi_fan_pwm_container_dir }}/.env"
+        path: "{{ rpi_fan_pwm_container_dir }}/.env"
         regexp: "^INVERT_PWM_SIGNAL=False$"
         line: "INVERT_PWM_SIGNAL=True"
     - name: Ensure container is running

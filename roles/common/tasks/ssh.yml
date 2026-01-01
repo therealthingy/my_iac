@@ -17,7 +17,7 @@
       block:
         - name: Update config file
           ansible.builtin.lineinfile:
-            dest: /etc/ssh/sshd_config
+            path: /etc/ssh/sshd_config
             regexp: "^#?{{ common_ssh_item.key }}"
             line: "{{ common_ssh_item.key }} {{ common_ssh_item.value }}"
             validate: "/usr/sbin/sshd -T -f %s"
@@ -60,7 +60,7 @@
 
     - name: Allow client 2 pass locale environment variables
       ansible.builtin.lineinfile:
-        dest: /etc/ssh/sshd_config
+        path: /etc/ssh/sshd_config
         regexp: '^#?AcceptEnv LANG LC_\*$'
         line: "AcceptEnv LANG LC_*"
         validate: "/usr/sbin/sshd -T -f %s"
