@@ -62,6 +62,8 @@
 
     # Security: TODO: Allow accessories 2 connect
 
+    # TODO: "Requires password after screen saver begins or …" => `askForPasswordDelay` doesn't work anymore (https://community.jamf.com/general-discussions-2/mac-osx-10-13-enable-askforpassword-via-terminal-command-10806)
+
     - name: "[Darwin] Set lock screen message"
       community.general.osx_defaults:
         domain: "/Library/Preferences/com.apple.loginwindow"
@@ -106,7 +108,7 @@
         # --  Audio  --
         - domain: "NSGlobalDomain" # Play feedback when volume is changed; default
           key: "com.apple.sound.beep.feedback"
-          value: "true"
+          value: "false"
           type: "bool"
         - domain: "NSGlobalDomain"
           key: "com.apple.sound.uiaudio.enabled"
