@@ -103,7 +103,6 @@
         value: "{{ item.value }}"
         array_add: "{{ item.array_add if item.array_add is defined else false }}"
         check_type: false
-        state: present
       with_items:
         # --  Audio  --
         - domain: "NSGlobalDomain" # Play feedback when volume is changed; default
@@ -119,6 +118,10 @@
           value: "0"
           type: "float"
         # --  UI/UX  --
+        - domain: "com.apple.sharingd" # System Preferences > General > AirDrop & Handoff
+          key: "DiscoverableMode"
+          value: "Contacts Only"
+          type: "string"
         - domain: "NSGlobalDomain" # File viewer dialog: Save 2 disk (not 2 iCloud) by default
           key: "NSDocumentSaveNewDocumentsToCloud"
           value: "false"
@@ -140,7 +143,7 @@
           key: "reduceTransparency"
           value: "false"
           type: "bool"
-        - domain: "NSGlobalDomain" # Auto appearance (light <-> dark)
+        - domain: "NSGlobalDomain" # Auto appearance (light <-> dark)        << TODO: SHOULD BE VARIABLE
           key: "AppleInterfaceStyleSwitchesAutomatically"
           value: "true"
           type: "bool"
@@ -152,12 +155,16 @@
           key: "AppleHighlightColor"
           value: "0.847059 0.847059 0.862745 Graphite"
           type: "string"
-        # -  Menubar  -
-        #        - domain: "com.apple.systemuiserver"    # TODO: DOESN'T WORK ?!??!!?1111
-        #          key: "menuExtras"
-        #          array_add: true
-        #          value: "/System/Library/CoreServices/Menu Extras/TimeMachine.menu"
-        #          type: "string"
+        # -  Menu bar  -
+        - domain: "NSGlobalDomain" # "Show menu bar background"
+          key: "SLSMenuBarUseBlurredAppearance"
+          value: "true"
+          type: "bool"
+        - domain: "/Users/{{ user.name }}/Library/Preferences/ByHost/com.apple.controlcenter" # Show battery percentage
+          key: "BatteryShowPercentage"
+          value: "true"
+          type: "bool"
+        #
         - domain: "com.apple.menuextra.clock" # Flash clock time separators; default
           key: "FlashDateSeparators"
           value: "false"
@@ -573,6 +580,10 @@
           key: "KeyRepeat"
           value: "1"
           type: "float"
+        - domain: "NSGlobalDomain" # Disable automatic capitalization
+          key: "NSAutomaticCapitalizationEnabled"
+          value: "false"
+          type: "bool"
         - domain: "NSGlobalDomain" # Disable smart quotes
           key: "NSAutomaticQuoteSubstitutionEnabled"
           value: "false"
@@ -732,6 +743,10 @@
         ## Disable continuous spell checking
         #defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
         # --  Misc.  --
+        - domain: "NSGlobalDomain" # Windows & Apps > Prefer tabs when opening documents
+          key: "AppleWindowTabbingMode"
+          value: "always"
+          type: "string"
         - domain: "NSGlobalDomain" # Close confirm changes popup
           key: "NSCloseAlwaysConfirmsChanges"
           value: "true"
@@ -751,6 +766,12 @@
         # -  Localization  -
         # TODO: Region
         - domain: "NSGlobalDomain"
+          key: "AppleLanguages"
+          value:
+            - "en-US"
+            - "de-DE"
+          type: "array"
+        - domain: ".GlobalPreferences_m"
           key: "AppleLanguages"
           value:
             - "en-US"
@@ -787,10 +808,6 @@
         check_type: false
         state: present
       with_items:
-        - domain: "com.apple.controlcenter" # Show battery percentage
-          key: "BatteryShowPercentage"
-          value: "true"
-          type: "bool"
         # Trackpad -> Point & Click
         - domain: "NSGlobalDomain" # Tap 2 Click (II)
           key: "com.apple.mouse.tapBehavior"

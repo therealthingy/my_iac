@@ -1,4 +1,4 @@
 ---
 - name: restart darwin daemons
-  ansible.builtin.shell: killall SystemUIServer cfprefsd Finder Dock coreaudiod 'System Settings' # Safari Terminal
+  ansible.builtin.shell: killall cfprefsd SystemUIServer ControlCenter Finder Dock coreaudiod 'System Settings' # Safari Terminal
   become: true
