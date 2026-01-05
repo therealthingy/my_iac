@@ -12,7 +12,7 @@
           - dos2unix
           - jdupes # OG: `fdupes`
           - rsync
-          - rclone # Cloud storage management software
+          - rclone # Cloud storage management SW
       become: "{{ package_manager_become }}"
 
     - name: "[Debian/Ubuntu]"
@@ -35,6 +35,7 @@
           - gawk
           - grep
           - findutils # GNU `find`
+          - macfuse # required 4 `rclone` `mount`
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
@@ -190,19 +191,6 @@
       community.general.homebrew:
         name:
           - gpg
-      become: false
-      when: ansible_facts.os_family == 'Darwin'
-
-    - name: "[Darwin]" # TODO: Add flatpak counterpart 4 linux & check whether VM
-      community.general.homebrew_cask:
-        name: "{{ homebrew_cask }}"
-        state: latest
-      with_items:
-        # Privacy
-        - cryptomator
-        #- tunnelblick
-      loop_control:
-        loop_var: homebrew_cask
       become: false
       when: ansible_facts.os_family == 'Darwin'
 
