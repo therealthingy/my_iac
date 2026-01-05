@@ -124,6 +124,8 @@
         name: "{{ common_nvim_alt.name }}"
         link: "{{ common_nvim_alt.link }}"
         path: "{{ common_nvim_alt.path }}"
+      loop_control:
+        loop_var: common_nvim_alt
       with_items:
         #- name: editor
         #  link: /usr/bin/editor
@@ -131,8 +133,6 @@
         - name: vi
           link: /usr/bin/vi
           path: /usr/bin/nvim
-      loop_control:
-        loop_var: common_nvim_alt
       when: ansible_facts.os_family != 'Darwin'
       become: true
 

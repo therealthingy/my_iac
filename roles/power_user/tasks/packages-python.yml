@@ -14,8 +14,8 @@
     state: latest
     install_deps: true
     executable: pipx
-  with_items:
-    - pip-review # NOTE: 2 check for updates, use: `pip-review --local --auto`
   loop_control:
     loop_var: pip_package
+  with_items:
+    - pip-review # NOTE: 2 check for updates, use: `pip-review --local --auto`
   become: false

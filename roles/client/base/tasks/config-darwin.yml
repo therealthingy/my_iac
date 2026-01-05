@@ -1049,13 +1049,13 @@
     owner: "{{ user.name }}"
     group: "{{ user.group_name }}"
     mode: 0755
+  loop_control:
+    loop_var: workflow_file
   with_items:
     - "Clean LaTeX Junk.workflow"
     - "Combine PDFs.workflow"
     - "Convert PDFs to images.workflow"
     - "MP4 to MP3.workflow"
     - "Video to GIF.workflow"
-  loop_control:
-    loop_var: workflow_file
   become: false
   when: ansible_facts.os_family == 'Darwin'

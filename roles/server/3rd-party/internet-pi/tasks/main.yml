@@ -76,13 +76,13 @@
                 block: |2
                       labels:
                         - com.centurylinklabs.watchtower.enable=true
+              loop_control:
+                loop_var: config_cred_item
               with_items:
                 - "prom/prometheus"
                 - "prom/blackbox-exporter"
                 - "miguelndecarvalho/speedtest-exporter"
                 - "prom/node-exporter"
-              loop_control:
-                loop_var: config_cred_item
   become: false
 
 - name: Set up Internet Monitoring.

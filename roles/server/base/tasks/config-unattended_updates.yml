@@ -21,11 +21,11 @@
     owner: root
     group: root
     mode: 0644
+  loop_control:
+    loop_var: unattended_update_config_file
   with_items:
     - 02confirmconfchanges
     - 10periodic
     - 50unattended-upgrades
-  loop_control:
-    loop_var: unattended_update_config_file
   notify: restart unattended-upgrades service
   become: true
