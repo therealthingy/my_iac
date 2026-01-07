@@ -82,24 +82,20 @@
         name: neovim
       become: "{{ package_manager_become }}"
 
-    #- name: Install LUKS sparse file helper
+    #- name: Install scripts
     #  ansible.builtin.template:
-    #    src: linux/luks-sparse_helper.j2
-    #    dest: /usr/local/bin/luks-sparse_helper
-    #    owner: root
-    #    group: root
+    #    src: "linux/{{ script.name }}.j2"
+    #    dest: "{{ script.dest_dir if script.dest_dir is defined else '/usr/local/bin' }}/{{ script.name }}"
+    #    owner: "{{ script.owner if script.owner is defined else 'root' }}"
+    #    group: "{{ script.group if script.group is defined else 'root' }}"
     #    mode: 0755
-    #  become: true
-    #  when: ansible_facts.os_family != 'Darwin'
-
-    # TODO: DOESN'T WORK on Pi w/ dropbear   (results in "Error: Timeout reached while waiting for askpass.")
-    #- name: Install LUKS passwordless reboot
-    #  ansible.builtin.template:
-    #    src: linux/luks-passwordless_reboot.j2
-    #    dest: /usr/local/sbin/luks-passwordless_reboot
-    #    owner: root
-    #    group: root
-    #    mode: 0755
+    #  loop_control:
+    #    loop_var: script
+    #  with_items:
+    #    #- name: luks-sparse_helper # LUKS sparse file helper
+    #    # TODO: DOESN'T WORK on Pi w/ dropbear   (results in "Error: Timeout reached while waiting for askpass.")
+    #    - name: luks-passwordless_reboot # LUKS passwordless reboot
+    #      dest_dir: "/usr/local/sbin"
     #  become: true
     #  when: ansible_facts.os_family != 'Darwin'
 
