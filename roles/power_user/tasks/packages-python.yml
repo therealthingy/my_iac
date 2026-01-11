@@ -1,7 +1,6 @@
 ---
 - name: Install python devel packages
   ansible.builtin.apt:
-    update_cache: true
     name:
       - python3-dev # Required 4 extending Python interpreter or embedding Python in applications  (we care about the latter)
     state: present

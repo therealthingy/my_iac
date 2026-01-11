@@ -3,7 +3,6 @@
   block:
     - name: "[Debian/Ubuntu]"
       ansible.builtin.apt:
-        update_cache: true
         name:
           - python3-full
           - python3-pip

@@ -5,7 +5,6 @@
       block:
         - name: bazel - Install dependencies
           ansible.builtin.apt:
-            update_cache: true
             name:
               - apt-transport-https
               - curl

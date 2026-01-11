@@ -67,7 +67,6 @@
   block:
     - name: apt
       ansible.builtin.apt:
-        update_cache: true
         name:
           - python3-psutil # Required for `dconf` module
           - python3-apt # Required by Ansible modules
