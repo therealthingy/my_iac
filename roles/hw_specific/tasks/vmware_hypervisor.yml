@@ -3,30 +3,14 @@
   ansible.builtin.apt:
     name:
       - open-vm-tools
-      - gvfs-fuse # NOTE: Package `fuse` causes `autoremove` of GNOME packages (https://askubuntu.com/questions/1406236/desktop-icons-gone-in-22-04), hence install `gvfs-fuse`
+      - open-vm-tools-desktop
     state: present
-  become: true
-
-- name: "TODO (RMV ONCE FIXED): WORKAROUND for 'Unknown ioctl 1976'"
-  ansible.builtin.blockinfile:
-    block: |
-      blacklist vsock_loopback
-      blacklist vmw_vsock_virtio_transport_common
-      install vsock_loopback /usr/bin/true
-      install vmw_vsock_virtio_transport_common /usr/bin/true
-    path: /etc/modprobe.d/blacklist.conf
-    create: true
-    owner: root
-    group: root
-    mode: 0644
-  when:
-    - ansible_facts.architecture == 'aarch64'
-    - ansible_facts.distribution == 'Debian'
   become: true
 
 - name: Setup vmware shares
   block:
     - name: Mount vmware shares on boot
+      # Resulting `/etc/fstab` entry: `vmhgfs-fuse /mnt/hgfs fuse defaults,allow_other 0 0`
       ansible.posix.mount:
         path: "{{ vm_shares_mount_dir }}"
         src: "vmhgfs-fuse"
