@@ -62,7 +62,7 @@
 # TODO: https://schembri.me/post/neovim-everywhere-on-macos/
 - name: "[Darwin] Post Install -- Finder integration"
   ansible.builtin.unarchive:
-    src: "apps/Helix-iTerm.app.tar.gz"
+    src: "apps/Helix-iTerm.app.tgz"
     dest: "/Applications/"
     creates: Helix-iTerm.app
   become: false
