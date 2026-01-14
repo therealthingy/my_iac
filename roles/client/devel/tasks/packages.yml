@@ -26,22 +26,22 @@
 - name: Install VSCodium
   ansible.builtin.import_tasks: package-vscodium.yml
 
-- name: Install GUI hexeditor
-  block:
-    - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
-      community.general.homebrew_cask:
-        name: imhex
-        state: latest
-      become: false
-      when: ansible_facts.os_family == 'Darwin'
-
-    - name: "[Debian/Ubuntu] Install flatpak packages"
-      community.general.flatpak:
-        name:
-          - net.werwolv.ImHex
-        state: present
-      become: true
-      when: ansible_facts.os_family != 'Darwin'
+#- name: Install GUI hexeditor
+#  block:
+#    - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+#      community.general.homebrew_cask:
+#        name: imhex
+#        state: latest
+#      become: false
+#      when: ansible_facts.os_family == 'Darwin'
+#
+#    - name: "[Debian/Ubuntu] Install flatpak packages"
+#      community.general.flatpak:
+#        name:
+#          - net.werwolv.ImHex
+#        state: present
+#      become: true
+#      when: ansible_facts.os_family != 'Darwin'
 
 - name: Install Ghidra
   block:
