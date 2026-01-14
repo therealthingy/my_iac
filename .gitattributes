@@ -2,7 +2,7 @@
 # Git Line Endings            #
 ###############################
 
-# Set default behaviour to automatically normalize line endings.
+# Set default behavior to automatically normalize line endings.
 * text=auto
 
 # Force batch scripts to always use CRLF line endings so that if a repo is accessed
@@ -22,11 +22,21 @@
 *.7z filter=lfs diff=lfs merge=lfs -text
 *.br filter=lfs diff=lfs merge=lfs -text
 *.gz filter=lfs diff=lfs merge=lfs -text
+*.tgz filter=lfs diff=lfs merge=lfs -text
+*.bz2 filter=lfs diff=lfs merge=lfs -text
 *.tar filter=lfs diff=lfs merge=lfs -text
+*.rar filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
 
 # Documents
+*.rtf filter=lfs diff=lfs merge=lfs -text
+*.odt filter=lfs diff=lfs merge=lfs -text
 *.pdf filter=lfs diff=lfs merge=lfs -text
+*.key filter=lfs diff=lfs merge=lfs -text
+*.pptx filter=lfs diff=lfs merge=lfs -text
+*.xlsx filter=lfs diff=lfs merge=lfs -text
+*.csv filter=lfs diff=lfs merge=lfs -text
+*.html filter=lfs diff=lfs merge=lfs -text
 
 # Images
 *.gif filter=lfs diff=lfs merge=lfs -text
@@ -40,4 +50,10 @@
 *.woff2 filter=lfs diff=lfs merge=lfs -text
 
 # Other
+*.bin filter=lfs diff=lfs merge=lfs -text
+#*.dat filter=lfs diff=lfs merge=lfs -text
 *.exe filter=lfs diff=lfs merge=lfs -text
+*.jar filter=lfs diff=lfs merge=lfs -text
+
+# Python pickle file
+*.pkl filter=lfs diff=lfs merge=lfs -text
