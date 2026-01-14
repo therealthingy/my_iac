@@ -185,9 +185,9 @@
     - AmorphousDiskMark  (1168254295;  blocked in de-DE AppStore)
     - dict.cc  (327732352)
     - Goegebra  (?)
-    - Organic Maps  (1567437057)
     - Yattee  (1595136629)
-    - Later  (1507396839)
+    - ~~Organic Maps  (1567437057)~~
+    - ~~Later  (1507396839)~~
 
 - Add apps (VSCodium & Terminal) 2 *Developer Tools*:
   - Run in terminal: `sudo spctl developer-mode enable-terminal`
@@ -244,8 +244,12 @@
 
 
 ### *server*
-- **SECURITY**: https://christitus.com/linux-security-mistakes/  (Fail2ban)
+- TODO: tailscale:
+  - INSTALL: https://tailscale.com/kb/1031/install-linux
+  - ~~Configure as exit node +~~ enable ssh: `sudo tailscale up --advertise-exit-node[=false] --ssh[=true]`
+
 - !!!!!!!!!!!!!!!!!!!     Add restricted `www` user     !!!!!!!!!!!!!!!!!!!
+- **SECURITY**: https://christitus.com/linux-security-mistakes/  (Fail2ban)
 
 
 ### *home_server*
