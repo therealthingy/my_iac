@@ -46,15 +46,22 @@
 - name: Install Ghidra
   block:
     - name: "[Darwin]"
-      community.general.homebrew:
-        name:
-          - ghidra
-    - name: "[Debian/Ubuntu]"
       block:
-        - community.general.flatpak:
+        - community.general.homebrew:
             name:
-              - org.ghidra_sre.Ghidra
-            state: present
+              - ghidra
+        - name: "[Darwin] Post Install -- Finder integration"
+          ansible.builtin.unarchive:
+            src: "apps/Ghidra.app.tgz"
+            dest: "/Applications/"
+            creates: Ghidra.app
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
+    - name: "[Debian/Ubuntu]"
+      community.general.flatpak:
+        name:
+          - org.ghidra_sre.Ghidra
+        state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
 
