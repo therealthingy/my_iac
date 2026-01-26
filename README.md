@@ -2,6 +2,8 @@
 
 
 ## TODOs
+- !!!   Replace portainer & watchtower w/ [dockhand](https://dockhand.pro/)   !!!
+
 ### GENERAL
 - `.zshrc`:
   - clipbrd aliases:
@@ -168,6 +170,8 @@
 
 
 #### Darwin
+- SWAP keys on ISO International Windows keyboard: § &harr; `   (SEE: https://apple.stackexchange.com/questions/239395/and-keys-are-swapped)
+
 - FIX lscolors
 
 - [Mac App Store apps](https://github.com/mas-cli/mas/blob/main/README.md):
@@ -237,7 +241,7 @@
 
 
 ### *client-devel*
-- not indempotent ISSUE:
+- Not idempotent ISSUE:
    - Firefox settings after restart
    - TASK [petermosmans.customize-gnome : Download GNOME Shell extensions]
 - Consider switching all apps to flatpak  (EVENTUALLY firefox, vscodium)
@@ -268,7 +272,11 @@
 
 ## "Usage"
 ### PRE Ansible-Run Setup Steps
-- Install "dependencies" for playbook: **`ansible-galaxy install -r requirements.yml`**
+- Install:
+  ```shell
+  pipx install ansible
+  ansible-galaxy install -r requirements.yml      # "dependencies" 4 playbook
+  ```
 - OPTIONAL: Add own systems to be managed in dedicated local inventory:
   - `cp inventory.yml ~/.ansible-inventory.yml`
   - **New system** &mdash; Initial setup steps   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):

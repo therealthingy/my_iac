@@ -148,7 +148,7 @@
       block:
         - name: Install package
           community.general.pipx:
-            name: "{{ pip_package }}"
+            name: "{{ pip_package }}"          # ( On ansible host: Doesn't actually make sense as it MUST already be installed … )
             state: latest
             install_deps: true
             executable: pipx
