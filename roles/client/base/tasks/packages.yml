@@ -125,8 +125,27 @@
           - poppler-utils # Pdf utils
           - tesseract-ocr
           - tesseract-ocr-deu
+          - ocrmypdf # NOTE: Based on tesseract (and its lang packs -> e.g., `ocrmypdf -l eng+deu …`)
         state: present
       when: ansible_facts.os_family == 'Debian'
+
+    # USAGE: `ocrmypdf -l eng --plugin ocrmypdf_appleocr input.pdf output.pdf`
+    - name: "[Darwin] Install ocrmypdf" # NOTE: There's also a homebrew package, but it's hard 2 install the appleocr plugin
+      block:
+        - name: Install package
+          community.general.pipx:
+            name: ocrmypdf
+            state: latest
+            install_deps: true
+            executable: pipx
+        - name: Inject package
+          community.general.pipx:
+            name: ocrmypdf
+            state: inject
+            inject_packages:
+              - ocrmypdf-appleocr
+            executable: pipx
+      when: ansible_facts.os_family == 'Darwin'
 
     - name: "[Darwin / Debian/Ubuntu]"
       ansible.builtin.package:
@@ -138,7 +157,6 @@
           #- pdfgrep
           - qpdf # USE CASE: Rmv pdf password  (also dep of ocrmypdf)
           - ghostscript # Rasterization/rendering of pdf/postscript  (also dep of ocrmypdf)
-          - ocrmypdf # NOTE: Based on tesseract (and its lang packs -> e.g., `ocrmypdf -l eng+deu …`)
           - img2pdf
 
     - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
