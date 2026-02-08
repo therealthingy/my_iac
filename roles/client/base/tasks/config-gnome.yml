@@ -20,7 +20,7 @@
         - name: Install dependencies for GNOME extensions
           ansible.builtin.apt:
             name:
-              - gir1.2-gtop-2.0 # Top Hat  (like iStats menu 4 mac)
+              - gir1.2-gtop-2.0 # Top Hat  (like iStat-Menu 4 mac)
             state: present
           become: true
 
@@ -33,7 +33,7 @@
                     enable: true # TODO: Currently not working ??!!
                   - id: 3193 # Blur my Shell
                     enable: true
-                  - id: 5219 # Top Hat  (like iStats menu 4 mac)
+                  - id: 5219 # Top Hat  (like iStat-Menu 4 mac)
                     enable: true
                   - id: 2 # Move Clock  (Move clock to left of status menu button)
                     enable: true

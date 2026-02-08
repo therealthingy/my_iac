@@ -324,7 +324,7 @@
       with_items:
         # Misc
         - apparency
-        #- istat-menus
+        - stats  # System stats monitoring
         - prefs-editor
       #        - qlmarkdown  # ("Deprecated because it does not pass the macOS Gatekeeper check! It will be disabled on 2026-09-01.")
       loop_control:
