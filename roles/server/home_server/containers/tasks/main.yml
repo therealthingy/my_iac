@@ -1,7 +1,4 @@
 ---
-- name: Watchtower
-  ansible.builtin.import_tasks: service-watchtower.yml
-
 - name: Traefik
   ansible.builtin.import_tasks: service-traefik.yml
 
@@ -42,23 +39,21 @@
               ports:
                 - "{{ host_port | default(8080, true) }}:80"
 
-    - name: portainer # TODO SSO: https://docs.portainer.io/admin/settings/authentication/oauth  //  https://helgeklein.com/blog/portainer-setup-guide-with-automatic-https-oauth-sso-via-authelia/
+    - name: dockhand
       startup: True
       compose:
         services:
-          - name: portainer
+          - name: dockhand
             security:
               use_root: True
-            image: portainer/portainer-ce
+            image: fnsys/dockhand:latest
             network:
               reverse_proxy_mappings:
-                - subdomain: portainer
-                  port: 9000
+                - subdomain: dockhand
+                  port: 3000
             volumes:
               - path: "/var/run/docker.sock:/var/run/docker.sock"
-              - path: "{{ docker_container.data_basedir }}/portainer/:/data"
-              - path: "/etc/localtime:/etc/localtime"
-                ro: True
+              - path: "{{ docker_container.data_basedir }}/dockhand/:/app/data"
 
     # NOTE -- CLIENT CONFIG: 2 use syncthing w/ wireguard vpn,
     #   go in SyncTrain 2 Devices

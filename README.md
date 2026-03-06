@@ -2,7 +2,6 @@
 
 
 ## TODOs
-- !!!   Replace portainer & watchtower w/ [dockhand](https://dockhand.pro/)   !!!
 
 ### GENERAL
 - `.zshrc`:
