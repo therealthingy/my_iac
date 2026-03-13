@@ -791,10 +791,6 @@
           value: "5"
           type: "int"
         # -  Safari & WebKit  -
-        - domain: "com.apple.Safari" # Show full URL; default
-          key: "ShowFullURLInSmartSearchField"
-          value: "false"
-          type: "bool"
         # TODO: Don't work
         ## Enable the Develop menu and the Web Inspector in Safari
         #- domain: 'com.apple.Safari'
