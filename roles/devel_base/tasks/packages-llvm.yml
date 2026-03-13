@@ -31,7 +31,7 @@
               block:
                 - name: DL
                   ansible.builtin.get_url:
-                    url: https://apt.llvm.org/llvm.sh
+                    url: https://raw.githubusercontent.com/opencollab/llvm-jenkins.debian.net/refs/heads/master/llvm.sh    # https://apt.llvm.org/llvm.sh
                     dest: /tmp/llvm.sh
                     mode: 0775
 
