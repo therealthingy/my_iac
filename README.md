@@ -2,6 +2,19 @@
 
 
 ## TODOs
+* Workaround 4 Ubuntu 25.10 sudo-rs ansible "[ERROR]: Task failed: Timeout (32s) waiting for privilege escalation prompt:" problem: Install sudo-ws:
+  ```
+  sudo -i
+  cd /usr/local/src/
+  # wget latest in https://www.sudo.ws/getting/download/
+  tar xf sudo-xxx.tar.gz
+  cd sudo-xxx.tar.gz
+  env LDFLAGS=-static ./configure --enable-static-sudoers --disable-shared-libutil ; make
+  # sudo chown root:root src/sudo
+  chmod 4755 src/sudo
+  mv src/sudo /usr/local/bin
+  ```
+
 
 ### GENERAL
 - `.zshrc`:
