@@ -8,6 +8,7 @@
       #   `wget -O - https://packages.mozilla.org/apt/repo-signing-key.gpg | sudo apt-key add -`; Show keys: `apt-key list`
       #   `sudo add-apt-repository 'deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main'`
       ansible.builtin.deb822_repository:
+        install_python_debian: true   # Fixes "[ERROR]: Task failed: Module failed: python3-debian is not installed, and install_python_debian is False"
         name: mozilla
         uris: https://packages.mozilla.org/apt
         suites: mozilla
