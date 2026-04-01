@@ -27,4 +27,4 @@
 
 - name: VmWare Hypervisor
   ansible.builtin.import_tasks: vmware_hypervisor.yml
-  when: hypervisor == 'vmware'
+  when: hypervisor == 'VMware'

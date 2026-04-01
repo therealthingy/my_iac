@@ -37,4 +37,4 @@
       when: "'servers_devel' in group_names  or  'clients_devel' in group_names"
   when:
     - "hypervisor is defined and hypervisor | length > 0"
-    - hypervisor != 'vmware' # TODO: Doesn't work (yet) on VMWare Fusion ??  ("Error mounting /media/rosetta: mount: /media/rosetta: wrong fs type, bad option, bad superblock on rosetta, missing codepage or helper program, or other error.")
+    - hypervisor != 'VMware' # TODO: Doesn't work (yet) on VMWare Fusion ??  ("Error mounting /media/rosetta: mount: /media/rosetta: wrong fs type, bad option, bad superblock on rosetta, missing codepage or helper program, or other error.")
