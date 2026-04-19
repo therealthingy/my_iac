@@ -839,8 +839,8 @@
           value: "true"
           type: "bool"
         - domain: "NSGlobalDomain" # Close windows when quitting an application
-          key: "NSQuitAlwaysKeepsWindow"
-          value: "true"
+          key: "NSQuitAlwaysKeepsWindows"
+          value: "false"
           type: "bool"
         - domain: "com.apple.loginwindow" # "Reopen windows when logging in"
           key: "TALLogoutSavesState"
