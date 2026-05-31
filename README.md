@@ -2,6 +2,22 @@
 
 
 ## TODOs
+- WORKAROUND 4
+  ```bash
+  Unsupported platform 'Raspberry Pi 4 Model B Rev 1.1'.
+  run-parts: /etc/initramfs/post-update.d//flash-kernel exited with return code 1
+  dpkg: error processing package initramfs-tools (--configure):
+  ```
+  on Pi 4 Ubuntu 26.04 LTS: Add in `/etc/flash-kernel/db`:
+  ```
+  # SEE ALSO: https://www.mail-archive.com/ubuntu-bugs@lists.ubuntu.com/msg6272684.html
+  Machine: Raspberry Pi 4 Model B Rev 1.1
+  Method: pi
+  Kernel-Flavors: raspi
+  DTB-Id: bcm2711-rpi-4-b.dtb
+  ```
+
+
 - Windows:
   ```
   OOBE Local only acc:
