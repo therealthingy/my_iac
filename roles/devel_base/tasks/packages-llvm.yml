@@ -34,7 +34,6 @@
                     url: https://raw.githubusercontent.com/opencollab/llvm-jenkins.debian.net/refs/heads/master/llvm.sh    # https://apt.llvm.org/llvm.sh
                     dest: /tmp/llvm.sh
                     mode: 0775
-
                 - name: Install
                   ansible.builtin.command: "/tmp/llvm.sh {{ llvm_apt_version }} all"
               when: llvm_clang_command_result.rc == 1
