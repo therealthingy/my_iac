@@ -67,7 +67,7 @@
             - g++
           loop_control:
             loop_var: symlink
-      when: gcc_command_result.rc == 1
+      when: gcc_command_result.rc != 0
 
   become: true
   when: ansible_facts.distribution == 'Ubuntu'  and  gcc_apt_install_latest == True

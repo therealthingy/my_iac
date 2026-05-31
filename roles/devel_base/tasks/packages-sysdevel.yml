@@ -224,7 +224,7 @@
 
 - name: Rust toolchain
   block:
-    - name: check if cargo is installed
+    - name: Check if cargo is installed
       ansible.builtin.shell: command -v cargo
       failed_when: false
       changed_when: false
@@ -234,12 +234,13 @@
       block:
         - ansible.builtin.get_url:
             url: https://sh.rustup.rs
-            dest: /tmp/sh.rustup.rs
+            dest: /tmp/rustup-init.sh
             mode: 0755
             force: true
-        - ansible.builtin.shell: /tmp/sh.rustup.rs -y --profile default -c rust-analyzer,miri
-      when: cargo_command_result.rc == 1
+        - ansible.builtin.shell: /tmp/rustup-init.sh -y --profile default -c rust-analyzer,miri
+      when: cargo_command_result.rc != 0
   become: false
+
 #
 # TODO: …
 #- ansible.builtin.import_tasks: packages-trace_compass.yml
