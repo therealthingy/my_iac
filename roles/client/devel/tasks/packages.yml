@@ -153,6 +153,16 @@
 
 - name: Install misc. tools
   block:
+    - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+      community.general.homebrew_cask:
+        name: "{{ homebrew_cask }}"
+        state: latest
+      with_items:
+        - anki
+      loop_control:
+        loop_var: homebrew_cask
+      become: false
+      when: ansible_facts.os_family == 'Darwin'
     - name: "[Ubuntu]" # Repo: https://github.com/bkw777/mainline  (tool 4 downloading & installing pre-compiled kernels)
       block:
         - name: mainline - Add apt repo
