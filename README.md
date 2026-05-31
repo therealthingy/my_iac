@@ -9,6 +9,20 @@
     start ms-cxh:localonly
   ```
 
+- AFTER UPGRADING:
+  - netplan apply failing (Network-Manager not available)  /  no netplan yml file WORKAROUND:
+    ```
+    # /etc/systemd/network/00-if.network:
+    [Match]
+    Name=enp2s0
+
+    [Network]
+    DHCP=yes
+
+    # sudo systemctl restart systemd-networkd
+    ```
+  - "package xyz has invalid interpreter /usr/bin/python3.XX\r\n": ~~`pip freeze | xargs pip uninstall -y`~~`pipx uninstall-all`
+
 - Workaround 4 Ubuntu 25.10 sudo-rs ansible "[ERROR]: Task failed: Timeout (32s) waiting for privilege escalation prompt:" problem: Install sudo-ws:
   ```
   sudo -i
