@@ -2,6 +2,13 @@
 
 
 ## TODOs
+- Windows:
+  ```
+  OOBE Local only acc:
+    Shift+F10
+    start ms-cxh:localonly
+  ```
+
 - Workaround 4 Ubuntu 25.10 sudo-rs ansible "[ERROR]: Task failed: Timeout (32s) waiting for privilege escalation prompt:" problem: Install sudo-ws:
   ```
   sudo -i
@@ -26,6 +33,7 @@
     - Sanitize filename  (TODO: `detox` doesn't work on strings)
 
   - `video-trim_keep` fct.:
+    - FIX !!!!!!!!!!!!!!!!!!!!11!!1!1111
     - allow omitting hours
     - validate: monotonically increasing
     - preview option ?!?
