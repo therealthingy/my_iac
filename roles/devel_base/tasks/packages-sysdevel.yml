@@ -225,7 +225,7 @@
 - name: Rust toolchain
   block:
     - name: Check if cargo is installed
-      ansible.builtin.shell: which cargo
+      ansible.builtin.shell: command -v "/{{ os_homedir }}/{{ user.name }}/.cargo/bin/cargo"
       failed_when: false
       changed_when: false
       check_mode: false
