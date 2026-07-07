@@ -110,7 +110,7 @@
         name: "{{ homebrew_cask }}"
         state: latest
       with_items:
-        - raycast
+        - rectangle   # TODO: Remove once snapping in "thirds" is supported
         - bitwarden
         #- fsnotes
         - joplin

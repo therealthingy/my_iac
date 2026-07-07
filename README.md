@@ -265,10 +265,6 @@
   com.readdle.PDFExpert-Mac:
     SUAutomaticallyUpdate
 
-  com.raycast.macos:
-    amplitudePulseAnalyticsTracker_didSendInstallationEvent
-    emojiPicker_skinTone: standard
-
   com.ranchero.NetNewsWire-Evergreen:
     openInBrowserInBackground: No
 
