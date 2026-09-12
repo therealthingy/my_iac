@@ -1,5 +1,5 @@
 ---
-cmake_ubuntu_apt_distro: noble                  # CHECK 4 UPDATE: https://apt.kitware.com/
+cmake_ubuntu_apt_distro: resolute               # CHECK 4 UPDATE: https://apt.kitware.com/
 
 llvm_apt_version: 23                            # CHECK 4 UPDATE: https://github.com/llvm/llvm-project
 llvm_debian_install_distro_version: False
