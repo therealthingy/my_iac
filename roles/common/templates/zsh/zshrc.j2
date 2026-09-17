@@ -249,6 +249,8 @@ library_path+=('{{ homebrew_prefix }}/lib')
 {%   if 'client_workstation' in group_names %}
 path-add "/Library/TeX/texbin/" "after"
 {%   endif %}
+## MacPorts
+#path-add "/opt/local/bin/" "after"
 {% endif %}
 {% if 'clients_devel' in group_names or
       'servers_devel' in group_names %}
