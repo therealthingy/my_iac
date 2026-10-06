@@ -25,11 +25,11 @@
   rproxy: 1
 
 [accounts]
-{% for user in copyparty.users %}
+{% for user in service_copyparty.users %}
   {{ user.name }}: {{ user.pass }}
 {% endfor %}
 
-{% for share in copyparty.shares %}
+{% for share in service_copyparty.shares %}
 [/{{ share.name }}]
   {{ share.path }}
   accs:

@@ -11,7 +11,7 @@
         services:
           - name: dl-gluetun
             image: qmcgaw/gluetun
-            restart_policy: "{{ dl_services.restart_policy }}"
+            restart_policy: "{{ service_dl_services.restart_policy }}"
             sysctls:
               - net.ipv6.conf.all.disable_ipv6=0 # ( CAPTAIN OBVIOUS: Enable IPv6 )
             security:
@@ -43,47 +43,47 @@
             #volumes:
             #  - path: '{{ docker_container.config_basedir }}/dl_services/gluetun/:/gluetun'
             env_vars:
-              - VPN_SERVICE_PROVIDER={{ dl_services.gluetun.vpnsp }}
-              - SERVER_COUNTRIES={{ dl_services.gluetun.server_country }} # Optional
+              - VPN_SERVICE_PROVIDER={{ service_dl_services.gluetun.vpnsp }}
+              - SERVER_COUNTRIES={{ service_dl_services.gluetun.server_country }} # Optional
               - VPN_TYPE=wireguard #openvpn
               ## -  openvpn specific stuff  -
               #- PROTOCOL=udp        # Only 4 openvpn required
               #- OPENVPN_CIPHERS=AES-256-GCM
               # -  wireguard specific stuff  -
-              - WIREGUARD_ADDRESSES={{ dl_services.gluetun.wireguard_vpn_service.addresses }}
+              - WIREGUARD_ADDRESSES={{ service_dl_services.gluetun.wireguard_vpn_service.addresses }}
               #- DNS_ADDRESS=xxx.xxx.xxx.xxx
-              - FIREWALL_VPN_INPUT_PORTS={{ dl_services.gluetun.forward_port }} # Port forwarding ~~(must be also mentioned as port ???!)~~  -> validate w/ (run in container): `nc -6 -l -p <port> [<ip>]`  (VERIFY: `sudo lsof -i -P -n`)
-              #- WIREGUARD_PUBLIC_KEY={{ dl_services.gluetun.wireguard_vpn_service.pk }}
-              - WIREGUARD_PRIVATE_KEY={{ dl_services.gluetun.wireguard_vpn_service.sk }}
-              - WIREGUARD_PRESHARED_KEY={{ dl_services.gluetun.wireguard_vpn_service.preshared_key }}
+              - FIREWALL_VPN_INPUT_PORTS={{ service_dl_services.gluetun.forward_port }} # Port forwarding ~~(must be also mentioned as port ???!)~~  -> validate w/ (run in container): `nc -6 -l -p <port> [<ip>]`  (VERIFY: `sudo lsof -i -P -n`)
+              #- WIREGUARD_PUBLIC_KEY={{ service_dl_services.gluetun.wireguard_vpn_service.pk }}
+              - WIREGUARD_PRIVATE_KEY={{ service_dl_services.gluetun.wireguard_vpn_service.sk }}
+              - WIREGUARD_PRESHARED_KEY={{ service_dl_services.gluetun.wireguard_vpn_service.preshared_key }}
 
           # $$$$$$$$$ TODO:  WORKAROUND: https://github.com/qdm12/gluetun/issues/1407  $$$$$$$$$
           - name: dl-portcheck
             image: eiqnepm/portcheck:latest
-            restart_policy: "{{ dl_services.restart_policy }}"
+            restart_policy: "{{ service_dl_services.restart_policy }}"
             network:
               mode: service:dl-gluetun
             dependencies:
               - dl-qbittorrent
-            healthcheck: curl {{ dl_services.healthcheck_url }} || exit 1
+            healthcheck: curl {{ service_dl_services.healthcheck_url }} || exit 1
             env_vars:
-              - QBITTORRENT_PORT={{ dl_services.gluetun.forward_port }}
+              - QBITTORRENT_PORT={{ service_dl_services.gluetun.forward_port }}
               - QBITTORRENT_WEBUI_PORT=8090
-              - QBITTORRENT_USERNAME={{ dl_services.web_ui.user }}
-              - QBITTORRENT_PASSWORD={{ dl_services.web_ui.pw }}
+              - QBITTORRENT_USERNAME={{ service_dl_services.web_ui.user }}
+              - QBITTORRENT_PASSWORD={{ service_dl_services.web_ui.pw }}
 
           - name: dl-qbittorrent # TODO SSO: https://github.com/qbittorrent/qBittorrent/issues/13238
             image: linuxserver/qbittorrent:latest
-            restart_policy: "{{ dl_services.restart_policy }}"
+            restart_policy: "{{ service_dl_services.restart_policy }}"
             security:
               use_root: True
               allow_priv_esc: True
             network:
               mode: service:dl-gluetun
             volumes:
-              - path: "{{ dl_services.base_dir }}/qbittorrent/:/config/"
-              - path: "{{ dl_services.base_dir }}/downloads/torrents/:/downloads/"
-            healthcheck: curl {{ dl_services.healthcheck_url }} || exit 1
+              - path: "{{ service_dl_services.base_dir }}/qbittorrent/:/config/"
+              - path: "{{ service_dl_services.base_dir }}/downloads/torrents/:/downloads/"
+            healthcheck: curl {{ service_dl_services.healthcheck_url }} || exit 1
             env_vars:
               - TZ={{ timezone }}
               - PUID={{ www_user.uid }}
@@ -93,14 +93,14 @@
 
           - name: dl-prowlarr # TODO SSO: N/A atm
             image: linuxserver/prowlarr:latest
-            restart_policy: "{{ dl_services.restart_policy }}"
+            restart_policy: "{{ service_dl_services.restart_policy }}"
             security:
               use_root: True
               allow_priv_esc: True
             network:
               mode: service:dl-gluetun
             volumes:
-              - path: "{{ dl_services.base_dir }}/prowlarr/:/config/"
+              - path: "{{ service_dl_services.base_dir }}/prowlarr/:/config/"
             dependencies:
               - dl-gluetun
               - dl-qbittorrent

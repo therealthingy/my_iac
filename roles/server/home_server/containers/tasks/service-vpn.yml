@@ -42,10 +42,10 @@
         additional_networks:
           - name: vpn
             ipv6_subnet: "{{ docker_ipv6_conf.prefix }}:2::/{{ (docker_ipv6_conf.prefix_cidr + 16)|int }}"
-            sysctls: "net.ipv6.conf.{{ vpn.if }}.accept_ra=2,net.ipv6.conf.{{ vpn.if }}.addr_gen_mode=0,net.ipv6.conf.{{ vpn.if }}.use_tempaddr=0"
+            sysctls: "net.ipv6.conf.{{ service_vpn.if }}.accept_ra=2,net.ipv6.conf.{{ service_vpn.if }}.addr_gen_mode=0,net.ipv6.conf.{{ service_vpn.if }}.use_tempaddr=0"
         services:
           - name: vpn-ddclient
-            _include_in_compose: "{{ vpn.ddns is defined|bool }}"
+            _include_in_compose: "{{ service_vpn.ddns is defined|bool }}"
             #image: lscr.io/linuxserver/ddclient:latest
             image: ddclient
             image_build:
@@ -55,12 +55,12 @@
               mode: host
             env_vars:
               - TZ={{ timezone }}
-              - IF_NAME={{ vpn.if }}
-              - IPV6_IF_ID={{ vpn.ddns.if_ipv6_id }}
-              - DDNS_UPDATE_URL={{ vpn.ddns.update_url }}
-              - DDNS_DOMAIN={{ vpn.ddns.domain if vpn.ddns.domain is defined else vpn.endpoint.domain }}
-              - DDNS_TOKEN={{ vpn.ddns.pass }}
-              - CHECK_INTERVAL_SEC={{ vpn.ddns.update_interval_sec }}
+              - IF_NAME={{ service_vpn.if }}
+              - IPV6_IF_ID={{ service_vpn.ddns.if_ipv6_id }}
+              - DDNS_UPDATE_URL={{ service_vpn.ddns.update_url }}
+              - DDNS_DOMAIN={{ service_vpn.ddns.domain if service_vpn.ddns.domain is defined else service_vpn.endpoint.domain }}
+              - DDNS_TOKEN={{ service_vpn.ddns.pass }}
+              - CHECK_INTERVAL_SEC={{ service_vpn.ddns.update_interval_sec }}
 
           - name: vpn-wireguard
             image: linuxserver/wireguard:latest
@@ -76,9 +76,9 @@
               nets: ["vpn"]
               ports:
                 # Wireguard server   (DEFAULT PORT: 51820)
-                - "{{ vpn.endpoint.port }}:{{ vpn.endpoint.port }}/udp"
+                - "{{ service_vpn.endpoint.port }}:{{ service_vpn.endpoint.port }}/udp"
                 # Wireguard UI   -->  Access GUI via: `ssh -L 8080:127.0.0.1:8080 l0-rpi0`  (ALTERNATIVE: use traefik ––––––––  WHICH WON't WORK aS LONG AS We DON'T USE ITS NETWORK)
-                - "127.0.0.1:{{ vpn.wireguard_ui.local_port | default(8080, true) }}:5000/tcp"
+                - "127.0.0.1:{{ service_vpn.wireguard_ui.local_port | default(8080, true) }}:5000/tcp"
             sysctls:
               #  $$$$$$   TODO: ONLY AFFECTS CONTAINER (NOT HOST-SYSTEM)  => NAMESPACE CGROUPS ???    $$$$$$
               # REFERENCE: https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html
@@ -117,27 +117,27 @@
             # REFERENCE: https://github.com/ngoduykhanh/wireguard-ui#environment-variables
             env_vars:
               # UI
-              - 'WGUI_USERNAME={{ vpn.wireguard_ui.user | default("gg", true) }}' # Required 4 db init
-              - 'WGUI_PASSWORD={{ vpn.wireguard_ui.pass | default("1", true) }}'
-              #- 'SESSION_SECRET=XX vpn.wireguard_ui.session_secret XX'
-              - "WGUI_LOG_LEVEL={{ vpn.wireguard_ui.log_level }}"
+              - 'WGUI_USERNAME={{ service_vpn.wireguard_ui.user | default("gg", true) }}' # Required 4 db init
+              - 'WGUI_PASSWORD={{ service_vpn.wireguard_ui.pass | default("1", true) }}'
+              #- 'SESSION_SECRET=XX service_vpn.wireguard_ui.session_secret XX'
+              - "WGUI_LOG_LEVEL={{ service_vpn.wireguard_ui.log_level }}"
               # Start / restart wireguard container w/ this container
               - WGUI_MANAGE_START=true
               - WGUI_MANAGE_RESTART=true
               # Wireguard conf file (wg0.conf)
               #- WG_CONF_TEMPLATE
               # Server Tunnel
-              - WGUI_SERVER_LISTEN_PORT={{ vpn.endpoint.port }}
-              - WGUI_ENDPOINT_ADDRESS={{ vpn.endpoint.domain }}:{{ vpn.endpoint.port }}
-              - WGUI_SERVER_INTERFACE_ADDRESSES={{ vpn.internal_networks | map(attribute='server') | join(',') }}
-              - WGUI_DNS={{ vpn.internal_networks | map(attribute='dns') | join(',') }}
+              - WGUI_SERVER_LISTEN_PORT={{ service_vpn.endpoint.port }}
+              - WGUI_ENDPOINT_ADDRESS={{ service_vpn.endpoint.domain }}:{{ service_vpn.endpoint.port }}
+              - WGUI_SERVER_INTERFACE_ADDRESSES={{ service_vpn.internal_networks | map(attribute='server') | join(',') }}
+              - WGUI_DNS={{ service_vpn.internal_networks | map(attribute='dns') | join(',') }}
               # OVERHEAD: IPv4: 20 bytes / IPv6: 40 bytes, UDP: 8 bytes, WG: 32 bytes   //   MTU: Cable = 1500, DSL = 1492
-              - WGUI_MTU={{ vpn.wireguard_mtu | default(1450, true) }}
+              - WGUI_MTU={{ service_vpn.wireguard_mtu | default(1450, true) }}
               # ( Don't route inet traffic (by default) through tunnel   --> {# `{% for network in NETWORK_VAR %}{{ network.subnet }},{{ "%s0/%s"|format(network.server[:-4], network.server.split("/")[1]) }}{{ "" if loop.last else "," }}{% endfor %}` ) #}
               - WGUI_DEFAULT_CLIENT_ALLOWED_IPS=0.0.0.0/0,::/0
               # Rules 4 forwarding from VPN subnet 2 actual network
-              - WGUI_SERVER_POST_UP_SCRIPT=iptables -A FORWARD -i %i -j ACCEPT; ip6tables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; ip6tables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ vpn.if }} -j MASQUERADE; ip6tables -t nat -A POSTROUTING -o {{ vpn.if }} -j MASQUERADE
-              - WGUI_SERVER_POST_DOWN_SCRIPT=iptables -D FORWARD -i %i -j ACCEPT; ip6tables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; ip6tables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ vpn.if }} -j MASQUERADE; ip6tables -t nat -D POSTROUTING -o {{ vpn.if }} -j MASQUERADE
+              - WGUI_SERVER_POST_UP_SCRIPT=iptables -A FORWARD -i %i -j ACCEPT; ip6tables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; ip6tables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ service_vpn.if }} -j MASQUERADE; ip6tables -t nat -A POSTROUTING -o {{ service_vpn.if }} -j MASQUERADE
+              - WGUI_SERVER_POST_DOWN_SCRIPT=iptables -D FORWARD -i %i -j ACCEPT; ip6tables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; ip6tables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ service_vpn.if }} -j MASQUERADE; ip6tables -t nat -D POSTROUTING -o {{ service_vpn.if }} -j MASQUERADE
               # MAILING
               - SMTP_HOSTNAME={{ notifications_mail.smtp_host }}
               - SMTP_PORT={{ notifications_mail.smtp_port }}
