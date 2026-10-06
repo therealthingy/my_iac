@@ -38,17 +38,6 @@
         - name: "[Debian/Ubuntu]"
           ansible.builtin.apt:
             name:
-              #  - LKM dev:
-              - "linux-headers-{{ ansible_facts.kernel }}"
-              - "linux-tools-{{ ansible_facts.kernel }}"
-              #- linux-tools-generic   # Kernel modules required 4 `perf`
-              #- linux-tools-common    # `perf`  (Performance analysis tools for Linux)
-          ignore_errors: true # In case it's not a distro-kernel …
-          when: ansible_facts.os_family != 'Darwin'
-
-        - name: "[Debian/Ubuntu]"
-          ansible.builtin.apt:
-            name:
               - lua5.4 # TODO: REVISE VERSION
               # Git:
               - git-email # ( optional )
@@ -73,7 +62,7 @@
               - libc6-dbg # Debugging symbols 4 libc6 (so we can get accurate tracebacks within libc)
               # 'Performance' analysis:
               - kcachegrind # KDE GUI 2 visualize profiling data (mainly used as visualization frontend for data measured by Cachegrind/Callgrind tools from the Valgrind package)
-              - hotspot # UI (similar 2 KCachegrind 4 valgrind, BUT) around `perf`  (SEE: https://github.com/KDAB/hotspot)
+              #- hotspot # UI (similar 2 KCachegrind 4 valgrind, BUT) around `perf`  (SEE: https://github.com/KDAB/hotspot)  ;  TODO: Not available 4 Debian 13 (cf. https://packages.debian.org/search?keywords=hotspot)
               - heaptrack # Heap analysis tool (from KDE)
               - heaptrack-gui
               - time # NOTE: Usually implemented as shell builtin  (hence must be called directly via `/usr/bin/time`)
@@ -241,7 +230,6 @@
           ansible.builtin.shell: /tmp/rustup-init.sh -y --profile default -c rust-analyzer,miri
       when: cargo_command_result.rc != 0
   become: false
-
 #
 # TODO: …
 #- ansible.builtin.import_tasks: packages-trace_compass.yml
