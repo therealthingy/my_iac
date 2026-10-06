@@ -7,15 +7,15 @@
         - name: Remove CD/DVD install as apt source
           ansible.builtin.replace:
             dest: /etc/apt/sources.list
-            regexp: '^(#\s*)?deb cdrom:\[.+\]\/ \w+ (contrib|main) (contrib|main)$'
+            regexp: '^(#\s*)?deb cdrom:\[.+\]\/ \w+ (contrib|main) (contrib|main)( non-free-firmware)?$'
 
         # Will have by default prio of 100  (check via `apt-cache policy`)
         - name: Add Backports apt source (to get newer packages backported to the release stable)
-          # NOTE: Equivalent command: `sudo add-apt-repository 'deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main'`
+          # NOTE: Equivalent command: `sudo add-apt-repository 'deb http://deb.debian.org/debian {{ ansible_facts['distribution_release'] }}-backports main'`
           ansible.builtin.deb822_repository:
             name: backports
             uris: http://deb.debian.org/debian
-            suites: "{{ ansible_distribution_release }}-backports"
+            suites: "{{ ansible_facts['distribution_release'] }}-backports"
             components: main
       when: ansible_facts.distribution == 'Debian'
       become: true

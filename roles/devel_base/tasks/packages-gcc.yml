@@ -41,7 +41,7 @@
           ansible.builtin.deb822_repository:
             name: ubuntu-toolchain-test
             uris: https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu/
-            suites: "{{ ansible_distribution_release }}"
+            suites: "{{ ansible_facts['distribution_release'] }}"
             components: main
             signed_by: "{{ ubuntu_toolchain_ppa_signing_key_command.stdout }}"
           register: ubuntu_repo_added
