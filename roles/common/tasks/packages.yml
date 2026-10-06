@@ -20,8 +20,8 @@
         clean: true
         autoremove: true
         allow_downgrade: true
-      when: ansible_facts.os_family != 'Darwin'
       become: true
+      when: ansible_facts.os_family != 'Darwin'
     - name: "[Darwin]"
       community.general.homebrew:
         update_homebrew: true

@@ -1,37 +1,6 @@
 # Ansible Playbook 4 setting up my machines
 
-
 ## TODOs
-- WORKAROUND 4 Windows:
-  ```
-  OOBE Local only acc:
-    Shift+F10
-    start ms-cxh:localonly
-  ```
-
-- AFTER UPGRADING:
-  - netplan apply failing (Network-Manager not available)  /  no netplan yml file WORKAROUND:
-    ```
-    # /etc/systemd/network/00-if.network:
-    [Match]
-    Name=enp2s0
-
-    [Network]
-    DHCP=yes
-
-    # sudo systemctl restart systemd-networkd
-    ```
-  - "package xyz has invalid interpreter /usr/bin/python3.XX\r\n": ~~`pip freeze | xargs pip uninstall -y`~~`pipx uninstall-all`
-
-- Workaround 4 Ubuntu 25.10 sudo-rs ansible "[ERROR]: Task failed: Timeout (32s) waiting for privilege escalation prompt:" problem: Install sudo-ws:
-  ```
-  export ANSIBLE_BECOME_EXE=sudo.ws
-  ```
-
-- Enable Trim 4 3rd party drives on Darwin: `sudo trimforce enable`
-  ( VERIFY: `log show --start $(date +%F) | grep -i spaceman_trim_free_blocks` )
-
-
 ### GENERAL
 - `.zshrc`:
   - clipbrd aliases:
@@ -289,19 +258,20 @@
 
 - **Switch Notifications to a service**  (e.g., by using https://github.com/caronc/apprise)
 
-- pihole + unbound:    dns over tls
+- pihole + unbound: DNS over TLS
   - https://git.bln41.win/b30/pudc/src/branch/main/docker-compose.yml
   - https://hub.docker.com/r/klutchell/unbound
   - https://github.com/pi-hole/docker-pi-hole#environment-variables
 
 
 ## "Usage"
-### PRE Ansible-Run Setup Steps
+### PRE Ansible Setup Steps
 - Install:
   ```shell
   pipx install ansible
   ansible-galaxy install -r requirements.yml      # "dependencies" 4 playbook
   ```
+
 - OPTIONAL: Add own systems to be managed in dedicated local inventory:
   - `cp inventory.yml ~/.ansible-inventory.yml`
   - **New system** &mdash; Initial setup steps   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
@@ -313,11 +283,18 @@
       - (1.2.) Add `HostNamne <hostname>`
       - (1.3.) Copy new key to new system: **`ssh-copy-id -i ~/.ssh/<identity-file>.pub <user>@<ip>`**
       - (1.4.) IF SSH PORT SHALL BE CHANGED: Add AFTER initial ansible run: `Port 2233`
-    - UBUNTU SERVER -- extend llvm (if formatted incorrect):
-      ```bash
-      sudo  lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
-      sudo resize2fs /dev/mapper/ubuntu–vg-ubuntu–lv
-      ```
+
+- ISSUEs / WORKAROUNDs:
+  - UBUNTU SERVER -- **extend lvm** (if formatted incorrect):
+    ```bash
+    sudo  lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+    sudo resize2fs /dev/mapper/ubuntu–vg-ubuntu–lv
+    ```
+  - WORKAROUND 4 OOBE **Windows M$ Account**:
+    ```
+    Shift+F10
+    start ms-cxh:localonly
+    ```
 
 ### RUN Playbook
 - Mac only user-wide settings: `ansible-playbook -i ~/.ansible-inventory.yml  ~/Documents/devel/my_iac/main.yml --limit local_mac, --tags user_config,`
@@ -333,25 +310,46 @@
     - `-e "<key>=<value>"`: Overwrite vars
     - `--list-hosts`: Only list matching hosts
 
+  - WORKAROUND 4 &mldr;
+    - Ubuntu 25.10+ **sudo-rs** ansible "[ERROR]: Task failed: Timeout (32s) waiting for privilege escalation prompt:" problem:
+      ```
+      export ANSIBLE_BECOME_EXE=sudo.ws
+      ```
+    - ( Darwin Ansible host python homebrew: "package xyz has invalid interpreter /usr/bin/python3.XX\r\n": ~~`pip freeze | xargs pip uninstall -y`~~`pipx uninstall-all` )
+    - AFTER UPGRADING: `netplan apply` failing (Network-Manager not available)  /  no netplan yml file:
+      ```
+      # /etc/systemd/network/00-if.network:
+      [Match]
+      Name=enp2s0
+
+      [Network]
+      DHCP=yes
+
+      # sudo systemctl restart systemd-networkd
+      ```
+
 #### POST Ansible Run (i.e., not automated steps)
-- *clients*:
-  - Enable installed Gnome extensions (via 'Extensions app')  (!!  TODO: AUTOMATE  !!)
+##### *clients*
+- Enable installed Gnome extensions (via 'Extensions app')  (!!  TODO: AUTOMATE  !!)
 
-- *Dev clients*:
-  - Apps setup
-    - *VSCod~~e~~ium*:
-      - Install extension 'zokugun.sync-settings'
-      - Command -> "Sync Settings: Open the repository settings"
-      - `path: ~/.config/vscodium`
+##### *Dev clients*
+- Apps setup
+  - *VSCod~~e~~ium*:
+    - Install extension 'zokugun.sync-settings'
+    - Command -> "Sync Settings: Open the repository settings"
+    - `path: ~/.config/vscodium`
+  - *Firefox*:
+    - Go to [about:profiles](about:profiles) and *Launch profile in new browser* for 'default'
+    - Open [about:profiles](about:profiles) again in a new browser window & delete the other profile, including data
+    - Allow extensions
+    - Right click on Bookmarks bar &rarr; *Manage bookmarks* &rarr; *Import and Backup* &rarr; *Restore* &rarr; *Choose File* &rarr; Select the hidden firefox default bookmarks file
+    - Cleanup &mldr;
 
-    - *Firefox*:
-      - Go to [about:profiles](about:profiles) and *Launch profile in new browser* for 'default'
-      - Open [about:profiles](about:profiles) again in a new browser window & delete the other profile, including data
-      - Allow extensions
-      - Right click on Bookmarks bar &rarr; *Manage bookmarks* &rarr; *Import and Backup* &rarr; *Restore* &rarr; *Choose File* &rarr; Select the hidden firefox default bookmarks file
-      - Cleanup &mldr;
+##### DARWIN
+- Enable Trim 4 3rd party drives: `sudo trimforce enable`
+  ( VERIFY: `log show --start $(date +%F) | grep -i spaceman_trim_free_blocks` )
 
-- DARWIN: SETUP **Blackhole** -- Record Sysaudio:
+- SETUP **Blackhole** -- Record Sysaudio:
   - Open *Audio MIDI Setup*
     - Click *Create Multi-Output Device* (REQUIRED; will be later set in System Preferences under *Sound* as *Output* device when recording)
       - Name it "bh + <device>" (e.g., built-in output)
@@ -373,22 +371,15 @@
 ### SECURE SERVER
 - (1.) Use secure & encrypted communication
 - (2.) Disable root login & use `sudo`
-- (3.) Remove unused software, open only required ports
-- (4.) Use the principle of least privilege
-- (5.) Update the OS & installed software
-- (6.) Use a properly-configured firewall
+- (3.) **Remove unused software**, open **only required ports**
+- (4.) Use the principle of **least privilege**
+- (5.) **Update** the OS & installed software
+- (6.) Use a properly-configured **firewall**
 - (7.) Make sure log files are populated & rotated
 - (8.) Monitor logins & block suspect IP addresses
 
 ### Darwin
 - EX.s: https://github.com/geerlingguy/mac-dev-playbook
-- `defaults` command:
-  - List all the domains available: `defaults domains > domainslist.txt`
-  - List all its current key-value pairs: `defaults read com.apple.finder > finderdefaults.txt`
-  - Write setting: `defaults write com.apple.finder AppleShowAllFiles true`
-  - Delete setting: &mldr;
-- ALTERNATIVELY: `prefs-editor` cask
-
 
 ### Misc. Ansible Commands
 #### Dev
