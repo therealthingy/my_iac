@@ -21,7 +21,7 @@
 - name: Configure swappiness
   ansible.posix.sysctl:
     name: vm.swappiness
-    value: "{{ swap.swappiness|string }}"
+    value: "{{ swap.swappiness | string }}"
     state: present
   become: true
   when: swap is defined
@@ -36,8 +36,6 @@
 #       path: /swapfile
 #       size_mb: 4096
 - name: Configure swap file
-  become: true
-  when: swap is defined and swap.file is defined
   block:
     - name: Check if swap file exists
       ansible.builtin.stat:
@@ -127,3 +125,5 @@
           when: >
             ('rc' in swap_is_enabled and swap_is_enabled.rc != 0)
             or swap_disabled.changed
+  become: true
+  when: swap is defined and swap.file is defined
