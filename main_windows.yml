@@ -1,0 +1,7 @@
+#!/usr/bin/env ansible-playbook
+---
+- hosts: clients_windows
+  roles:
+    - role: client/windows
+      tags:
+        - client_windows

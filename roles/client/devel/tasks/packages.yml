@@ -153,7 +153,7 @@
 
 - name: Install misc. tools
   block:
-    - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 linux & check whether VM
+    - name: "[Darwin] Install homebrew packages" # TODO: Add flatpak counterparts 4 Linux & check whether VM
       community.general.homebrew_cask:
         name: "{{ homebrew_cask }}"
         state: latest

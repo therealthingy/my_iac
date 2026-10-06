@@ -69,9 +69,9 @@
       data_basedir: /{{ os_homedir }}/{{ user.name }}/homeserver/data/
       config_basedir: /{{ os_homedir }}/{{ user.name }}/homeserver/config/
   roles:
-    - role: server/3rd-party/internet-pi
-      tags:
-        - inet_monitoring
+    #- role: server/3rd-party/internet-pi
+    #  tags:
+    #    - inet_monitoring
 
     - role: server/home_server/containers/
       tags:

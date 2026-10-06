@@ -16,6 +16,8 @@ all:
       hosts:
         local_mac:
 
+    clients_windows:
+
     # -  "Headless" systems  -
     servers:
       hosts:

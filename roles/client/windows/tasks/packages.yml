@@ -1,0 +1,81 @@
+---
+- name: Ensure Chocolatey is installed
+  win_chocolatey:
+    name:
+      - chocolatey
+      - chocolateygui
+    state: present
+
+## Prereqs.
+#- name: Win32-OpenSSH service - install
+#  block:
+#    - win_chocolatey:
+#        name: openssh
+#        package_params: /SSHServerFeature
+#        state: present
+#    # set the default shell to PowerShell
+#    - win_regedit:
+#        path: HKLM:\SOFTWARE\OpenSSH
+#        name: DefaultShell
+#        data: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+#        type: string
+#        state: present
+
+- name: Install Office packages
+  win_chocolatey:
+    name:
+      - caesium.install
+      - InkScape
+      - imageglass
+      - file-converter
+      - drawio
+      - obs-studio.install
+      - vlc.install
+      - thunderbird
+      - libreoffice-fresh
+      - sumatrapdf.install
+      - pdftkbuilder
+      - digikam
+    state: present
+
+- name: Install PowerUser packages
+  win_chocolatey:
+    name:
+      - 7zip.install
+      - bleachbit.install
+      - autoruns
+      - hashtab
+      - notepadplusplus.install
+      - powertoys
+      - procexp
+      - WinDirStat
+    state: present
+
+- name: Install Maintenance packages
+  win_chocolatey:
+    name:
+      - coretemp
+      - cpu-z.install
+      - gpu-z
+      - crystaldiskinfo # crystaldiskinfo.portable
+      - crystaldiskmark
+      - bulk-crap-uninstaller
+      - shutup10
+    state: present
+
+- name: Install Devel packages
+  win_chocolatey:
+    name:
+      - hxd
+      - python3
+    state: present
+
+- name: Install Services/Misc. packages
+  win_chocolatey:
+    name:
+      - wireguard
+      - rustdesk.install
+      - keepassx
+      - kindle
+      #- lghub
+    state: present

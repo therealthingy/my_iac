@@ -5,6 +5,8 @@ collections:
 
   - name: geerlingguy.mac
 
+  - name: chocolatey.chocolatey # 4 Windows
+
 roles:
   - name: geerlingguy.docker
   - name: petermosmans.customize-gnome
