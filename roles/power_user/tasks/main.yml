@@ -126,7 +126,6 @@
         name:
           #- aptitude
           - util-linux # Most likely already installed (contains MANY utilities)  (`lscpu`, `lspci`, `hexdump`, `choom`, …)
-          - software-properties-common # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`
           #- stow                         # SEE https://www.gnu.org/software/stow/
           # FS stuff:
           - cloud-guest-utils # `growpart`
@@ -137,12 +136,19 @@
         state: present
       become: true
       when: ansible_facts.os_family != 'Darwin'
+    - name: "[Ubuntu]"
+      ansible.builtin.apt:
+        name:
+          - software-properties-common # abstraction of the used apt repositories (allows easily managing distribution & independent software vendor software sources)  -> `add-apt-repository`, `apt-add-repository`; no longer available in Debian 13 (https://www.reddit.com/r/debian/comments/1n9aakj/comment/ncl30s8/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
+        state: present
+      become: true
+      when: ansible_facts.distribution == 'Ubuntu'
 
     - name: Ansible
       block:
         - name: Install package
           community.general.pipx:
-            name: "{{ pip_package }}"          # ( On ansible host: Doesn't actually make sense as it MUST already be installed … )
+            name: "{{ pip_package }}" # ( On ansible host: Doesn't actually make sense as it MUST already be installed … )
             state: latest
             install_deps: true
             executable: pipx
@@ -293,7 +299,7 @@
       with_items:
         # Misc
         - apparency
-        - stats  # System stats monitoring
+        - stats # System stats monitoring
         - prefs-editor
       #        - qlmarkdown  # ("Deprecated because it does not pass the macOS Gatekeeper check! It will be disabled on 2026-09-01.")
       loop_control:

@@ -38,10 +38,12 @@
             group: root
             mode: 0644
 
-    - name: Install
-      ansible.builtin.apt:
-        name: firefox
-
     #TODO -- UNATTENDED UPGRADES: echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
-  when: ansible_facts.distribution == 'Ubuntu'
   become: true
+  when: ansible_facts.distribution == 'Ubuntu'
+
+- name: Install
+  ansible.builtin.apt:
+    name: "{{ firefox_package_name }}"
+  become: true
+  when: ansible_facts.os_family != 'Darwin'

@@ -7,7 +7,7 @@
 
 - name: Autostart Firefox on login
   ansible.builtin.file:
-    src: /usr/share/applications/firefox.desktop
-    dest: "/{{ os_homedir }}/{{ user.name }}/.config/autostart/firefox.desktop"
+    src: "/usr/share/applications/{{ firefox_package_name }}.desktop"
+    dest: "/{{ os_homedir }}/{{ user.name }}/.config/autostart/{{ firefox_package_name }}.desktop"
     state: link
   become: false
