@@ -85,10 +85,10 @@
       compose:
         services:
           - name: volact
-            image: "{{ volact.container_image }}"
+            image: "{{ service_volact.container_image }}"
             network:
               ports:
-                - "{{ volact.port }}:{{ volact.port }}/tcp"
+                - "{{ service_volact.port }}:{{ service_volact.port }}/tcp"
               mode: bridge
             volumes:
               - path: "/etc/localtime:/etc/localtime"

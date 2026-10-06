@@ -31,13 +31,13 @@
             env_vars:
               - IMMICH_WORKERS_INCLUDE=api
               - TZ={{ timezone }}
-              - DB_USERNAME={{ immich.db.user }}
-              - DB_PASSWORD={{ immich.db.pw }}
-              - DB_DATABASE_NAME={{ immich.db.db_name }}
+              - DB_USERNAME={{ service_immich.db.user }}
+              - DB_PASSWORD={{ service_immich.db.pw }}
+              - DB_DATABASE_NAME={{ service_immich.db.db_name }}
             depends_on:
               - immich-redis
               - immich-db
-            restart_policy: "{{ immich.restart_policy }}"
+            restart_policy: "{{ service_immich.restart_policy }}"
             healthcheck: false
 
           # SPLIT WEB FROM MICROSERVICES: https://immich.app/docs/administration/jobs-workers/#split-workers
@@ -55,20 +55,20 @@
             env_vars:
               - IMMICH_WORKERS_EXCLUDE=api
               - TZ={{ timezone }}
-              - DB_USERNAME={{ immich.db.user }}
-              - DB_PASSWORD={{ immich.db.pw }}
-              - DB_DATABASE_NAME={{ immich.db.db_name }}
+              - DB_USERNAME={{ service_immich.db.user }}
+              - DB_PASSWORD={{ service_immich.db.pw }}
+              - DB_DATABASE_NAME={{ service_immich.db.db_name }}
             depends_on:
               - immich-redis
               - immich-db
-            restart_policy: "{{ immich.restart_policy }}"
+            restart_policy: "{{ service_immich.restart_policy }}"
             healthcheck: false
 
           - name: immich-redis
             image: docker.io/valkey/valkey:9@sha256:3eeb09785cd61ec8e3be35f8804c8892080f3ca21934d628abc24ee4ed1698f6
             hostname: redis
             healthcheck: redis-cli ping || exit 1
-            restart_policy: "{{ immich.restart_policy }}"
+            restart_policy: "{{ service_immich.restart_policy }}"
             network:
               nets: [immich]
             # OTHERWISE:
@@ -82,16 +82,16 @@
             hostname: database
             env_vars:
               - POSTGRES_INITDB_ARGS="--data-checksums"
-              - POSTGRES_USER={{ immich.db.user }}
-              - POSTGRES_PASSWORD={{ immich.db.pw }}
-              - POSTGRES_DB={{ immich.db.db_name }}
+              - POSTGRES_USER={{ service_immich.db.user }}
+              - POSTGRES_PASSWORD={{ service_immich.db.pw }}
+              - POSTGRES_DB={{ service_immich.db.db_name }}
               # Uncomment the DB_STORAGE_TYPE: 'HDD' var if your database isn't stored on SSDs
               #- DB_STORAGE_TYPE='HDD'
             volumes:
               # Do not edit the next line. If you want to change the database storage location on your system, edit the value of DB_DATA_LOCATION in the .env file
               - path: "{{ docker_container.data_basedir }}/immich/postgres:/var/lib/postgresql/data"
             shm_size: 128mb
-            restart_policy: "{{ immich.restart_policy }}"
+            restart_policy: "{{ service_immich.restart_policy }}"
             network:
               nets: [immich]
 
@@ -102,7 +102,7 @@
             hostname: immich-machine-learning
             volumes:
               - path: "immich-model-cache:/cache"
-            restart_policy: "{{ immich.restart_policy }}"
+            restart_policy: "{{ service_immich.restart_policy }}"
             # TODO:  Due 2 docker volume permission  (might be fixed using a bind mount instead ?!?!!11)
             security:
               use_root: True

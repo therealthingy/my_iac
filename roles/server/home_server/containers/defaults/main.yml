@@ -1,5 +1,5 @@
 ---
-volact:
+service_volact:
   container_image: !vault |
     $ANSIBLE_VAULT;1.1;AES256
     63643537663366356666303130613539646265613230313966643638356463396330333636303537
@@ -15,7 +15,7 @@ volact:
     3933303638633930380a386632396361316664346361633937646131353134636439383830663262
     3036
 
-immich:
+service_immich:
   restart_policy: unless-stopped
   db:
     user: postgres
