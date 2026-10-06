@@ -1,8 +1,8 @@
 {{ ansible_managed | comment }}
-{% for vcs_ssh_key in vcs_ssh_keys %}
-Host {{ vcs_ssh_key.host }}
+{% for git_vcs_ssh_key in git_vcs_ssh_keys %}
+Host {{ git_vcs_ssh_key.host }}
   AddKeysToAgent yes
-  User {{ vcs_ssh_key.user }}
-  IdentityFile ~/.ssh/vcss/{{ vcs_ssh_key.host }}
+  User {{ git_vcs_ssh_key.user }}
+  IdentityFile ~/.ssh/vcss/{{ git_vcs_ssh_key.host }}
 
 {% endfor %}

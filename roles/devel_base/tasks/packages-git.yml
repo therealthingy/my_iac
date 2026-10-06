@@ -109,7 +109,7 @@
             content: "{{ vcs.sk }}"
             dest: "/{{ os_homedir }}/{{ user.name }}/.ssh/vcss/{{ vcs.host }}"
             mode: 0600
-          with_items: "{{ vcs_ssh_keys }}"
+          with_items: "{{ git_vcs_ssh_keys }}"
           loop_control:
             loop_var: vcs
         - name: Copy pk
@@ -117,7 +117,7 @@
             content: "{{ vcs.pk }}"
             dest: "/{{ os_homedir }}/{{ user.name }}/.ssh/vcss/{{ vcs.host }}.pub"
             mode: 0644
-          with_items: "{{ vcs_ssh_keys }}"
+          with_items: "{{ git_vcs_ssh_keys }}"
           loop_control:
             loop_var: vcs
     - name: Generate config
@@ -131,4 +131,4 @@
         line: "Include vcss/config"
         create: true
   become: false
-  when: vcs_ssh_keys is defined
+  when: git_vcs_ssh_keys is defined

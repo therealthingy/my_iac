@@ -1,6 +1,6 @@
 {{ ansible_managed | comment }}
-{% if hblock is defined %}
-{% for domain in hblock.block %}
+{% if app_hblock is defined %}
+{% for domain in app_hblock.block %}
 {{ domain }}
 {% endfor %}
 {% endif %}

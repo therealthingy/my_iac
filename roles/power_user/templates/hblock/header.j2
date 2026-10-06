@@ -17,8 +17,8 @@
 
 
 # Custom host records are listed here.
-{% if hblock is defined %}
-{% for entry in hblock.additional_hosts %}
+{% if app_hblock is defined %}
+{% for entry in app_hblock.additional_hosts %}
 {%   for host_ip in entry.host_ips %}
 {{ host_ip }} {{ entry.domains | join(' ') }}
 {%   endfor %}

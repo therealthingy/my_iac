@@ -36,7 +36,7 @@ all:
             3865313864623239310a613331396235643938656333336637356163613165656665653231336632
             3065
 
-          unattended_upgrades_auto_reboot: false
+          unattended_upgrades_auto_reboot: false # Due 2 LUKS disk encryption
 
           sshd:
             port: 2233

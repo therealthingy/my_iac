@@ -134,9 +134,7 @@
     - video-downloadhelper
     - buster-captcha-solver
     - duplicate-tabs-closer
-    - old-reddit-redirect
   ```
-
 
 #### Ubuntu
 - ADD `<release>-updates` & `<release>-backports` repo in `/etc/apt/sources.list.d/ubuntu.sources`:
@@ -277,7 +275,7 @@
   - **New system** &mdash; Initial setup steps   (see also: https://stackoverflow.com/questions/34333058/ansible-change-ssh-port-in-playbook):
     - (0.) Distro specific "preps":
       - Ubuntu (non Server): **`sudo apt install -y ssh`**
-      - Debian: `su` &rarr; `apt install sudo  &&  /sbin/usermod -aG sudo <username>  &&  /sbin/reboot`
+      - Debian: **`su` &rarr; `apt install sudo  &&  /sbin/usermod -aG sudo <username>  &&  /sbin/reboot`**
     - (1.) SSH login for Ansible:
       - (1.1.) Generate new ssh key using custom script `ssh-key_generate` (which adds entry automatically to `.ssh/config`)
       - (1.2.) Add `HostNamne <hostname>`
