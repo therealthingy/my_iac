@@ -2,9 +2,7 @@
 
 
 ## TODOs
-- WORKAROUND 4
-
-- Windows:
+- WORKAROUND 4 Windows:
   ```
   OOBE Local only acc:
     Shift+F10

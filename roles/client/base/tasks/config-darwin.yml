@@ -60,8 +60,6 @@
 
     # TODO: Disable startup chime: System Preferences..., then click Sound. In the Sound Effects pane, use the “Play sound on startup” setting to turn the startup sound on or off.
 
-    # Security: TODO: Allow accessories 2 connect
-
     # TODO: "Requires password after screen saver begins or …" => `askForPasswordDelay` doesn't work anymore (https://community.jamf.com/general-discussions-2/mac-osx-10-13-enable-askforpassword-via-terminal-command-10806)
 
     - name: "[Darwin] Set lock screen message"
@@ -96,6 +94,30 @@
 
 - name: "[Darwin] User-wide settings" # ( NOTE: Changes MAY only take effect after logging in again )
   block:
+    - name: "[Darwin] Apple Intelligence"
+      community.general.osx_defaults:
+        domain: "com.apple.applicationaccess" # Core enterprise application restriction domain
+        key: "{{ item }}"
+        type: "bool"
+        value: "{{ not apple_intelligence_disable }}"
+        check_type: false
+        state: present
+      with_items:
+        # Localized writing, editing, and summary engines
+        - "allowWritingTools"
+        - "allowMailSummary"
+        - "allowNotesTranscriptionSummary"
+        # Localized creative generation pipelines
+        - "allowGenmoji"
+        - "allowImagePlayground"
+        - "allowImageWand"
+        # Contextual integration features & background system captures
+        - "allowCallRecording"
+        - "allowAssistant"
+        # External AI hooks & sign-ins (like ChatGPT)
+        - "allowExternalIntelligenceIntegrations"
+        - "allowExternalIntelligenceIntegrationsSignIn"
+
     - community.general.osx_defaults:
         domain: "{{ item.domain }}"
         key: "{{ item.key }}"
