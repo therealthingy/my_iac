@@ -1,5 +1,5 @@
 ---
-- name: "[Raspberry Pi OS] Disable dphys-swapfile"
+- name: "[Raspberry Pi OS] Disable `dphys-swapfile` service"
   block:
     - name: Disable in config
       ansible.builtin.lineinfile:
@@ -16,6 +16,15 @@
     - ((swap is defined) and (swap.file is defined))
     - hw_is_rpi == True
     - ansible_facts.distribution == 'Debian'
+
+- name: "[Pi + USB-SSD] Set swappiness"
+  ansible.builtin.set_fact:
+    swap:
+      swappiness: 60
+  become: false
+  when:
+    - hw_is_rpi == True
+    - usb_enclosure is defined
 
 # Validate via: `cat /proc/sys/vm/swappiness`
 - name: Configure swappiness

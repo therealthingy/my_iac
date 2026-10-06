@@ -20,8 +20,6 @@ all:
     servers:
       hosts:
         l0-rpi0:
-          swap:
-            swappiness: 60
 
     servers_devel:
       hosts:
@@ -29,7 +27,6 @@ all:
     servers_home:
       hosts:
         l0-rpi0:
-          #          timezone: Europe/Berlin
           domainname: !vault |
             $ANSIBLE_VAULT;1.1;AES256
             63346535663639633966633839663262353366643263393930346630396131653036326463323838
@@ -152,8 +149,8 @@ all:
             restart_policy: "unless-stopped"
             healthcheck_url: apple.com
             web_ui:
-              username: choel
-              password: !vault |
+              user: choel
+              pw: !vault |
                 $ANSIBLE_VAULT;1.1;AES256
                 30383434616136376135336635613366616261663134653238376235303337333834653764363462
                 3062373034623261333537656238303536646464383437620a666662613066626330333561386132
