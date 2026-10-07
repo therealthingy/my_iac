@@ -1,5 +1,7 @@
 ---
-- ansible.builtin.include_tasks: "{{ item }}"
+- ansible.builtin.include_tasks: "{{ task_name }}"
   loop:
     - packages.yml
     - config.yml
+  loop_control:
+      loop_var: task_name
