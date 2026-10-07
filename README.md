@@ -2,23 +2,24 @@
 
 ## TODOs
 ### Windows
+- DefaultUser:
+  - Wrapper 4 DefaultUser 2 dedup code
+  - Consider using it 4 all "HKCU:" settings
+
 - Add settings from: Shutup10
 
-- dedup code: wrapper 4 DefaultUser
-- Default 4 all: No sounds
-
 - File extension associations
+
+- docs: how2 Local exec ?!
 
 - Settings:
   - Start menu: Unpin "Pinned" bloat (WhatsApp, LinkedIn, etc.)
   - Disable Windows recommendations
 
-- docs: how2 Local exec ?!
-
 - SW:
   - Brave global installation
-  - EPSON Scan
   - Microsoft Office Professional Plus 2021 - de-de + en-us lang pack
+  - EPSON Scan
   - SyncTrayzor
 
 
