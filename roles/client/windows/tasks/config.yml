@@ -39,6 +39,26 @@
 
 # TODO: Disk timeout (`powercfg /change disk-timeout-ac 0` & `powercfg /change disk-timeout-dc 0`)
 
+# Activation
+- name: WPA
+  block:
+    - name: 'WPA: Get product details'
+      ansible.windows.win_product_facts:
+    - name: Install generic key
+      ansible.windows.win_shell: cscript.exe //NoLogo C:\Windows\System32\slmgr.vbs /ipk {{ win_pa_key }}
+      when: ansible_facts["os_product_key"] != win_pa_key
+    - name: 'WPA: Set KMS server'
+      ansible.windows.win_shell: cscript.exe //NoLogo C:\Windows\System32\slmgr.vbs /skms {{ win_pa_kms_server }}
+      when:
+        - win_pa_kms_server is defined
+        - ansible_facts["os_license_status"] != "Licensed"
+    - name: 'WPA: Trigger WPA'
+      ansible.windows.win_shell: cscript.exe //NoLogo C:\Windows\System32\slmgr.vbs /ato
+      when:
+        - win_pa_kms_server is defined
+        - ansible_facts["os_license_status"] != "Licensed"
+  when: win_pa_key is defined or win_pa_kms_server is defined
+
 # Personalization
 - name: Global - Windows Lock Screen
   block:
