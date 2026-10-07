@@ -2,3 +2,4 @@
 - ansible.builtin.include_tasks: "{{ item }}"
   loop:
     - packages.yml
+    - config.yml

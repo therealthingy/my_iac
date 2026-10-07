@@ -32,11 +32,17 @@
       - obs-studio.install
       - vlc.install
       - thunderbird
-      - libreoffice-fresh
       - sumatrapdf.install
       - pdftkbuilder
+    state: present
+
+- name: Install HW Monitoring Tools II
+  win_chocolatey:
+    name:
+      - libreoffice-fresh
       - digikam
     state: present
+  when: ansible_facts['virtualization_role'] != 'guest'
 
 - name: Install PowerUser packages
   win_chocolatey:
@@ -46,22 +52,32 @@
       - autoruns
       - hashtab
       - notepadplusplus.install
-      - powertoys
-      - procexp
+      - procexp  # Causes checksum issues
       - WinDirStat
+      - powertoys
+    ignore_checksums: True
     state: present
 
 - name: Install Maintenance packages
   win_chocolatey:
     name:
+      - bulk-crap-uninstaller   # TODO: Doesn't work
+      - shutup10
+    state: present
+  #become: true
+  #become_user: Administrator
+  #become_method: runas
+
+- name: Install HW Monitoring Tools
+  win_chocolatey:
+    name:
+      - crystaldiskinfo # crystaldiskinfo.portable
+      - crystaldiskmark
       - coretemp
       - cpu-z.install
       - gpu-z
-      - crystaldiskinfo # crystaldiskinfo.portable
-      - crystaldiskmark
-      - bulk-crap-uninstaller
-      - shutup10
     state: present
+  when: ansible_facts['virtualization_role'] != 'guest'
 
 - name: Install Devel packages
   win_chocolatey:
@@ -79,3 +95,4 @@
       - kindle
       #- lghub
     state: present
+  when: ansible_facts['virtualization_role'] != 'guest'

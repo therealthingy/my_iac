@@ -5,7 +5,10 @@ collections:
 
   - name: geerlingguy.mac
 
-  - name: chocolatey.chocolatey # 4 Windows
+  # Windows stuff
+  - name: ansible.windows
+  - name: chocolatey.chocolatey
+  - name: community.windows
 
 roles:
   - name: geerlingguy.docker
