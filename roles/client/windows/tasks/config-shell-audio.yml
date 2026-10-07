@@ -1,0 +1,29 @@
+---
+- name: Disable Windows startup sound
+  block:
+    - ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI\BootAnimation
+        name: DisableStartupSound
+        data: 1
+        type: dword
+    - ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\EditionOverrides
+        name: UserSetting_DisableStartupSound
+        data: 1
+        type: dword
+
+# Sounds    TODO: Not idempotent
+# TAKEN FROM: https://github.com/stkrzysiak/windows-playbook-scoop/blob/master/tasks/sounds.yml
+- name: Set sound scheme 2 'No sounds'
+  ansible.windows.win_powershell:
+    script: |
+      $Path = "HKCU:\AppEvents\Schemes"
+      $Keyname = "(Default)"
+      $SetValue = ".None"
+
+      New-itemProperty -path $Path -Name $keyname -value $SetValue -force
+      Get-ChildItem -Path "HKCU:\AppEvents\Schemes\Apps" |
+      Get-ChildItem |
+      Get-ChildItem |
+      Where-Object { $_.PSChildName -eq ".Current" } |
+      Set-ItemProperty -Name "(Default)" -Value ""

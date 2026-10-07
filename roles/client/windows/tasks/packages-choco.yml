@@ -21,6 +21,13 @@
 #        type: string
 #        state: present
 
+- name: Install inet packages
+  win_chocolatey:
+    name:
+      #- brave # TODO: System wide
+      - thunderbird
+    state: present
+
 - name: Install Office packages
   win_chocolatey:
     name:
@@ -31,7 +38,6 @@
       - drawio
       - obs-studio.install
       - vlc.install
-      - thunderbird
       - sumatrapdf.install
       - pdftkbuilder
     state: present
@@ -49,11 +55,12 @@
     name:
       - 7zip.install
       - bleachbit.install
-      - autoruns
+      #- autoruns
+      #- procexp  # Causes checksum issues
+      - sysinternals
       - hashtab
       - vscodium.install
       - notepadplusplus.install
-      - procexp  # Causes checksum issues
       - WinDirStat
       - powertoys
     ignore_checksums: True
@@ -84,8 +91,9 @@
   win_chocolatey:
     name:
       - git.install
-      - hxd
       - python3
+      - winmerge
+      - hxd
     state: present
 
 - name: Install Services/Misc. packages

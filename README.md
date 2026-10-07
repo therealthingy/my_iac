@@ -1,6 +1,29 @@
 # Ansible Playbook 4 setting up my machines
 
 ## TODOs
+### Windows
+- Add settings from:
+  - [Remaining stuff from playbook on GitHub](https://github.com/stkrzysiak/windows-playbook-scoop/tree/master/tasks)
+  - Shutup10
+
+- dedup code: wrapper 4 DefaultUser
+- Default 4 all: No sounds
+
+- File extension associations
+
+- Settings:
+  - Taskbar & Start: Unpin bloat
+  - Disable Windows recommendations
+
+- docs: how2 Local exec ?!
+
+- SW:
+  - Brave global installation
+  - EPSON Scan
+  - Microsoft Office Professional Plus 2021 - de-de + en-us lang pack
+  - SyncTrayzor
+
+
 ### GENERAL
 - `.zshrc`:
   - clipbrd aliases:

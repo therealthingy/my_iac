@@ -1,0 +1,27 @@
+---
+- name: UI - Black cursor
+  ansible.windows.win_regedit:
+    path: HKCU:\Control Panel\Cursors
+    name: "{{ item.name }}"
+    data: "{{ item.data }}"
+    type: string
+  loop:
+    - { name: '(Default)', data: 'Windows Black' }
+    - { name: 'AppStarting', data: '%SystemRoot%\Cursors\wait_r.cur' }
+    - { name: 'Arrow', data: '%SystemRoot%\Cursors\arrow_r.cur' }
+    - { name: 'Crosshair', data: '%SystemRoot%\Cursors\cross_r.cur' }
+    - { name: 'Hand', data: '' }
+    - { name: 'Help', data: '%SystemRoot%\Cursors\help_r.cur' }
+    - { name: 'IBeam', data: '%SystemRoot%\Cursors\beam_r.cur' }
+    - { name: 'No', data: '%SystemRoot%\Cursors\no_r.cur' }
+    - { name: 'NWPen', data: '%SystemRoot%\Cursors\pen_r.cur' }
+    - { name: 'Person', data: '%SystemRoot%\Cursors\person_r.cur' }
+    - { name: 'Pin', data: '%SystemRoot%\Cursors\pin_r.cur' }
+    - { name: 'Scheme Name', data: 'Windows Black' }
+    - { name: 'SizeAll', data: '%SystemRoot%\Cursors\move_r.cur' }
+    - { name: 'SizeNESW', data: '%SystemRoot%\Cursors\size1_r.cur' }
+    - { name: 'SizeNS', data: '%SystemRoot%\Cursors\size4_r.cur' }
+    - { name: 'SizeNWSE', data: '%SystemRoot%\Cursors\size2_r.cur' }
+    - { name: 'SizeWE', data: '%SystemRoot%\Cursors\size3_r.cur' }
+    - { name: 'UpArrow', data: '%SystemRoot%\Cursors\up_r.cur' }
+    - { name: 'Wait', data: '%SystemRoot%\Cursors\busy_r.cur' }

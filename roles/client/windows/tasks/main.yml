@@ -2,10 +2,17 @@
 - ansible.builtin.include_tasks: "{{ task_name }}"
   loop:
     - config-general.yml
-    - config-shell.yml
+    - config-locale.yml
+    - config-power.yml
+    - config-shell-audio.yml
+    - config-shell-desktop.yml
+    - config-shell-explorer.yml
+    - config-shell-misc.yml
+    - config-shell-start.yml
+    - config-shell-taskbar.yml
+    - config-shell-winlogon.yml
     - config-win_bloat.yml
     - config-wpa.yml
-    - config-power.yml
     #
     - packages-choco.yml
     - packages-choco_desktop.yml

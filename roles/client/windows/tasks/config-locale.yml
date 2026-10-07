@@ -1,0 +1,24 @@
+---
+- name: 12-Hour Clock Format
+  ansible.windows.win_regedit:
+    path: HKCU:\Control Panel\International
+    name: "{{ item.name }}"
+    data: "{{ item.data }}"
+    type: string
+  loop:
+    - { name: 'sShortTime', data: 'h:mm tt' } # system tray clock format
+    - { name: 'sTimeFormat', data: 'h:mm:ss tt' } # detailed time format used by apps
+    - { name: 's1159', data: 'AM' }                 # Explicitly defines the AM symbol
+    - { name: 's2359', data: 'PM' }                 # Explicitly defines the PM symbol
+
+- name: American Date Format
+  ansible.windows.win_regedit:
+    path: HKCU:\Control Panel\International
+    name: "{{ item.name }}"
+    data: "{{ item.data }}"
+    type: string
+  loop:
+    - { name: 'sShortDate', data: 'M/d/yyyy' }
+    - { name: 'sLongDate', data: 'dddd, MMMM d, yyyy' }
+
+# TODO: Set language 2 english
