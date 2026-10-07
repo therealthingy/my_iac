@@ -34,7 +34,7 @@
 - name: Enable Verbose Status Messages
   ansible.windows.win_regedit:
     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
-    name: verbosestatus
+    name: VerboseStatus
     data: 1
     type: dword
     state: present
