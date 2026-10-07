@@ -5,15 +5,22 @@
 
 - name: Set computer name
   ansible.windows.win_hostname:
-    name: "{{ win_hostname }}"
+    name: "{{ win_host_name }}"
   register: hostname_change
-  when: win_hostname is defined
+  when: win_host_name is defined
 # TODO:
 #- name: Reboot the machine if the name was changed
 #  ansible.windows.win_reboot:
 #  when:
-#    - win_hostname is defined
+#    - win_host_name is defined
 #    - hostname_change.reboot_required
+
+- name: Set Windows description, owner & organization
+  ansible.windows.win_computer_description:
+   description: "{{ win_host_desc | default('') }}"
+   owner: win_host_owner
+   #organization: "{{ win_host_orga | default('') }}"
+  register: result
 
 - name: Disable system restore
   ansible.windows.win_regedit:

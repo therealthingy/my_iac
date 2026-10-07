@@ -1,6 +1,18 @@
 ---
 win_timezone: W. Europe Standard Time
 
+win_host_owner: "ansible"
+
+configure_storage_sense: true
+storage_sense:
+  user_content_cleanup: true
+  user_content_cleanup_days: 30
+  delete_unused_files: true
+  user_content_cleanup_trash_enabled: false
+  user_content_cleanup_trash_days: 30
+  user_content_cleanup_dls_enabled: false
+  user_content_cleanup_dls_days: 30
+
 # SEE: https://github.com/stkrzysiak/windows-playbook-scoop/blob/master/default.config.yml
 # Check: PowerShell -> `Get-AppxPackage`
 remove_bloatware: True

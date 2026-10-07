@@ -2,9 +2,7 @@
 
 ## TODOs
 ### Windows
-- Add settings from:
-  - [Remaining stuff from playbook on GitHub](https://github.com/stkrzysiak/windows-playbook-scoop/tree/master/tasks)
-  - Shutup10
+- Add settings from: Shutup10
 
 - dedup code: wrapper 4 DefaultUser
 - Default 4 all: No sounds
@@ -12,7 +10,7 @@
 - File extension associations
 
 - Settings:
-  - Taskbar & Start: Unpin bloat
+  - Start menu: Unpin "Pinned" bloat (WhatsApp, LinkedIn, etc.)
   - Disable Windows recommendations
 
 - docs: how2 Local exec ?!

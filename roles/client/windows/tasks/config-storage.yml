@@ -1,0 +1,51 @@
+---
+# DERIVED FROM: https://github.com/stkrzysiak/windows-playbook-scoop/blob/master/tasks/storage.yml
+
+- name: Set Storage Sense configuration
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    type: dword
+    state: present
+  loop:
+    # "Run Storage Sense"
+    - name: "01"
+      value: "{{ storage_sense.user_content_cleanup | ternary(1, 0) }}"
+    # … schedule:
+    #   0 = During low free disk space
+    #   1 = Every day
+    #   7 = Every week
+    #   1e (hex) = Every month
+    - name: "2048"
+      value: "{{ storage_sense.user_content_cleanup_days }}"
+    # Run Storage Sense (?)
+    - name: "1024"
+      value: "1"
+    # "Recycle bin cleanup"
+    - name: "08"
+      value: "{{ storage_sense.user_content_cleanup_trash_enabled | ternary(1, 0) }}"
+    # … actual days
+    - name: "256"
+      value: "{{ storage_sense.user_content_cleanup_trash_days }}"
+    # Enable temp file cleanup
+    - name: "04"
+      value: "{{ storage_sense.delete_unused_files | ternary(0, 1) }}"
+    # Enable download cleanup
+    - name: "32"
+      value: "{{ storage_sense.user_content_cleanup_dls_enabled | ternary(1, 0) }}"
+    #  … schedule (0 disable)
+    #   0 = Never
+    #   1 = Every day
+    #   7 = Every week
+    #   e (hex) = Every fortnight
+    #   1e (hex) = Every month
+    #   3c (hex) = Every two months
+    - name: "512"
+      value: "{{ storage_sense.user_content_cleanup_dls_days }}"
+  when:
+    - configure_storage_sense
+    # Value validation:
+    - storage_sense.user_content_cleanup_days in [1, 7, 30]
+    - storage_sense.user_content_cleanup_trash_days in [1, 14, 30, 60]
+    - storage_sense.user_content_cleanup_dls_days in [1, 14, 30, 60]
