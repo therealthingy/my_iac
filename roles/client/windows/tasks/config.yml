@@ -40,12 +40,107 @@
 # TODO: Disk timeout (`powercfg /change disk-timeout-ac 0` & `powercfg /change disk-timeout-dc 0`)
 
 # Personalization
-- name: Disable Windows 11 lock screen
-  ansible.windows.win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization
-    name: NoLockScreen
-    data: 1
-    type: dword
-    state: present
+- name: Global - Windows Lock Screen
+  block:
+  - name: Disable Windows Lock Screen
+    ansible.windows.win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization
+      name: NoLockScreen
+      data: 1
+      type: dword
+      state: present
+  - name: Disable Slideshows
+    ansible.windows.win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization
+      name: NoLockScreenSlideshow
+      data: 1
+      type: dword
+      state: present
 
-# …
+# M$ stuff
+- name: Global - Windows Spotlight
+  block:
+    - name: Disable Windows Spotlight features
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
+        name: DisableWindowsSpotlightFeatures
+        data: 1
+        type: dword
+        state: present
+    - name: Turn off Spotlight collection on Desktop
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
+        name: ConfigureWindowsSpotlight
+        data: 2
+        type: dword
+        state: present
+    - name: Force a single static wallpaper image to prevent user-driven slideshows
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP
+        name: DesktopImagePath
+        data: 'C:\Windows\Web\Wallpaper\Windows\img0.jpg'
+        type: string
+        state: present
+
+- name: Global - OneDrive
+  block:
+    - name: Prevent the usage of OneDrive for file storage
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive
+        name: DisableFileSyncNGSC
+        data: 1
+        type: dword
+        state: present
+    - name: Remove OneDrive icon from File Explorer navigation pane
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive
+        name: DisableFileSync
+        data: 1
+        type: dword
+        state: present
+    - name: Block OneDrive network traffic before user sign-in
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\OneDrive
+        name: PreventNetworkTrafficPreUserSignIn
+        data: 1
+        type: dword
+        state: present
+
+- name: Global - M$ Account
+  block:
+    - name: 'M$ Account: Block users from adding or logging in'
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+        name: NoConnectedUser   # NOTE: Works only in Education/Enterprise edition
+        data: 3
+        type: dword
+        state: present
+    - name: 'M$ Account: Disable M$ Account Sign-in Assistant service'
+      ansible.windows.win_service:
+        name: wlidsvc
+        start_mode: disabled
+        state: stopped
+
+- name: Global - M$ Store
+  block:
+    - name: 'M$ Store: Turn off'
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore
+        name: RemoveWindowsStore   # NOTE: Works only in Education/Enterprise edition
+        data: 1
+        type: dword
+        state: present
+    - name: 'M$ Store: Block from offering or updating apps'
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore
+        name: DisableStoreApps
+        data: 1
+        type: dword
+        state: present
+    - name: 'M$ Store: Turn off automatic download & install of updates'
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore
+        name: AutoDownload
+        data: 2  # 2 explicitly disables automatic updates
+        type: dword
+        state: present
