@@ -1,0 +1,40 @@
+---
+- name: Set timezone
+  ansible.windows.win_timezone:
+    timezone: "{{ win_timezone }}"
+
+- name: Set computer name
+  ansible.windows.win_hostname:
+    name: "{{ win_hostname }}"
+  register: hostname_change
+  when: win_hostname is defined
+# TODO:
+#- name: Reboot the machine if the name was changed
+#  ansible.windows.win_reboot:
+#  when:
+#    - win_hostname is defined
+#    - hostname_change.reboot_required
+
+- name: Disable system restore
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\SystemRestore
+    name: DisableSR
+    data: 1
+    type: dword
+    state: present
+  when: ansible_facts['virtualization_role'] == 'guest'
+
+- name: Disable 'Automatically restart' on system failure
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl
+    name: AutoReboot
+    data: 0
+    type: dword
+
+- name: Enable Verbose Status Messages
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: verbosestatus
+    data: 1
+    type: dword
+    state: present

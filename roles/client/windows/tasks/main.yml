@@ -1,7 +1,14 @@
 ---
 - ansible.builtin.include_tasks: "{{ task_name }}"
   loop:
-    - packages.yml
-    - config.yml
+    - config-general.yml
+    - config-shell.yml
+    - config-win_bloat.yml
+    - config-wpa.yml
+    - config-power.yml
+    #
+    - packages-choco.yml
+    - packages-choco_desktop.yml
+    - packages-win_bloat.yml
   loop_control:
       loop_var: task_name

@@ -51,6 +51,7 @@
       - bleachbit.install
       - autoruns
       - hashtab
+      - vscodium.install
       - notepadplusplus.install
       - procexp  # Causes checksum issues
       - WinDirStat
@@ -82,6 +83,7 @@
 - name: Install Devel packages
   win_chocolatey:
     name:
+      - git.install
       - hxd
       - python3
     state: present
@@ -90,6 +92,7 @@
   win_chocolatey:
     name:
       - wireguard
+      - greenshot
       - rustdesk.install
       - keepassx
       - kindle

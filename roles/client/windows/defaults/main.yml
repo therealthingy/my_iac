@@ -1,2 +1,55 @@
 ---
 win_timezone: W. Europe Standard Time
+
+# SEE: https://github.com/stkrzysiak/windows-playbook-scoop/blob/master/default.config.yml
+# Check: PowerShell -> `Get-AppxPackage`
+remove_bloatware: True
+bloatware:
+  - Microsoft.BingNews
+  - Microsoft.BingSearch
+  - Microsoft.BingWeather
+  - Microsoft.GamingApp
+  - Microsoft.GetHelp
+  - Microsoft.Getstarted
+  # - Microsoft.Messaging
+  - Microsoft.Microsoft3DViewer
+  - Microsoft.MicrosoftOfficeHub
+  - Microsoft.MicrosoftSolitaireCollection
+  - Microsoft.MicrosoftStickyNotes
+  - Microsoft.MixedReality.Portal
+  # - Microsoft.MSPaint
+  - Microsoft.Office.OneNote
+  - Microsoft.OutlookForWindows
+  - MicrosoftTeams
+  - MSTeams
+  - Clipchamp.Clipchamp
+  - Microsoft.OneConnect
+  - Microsoft.People
+  - Microsoft.PowerAutomateDesktop
+  - Microsoft.Print3D
+  - Microsoft.ScreenSketch
+  - Microsoft.SkypeApp
+  - Microsoft.Todos
+  - Microsoft.Windows.Photos
+  - Microsoft.WindowsAlarms
+  # - Microsoft.WindowsCalculator
+  - Microsoft.Wallet
+  #- Microsoft.WindowsCamera
+  # - microsoft.windowscommunicationsapps
+  - Microsoft.WindowsFeedbackHub
+  - Microsoft.WindowsMaps
+  - Microsoft.WindowsSoundRecorder
+  - Microsoft.Xbox
+  - Microsoft.Xbox.TCUI
+  - Microsoft.XboxApp
+  - Microsoft.XboxGameOverlay
+  - Microsoft.XboxSpeechToTextOverlay
+  #- Microsoft.XboxIdentityProvider
+  #- Microsoft.XboxGamingOverlay
+  #- Microsoft.XboxGameCallableUI
+  - Microsoft.YourPhone
+  - Microsoft.ZuneMusic
+  - Microsoft.ZuneVideo
+  #- Microsoft.WindowsNotepad
+
+

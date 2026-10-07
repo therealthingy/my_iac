@@ -1,0 +1,185 @@
+---
+- name: M$ Account
+  block:
+    - name: M$ Account - Block users from adding or logging in
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+        name: NoConnectedUser   # NOTE: Works only in Education/Enterprise edition
+        data: 3
+        type: dword
+        state: present
+    - name: M$ Account - Disable M$ Account Sign-in Assistant service
+      ansible.windows.win_service:
+        name: wlidsvc
+        start_mode: disabled
+        state: stopped
+
+- name: M$ Store
+  block:
+    - name: M$ Store - Turn off
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore
+        name: RemoveWindowsStore   # NOTE: Works only in Education/Enterprise edition
+        data: 1
+        type: dword
+        state: present
+    - name: M$ Store - Block from offering or updating apps
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore
+        name: DisableStoreApps
+        data: 1
+        type: dword
+        state: present
+    - name: M$ Store - Turn off automatic download & install of updates
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore
+        name: AutoDownload
+        data: 2  # 2 explicitly disables automatic updates
+        type: dword
+        state: present
+
+- name: Disable Advertising/Consumer Experiences
+  block:
+    - name: Disable Advertising ID
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo
+        name: DisabledByGroupPolicy
+        data: 1
+        type: dword
+        state: present
+    #
+    - name: M$ Consumer Experiences - Disable
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
+        name: DisableWindowsConsumerFeatures
+        data: 1
+        type: dword
+        state: present
+
+- name: Disable Advertising/Tailored Experiences
+  block:
+    - name: Local user
+      ansible.windows.win_regedit:
+        path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy
+        name: TailoredExperiencesWithDiagnosticDataEnabled
+        data: 0
+        type: dword
+        state: present
+    - name: Configure Default User Profile template 4 global enforcement
+      block:
+        - name: Mount Default User Registry Hive
+          ansible.windows.win_powershell:
+            script: |
+              reg load HKLM\DefUser C:\Users\Default\NTUSER.DAT
+          changed_when: false
+        - name: Apply setting
+          ansible.windows.win_regedit:
+            path: HKLM:\DefUser\Software\Microsoft\Windows\CurrentVersion\Privacy
+            name: TailoredExperiencesWithDiagnosticDataEnabled
+            data: 0
+            type: dword
+            state: present
+      always:
+        - name: Unmount Default User Registry Hive
+          ansible.windows.win_powershell:
+            script: |
+              [gc]::Collect()
+              [gc]::WaitForPendingFinalizers()
+              reg unload HKLM\DefUser
+          changed_when: false
+
+- name: Windows Spotlight
+  block:
+    - name: Windows Spotlight - Disable all features
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
+        name: DisableWindowsSpotlightFeatures
+        data: 1
+        type: dword
+        state: present
+    - name: Windows Spotlight - Turn off Spotlight collection on Desktop
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
+        name: ConfigureWindowsSpotlight
+        data: 2
+        type: dword
+        state: present
+
+- name: Widgets
+  block:
+    #- name: Widgets - Turn off    TODO: Guarded by the  the UserChoice Protection Driver, cf., https://www.reddit.com/r/PowerShell/comments/1g8jdg6/works_in_ise_but_not_in_terminal_windows_11/
+    #  ansible.windows.win_regedit:
+    #    path: HKLM:\SOFTWARE\Policies\Microsoft\Dsh
+    #    name: AllowNewsAndInterests
+    #    data: 0
+    #    type: dword
+    #    state: present
+    - name: Widgets - Turn off Widgets on the Windows Lock Screen
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Dsh
+        name: DisableWidgetsOnLockScreen
+        data: 1
+        type: dword
+        state: present
+
+- name: Copilot stuff
+  block:
+    - name: Copilot - Turn off
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot
+        name: TurnOffWindowsCopilot
+        data: 1
+        type: dword
+        state: present
+    - name: Copilot - Remove Copilot access from the Windows taskbar
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer
+        name: DisableCopilot
+        data: 1
+        type: dword
+        state: present
+    - name: Copilot - Disable Windows AI Data Analysis (Windows Recall engine)
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI
+        name: DisableAIDataAnalysis
+        data: 1
+        type: dword
+        state: present
+    - name: Copilot - Explicitly block Windows Recall snapshot enablement
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI
+        name: AllowRecallEnablement
+        data: 0
+        type: dword
+        state: present
+
+- name: Start menu search - Disable Bing web search integration
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+    name: ConnectedSearchUseWeb
+    data: 0
+    type: dword
+
+- name: OneDrive
+  block:
+    - name: OneDrive - Prevent its usage for file storage
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive
+        name: DisableFileSyncNGSC
+        data: 1
+        type: dword
+        state: present
+    - name: OneDrive - Remove icon from File Explorer navigation pane
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive
+        name: DisableFileSync
+        data: 1
+        type: dword
+        state: present
+    - name: OneDrive - Block network traffic before user sign-in
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\OneDrive
+        name: PreventNetworkTrafficPreUserSignIn
+        data: 1
+        type: dword
+        state: present
