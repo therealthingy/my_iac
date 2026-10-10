@@ -13,6 +13,8 @@ storage_sense:
   user_content_cleanup_dls_enabled: false
   user_content_cleanup_dls_days: 30
 
+remote_desktop_enabled: False
+
 # SEE: https://github.com/stkrzysiak/windows-playbook-scoop/blob/master/default.config.yml
 # Check: PowerShell -> `Get-AppxPackage`
 remove_bloatware: True

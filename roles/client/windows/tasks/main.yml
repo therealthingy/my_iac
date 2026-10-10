@@ -4,6 +4,7 @@
     - config-general.yml
     - config-locale.yml
     - config-power.yml
+    - config-rds.yml
     - config-shell-audio.yml
     - config-shell-desktop.yml
     - config-shell-explorer.yml

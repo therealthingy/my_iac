@@ -21,30 +21,41 @@
 #        type: string
 #        state: present
 
+- name: Install Devel packages
+  win_chocolatey:
+    name:
+      - git.install
+      - python3
+      - winmerge
+      - hxd
+    state: present
+
 - name: Install inet packages
   win_chocolatey:
     name:
-      #- brave # TODO: System wide
       - thunderbird
     state: present
+  when: ansible_facts['virtualization_role'] != 'guest'
+
+#- brave # TODO: System wide
 
 - name: Install Office packages
   win_chocolatey:
     name:
-      - caesium.install
-      - InkScape
       - imageglass
+      - sumatrapdf.install
+      - caesium.install
+      - pdftkbuilder
+      - vlc.install
+    state: present
+
+- name: Install Office Packages II
+  win_chocolatey:
+    name:
+      - InkScape
       - file-converter
       - drawio
       - obs-studio.install
-      - vlc.install
-      - sumatrapdf.install
-      - pdftkbuilder
-    state: present
-
-- name: Install HW Monitoring Tools II
-  win_chocolatey:
-    name:
       - libreoffice-fresh
       - digikam
     state: present
@@ -55,16 +66,51 @@
     name:
       - 7zip.install
       - bleachbit.install
-      #- autoruns
-      #- procexp  # Causes checksum issues
-      - sysinternals
       - hashtab
       - vscodium.install
       - notepadplusplus.install
       - WinDirStat
       - powertoys
-    ignore_checksums: True
     state: present
+
+- name: Create Sysinternals shortcuts
+  block:
+    - win_chocolatey:
+        name:
+          - sysinternals
+        state: present
+    - ansible.windows.win_file:
+        path: 'C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Sysinternals'
+        state: directory
+    - community.windows.win_shortcut:
+        src: "C:\\ProgramData\\chocolatey\\lib\\sysinternals\\tools\\{{ item }}.exe"
+        dest: "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Sysinternals\\{{ item }}.lnk"
+        directory: "C:\\ProgramData\\chocolatey\\bin"
+        icon: "C:\\ProgramData\\chocolatey\\bin\\{{ item }}.exe,0"
+      with_items:
+        - AccessEnum
+        - ADExplorer64
+        - ADInsight64
+        - Autoruns64
+        - Bginfo64
+        - Cacheset64
+        - CoreinfoEx64
+        - CPUSTRES64
+        - dbgview64
+        - Desktops64
+        - disk2vhd64
+        - Diskmon64
+        - DiskView64
+        - LoadOrd64
+        - procexp64
+        - Procmon64
+        - RAMMap64
+        - RDCMan
+        - ShellRunas
+        - tcpview64
+        - vmmap64
+        - Winobj64
+        - ZoomIt64
 
 - name: Install Maintenance packages
   win_chocolatey:
@@ -86,15 +132,6 @@
       - gpu-z
     state: present
   when: ansible_facts['virtualization_role'] != 'guest'
-
-- name: Install Devel packages
-  win_chocolatey:
-    name:
-      - git.install
-      - python3
-      - winmerge
-      - hxd
-    state: present
 
 - name: Install Services/Misc. packages
   win_chocolatey:
