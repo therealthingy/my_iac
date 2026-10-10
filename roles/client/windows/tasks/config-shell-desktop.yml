@@ -27,50 +27,19 @@
         type: string
         state: absent
     #
-    - name: Current user
-      block:
-        - name: Clear current wallpaper
-          ansible.windows.win_regedit:
-            path: HKCU:\Control Panel\Desktop
+    - name: Clear current wallpaper + Set solid colors
+      include_tasks: reg_hkcu_default_user.yml
+      vars:
+        reg_hkcu_keys:
+          - path_wo_hkcu: Control Panel\Desktop
             name: WallPaper
             data: ""
             type: string
-        - name: Set solid colors
-          ansible.windows.win_regedit:
-            path: "{{ item }}"
+          - path_wo_hkcu: Control Panel\Colors
             name: Background
             data: "0 120 215"  # 240 240 240 = Light Gray, 0 0 0 = Black, 0 120 215 = Windows Blue
             type: string
-          loop:
-            - HKCU:\Control Panel\Colors
-            - HKCU:\Control Panel\Desktop
-    - name: Configure Default User Profile template 4 global enforcement
-      block:
-        - name: Mount Default User Registry Hive
-          ansible.windows.win_powershell:
-            script: |
-              reg load HKLM\DefUser C:\Users\Default\NTUSER.DAT
-          changed_when: false
-        - name: Apply setting - Clear current wallpaper
-          ansible.windows.win_regedit:
-            path: HKLM:\DefUser\Control Panel\Desktop
-            name: WallPaper
-            data: ""
-            type: string
-        - name: Set solid colors
-          ansible.windows.win_regedit:
-            path: "{{ item }}"
+          - path_wo_hkcu: Control Panel\Desktop
             name: Background
-            data: "0 120 215"  # 240 240 240 = Light Gray, 0 0 0 = Black, 0 120 215 = Windows Blue
+            data: "0 120 215"
             type: string
-          loop:
-            - HKLM:\DefUser\Control Panel\Colors
-            - HKLM:\DefUser\Control Panel\Desktop
-      always:
-        - name: Unmount Default User Registry Hive
-          ansible.windows.win_powershell:
-            script: |
-              [gc]::Collect()
-              [gc]::WaitForPendingFinalizers()
-              reg unload HKLM\DefUser
-          changed_when: false

@@ -19,4 +19,4 @@
     - packages-choco_desktop.yml
     - packages-win_bloat.yml
   loop_control:
-      loop_var: task_name
+    loop_var: task_name

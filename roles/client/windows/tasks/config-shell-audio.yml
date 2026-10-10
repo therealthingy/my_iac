@@ -12,7 +12,7 @@
         data: 1
         type: dword
 
-# Sounds    TODO: Not idempotent
+# Sounds    TODO: Not idempotent  +  set also 4 DefUser
 # TAKEN FROM: https://github.com/stkrzysiak/windows-playbook-scoop/blob/master/tasks/sounds.yml
 - name: Set sound scheme 2 'No sounds'
   ansible.windows.win_powershell:
