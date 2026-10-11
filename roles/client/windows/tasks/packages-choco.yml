@@ -30,7 +30,7 @@
     state: "{{ item.state | default('present') }}"
     version: "{{ item.version | default(omit) }}"
     choco_args: "{{ item.choco_args | default(omit) }}"
-  with_items: choco_packages
+  with_items: "{{ choco_packages }}"
 
 - name: Install Sysinternals
   block:
@@ -77,7 +77,7 @@
     state: "{{ item.state | default('present') }}"
     version: "{{ item.version | default(omit) }}"
     choco_args: "{{ item.choco_args | default(omit) }}"
-  with_items: choco_packages_no_vm
+  with_items: "{{ choco_packages_no_vm }}"
   when: ansible_facts['virtualization_role'] != 'guest'
 
 - name: Clean chocolatey & nuget cache
