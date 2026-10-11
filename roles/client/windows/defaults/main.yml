@@ -64,7 +64,10 @@ choco_packages:
         - ZoomIt64
   # Maintenance
   - bulk-crap-uninstaller   # TODO: Doesn't work
-  - shutup10
+  - name: shutup10
+    startmenu:
+      base_path: 'C:\ProgramData\chocolatey\lib\shutup10\tools'
+      package_exes: [OOSU10]
 
 choco_packages_no_vm:
   # Inet
