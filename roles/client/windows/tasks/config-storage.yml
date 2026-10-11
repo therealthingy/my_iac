@@ -44,7 +44,7 @@
     - name: "512"
       value: "{{ storage_sense.user_content_cleanup_dls_days }}"
   when:
-    - configure_storage_sense
+    - storage_sense_configure
     # Value validation:
     - storage_sense.user_content_cleanup_days in [1, 7, 30]
     - storage_sense.user_content_cleanup_trash_days in [1, 14, 30, 60]

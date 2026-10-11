@@ -3,7 +3,7 @@ win_timezone: W. Europe Standard Time
 
 win_host_owner: "ansible"
 
-configure_storage_sense: true
+storage_sense_configure: true
 storage_sense:
   user_content_cleanup: true
   user_content_cleanup_days: 30
