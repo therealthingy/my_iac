@@ -6,20 +6,20 @@
       - chocolateygui
     state: present
 
-## Prereqs.
-#- name: Win32-OpenSSH service - install
-#  block:
-#    - win_chocolatey:
-#        name: openssh
-#        package_params: /SSHServerFeature
-#        state: present
-#    # set the default shell to PowerShell
-#    - win_regedit:
-#        path: HKLM:\SOFTWARE\OpenSSH
-#        name: DefaultShell
-#        data: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-#        type: string
-#        state: present
+# Prereqs.
+- name: Win32-OpenSSH service - install
+  block:
+    - win_chocolatey:
+        name: openssh
+        package_params: /SSHServerFeature
+        state: present
+    # Set the default shell 2 PowerShell
+    - win_regedit:
+        path: HKLM:\SOFTWARE\OpenSSH
+        name: DefaultShell
+        data: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+        type: string
+        state: present
 
 - name: Install Devel packages
   win_chocolatey:

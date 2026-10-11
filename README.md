@@ -305,7 +305,9 @@
       - (1.4.) IF SSH PORT SHALL BE CHANGED: Add AFTER initial ansible run: `Port 2233`
 
 - 4 WINDOWS clients:
-  - [Install OpenSSH](https://docs.ansible.com/projects/ansible-core/2.17/os_guide/windows_setup.html#windows-ssh-setup)
+  - Install OpenSSH:
+    - https://github.com/PowerShell/Win32-OpenSSH/wiki/Install-Win32-OpenSSH
+    - https://docs.ansible.com/projects/ansible-core/2.17/os_guide/windows_setup.html#windows-ssh-setup
 
 - ISSUEs / WORKAROUNDs:
   - UBUNTU SERVER -- **extend lvm** (if formatted incorrect):
