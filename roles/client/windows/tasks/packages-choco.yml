@@ -1,12 +1,13 @@
 ---
-- name: Ensure Chocolatey is installed
-  win_chocolatey:
-    name:
-      - chocolatey
-      - chocolateygui
-    state: present
+# SEE ALSO: https://github.com/stkrzysiak/windows-playbook-scoop/blob/master/tasks/chocolatey.yml
 
 # Prereqs.
+- name: Ensure Chocolatey is installed
+  win_chocolatey:
+    # NOTE: `chocolatey` is implicitly installed …
+    name: chocolateygui
+    state: present
+
 - name: Win32-OpenSSH service - install
   block:
     - win_chocolatey:
@@ -21,59 +22,17 @@
         type: string
         state: present
 
-- name: Install Devel packages
-  win_chocolatey:
-    name:
-      - git.install
-      - python3
-      - winmerge
-      - hxd
-    state: present
-
-- name: Install inet packages
-  win_chocolatey:
-    name:
-      - thunderbird
-    state: present
-  when: ansible_facts['virtualization_role'] != 'guest'
-
 #- brave # TODO: System wide
 
-- name: Install Office packages
+- name: Install packages
   win_chocolatey:
-    name:
-      - imageglass
-      - sumatrapdf.install
-      - caesium.install
-      - pdftkbuilder
-      - vlc.install
-    state: present
+    name: "{{ item.name | default(item) }}"
+    state: "{{ item.state | default('present') }}"
+    version: "{{ item.version | default(omit) }}"
+    choco_args: "{{ item.choco_args | default(omit) }}"
+  with_items: choco_packages
 
-- name: Install Office Packages II
-  win_chocolatey:
-    name:
-      - InkScape
-      - file-converter
-      - drawio
-      - obs-studio.install
-      - libreoffice-fresh
-      - digikam
-    state: present
-  when: ansible_facts['virtualization_role'] != 'guest'
-
-- name: Install PowerUser packages
-  win_chocolatey:
-    name:
-      - 7zip.install
-      - bleachbit.install
-      - hashtab
-      - vscodium.install
-      - notepadplusplus.install
-      - WinDirStat
-      - powertoys
-    state: present
-
-- name: Create Sysinternals shortcuts
+- name: Install Sysinternals
   block:
     - win_chocolatey:
         name:
@@ -112,35 +71,28 @@
         - Winobj64
         - ZoomIt64
 
-- name: Install Maintenance packages
+- name: "[Non-VM] Install packages"
   win_chocolatey:
-    name:
-      - bulk-crap-uninstaller   # TODO: Doesn't work
-      - shutup10
-    state: present
-  #become: true
-  #become_user: Administrator
-  #become_method: runas
-
-- name: Install HW Monitoring Tools
-  win_chocolatey:
-    name:
-      - crystaldiskinfo # crystaldiskinfo.portable
-      - crystaldiskmark
-      - coretemp
-      - cpu-z.install
-      - gpu-z
-    state: present
+    name: "{{ item.name | default(item) }}"
+    state: "{{ item.state | default('present') }}"
+    version: "{{ item.version | default(omit) }}"
+    choco_args: "{{ item.choco_args | default(omit) }}"
+  with_items: choco_packages_no_vm
   when: ansible_facts['virtualization_role'] != 'guest'
 
-- name: Install Services/Misc. packages
-  win_chocolatey:
-    name:
-      - wireguard
-      - greenshot
-      - rustdesk.install
-      - keepassx
-      - kindle
-      #- lghub
-    state: present
-  when: ansible_facts['virtualization_role'] != 'guest'
+- name: Clean chocolatey & nuget cache
+  block:
+    - name: Clean up the chocolatey and NuGet cache.
+      ansible.windows.win_file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - '%UserProfile%\AppData\Local\Temp\chocolatey\'
+        - '%UserProfile%\AppData\Local\Temp\nuget\'
+        - '%UserProfile%\AppData\Local\NuGet\Cache\'
+      register: cleanup_task
+  rescue:
+    - name: "{{ cleanup_task.msg }}"
+      ansible.builtin.debug:
+        msg: >
+          "Some chocolatey cache files are still in use. You may need to reboot your machine to resolve the error"

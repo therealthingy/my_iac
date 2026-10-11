@@ -13,6 +13,54 @@ storage_sense:
   user_content_cleanup_dls_enabled: false
   user_content_cleanup_dls_days: 30
 
+choco_packages:
+  # Devel
+  - git.install
+  - python3
+  - winmerge
+  - hxd
+  # Office
+  - imageglass
+  - sumatrapdf.install
+  - caesium.install
+  - pdftkbuilder
+  - vlc.install
+  # PowerUser
+  - 7zip.install
+  - bleachbit.install
+  - hashtab
+  - vscodium.install
+  - notepadplusplus.install
+  - WinDirStat
+  - powertoys
+  # Maintenance
+  - bulk-crap-uninstaller   # TODO: Doesn't work
+  - shutup10
+
+choco_packages_no_vm:
+  # Inet
+  - thunderbird
+  # Office
+  - InkScape
+  - file-converter
+  - drawio
+  - obs-studio.install
+  - libreoffice-fresh
+  - digikam
+  # HW Monitoring Tools
+  - crystaldiskinfo # crystaldiskinfo.portable
+  - crystaldiskmark
+  - coretemp
+  - cpu-z.install
+  - gpu-z
+  # Services/Misc. packages
+  - wireguard
+  - greenshot
+  - rustdesk.install
+  - keepassx
+  - kindle
+  #- lghub
+
 remote_desktop_enabled: False
 
 # SEE: https://github.com/stkrzysiak/windows-playbook-scoop/blob/master/default.config.yml
