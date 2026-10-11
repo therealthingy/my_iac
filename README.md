@@ -340,6 +340,10 @@
       ```
       export ANSIBLE_BECOME_EXE=sudo.ws
       ```
+      or add in the inventory file:
+      ```
+      ansible_become_exe: sudo.ws  # Ubuntu 26.04 sudo-rs "Timeout (32s) waiting for privilege escalation prompt" workaround
+      ```
     - ( Darwin Ansible host python homebrew: "package xyz has invalid interpreter /usr/bin/python3.XX\r\n": ~~`pip freeze | xargs pip uninstall -y`~~`pipx uninstall-all` )
     - AFTER UPGRADING: `netplan apply` failing (Network-Manager not available)  /  no netplan yml file:
       ```

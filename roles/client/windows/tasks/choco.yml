@@ -1,0 +1,27 @@
+---
+- name: "Install choco package \"{{ choco_package.name | default(choco_package) }}\""
+  win_chocolatey:
+    name: "{{ choco_package.name | default(choco_package) }}"
+    state: "{{ choco_package.state | default('present') }}"
+    version: "{{ choco_package.version | default(omit) }}"
+    choco_args: "{{ choco_package.choco_args | default(omit) }}"
+  ignore_errors: true
+
+- name: Startmenu entries
+  block:
+    - name: Create startmenu folder
+      ansible.windows.win_file:
+        path: "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\{{ choco_package.startmenu.folder }}"
+        state: directory
+      when: choco_package.startmenu.folder is defined
+
+    - name: Create startmenu shortcuts
+      community.windows.win_shortcut:
+        dest: "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\{{ choco_package.startmenu.folder | default('') }}\\{{ package_exe }}.lnk"
+        src: "{{ choco_package.startmenu.base_path }}\\{{ package_exe }}.exe"
+        icon: "{{ choco_package.startmenu.base_path }}\\{{ package_exe }}.exe,0"
+        directory: "{{ choco_package.startmenu.cwd | default('%USERPROFILE%') }}"
+      with_items: "{{ choco_package.startmenu.package_exes }}"
+      loop_control:
+        loop_var: package_exe
+  when: choco_package.startmenu is defined and choco_package.startmenu.package_exes is defined

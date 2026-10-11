@@ -33,6 +33,35 @@ choco_packages:
   - notepadplusplus.install
   - WinDirStat
   - powertoys
+  - name: sysinternals
+    state: present
+    startmenu:
+      folder: 'SysInternals'
+      base_path: 'C:\ProgramData\chocolatey\lib\sysinternals\tools'
+      package_exes:
+        - AccessEnum
+        - ADExplorer64
+        - ADInsight64
+        - Autoruns64
+        - Bginfo64
+        - Cacheset64
+        - CoreinfoEx64
+        - CPUSTRES64
+        - dbgview64
+        - Desktops64
+        - disk2vhd64
+        - Diskmon64
+        - DiskView64
+        - LoadOrd64
+        - procexp64
+        - Procmon64
+        - RAMMap64
+        - RDCMan
+        - ShellRunas
+        - tcpview64
+        - vmmap64
+        - Winobj64
+        - ZoomIt64
   # Maintenance
   - bulk-crap-uninstaller   # TODO: Doesn't work
   - shutup10

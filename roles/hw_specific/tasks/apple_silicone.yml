@@ -36,5 +36,5 @@
       become: true
       when: "'servers_devel' in group_names  or  'clients_devel' in group_names"
   when:
-    - "hw_is_hypervisor is defined and hw_is_hypervisor | length > 0"
-    - hw_is_hypervisor != 'VMware' # TODO: Doesn't work (yet) on VMWare Fusion ??  ("Error mounting /media/rosetta: mount: /media/rosetta: wrong fs type, bad option, bad superblock on rosetta, missing codepage or helper program, or other error.")
+    - "hw_hypervisor is defined and hw_hypervisor | length > 0"
+    - hw_hypervisor != 'VMware' # TODO: Doesn't work (yet) on VMWare Fusion ??  ("Error mounting /media/rosetta: mount: /media/rosetta: wrong fs type, bad option, bad superblock on rosetta, missing codepage or helper program, or other error.")

@@ -1,5 +1,5 @@
 ---
-- name: Enable Verbose winlogon Status Messages
+- name: Enable verbose status messages
   ansible.windows.win_regedit:
     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
     name: VerboseStatus
@@ -7,7 +7,7 @@
     type: dword
     state: present
 
-- name: "[Non-VM] Enable auto-login"
+- name: "[VM] Enable auto-login"
   ansible.windows.win_auto_logon:
     username: "{{ ansible_facts['user_id'] }}"
     password: "{{ ansible_password }}"

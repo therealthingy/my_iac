@@ -25,59 +25,18 @@
 #- brave # TODO: System wide
 
 - name: Install packages
-  win_chocolatey:
-    name: "{{ item.name | default(item) }}"
-    state: "{{ item.state | default('present') }}"
-    version: "{{ item.version | default(omit) }}"
-    choco_args: "{{ item.choco_args | default(omit) }}"
+  include_tasks: choco.yml
   with_items: "{{ choco_packages }}"
-
-- name: Install Sysinternals
-  block:
-    - win_chocolatey:
-        name:
-          - sysinternals
-        state: present
-    - ansible.windows.win_file:
-        path: 'C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Sysinternals'
-        state: directory
-    - community.windows.win_shortcut:
-        src: "C:\\ProgramData\\chocolatey\\lib\\sysinternals\\tools\\{{ item }}.exe"
-        dest: "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Sysinternals\\{{ item }}.lnk"
-        directory: "C:\\ProgramData\\chocolatey\\bin"
-        icon: "C:\\ProgramData\\chocolatey\\bin\\{{ item }}.exe,0"
-      with_items:
-        - AccessEnum
-        - ADExplorer64
-        - ADInsight64
-        - Autoruns64
-        - Bginfo64
-        - Cacheset64
-        - CoreinfoEx64
-        - CPUSTRES64
-        - dbgview64
-        - Desktops64
-        - disk2vhd64
-        - Diskmon64
-        - DiskView64
-        - LoadOrd64
-        - procexp64
-        - Procmon64
-        - RAMMap64
-        - RDCMan
-        - ShellRunas
-        - tcpview64
-        - vmmap64
-        - Winobj64
-        - ZoomIt64
+  loop_control:
+    loop_var: choco_package
 
 - name: "[Non-VM] Install packages"
-  win_chocolatey:
-    name: "{{ item.name | default(item) }}"
-    state: "{{ item.state | default('present') }}"
-    version: "{{ item.version | default(omit) }}"
-    choco_args: "{{ item.choco_args | default(omit) }}"
-  with_items: "{{ choco_packages_no_vm }}"
+  include_tasks: choco.yml
+  vars:
+    package: choco_package
+  with_items: "{{ choco_packages }}"
+  loop_control:
+    loop_var: choco_package
   when: ansible_facts['virtualization_role'] != 'guest'
 
 - name: Clean chocolatey & nuget cache
