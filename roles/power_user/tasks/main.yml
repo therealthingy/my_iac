@@ -80,7 +80,7 @@
       when:
         - ansible_facts.os_family != 'Darwin'
         - hw_is_rpi == False
-        - "hypervisor is not defined or not hypervisor"
+        - "hw_is_hypervisor is not defined or not hw_is_hypervisor"
   become: true
 
 - name: Install networking tools
@@ -169,7 +169,7 @@
           loop_control:
             loop_var: package
       become: false
-      when: "hypervisor is not defined or not hypervisor"
+      when: "hw_is_hypervisor is not defined or not hw_is_hypervisor"
 
 - name: Privacy tools
   block:
@@ -239,7 +239,7 @@
                     job: "{{ result_hblock.stdout }} -H /etc/hblock.d/header -A /etc/hblock.d/whitelist.list -D /etc/hblock.d/blacklist.list -q"
           become: true
       when:
-        - "hypervisor is not defined or not hypervisor"
+        - "hw_is_hypervisor is not defined or not hw_is_hypervisor"
         - ansible_facts.os_family == 'Darwin' # TODO: Add Ubuntu
   become: "{{ package_manager_become }}"
 

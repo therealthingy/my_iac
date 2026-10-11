@@ -14,6 +14,7 @@
     - config-shell-winlogon.yml
     #- config-storage.yml  # TODO: Doesn't set the values, but claims to do so
     - config-win_bloat.yml
+    - config-winlogon.yml
     - config-wpa.yml
     #
     - packages-win_bloat.yml

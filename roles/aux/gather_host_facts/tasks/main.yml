@@ -89,7 +89,7 @@
             deb_cpu_arch: "{{ result_deb_cpu_architecture.stdout }}"
             kernel_release: "{{ result_kernel_release.stdout }}"
             hw_is_rpi: "{{ True if result_rpi.rc == 0 else False }}"
-            hypervisor: '{{ result_smbios.stdout | trim if result_smbios.rc == 0 else None }}'
+            hw_is_hypervisor: '{{ result_smbios.stdout | trim if result_smbios.rc == 0 else None }}'
           when: ansible_facts.os_family != 'Darwin'
 
         - name: "[Darwin / Debian/Ubuntu]"
@@ -114,4 +114,4 @@
 ##      www_user={{ www_user }},
 ##      kernel_release={{ kernel_release }},
 ##      docker_gid={{ docker_gid }},
-##      hypervisor={{ hypervisor }}
+##      hw_is_hypervisor={{ hw_is_hypervisor }}
