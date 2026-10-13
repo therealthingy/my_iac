@@ -1,0 +1,34 @@
+{
+    "policies": {
+        "Homepage": {
+            "URL": "https://google.com",
+            "Locked": false,
+            "StartPage": "homepage"
+        },
+        "DisplayBookmarksToolbar": "newtab",
+        "SkipTermsOfUse": true,
+        "DisableTelemetry": true,
+        "DisableFirefoxStudies": true,
+        "DisableFirefoxAccounts": true,
+        "DisablePocket": true,
+        "ShowHomeButton": true,
+        "OfferToSaveLoginsDefault": false,
+        "Preferences": {
+            "datareporting.healthreport.uploadEnabled": false,
+            "datareporting.policy.dataSubmissionEnabled": false
+        },
+        "ExtensionSettings": {
+            "uBlock0@raymondhill.net": {
+                "installation_mode": "force_installed",
+                "install_url": "https://mozilla.org"
+            }
+        },
+        "GenerativeAI": {
+            "Enabled": false,
+            "Chatbot": false,
+            "LinkPreviews": false,
+            "TabGroups": false,
+            "Locked": false
+        }
+    }
+}

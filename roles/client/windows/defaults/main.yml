@@ -14,6 +14,8 @@ storage_sense:
   user_content_cleanup_dls_days: 30
 
 choco_packages:
+  # Inet
+  - firefox
   # Devel
   - git.install
   - python3

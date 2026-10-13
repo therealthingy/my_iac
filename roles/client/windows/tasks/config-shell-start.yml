@@ -23,5 +23,5 @@
         path: C:\Users\Default\AppData\Local\Microsoft\Windows\Shell
         state: directory
     - ansible.windows.win_copy:
-        src: files/LayoutModification.json
+        src: files/shell-start-LayoutModification.json
         dest: C:\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.json

@@ -41,7 +41,7 @@
 
 - name: Clean chocolatey & nuget cache
   block:
-    - name: Clean up the chocolatey and NuGet cache.
+    - name: Clean up the chocolatey & NuGet cache
       ansible.windows.win_file:
         path: "{{ item }}"
         state: absent
