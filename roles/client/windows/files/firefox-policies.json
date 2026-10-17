@@ -7,18 +7,18 @@
         },
         "Bookmarks": [
             {
-                "Title": "Google",
+                "Title": "",
                 "URL": "https://google.com/",
                 "Placement": "toolbar"
             },
             {
-                "Title": "YouTube",
+                "Title": "",
                 "URL": "https://youtube.com/",
                 "Placement": "toolbar"
             },
             {
-                "Title": "Amazon",
-                "URL": "https://amazon.de/",
+                "Title": "",
+                "URL": "https://ipleak.net/",
                 "Placement": "toolbar"
             }
         ],
