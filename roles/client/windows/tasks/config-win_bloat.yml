@@ -283,10 +283,19 @@
     - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
       name: CopilotCoworkToolActionsEnabled
       data: 0
+    # Edge -- Solid picture
+    - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
+      name: NewTabPageAllowedBackgroundTypes
+      data: 3
+    # Edge -- Don't check default browser status
+    - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
+      name: DefaultBrowserSettingEnabled
+      data: 0
 
-# TODO: Edge:
-#  - Default search engine
-#  - Extensions: ublock origin, savewebpage, darkreader
+    # TODO: Edge:
+    #  - Default search engine
+    #  - Extensions: ublock origin, savewebpage, darkreader
+    #  - Vertical Tabs
 
 # -----------------------------------------
 

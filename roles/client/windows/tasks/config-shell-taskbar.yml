@@ -19,6 +19,15 @@
         data: 0
         type: dword
 
+- name: "[VM] Taskbar on top"   # NOTE: Requires more recent Win11
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    name: TaskbarLocation
+    data: 1
+    type: dword
+    state: present
+  when: ansible_facts['virtualization_role'] == 'guest'
+
 # TODO: Broken …
 #- name: Set shortcuts
 #  include_tasks: reg_hkcu_default_user.yml
