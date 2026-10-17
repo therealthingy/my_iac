@@ -22,8 +22,6 @@
 #        type: string
 #        state: present
 
-#- brave # TODO: System wide
-
 - name: Install packages
   include_tasks: choco.yml
   with_items: "{{ choco_packages }}"
@@ -56,8 +54,6 @@
         msg: >
           "Some chocolatey cache files are still in use. You may need to reboot your machine to resolve the error"
 
-# TODO: File extensions
-
 # TAKEN FROM: https://github.com/stkrzysiak/windows-playbook-scoop/blob/master/tasks/desktop.yml
 - name: Get user profile path
   ansible.windows.win_command: powershell.exe -
@@ -81,3 +77,11 @@
     state: absent
   loop: "{{ shortcuts.files | unique }}"
   when: shortcuts.files | length > 0
+
+# TODO: Setting File extensions doesn't work  => Guarded by the  the UserChoice Protection Driver
+#- name: Set default text editor
+#  ansible.windows.win_regedit:
+#    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.txt\UserChoice
+#    name: ProgId
+#    data: Applications\notepad++.exe
+#    type: string

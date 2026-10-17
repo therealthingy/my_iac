@@ -12,7 +12,6 @@ collections:
 
 roles:
   - name: geerlingguy.docker
-  - name: petermosmans.customize-gnome
   - name: chriswayg.msmtp-mailer # Required 4 mail notifications
 
   - name: elliotweiser.osx-command-line-tools
