@@ -4,6 +4,7 @@
     path: C:\Program Files\Mozilla Firefox\distribution
     state: directory
 
+# Check: `about:policies`
 - name: Firefox - Deploy policies
   ansible.windows.win_copy:
     src: files/firefox-policies.json

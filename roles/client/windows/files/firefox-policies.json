@@ -5,23 +5,59 @@
             "Locked": false,
             "StartPage": "homepage"
         },
+        "Bookmarks": [
+            {
+                "Title": "Google",
+                "URL": "https://google.com/",
+                "Placement": "toolbar"
+            },
+            {
+                "Title": "YouTube",
+                "URL": "https://youtube.com/",
+                "Placement": "toolbar"
+            },
+            {
+                "Title": "Amazon",
+                "URL": "https://amazon.de/",
+                "Placement": "toolbar"
+            }
+        ],
+        "NoDefaultBookmarks": true,
         "DisplayBookmarksToolbar": "newtab",
         "SkipTermsOfUse": true,
         "DisableTelemetry": true,
         "DisableFirefoxStudies": true,
         "DisableFirefoxAccounts": true,
+        "IPProtectionAvailable": false,
         "DisablePocket": true,
         "ShowHomeButton": true,
         "OfferToSaveLoginsDefault": false,
-        "Preferences": {
-            "datareporting.healthreport.uploadEnabled": false,
-            "datareporting.policy.dataSubmissionEnabled": false
-        },
         "ExtensionSettings": {
             "uBlock0@raymondhill.net": {
-                "installation_mode": "force_installed",
-                "install_url": "https://mozilla.org"
+                "installation_mode": "normal_installed",
+                "private_browsing": true
+            },
+            "addon@darkreader.org": {
+                "installation_mode": "normal_installed"
+            },
+            "savepage-we@DW-dev": {
+                "installation_mode": "normal_installed"
             }
+        },
+        "FirefoxHome": {
+            "Search": true,
+            "TopSites": true,
+            "SponsoredTopSites": false,
+            "Highlights": false,
+            "Pocket": false,
+            "Stories": false,
+            "SponsoredPocket": false,
+            "SponsoredStories": false,
+            "Snippets": false,
+            "Widgets": {
+                "Enabled": false
+            },
+            "Locked": false
         },
         "GenerativeAI": {
             "Enabled": false,
