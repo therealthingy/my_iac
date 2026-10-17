@@ -8,19 +8,19 @@
     name: chocolateygui
     state: present
 
-- name: Win32-OpenSSH service - install
-  block:
-    - win_chocolatey:
-        name: openssh
-        package_params: /SSHServerFeature
-        state: present
-    # Set the default shell 2 PowerShell
-    - win_regedit:
-        path: HKLM:\SOFTWARE\OpenSSH
-        name: DefaultShell
-        data: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-        type: string
-        state: present
+#- name: Win32-OpenSSH service - install
+#  block:
+#    - win_chocolatey:
+#        name: openssh
+#        package_params: /SSHServerFeature
+#        state: present
+#    # Set the default shell 2 PowerShell
+#    - win_regedit:
+#        path: HKLM:\SOFTWARE\OpenSSH
+#        name: DefaultShell
+#        data: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+#        type: string
+#        state: present
 
 #- brave # TODO: System wide
 
@@ -55,6 +55,8 @@
       ansible.builtin.debug:
         msg: >
           "Some chocolatey cache files are still in use. You may need to reboot your machine to resolve the error"
+
+# TODO: File extensions
 
 # TAKEN FROM: https://github.com/stkrzysiak/windows-playbook-scoop/blob/master/tasks/desktop.yml
 - name: Get user profile path

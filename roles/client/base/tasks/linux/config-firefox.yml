@@ -1,9 +1,15 @@
 ---
-- name: "Copy default suggested bookmarks  (TODO: AUTO IMPORT INTO FF  !!)"
+- name: Create dir
+  ansible.builtin.file:
+    path: /etc/firefox/policies/
+    state: directory
+  become: true
+
+- name: Deploy policies
   ansible.builtin.copy:
-    src: firefox-devel_bookmarks.json
-    dest: "/{{ os_homedir }}/{{ user.name }}/.local/share/.firefox-default_devel_bookmarks.json"
-  become: false
+    src: files/firefox-policies.json
+    dest: /etc/firefox/policies/policies.json
+  become: true
 
 - name: Autostart Firefox on login
   ansible.builtin.file:

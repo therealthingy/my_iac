@@ -42,6 +42,9 @@
             },
             "savepage-we@DW-dev": {
                 "installation_mode": "normal_installed"
+            },
+            "{e58d3966-3d76-4cd9-8552-1582fbc800c1}": {
+                "installation_mode": "normal_installed"
             }
         },
         "FirefoxHome": {
@@ -51,6 +54,7 @@
             "Highlights": false,
             "Pocket": false,
             "Stories": false,
+            "Weather": false,
             "SponsoredPocket": false,
             "SponsoredStories": false,
             "Snippets": false,
