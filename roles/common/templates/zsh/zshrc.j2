@@ -373,6 +373,12 @@ alias-add colordiff diff='colordiff'
 # --  pipx  --
 path-add "$HOME/.local/bin" "after"
 
+{% if 'clients_media' in group_names    or
+      ansible_facts.os_family == 'Darwin' %}
+# --  yt-dlp  --
+alias-add yt-dlp yt-dlp-channel_prefix="yt-dlp  -o '%(channel)s - %(title).200s [%(id)s].mp4'"
+{% endif %}
+
 
 
 # ===========================  Functions (II)  ===========================
