@@ -1,5 +1,5 @@
 ---
-- name: OOSU10
+- name: OOSU10 machine-wide
   ansible.windows.win_regedit:
     path: "HKLM:\\{{ hklm_key.path_wo_hklm }}"
     name: "{{ hklm_key.name }}"
@@ -34,8 +34,10 @@
     - path_wo_hklm: SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo
       name: Enabled
       data: 0
-    # Disable advertisements via Bluetooth
-    #   OMITTED: HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Bluetooth\AllowAdvertising
+    # Disable Windows Error Reporting
+    - path_wo_hklm: SOFTWARE\Microsoft\Windows\Windows Error Reporting
+      name: Disabled
+      data: 1
     # Disable cloud consumer account state content
     - path_wo_hklm: SOFTWARE\Policies\Microsoft\Windows\CloudContent
       name: DisableConsumerAccountStateContent
@@ -82,6 +84,10 @@
     # Disable personalizing advertising, search, news and other services
     - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
       name: PersonalizationReportingEnabled
+      data: 0
+    # Disable automatic completion of web addresses in address bar
+    - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
+      name: AddressBarMicrosoftSearchInBingProviderEnabled
       data: 0
     # Disable user feedback in toolbar
     - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
@@ -182,6 +188,14 @@
     # Disable Edge Secure Network (built-in VPN)
     - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
       name: EdgeSecureNetworkEnabled
+      data: 0
+    # Disable use of web service to resolve navigation errors
+    - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
+      name: ResolveNavigationErrorsUseWebService
+      data: 0
+    # Disable suggestion of similar sites when website cannot be found
+    - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
+      name: AlternateErrorPagesEnabled
       data: 0
     # Hide default top sites on new tab page
     - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
