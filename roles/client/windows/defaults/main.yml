@@ -31,7 +31,7 @@ choco_packages:
   - 7zip.install
   - bleachbit.install
   - hashtab
-  - vscodium.install
+  - vscodium.install    # TODO: FAILs
   - notepadplusplus.install
   - WinDirStat
   - powertoys
@@ -66,7 +66,7 @@ choco_packages:
         - Winobj64
         - ZoomIt64
   # Maintenance
-  - bulk-crap-uninstaller   # TODO: Doesn't work
+  - bulk-crap-uninstaller    # TODO: FAILs
   - name: shutup10
     startmenu:
       base_path: 'C:\ProgramData\chocolatey\lib\shutup10\tools'
