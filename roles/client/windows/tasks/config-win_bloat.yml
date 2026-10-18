@@ -81,13 +81,11 @@
       name: Start
       data: 4
     # -- MS Edge --
+    #   NOTE: Verify via `edge://policy`
+    #   REFERENCE: https://learn.microsoft.com/en-gb/DeployEdge/microsoft-edge-policies#available-policies
     # Disable personalizing advertising, search, news and other services
     - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
       name: PersonalizationReportingEnabled
-      data: 0
-    # Disable automatic completion of web addresses in address bar
-    - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
-      name: AddressBarMicrosoftSearchInBingProviderEnabled
       data: 0
     # Disable user feedback in toolbar
     - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
@@ -291,10 +289,41 @@
     - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
       name: DefaultBrowserSettingEnabled
       data: 0
+    # Edge -- Hide App Launcher from new tab page (MS 365 Apps)
+    - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
+      name: NewTabPageAppLauncherEnabled
+      data: 0
+    # Edge -- Disable Bing trending suggestions in the address bar
+    - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
+      name: AddressBarTrendingSuggestEnabled
+      data: 0
+    # Edge -- Disable Work Search suggestions in the address bar
+    - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
+      name: AddressBarWorkSearchResultsEnabled
+      data: 0
+    # - Ege -- Extensions: ublock origin lite
+    - path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
+      name: ExtensionSettings
+      type: string
+      data: "{ \"cimighlppcgcoapaliogpjjdehbnofhn\": { \"installation_mode\": \"normal_installed\", \"update_url\": \"https://edge.microsoft.com/extensionwebstorebase/v1/crx\" }}"
 
     # TODO: Edge:
+    # - Edge -- Replace Bing w/ Google     TODO: Doesn't work ?!!11
+    #- path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
+    #  name: DefaultSearchProvider
+    #  type: string
+    #  data: Google
+    #- path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
+    #  name: DefaultSearchProviderSearchURL
+    #  type: string
+    #  data: "https://google.com{searchTerms}"
+    #- path_wo_hklm: SOFTWARE\Policies\Microsoft\Edge
+    #  name: DefaultSearchProviderKeyword
+    #  type: string
+    #  data: google.com
+    #
     #  - Default search engine
-    #  - Extensions: ublock origin, savewebpage, darkreader
+    #
     #  - Vertical Tabs
 
 # -----------------------------------------

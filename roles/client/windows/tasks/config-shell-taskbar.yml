@@ -19,10 +19,19 @@
         data: 0
         type: dword
 
-- name: "[VM] Taskbar on top"   # NOTE: Requires more recent Win11
+- name: "[VM] Taskbar location"   # NOTE: Requires more recent Win11
   ansible.windows.win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
     name: TaskbarLocation
+    data: 0  # `0` = left, `1` = top, `2` = right, `3` = bottom
+    type: dword
+    state: present
+  when: ansible_facts['virtualization_role'] == 'guest'
+
+- name: "[VM] Small Taskbar items"
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    name: TaskbarSize
     data: 1
     type: dword
     state: present

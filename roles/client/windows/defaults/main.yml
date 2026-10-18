@@ -35,6 +35,7 @@ choco_packages:
   - notepadplusplus.install
   - WinDirStat
   - powertoys
+  # TODO: Windows 4 ARM (e.g., `Procmon64a` instead of `Procmon64`)
   - name: sysinternals
     state: present
     startmenu:
